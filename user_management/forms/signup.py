@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from user_management.models.user_model import User
 

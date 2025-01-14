@@ -1,0 +1,1 @@
+from user_management.models.user_model import User

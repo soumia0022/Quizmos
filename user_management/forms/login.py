@@ -18,3 +18,4 @@ class LogInForm(forms.Form):
             password = self.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
         return user
+
