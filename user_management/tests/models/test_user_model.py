@@ -157,3 +157,21 @@ class UserModelTestCase(TestCase):
     def _assert_user_is_invalid(self):
         with self.assertRaises(ValidationError):
             self.user.full_clean()
+
+    def test_role_must_not_be_blank(self):
+        self.user.role = ''
+        self._assert_user_is_invalid()
+
+    def test_role_must_not_be_more_than_10_characters(self):
+        self.user.role = 'StudentandLecturer'
+        self._assert_user_is_invalid()
+
+    def test_role_must_not_be_nothing_other_than_the_choices(self):
+        self.user.role = 'Guest'
+        self._assert_user_is_invalid()
+
+        self.user.role = 'Lecturer'
+        self._assert_user_is_valid()
+
+        self.user.role = 'Student'
+        self._assert_user_is_valid()

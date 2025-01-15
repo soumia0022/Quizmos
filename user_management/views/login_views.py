@@ -19,9 +19,11 @@ def home(request):
 @login_required
 def dashboard(request):
     """Display the current user's dashboard."""
-
     current_user = request.user
-    return render(request, 'dashboard.html', {'user': current_user})
+    if (current_user.role == 'Student'):
+        return render(request, 'student_dashboard.html', {'user': current_user})
+    else:
+        return render(request, 'lecturer_dashboard.html', {'user': current_user})
 
 
 class LoginProhibitedMixin:
