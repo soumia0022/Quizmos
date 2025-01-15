@@ -20,6 +20,9 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
 
+    ROLES = [('Student', 'Student'), ('Lecturer', 'Lecturer'),]
+    role = models.CharField(max_length=10, choices=ROLES, default='Student', blank=False)
+
     class Meta:
         """Model options."""
 
