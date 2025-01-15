@@ -1,3 +1,3 @@
-from user_management.forms.login import LogInForm
-from user_management.forms.update_profile import PasswordForm, UserForm
-from user_management.forms.signup import SignUpForm
+from user_management.forms.login import *
+from user_management.forms.update_profile import *
+from user_management.forms.signup import *

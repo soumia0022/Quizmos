@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from user_management.views import login_views, signup_views,profile_update_views
+from user_management.views import *
 
 urlpatterns = [
     path('', login_views.home, name='home'),
