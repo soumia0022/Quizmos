@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render
 from django.views import View
-from user_management.forms.login import LogInForm
+from user_management.forms import LogInForm
 from user_management.helpers import login_prohibited
 
 
