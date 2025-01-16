@@ -1,26 +1,23 @@
 from django.shortcuts import render, redirect
 from question_management.models.question_models import Poll, Question
+# IMPORT POLL HERE FROM POLL_MANAGEMENT MODELS
 
-# put this in poll_management app
-def create_poll(request):
-    if request.method == "POST":
-        title = request.POST.get("title")
-        poll = Poll.objects.create(title=title)
-        return redirect("add_question", poll_id=poll.id)
-    return render(request, "create_poll.html")
 
 def add_question(request, poll_id):
-    poll = Poll.objects.get(id=poll_id)
+    poll = Poll.objects.get(id=poll_id) # get object or 404
     if request.method == 'POST':
         question_type = request.POST.get('question_type')
 
         # Get the relevant question fields based on question type
         if question_type == 'text_fill':
             question_text = request.POST.get('text_fill_question')
+            question_answer = request.POST.get('text_fill_answer')
             question = Question.objects.create(
                 poll_id=poll_id,
+                question_text=question_text,
                 question_type=question_type,
-                text_fill_question=question_text
+                text_fill_question=question_text,
+                text_fill_answer=question_answer
             )
         elif question_type == 'dropdown_fill':
             question_text = request.POST.get('dropdown_fill_question') # generalised (may be needed later)
@@ -61,14 +58,4 @@ def add_question(request, poll_id):
         return redirect("add_question", poll_id=poll.id)
     return render(request, "add_question.html", {"poll": poll})
 
-
-def preview_question(request, question_id):
-    question = Question.objects.get(id=question_id)
-    correct = None  # Default value
-
-    if request.method == "POST":
-        student_answer = request.POST.get("student_answer")
-        correct = student_answer.strip().lower() == question.correct_answer.strip().lower()
-
-    return render(request, "preview_question.html", {"question": question, "correct": correct})
 

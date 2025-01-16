@@ -1,7 +1,11 @@
 from django.contrib import admin
 from django import forms
 from question_management.models.question_models import Poll, Question
+# IMPORT POLL FROM POLL_MANAGEMENT
 
+@admin.register(Poll)
+class Poll(admin.ModelAdmin):
+    list_display = ('title', )
 
 class QuestionForm(forms.ModelForm):
     class Meta:
@@ -40,7 +44,7 @@ class QuestionForm(forms.ModelForm):
 
 class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
-    list_display = ('poll', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'multiple_choice_question',
+    list_display = ('poll', 'poll_title', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'multiple_choice_question',
                     'single_choice_question')
     list_filter = ('poll', 'question_type')
     search_fields = (
@@ -62,7 +66,5 @@ class QuestionAdmin(admin.ModelAdmin):
         return fields
 
 
-
-admin.site.register(Poll)
 admin.site.register(Question, QuestionAdmin)
 
