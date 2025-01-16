@@ -7,8 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const questionInputContainer = document.getElementById('question-input-container');
     const textFillFields = document.getElementById('text-fill-fields');
     const dropdownFillFields = document.getElementById('dropdown-fill-fields');
-    const multipleChoiceFields = document.getElementById('multiple-choice-fields');
     const singleChoiceFields = document.getElementById('single-choice-fields');
+
+    const multipleChoiceFields = document.getElementById('multiple-choice-fields');
+    const multipleChoiceOptionsSection = document.getElementById('options-section')
+    const multipleChoiceAddOptionBtn = document.getElementById('add-option-btn')
+    let optionCount = 1; //must be 1 option by default
 
     const textFillInput = textFillFields.querySelector('input[name="text_fill_question"]');
     const dropdownQuestionInput = dropdownFillFields.querySelector('input[name="dropdown_fill_question"]');
@@ -52,6 +56,20 @@ document.addEventListener('DOMContentLoaded', function() {
             multipleChoiceFields.style.display = 'block';
             multipleChoiceInput.required = true;
             multipleChoiceOptionsInput.required = true;
+            multipleChoiceAddOptionBtn.addEventListener("click", () => {
+                optionCount++;
+
+                //create a new input feild for another option with placeholder text
+                const input = document.createElement("input");
+                input.type = "text";
+                input.id = `option${optionCount}`;
+                input.name = "multiple_choice_options";
+                input.placeholder = `Option ${optionCount}`;
+                input.required = true;
+
+                //add input to the list of option
+                multipleChoiceOptionsSection.appendChild(input);
+            })
         } else if (questionType === 'single_choice') {
             singleChoiceFields.style.display = 'block';
             singleChoiceInput.required = true;
