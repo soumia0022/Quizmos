@@ -41,7 +41,7 @@ class QuestionForm(forms.ModelForm):
 class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
     list_display = ('poll', 'poll_title', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'multiple_choice_question',
-                    'single_choice_question')
+                    'multiple_choice_options', 'single_choice_question')
     list_filter = ('poll', 'question_type')
     search_fields = (
     'text_fill_question', 'dropdown_fill_question', 'multiple_choice_question', 'single_choice_question')

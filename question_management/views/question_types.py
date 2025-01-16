@@ -33,7 +33,7 @@ def add_question(request, poll_id):
         elif question_type == 'multiple_choice':
             question_text = request.POST.get('multiple_choice_question')
             multiple_choice_question = request.POST.get('multiple_choice_question')
-            multiple_choice_options = request.POST.get('multiple_choice_options')
+            multiple_choice_options = request.POST.getlist('multiple_choice_options[]')
             question = Question.objects.create(
                 poll_id=poll_id,
                 question_text=question_text,

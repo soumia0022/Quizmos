@@ -20,7 +20,7 @@ class Question(models.Model):
     dropdown_fill_question = models.TextField(null=True, blank=True)
     dropdown_options = models.TextField(null=True, blank=True)  # comma-separated options for dropdown
     multiple_choice_question = models.TextField(null=True, blank=True)
-    multiple_choice_options = models.TextField(null=True, blank=True)  # comma-separated options
+    multiple_choice_options = models.JSONField(blank=True, default=list)  #use a json field since models doesnt support arrays
     single_choice_question = models.TextField(null=True, blank=True)
     single_choice_option = models.TextField(null=True, blank=True)  # the only option for Single Choice
 

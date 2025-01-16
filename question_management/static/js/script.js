@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const input = document.createElement("input");
                 input.type = "text";
                 input.id = `option${optionCount}`;
-                input.name = "multiple_choice_options";
+                input.name = "multiple_choice_options[]";
                 input.placeholder = `Option ${optionCount}`;
                 input.required = true;
 
