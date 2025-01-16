@@ -3,20 +3,17 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from user_management.models.user_model import User
-
+import os
 
 
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
-   
-    PROFILE_PICTURES = [
-        ('p1.png', 'Pic 1'),
-        ('p2.png', 'Pic 2'),
-        ('p3.png', 'Pic 3'),
-        ('p4.png', 'Pic 4'),
-    ]
-    
-    profile_picture = forms.ChoiceField(choices=PROFILE_PICTURES, required=False, label='Profile Picture')
+
+    def get_profile_pictures():
+        pics_dir = os.path.join('static', 'profile_pics')
+        return [(f, f) for f in os.listdir(pics_dir) if f.endswith('.png')]
+
+    profile_picture = forms.ChoiceField(choices=get_profile_pictures, required=False, label='Profile Picture')
 
     class Meta:
         """Form options."""
