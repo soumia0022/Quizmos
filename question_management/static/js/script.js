@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownQuestionInput = dropdownFillFields.querySelector('input[name="dropdown_fill_question"]');
     const dropdownOptionsInput = dropdownFillFields.querySelector('input[name="dropdown_options"]');
     const multipleChoiceInput = multipleChoiceFields.querySelector('input[name="multiple_choice_question"]');
-    const multipleChoiceOptionsInput = multipleChoiceFields.querySelector('input[name="multiple_choice_options"]');
+    const multipleChoiceOptionsInput = multipleChoiceFields.querySelector('input[name="multiple_choice_options[]"]');
     const singleChoiceInput = singleChoiceFields.querySelector('input[name="single_choice_question"]');
     const singleChoiceOptionInput = singleChoiceFields.querySelector('input[name="single_choice_option"]');
 
