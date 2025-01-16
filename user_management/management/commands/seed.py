@@ -1,25 +1,22 @@
-from django.core.management.base import BaseCommand, CommandError
-
+from django.core.management.base import BaseCommand
 from user_management.models import User
-import pytz
 from faker import Faker
-from random import randint, random
-
+from random import choice
+from random import choices
 user_fixtures = [
-    {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe'},
-    {'username': '@janedoe', 'email': 'jane.doe@example.org', 'first_name': 'Jane', 'last_name': 'Doe'},
-    {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson'},
+    {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe', 'role': 'Student'},
+    {'username': '@janedoe', 'email': 'jane.doe@example.org', 'first_name': 'Jane', 'last_name': 'Doe', 'role': 'Student'},
+    {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson', 'role': 'Lecturer'},
 ]
-
-
 class Command(BaseCommand):
     """Build automation command to seed the database."""
 
-    USER_COUNT = 300
+    USER_COUNT = 100
     DEFAULT_PASSWORD = 'Password123'
     help = 'Seeds the database with sample data'
 
     def __init__(self):
+        super().__init__()
         self.faker = Faker('en_GB')
 
     def handle(self, *args, **options):
@@ -36,7 +33,7 @@ class Command(BaseCommand):
 
     def generate_random_users(self):
         user_count = User.objects.count()
-        while  user_count < self.USER_COUNT:
+        while user_count < self.USER_COUNT:
             print(f"Seeding user {user_count}/{self.USER_COUNT}", end='\r')
             self.generate_user()
             user_count = User.objects.count()
@@ -47,13 +44,20 @@ class Command(BaseCommand):
         last_name = self.faker.last_name()
         email = create_email(first_name, last_name)
         username = create_username(first_name, last_name)
-        self.try_create_user({'username': username, 'email': email, 'first_name': first_name, 'last_name': last_name})
-       
+        role = choices(['Student', 'Lecturer'], weights=[80, 20], k=1)[0] #makes the user a student 80% of the time and a lecturer 20% of the time
+        self.try_create_user({
+            'username': username,
+            'email': email,
+            'first_name': first_name,
+            'last_name': last_name,
+            'role': role
+        })
+
     def try_create_user(self, data):
         try:
             self.create_user(data)
-        except:
-            pass
+        except Exception as e:
+            print(f"Error creating user {data['username']}: {e}")
 
     def create_user(self, data):
         User.objects.create_user(
@@ -62,10 +66,11 @@ class Command(BaseCommand):
             password=Command.DEFAULT_PASSWORD,
             first_name=data['first_name'],
             last_name=data['last_name'],
+            role=data['role'] 
         )
 
 def create_username(first_name, last_name):
     return '@' + first_name.lower() + last_name.lower()
 
 def create_email(first_name, last_name):
-    return first_name + '.' + last_name + '@example.org'
+    return f"{first_name.lower()}.{last_name.lower()}@example.org"
