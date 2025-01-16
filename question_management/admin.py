@@ -1,11 +1,7 @@
 from django.contrib import admin
 from django import forms
-from question_management.models.question_models import Poll, Question
-# IMPORT POLL FROM POLL_MANAGEMENT
+from question_management.models.question_models import Question
 
-@admin.register(Poll)
-class Poll(admin.ModelAdmin):
-    list_display = ('title', )
 
 class QuestionForm(forms.ModelForm):
     class Meta:
@@ -67,4 +63,5 @@ class QuestionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Question, QuestionAdmin)
+
 

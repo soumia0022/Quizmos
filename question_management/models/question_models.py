@@ -1,5 +1,5 @@
 from django.db import models
-# ADD IMPORT FROM POLL_MANAGEMENT TO GET POLL MODEL HERE
+from poll_management.models.poll_model import Poll
 
 # General info abt poll questions
 class Question(models.Model):

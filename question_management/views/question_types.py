@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from question_management.models.question_models import Poll, Question
-# IMPORT POLL HERE FROM POLL_MANAGEMENT MODELS
+from question_management.models.question_models import Question
+from poll_management.models.poll_model import Poll
 
 
 def add_question(request, poll_id):
@@ -55,7 +55,7 @@ def add_question(request, poll_id):
 
         # Save the question instance
         question.save()
-        return redirect("add_question", poll_id=poll.id)
+        return redirect("question_management:add_question", poll_id=poll.id)
     return render(request, "add_question.html", {"poll": poll})
 
 
