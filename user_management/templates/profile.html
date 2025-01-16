@@ -7,7 +7,7 @@
       <h1>Edit Profile</h1>
       <form action="{% url 'profile' %}" method="post">
         {% csrf_token %}
-        {% include 'partials/bootstrap_form.html' with form=form %}
+      {% include 'partials/bootstrap_form.html' with form=form exclude="profile_picture" %}
 
         <!-- profile_picture field as a dropdown image selector -->
         <div class="mb-3">
