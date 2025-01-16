@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Create Poll</title>
+</head>
+<body>
+    <h1>Create a New Poll</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="title">Poll Title:</label>
+        <input type="text" name="title" required>
+        <button type="submit">Create Poll</button>
+    </form>
+</body>
+</html>
