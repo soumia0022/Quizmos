@@ -8,12 +8,21 @@ from user_management.models.user_model import User
 
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
+   
+    PROFILE_PICTURES = [
+        ('p1.png', 'Pic 1'),
+        ('p2.png', 'Pic 2'),
+        ('p3.png', 'Pic 3'),
+        ('p4.png', 'Pic 4'),
+    ]
+    
+    profile_picture = forms.ChoiceField(choices=PROFILE_PICTURES, required=False, label='Profile Picture')
 
     class Meta:
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email']
+        fields = ['first_name', 'last_name', 'username', 'email', 'profile_picture']
 
 
 class NewPasswordMixin(forms.Form):

@@ -22,6 +22,7 @@ class User(AbstractUser):
 
     ROLES = [('Student', 'Student'), ('Lecturer', 'Lecturer'),]
     role = models.CharField(max_length=10, choices=ROLES, default='Student', blank=False)
+    profile_picture = models.CharField(max_length=100, blank=True, null=True, default='default.png')
 
     class Meta:
         """Model options."""
