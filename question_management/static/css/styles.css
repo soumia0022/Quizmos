@@ -1,0 +1,43 @@
+.correct {
+    color: green;
+    font-weight: bold;
+}
+
+.incorrect {
+    color: red;
+    font-weight: bold;
+}
+
+/* styles.css */
+#question-form {
+    display: none;
+}
+
+/* styles.css */
+.hidden {
+    display: none;
+}
+
+#questions-sidebar {
+    width: 250px;
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    position: fixed;
+    top: 100px;
+    right: 10px;
+}
+
+#questions-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.question-item {
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}

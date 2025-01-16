@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Preview</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Preview Question</h1>
+    <p>{{ question.question_text }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="student_answer" placeholder="Your answer">
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if correct is not None %}
+        <p class="{% if correct %}correct{% else %}incorrect{% endif %}">
+            {% if correct %}Correct{% else %}Incorrect{% endif %}
+        </p>
+    {% endif %}
+</body>
+</html>
