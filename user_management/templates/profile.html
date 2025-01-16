@@ -7,9 +7,9 @@
       <h1>Edit Profile</h1>
       <form action="{% url 'profile' %}" method="post">
         {% csrf_token %}
-      {% include 'partials/bootstrap_form.html' with form=form exclude="profile_picture" %}
-
-        <!-- profile_picture field as a dropdown image selector -->
+        {% include 'partials/bootstrap_form.html' with form=form exclude="profile_picture" %}
+       
+        <!-- profile_picture field as a dropdown image selector, split into categories, the user will have the default.jpeg by default -->
         <div class="mb-3">
           <label>Select a profile picture:</label>
           <div class="dropdown">
@@ -17,18 +17,26 @@
               Profile Pictures
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="min-width: 200px;">
-              <div class="d-flex flex-wrap">
-                {% for pic in form.fields.profile_picture.choices %}
-                  <label class="dropdown-item p-1" for="{{ pic.0 }}" style="width: 100px;">
-                    <input type="radio" name="profile_picture" id="{{ pic.0 }}" value="{{ pic.0 }}" style="display: none;" {% if user.profile_picture == pic.0 %} checked {% endif %}>
-                    <img src="{% static 'profile_pics/' %}{{ pic.0 }}" alt="{{ pic.1 }}" class="img-thumbnail" width="100" onclick="selectPicture('{{ pic.0 }}')">
-                  </label>
-                {% endfor %}
-              </div>
+              {% for category, pictures in form.fields.profile_picture.choices %}
+                <div class="dropdown-header">{{ category }}</div>
+                <div class="d-flex flex-wrap">
+                  {% for pic in pictures %}
+                    <label class="dropdown-item p-1" for="{{ pic.0 }}" style="width: 100px;">
+                      <input type="radio" name="profile_picture" id="{{ pic.0 }}" value="{{ pic.0 }}" style="display: none;" {% if user.profile_picture == pic.0 %} checked {% endif %}>
+                      <img src="{% static 'profile_pics/' %}{{ pic.0 }}" alt="{{ pic.1 }}" class="img-thumbnail" width="100" onclick="selectPicture('{{ pic.0 }}')">
+                    </label>
+                  {% endfor %}
+                </div>
+                <hr class="dropdown-divider">
+              {% endfor %}
             </div>
           </div>
           <div class="mt-2">
-            <img id="profile-picture-preview" src="{% static 'profile_pics/' %}{{ user.profile_picture }}" alt="Profile Picture" class="img-thumbnail" width="150">
+            {% if user.profile_picture %}
+              <img id="profile-picture-preview" src="{% static 'profile_pics/' %}{{ user.profile_picture }}" alt="Profile Picture" class="img-thumbnail" width="150">
+            {% else %}
+              <img id="profile-picture-preview" src="{% static 'profile_pics/default.jpeg' %}" alt="Profile Picture" class="img-thumbnail" width="150">
+            {% endif %}
           </div>
         </div>
 

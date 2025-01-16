@@ -9,12 +9,27 @@ import os
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 
+    @staticmethod
     def get_profile_pictures():
         pics_dir = os.path.join('static', 'profile_pics')
-        return [(f, f) for f in os.listdir(pics_dir) if f.endswith('.png')]
+        categories = {
+            'Galactic Heroes': [],
+            'Celestial Wonders': [],
+            'Mystic Orbs': []
+        }
+        for f in os.listdir(pics_dir):
+            if f.endswith('.png'):
+                if f.startswith('a'):
+                    categories['Galactic Heroes'].append(f)
+                elif f.startswith('s'):
+                    categories['Celestial Wonders'].append(f)
+                elif f.startswith('p'):
+                    categories['Mystic Orbs'].append(f)
+        return categories
 
-    profile_picture = forms.ChoiceField(choices=get_profile_pictures, required=False, label='Profile Picture')
-
+    categories = get_profile_pictures()
+    profile_picture = forms.ChoiceField(choices=[(category, [(pic, pic) for pic in pictures])for category, pictures in categories.items()],required=False,label='Profile Picture')
+    
     class Meta:
         """Form options."""
 
