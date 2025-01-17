@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-
     // All the DOM (HTML) elements
     const addButton = document.getElementById('add-question-btn');
     const questionForm = document.getElementById('question-form');
@@ -10,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const singleChoiceFields = document.getElementById('single-choice-fields');
 
     const multipleChoiceFields = document.getElementById('multiple-choice-fields');
-    const multipleChoiceOptionsSection = document.getElementById('options-section')
+    const multipleChoiceOptionsSection = document.getElementById('options-container')
     const multipleChoiceAddOptionBtn = document.getElementById('add-option-btn')
     let optionCount = 1; //must be 1 option by default
 
@@ -39,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdownOptionsInput.required = false;
         multipleChoiceFields.style.display = 'none';
         multipleChoiceInput.required = false;
-        multipleChoiceOptionsInput.required = false;
+        //multipleChoiceOptionsInput.required = false;
         singleChoiceFields.style.display = 'none';
         singleChoiceInput.required = false;
         singleChoiceOptionInput.required = false;
@@ -55,21 +54,30 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (questionType === 'multiple_choice') {
             multipleChoiceFields.style.display = 'block';
             multipleChoiceInput.required = true;
-            multipleChoiceOptionsInput.required = true;
+            //multipleChoiceOptionsInput.required = true;
             multipleChoiceAddOptionBtn.addEventListener("click", () => {
-                optionCount++;
+                console.log("add option button pressed");
+                //create a new input filed for another option with placeholder text
+                const optionText=prompt('Enter a new Option');
+                if (optionText){
+                    const checkboxInput = document.createElement('input');
+                    checkboxInput.type = 'checkbox';
+                    checkboxInput.is = `option${optionCount}`;
+                    checkboxInput.name = 'multiple_choice_options[]';
+                    checkboxInput.value = optionText;
+                    //value won't show implicitly so create a label for it
+                    const label = document.createElement('label');
+                    label.htmlFor = `option${optionCount}`;
+                    label.textContent = optionText;
+                    //add input to the list of option
+                    multipleChoiceOptionsSection.appendChild(checkboxInput);
+                    multipleChoiceOptionsSection.appendChild(label);
 
-                //create a new input feild for another option with placeholder text
-                const input = document.createElement("input");
-                input.type = "text";
-                input.id = `option${optionCount}`;
-                input.name = "multiple_choice_options[]";
-                input.placeholder = `Option ${optionCount}`;
-                input.required = true;
-
-                //add input to the list of option
-                multipleChoiceOptionsSection.appendChild(input);
-            })
+                    //create a space between options
+                    multipleChoiceOptionsSection.appendChild(document.createTextNode(' '));
+                    optionCount++;
+                }
+            });
         } else if (questionType === 'single_choice') {
             singleChoiceFields.style.display = 'block';
             singleChoiceInput.required = true;
