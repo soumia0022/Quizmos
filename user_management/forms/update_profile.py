@@ -15,7 +15,8 @@ class UserForm(forms.ModelForm):
         categories = {
             'Galactic Heroes': [],
             'Celestial Wonders': [],
-            'Mystic Orbs': []
+            'Mystical Orbs': [],
+            'Intergalactic Visitors': []
         }
         for f in os.listdir(pics_dir):
             if f.endswith('.png'):
@@ -24,7 +25,9 @@ class UserForm(forms.ModelForm):
                 elif f.startswith('s'):
                     categories['Celestial Wonders'].append(f)
                 elif f.startswith('p'):
-                    categories['Mystic Orbs'].append(f)
+                    categories['Mystical Orbs'].append(f)
+                elif f.startswith('u'):
+                    categories['Intergalactic Visitors'].append(f)
         return categories
 
     categories = get_profile_pictures()
