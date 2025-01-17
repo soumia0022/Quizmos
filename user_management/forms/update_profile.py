@@ -11,7 +11,7 @@ class UserForm(forms.ModelForm):
 
     @staticmethod
     def get_profile_pictures():
-        pics_dir = os.path.join('static', 'profile_pics')
+        pics_dir = os.path.join('static', 'img')
         categories = {
             'Galactic Heroes': [],
             'Celestial Wonders': [],

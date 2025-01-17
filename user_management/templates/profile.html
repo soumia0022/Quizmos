@@ -23,7 +23,7 @@
                   {% for pic in pictures %}
                     <label class="dropdown-item p-1" for="{{ pic.0 }}" style="width: 100px;">
                       <input type="radio" name="profile_picture" id="{{ pic.0 }}" value="{{ pic.0 }}" style="display: none;" {% if user.profile_picture == pic.0 %} checked {% endif %}>
-                      <img src="{% static 'profile_pics/' %}{{ pic.0 }}" alt="{{ pic.1 }}" class="img-thumbnail" width="100" onclick="selectPicture('{{ pic.0 }}')">
+                      <img src="{% static 'img/' %}{{ pic.0 }}" alt="{{ pic.1 }}" class="img-thumbnail" width="100" onclick="selectPicture('{{ pic.0 }}')">
                     </label>
                   {% endfor %}
                 </div>
@@ -33,9 +33,9 @@
           </div>
           <div class="mt-2">
             {% if user.profile_picture %}
-              <img id="profile-picture-preview" src="{% static 'profile_pics/' %}{{ user.profile_picture }}" alt="Profile Picture" class="img-thumbnail" width="150">
+              <img id="profile-picture-preview" src="{% static 'img/' %}{{ user.profile_picture }}" alt="Profile Picture" class="img-thumbnail" width="150">
             {% else %}
-              <img id="profile-picture-preview" src="{% static 'profile_pics/default.jpeg' %}" alt="Profile Picture" class="img-thumbnail" width="150">
+              <img id="profile-picture-preview" src="{% static 'img/default.jpeg' %}" alt="Profile Picture" class="img-thumbnail" width="150">
             {% endif %}
           </div>
         </div>
@@ -46,11 +46,5 @@
   </div>
 </div>
 
-
-<script>
-  function selectPicture(pic) {
-    document.getElementById('profile-picture-preview').src = "{% static 'profile_pics/' %}" + pic;
-    document.querySelector('input[name="profile_picture"][value="' + pic + '"]').checked = true;
-  }
-</script>
+<script src="{% static 'js/profile_picture_preview.js' %}"></script>
 {% endblock %}
