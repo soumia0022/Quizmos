@@ -60,18 +60,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 //create a new input filed for another option with placeholder text
                 const optionText=prompt('Enter a new Option');
                 if (optionText){
+                    //create hidden input for all the options to be stored:
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'multiple_choice_options[]';
+                    hiddenInput.value = optionText;
+
                     const checkboxInput = document.createElement('input');
                     checkboxInput.type = 'checkbox';
-                    checkboxInput.is = `option${optionCount}`;
-                    checkboxInput.name = 'multiple_choice_options[]';
+                    checkboxInput.id = `option${optionCount}`;
+                    //only the checked inboxes will be saved:
+                    checkboxInput.name = 'multiple_choice_answers[]';
                     checkboxInput.value = optionText;
+
                     //value won't show implicitly so create a label for it
                     const label = document.createElement('label');
                     label.htmlFor = `option${optionCount}`;
                     label.textContent = optionText;
+
                     //add input to the list of option
                     multipleChoiceOptionsSection.appendChild(checkboxInput);
                     multipleChoiceOptionsSection.appendChild(label);
+                    multipleChoiceOptionsSection.appendChild(hiddenInput);
 
                     //create a space between options
                     multipleChoiceOptionsSection.appendChild(document.createTextNode(' '));
