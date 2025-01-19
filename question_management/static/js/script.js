@@ -94,4 +94,22 @@ document.addEventListener('DOMContentLoaded', function() {
             singleChoiceOptionInput.required = true;
         }
     });
+
+    document.querySelector('form').addEventListener('submit', function (event) {
+    const questionType = document.getElementById('question-type-dropdown').value;
+
+    if (questionType === 'multiple_choice') {
+        const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
+        if (options.length === 0) {
+            alert('Please add at least one option for the multiple-choice question.');
+            event.preventDefault(); //don't allow the submission to go thru
+        }
+        const answers = document.querySelectorAll('[name="multiple_choice_answers[]"]:checked'); //only the checked ones
+        if (answers.length === 0 ){
+            alert('Please add at least one right answer for the multiple-choice question.');
+            event.preventDefault(); //don't allow the submission to go thru
+        }
+    }
+    });
+
 });
