@@ -47,13 +47,15 @@ def add_question(request, poll_id):
         elif question_type == 'single_choice':
             question_text = request.POST.get('single_choice_question')
             single_choice_question = request.POST.get('single_choice_question')
-            single_choice_option = request.POST.get('single_choice_option')
+            single_choice_option = request.POST.getlist('single_choice_options[]')
+            single_choice_answers = request.POST.get('single_choice_answers[]')
             question = Question.objects.create(
                 poll_id=poll_id,
                 question_text=question_text,
                 question_type=question_type,
                 single_choice_question=single_choice_question,
-                single_choice_option=single_choice_option
+                single_choice_option=single_choice_option,
+                single_choice_answers=single_choice_answers
             )
 
         # Save the question instance
