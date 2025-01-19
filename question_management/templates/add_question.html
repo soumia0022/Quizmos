@@ -4,7 +4,6 @@
     <title>Add Question</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-    <!-- can add script link back here -->
     <script src="{% static 'js/script.js' %}"></script>  <!-- JavaScript -->
 </head>
 <body>
@@ -23,7 +22,7 @@
                 <option value="">-- Select Type --</option>
                 <option value="multiple_choice">Multiple Choice</option>
                 <option value="single_choice">Single Choice</option>
-                <option value="text_fill">Text Fill in the Blank</option>
+                <option value="text_fill">Text Answer</option>
                 <option value="dropdown_fill">Dropdown Fill in the Blank</option>
             </select>
 
@@ -31,8 +30,8 @@
 
             <!-- Text Fill Fields -->
             <div id="text-fill-fields" style="display: none;">
-                <input type="text" name="text_fill_question" placeholder="Enter Text Fill Question" />
-                <input type="text" name="text_fill_answer" placeholder="Enter Text Fill Answer" />
+                <input type="text" name="text_fill_question" placeholder="Enter Text Question" />
+                <input type="text" name="text_fill_answer" placeholder="Enter Text Answer" />
             </div>
 
             <!-- Dropdown Fill Fields -->
@@ -71,7 +70,7 @@
     <div id="questions-sidebar">
         <h3>Questions Created:</h3>
         <div id="questions-list">
-            <!-- questions list in the sidebar -->
+            <!-- Questions list in the sidebar -->
             {% for question in poll.questions.all %}
                 <div class="question-item">
                     Question {{ forloop.counter }}: {{ question.question_text }}

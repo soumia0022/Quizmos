@@ -8,15 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const multipleChoiceFields = document.getElementById('multiple-choice-fields');
     const singleChoiceFields = document.getElementById('single-choice-fields');
 
+    // Specifically for drop-down fill in the blank
     const dropdownInput = document.getElementById('dropdown-fill-input');
     const textPreview = document.getElementById('text-preview');
     const dropdownCorrectAnswerField = document.getElementById('dropdown-correct-answer');
-
     const resetButton = document.getElementById('reset-preview-btn');
-
     let originalText = ""; // Stores the original input text for resetting
-    let blankAdded = false;
-
+    let blankAdded = false; // Used to only allow one blank per question
 
     // Show or hide the question form
     addButton.addEventListener('click', function() {
@@ -47,26 +45,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Dropdown Fill Preview
     dropdownInput.addEventListener('input', function() {
-        originalText = dropdownInput.value
+        originalText = dropdownInput.value // Current value is the original text - needed for resetting
         const text = dropdownInput.value;
 
         textPreview.innerHTML = text
-            .split(' ')
-            .map(word => `<span class="word">${word}</span>`)
+            .split(' ')// Text is split into words
+            .map(word => `<span class="word">${word}</span>`) // For handling each word separately
             .join(' ');
     });
 
     // Handle word selection for the blank
-    textPreview.addEventListener('click', function(event) {
-        if (event.target.classList.contains('word') && !blankAdded) {
-            const word = event.target.textContent;
+    textPreview.addEventListener('click', function(event) { // Listener for clicks on textPreview element
+        if (event.target.classList.contains('word') && !blankAdded) { // If the element clicked has class word & blank hasn't been added before
+            const word = event.target.textContent; // Gets the word
             dropdownCorrectAnswerField.value = word;
 
             // Replace the word with a blank (this becomes the question)
             const updatedText = dropdownInput.value.replace(word, '_____');
             dropdownInput.value = updatedText;
 
-            // Update the preview
+            // Update the preview with the new text which contains the blank
             textPreview.innerHTML = updatedText
                 .split(' ')
                 .map(w => (w === '_____' ? `<span class="blank">_____</span>` : `<span class="word">${w}</span>`))
@@ -75,78 +73,54 @@ document.addEventListener('DOMContentLoaded', function() {
             blankAdded = true;
         }
     });
-    // Reset Button Logic (resets the word you wanted to blank, brings back original text)
+
+    // Reset Button Logic (brings back original text - sentence no longer contains a blank)
     resetButton.addEventListener('click', function() {
         dropdownInput.value = originalText; // Restore the original text
         textPreview.innerHTML = originalText
             .split(' ')
             .map(word => `<span class="word">${word}</span>`)
             .join(' ');
-        dropdownCorrectAnswerField.value = ""; // Clear the correct answer field
+
+        // Reset to original
+        dropdownCorrectAnswerField.value = "";
         blankAdded = false;
     });
 
-});
-/*
-document.addEventListener('DOMContentLoaded', function() {
+    // Validation checking (for text answer and drop-down question types) below
+    const form = document.querySelector('form');
+    const textFillQuestionInput = document.querySelector('input[name="text_fill_question"]');
+    const textFillAnswerInput = document.querySelector('input[name="text_fill_answer"]');
+    const dropdownOption1Input = dropdownFillFields.querySelector('input[name="additional_options"]'); // First additional option input
 
-    // All the DOM (HTML) elements
-    const addButton = document.getElementById('add-question-btn');
-    const questionForm = document.getElementById('question-form');
-    const questionTypeDropdown = document.getElementById('question-type-dropdown');
-    const questionInputContainer = document.getElementById('question-input-container');
-    const textFillFields = document.getElementById('text-fill-fields');
-    const dropdownFillFields = document.getElementById('dropdown-fill-fields');
-    const multipleChoiceFields = document.getElementById('multiple-choice-fields');
-    const singleChoiceFields = document.getElementById('single-choice-fields');
 
-    const textFillInput = textFillFields.querySelector('input[name="text_fill_question"]');
-    const dropdownQuestionInput = dropdownFillFields.querySelector('input[name="dropdown_fill_question"]');
-    const dropdownOptionsInput = dropdownFillFields.querySelector('input[name="dropdown_options"]');
-    const multipleChoiceInput = multipleChoiceFields.querySelector('input[name="multiple_choice_question"]');
-    const multipleChoiceOptionsInput = multipleChoiceFields.querySelector('input[name="multiple_choice_options"]');
-    const singleChoiceInput = singleChoiceFields.querySelector('input[name="single_choice_question"]');
-    const singleChoiceOptionInput = singleChoiceFields.querySelector('input[name="single_choice_option"]');
-
-    // Show or hide the question form when clicking the "Add Question" button
-    addButton.addEventListener('click', function() {
-        questionForm.style.display = questionForm.style.display === 'none' ? 'block' : 'none';
-    });
-
-    // Show question input field only after selecting a question type
-    questionTypeDropdown.addEventListener('change', function() {
+    // Form validation before submission without using `required` attribute
+    form.addEventListener('submit', function(event) { // When the form is submitted
         const questionType = questionTypeDropdown.value;
+        let isValid = true;
+        let fieldsToCheck = [];
 
-        // Hide all question formats and remove the "required" attribute
-        textFillFields.style.display = 'none';
-        textFillInput.required = false;
-        dropdownFillFields.style.display = 'none';
-        dropdownQuestionInput.required = false;
-        dropdownOptionsInput.required = false;
-        multipleChoiceFields.style.display = 'none';
-        multipleChoiceInput.required = false;
-        multipleChoiceOptionsInput.required = false;
-        singleChoiceFields.style.display = 'none';
-        singleChoiceInput.required = false;
-        singleChoiceOptionInput.required = false;
-
-        // Show the relevant question format based on selected type and add the "required" attribute
+        // Fields that require an answer before saving
         if (questionType === 'text_fill') {
-            textFillFields.style.display = 'block';
-            textFillInput.required = true;
+            fieldsToCheck = [textFillQuestionInput, textFillAnswerInput];
         } else if (questionType === 'dropdown_fill') {
-            dropdownFillFields.style.display = 'block';
-            dropdownQuestionInput.required = true;
-            dropdownOptionsInput.required = true;
-        } else if (questionType === 'multiple_choice') {
-            multipleChoiceFields.style.display = 'block';
-            multipleChoiceInput.required = true;
-            multipleChoiceOptionsInput.required = true;
-        } else if (questionType === 'single_choice') {
-            singleChoiceFields.style.display = 'block';
-            singleChoiceInput.required = true;
-            singleChoiceOptionInput.required = true;
+            fieldsToCheck = [dropdownInput, dropdownCorrectAnswerField, dropdownOption1Input];
+        }
+
+        // To check if the form is valid (so allowed to be saved)
+        fieldsToCheck.forEach(function(field) {
+            if (!field.value) {
+                isValid = false;
+                field.style.border = '1px solid red'; // Highlight the required fields
+            } else {
+                field.style.border = ''; // Remove highlighting
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
+            alert('Please fill out all required fields.');
         }
     });
+
 });
-*/

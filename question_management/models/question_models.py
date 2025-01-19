@@ -5,7 +5,7 @@ from poll_management.models.poll_model import Poll
 class Question(models.Model):
     QUESTION_TYPES = [
         ('dropdown_fill', 'Dropdown Fill in the Blank'), # database name, display name
-        ('text_fill', 'Text Fill in the Blank'),
+        ('text', 'Text Answer'),
         ('multiple_choice', 'Multiple Choice'),
         ('single_choice', 'Single Choice'),
     ]
