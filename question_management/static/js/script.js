@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('form').addEventListener('submit', function (event) {
     const questionType = document.getElementById('question-type-dropdown').value;
 
-    if (questionType === 'multiple_choice') {
+    if (questionType === 'multiple_choice'){
         const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
         if (options.length === 0) {
             alert('Please add at least one option for the multiple-choice question.');
@@ -141,6 +141,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (answers.length === 0 ){
             alert('Please add at least one right answer for the multiple-choice question.');
             event.preventDefault(); //don't allow the submission to go thru
+        }
+    } else if (questionType === 'single_choice'){
+        const options = document.querySelectorAll('[name="single_choice_options[]"]');
+        if (options.length === 0) {
+            alert('Please add at least one option for the single-choice question.');
+            event.preventDefault(); //don't allow the submission to go thru
+        }
+        const answers = document.querySelectorAll('[name="single_choice_answers[]"]:checked'); //only the checked ones count as answers
+        if (answers.length === 0 ){
+            alert('Please add at least one right answer for the single-choice question.');
+            event.preventDefault(); //don't allow the submission to go thru
+        }
+        else if (answers.length > 1){
+            alert('You can only choose one right answer for single-choice question.');
+            event.preventDefault();
         }
     }
     });
