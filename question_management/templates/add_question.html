@@ -4,6 +4,7 @@
     <title>Add Question</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <!-- can add script link back here -->
     <script src="{% static 'js/script.js' %}"></script>  <!-- JavaScript -->
 </head>
 <body>
@@ -36,8 +37,18 @@
 
             <!-- Dropdown Fill Fields -->
             <div id="dropdown-fill-fields" style="display: none;">
-                <input type="text" name="dropdown_fill_question" placeholder="Enter Dropdown Fill Question" />
-                <input type="text" name="dropdown_options" placeholder="Comma separated options" />
+                <textarea name="dropdown_fill_question" id="dropdown-fill-input" placeholder="Enter Dropdown Fill Question" ></textarea>
+                <div id="text-preview"></div> <!-- Preview area for the text -->
+
+                <label for="dropdown-correct-answer">Correct Answer:</label>
+                <input type="text" name="dropdown_correct_answer" id="dropdown-correct-answer" placeholder="Select a word to use as the blank" readonly />
+
+                <label for="additional-options">Additional Options:</label>
+                <input type="text" name="additional_options" placeholder="Option 1" />
+                <input type="text" name="additional_options" placeholder="Option 2" />
+                <input type="text" name="additional_options" placeholder="Option 3" />
+
+                <button type="button" id="reset-preview-btn">Reset</button>
             </div>
 
             <!-- Multiple Choice Fields -->
@@ -70,6 +81,7 @@
             {% endfor %}
         </div>
     </div>
+
 
 </body>
 </html>

@@ -25,8 +25,11 @@ class Question(models.Model):
     single_choice_option = models.TextField(null=True, blank=True)  # the only option for Single Choice
 
     question_text = models.TextField(null=True, blank=True) # for generalised
-    correct_answer = models.TextField(null=True, blank=True)  # maybe get rid of this too
+    dropdown_correct_answer = models.TextField(null=True, blank=True)  # maybe get rid of this too
 
     @property
     def poll_title(self):
         return self.poll.title
+
+    def get_dropdown_options(self):
+        return self.dropdown_options.split(',') if self.dropdown_options else []

@@ -8,7 +8,7 @@ class QuestionForm(forms.ModelForm):
         model = Question
         fields = ['poll', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'dropdown_options',
                   'multiple_choice_question', 'multiple_choice_options', 'single_choice_question',
-                  'single_choice_option', 'correct_answer']
+                  'single_choice_option', 'dropdown_correct_answer']
 
     # Override the form to conditionally show/hide fields based on the question type
     def __init__(self, *args, **kwargs):
@@ -40,7 +40,7 @@ class QuestionForm(forms.ModelForm):
 
 class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
-    list_display = ('poll', 'poll_title', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'multiple_choice_question',
+    list_display = ('poll', 'poll_title', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'dropdown_options', 'multiple_choice_question',
                     'single_choice_question')
     list_filter = ('poll', 'question_type')
     search_fields = (
