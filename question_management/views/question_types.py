@@ -13,8 +13,7 @@ def add_question(request, poll_id):
 
         # Get the relevant question fields based on question type:
 
-        # E.g., 'What is an apple?', 'a fruit' (as text, not as an option)
-        if question_type == 'text_fill':
+        if question_type == 'text_fill': # E.g., 'What is an apple?', 'a fruit' (as text, not as an option)
             question_text = request.POST.get('text_fill_question')
             question_answer = request.POST.get('text_fill_answer')
             question = Question.objects.create(

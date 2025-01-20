@@ -1,7 +1,6 @@
 from django.db import models
 from poll_management.models.poll_model import Poll
 
-# General info abt poll questions
 class Question(models.Model):
     QUESTION_TYPES = [
         ('dropdown_fill', 'Dropdown Fill in the Blank'), # database name, display name
