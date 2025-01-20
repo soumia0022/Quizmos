@@ -17,7 +17,6 @@ class CreatePollViewTest(TestCase):
             'title': 'Sample Poll'
         }
         response = self.client.post(self.create_url, data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code,302)
         poll = Poll.objects.get(title='Sample Poll')
         self.assertIsNotNone(poll)
-        # self.assertRedirects(response, reverse('add_question', kwargs={'poll_id': poll.id})) # Uncomment this when the 'add_question' URL is available

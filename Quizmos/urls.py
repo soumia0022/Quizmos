@@ -22,7 +22,7 @@ import user_management
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('questions/', include('question_management.urls')),
+    path('questions/', include('question_management.urls', namespace='question_management')),
     path('polls/', include('poll_management.urls')),
     path('responses/', include('response_management.urls')),
     path('analytics/', include('analytics.urls')),
