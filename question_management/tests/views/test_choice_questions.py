@@ -74,6 +74,20 @@ class QuestionTypesTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn('At least one option is required', response.json().get('error'))
 
+    def test_invalid_multiple_choice_question_with_no_answers(self):
+        # Missing options and answers
+        data = {
+            'question_type': 'multiple_choice',
+            'multiple_choice_question': 'What is 2 + 2?',
+            'multiple_choice_options[]': ["Option1"],  # No options
+            'multiple_choice_answers[]': []  # No answers
+        }
+        response = self.client.post(self.create_question_url, data)
+
+        # Ensure it returns a 400 status with an error message
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('At least one answer is required', response.json().get('error'))
+
     def test_invalid_single_choice_question(self):
         """
         Test creating a single-choice question with missing options or answers.
@@ -92,3 +106,22 @@ class QuestionTypesTestCase(TestCase):
         # Ensure it returns a 400 status with an error message
         self.assertEqual(response.status_code, 400)
         self.assertIn('At least one option is required', response.json().get('error'))
+
+    def test_invalid_single_choice_question_with_no_answer(self):
+        """
+        Test creating a single-choice question with missing options or answers.
+        """
+        data = {
+            'question_type': 'single_choice',
+            'single_choice_question': 'What is your favorite color?',
+            'single_choice_options[]': ["Option1"],
+            'single_choice_answers[]': ''
+        }
+
+        # Send a POST request
+        response = self.client.post(self.create_question_url, data)
+
+        # Check response status
+        # Ensure it returns a 400 status with an error message
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('At least one answer is required', response.json().get('error'))
