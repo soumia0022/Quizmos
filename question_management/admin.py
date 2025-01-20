@@ -33,15 +33,17 @@ class QuestionForm(forms.ModelForm):
         elif question_type == 'multiple_choice':
             self.fields['multiple_choice_question'].widget.attrs['style'] = ''
             self.fields['multiple_choice_options'].widget.attrs['style'] = ''
+            self.fields['multiple_choice_answers'].widget.attrs['style'] = ''
         elif question_type == 'single_choice':
             self.fields['single_choice_question'].widget.attrs['style'] = ''
             self.fields['single_choice_option'].widget.attrs['style'] = ''
+            self.fields['single_choice_answers'].widget.attrs['style'] = ''
 
 
 class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
     list_display = ('poll', 'poll_title', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'dropdown_options', 'multiple_choice_question',
-                    'single_choice_question')
+                    'multiple_choice_options', 'multiple_choice_answers','single_choice_question', 'single_choice_option', 'single_choice_answers')
     list_filter = ('poll', 'question_type')
     search_fields = (
     'text_fill_question', 'dropdown_fill_question', 'multiple_choice_question', 'single_choice_question')

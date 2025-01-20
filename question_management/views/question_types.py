@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
@@ -43,25 +44,47 @@ def add_question(request, poll_id):
         elif question_type == 'multiple_choice':
             question_text = request.POST.get('multiple_choice_question')
             multiple_choice_question = request.POST.get('multiple_choice_question')
-            multiple_choice_options = request.POST.get('multiple_choice_options')
+            multiple_choice_options = request.POST.getlist('multiple_choice_options[]')
+            multiple_choice_answers = request.POST.getlist('multiple_choice_answers[]')
+
+            # Server-side validation
+            if not multiple_choice_options:
+                return JsonResponse({'error': 'At least one option is required for a multiple-choice question.'},
+                                    status=400)
+            if not multiple_choice_answers:
+                return JsonResponse({'error': 'At least one answer is required for a multiple-choice question.'},
+                                    status=400)
+
             question = Question.objects.create(
                 poll_id=poll_id,
                 question_text=question_text,
                 question_type=question_type,
                 multiple_choice_question=multiple_choice_question,
-                multiple_choice_options=multiple_choice_options
+                multiple_choice_options=multiple_choice_options,
+                multiple_choice_answers=multiple_choice_answers
             )
             question.save()
         elif question_type == 'single_choice':
             question_text = request.POST.get('single_choice_question')
             single_choice_question = request.POST.get('single_choice_question')
-            single_choice_option = request.POST.get('single_choice_option')
+            single_choice_option = request.POST.getlist('single_choice_options[]')
+            single_choice_answers = request.POST.get('single_choice_answers[]')
+
+            # Server-side validation
+            if not single_choice_option:
+                return JsonResponse({'error': 'At least one option is required for a multiple-choice question.'},
+                                    status=400)
+            if not single_choice_answers:
+                return JsonResponse({'error': 'At least one answer is required for a multiple-choice question.'},
+                                    status=400)
+
             question = Question.objects.create(
                 poll_id=poll_id,
                 question_text=question_text,
                 question_type=question_type,
                 single_choice_question=single_choice_question,
-                single_choice_option=single_choice_option
+                single_choice_option=single_choice_option,
+                single_choice_answers=single_choice_answers
             )
             question.save()
 

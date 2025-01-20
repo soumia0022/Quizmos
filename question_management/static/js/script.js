@@ -5,8 +5,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const questionTypeDropdown = document.getElementById('question-type-dropdown');
     const textFillFields = document.getElementById('text-fill-fields');
     const dropdownFillFields = document.getElementById('dropdown-fill-fields');
-    const multipleChoiceFields = document.getElementById('multiple-choice-fields');
+
+
     const singleChoiceFields = document.getElementById('single-choice-fields');
+    const singleChoiceOptionsSection = document.getElementById('single-choice-options-container');
+    const singleChoiceAddOptionBtn = document.getElementById('single-choice-add-option-btn');
+    let ScOptionCount =1;
+
+    const multipleChoiceFields = document.getElementById('multiple-choice-fields');
+    const multipleChoiceOptionsSection = document.getElementById('multiple-choice-options-container');
+    const multipleChoiceAddOptionBtn = document.getElementById('multiple-choice-add-option-btn');
+    let McOptionCount = 1; //must be 1 option by default
 
     // Specifically for drop-down fill in the blank
     const dropdownInput = document.getElementById('dropdown-fill-input');
@@ -16,6 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let originalText = ""; // Stores the original input text for resetting
     let blankAdded = false; // Used to only allow one blank per question
 
+    const multipleChoiceInput = multipleChoiceFields.querySelector('input[name="multiple_choice_question"]');
+    const singleChoiceInput = singleChoiceFields.querySelector('input[name="single_choice_question"]');
+    
     // Show or hide the question form
     addButton.addEventListener('click', function() {
         questionForm.style.display = questionForm.style.display === 'none' ? 'block' : 'none';
@@ -29,7 +41,10 @@ document.addEventListener('DOMContentLoaded', function() {
         textFillFields.style.display = 'none';
         dropdownFillFields.style.display = 'none';
         multipleChoiceFields.style.display = 'none';
+        multipleChoiceInput.required = false;
         singleChoiceFields.style.display = 'none';
+        singleChoiceInput.required = false;
+        //singleChoiceOptionInput.required = false;
 
         // Show the selected fields based on option selected
         if (questionType === 'text_fill') {
@@ -38,12 +53,111 @@ document.addEventListener('DOMContentLoaded', function() {
             dropdownFillFields.style.display = 'block';
         } else if (questionType === 'multiple_choice') {
             multipleChoiceFields.style.display = 'block';
+            multipleChoiceInput.required = true;
+            multipleChoiceAddOptionBtn.addEventListener("click", () => {
+                console.log("add option button pressed");
+                //create a new input filed for another option with placeholder text
+                const optionText=prompt('Enter a new Option');
+                if (optionText){
+                    //create hidden input for all the options to be stored in DB otherwise only checked boxes are stored
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'multiple_choice_options[]';
+                    hiddenInput.value = optionText;
+
+                    const checkboxInput = document.createElement('input');
+                    checkboxInput.type = 'checkbox';
+                    checkboxInput.id = `option${McOptionCount}`;
+                    //only the checked inboxes will be saved as answers
+                    checkboxInput.name = 'multiple_choice_answers[]';
+                    checkboxInput.value = optionText;
+
+                    //value won't show implicitly so create a label for it
+                    const label = document.createElement('label');
+                    label.htmlFor = `option${McOptionCount}`;
+                    label.textContent = optionText;
+
+                    //add input to the list of option
+                    multipleChoiceOptionsSection.appendChild(checkboxInput);
+                    multipleChoiceOptionsSection.appendChild(label);
+                    multipleChoiceOptionsSection.appendChild(hiddenInput);
+
+                    //create a space between options
+                    multipleChoiceOptionsSection.appendChild(document.createTextNode(' '));
+                    McOptionCount++;
+                }
+            });
         } else if (questionType === 'single_choice') {
             singleChoiceFields.style.display = 'block';
+            singleChoiceInput.required = true;
+            singleChoiceAddOptionBtn.addEventListener("click", () => {
+                //create a new input filed for another option with placeholder text
+                const optionText=prompt('Enter a new Option');
+                if (optionText){
+                    //create hidden input for all the options to be stored in DB otherwise only checked boxes are stored
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'single_choice_options[]';
+                    hiddenInput.value = optionText;
+
+                    const checkboxInput = document.createElement('input');
+                    checkboxInput.type = 'checkbox';
+                    checkboxInput.id = `option${ScOptionCount}`;
+                    //only the checked inboxes will be saved as answers
+                    checkboxInput.name = 'single_choice_answers[]';
+                    checkboxInput.value = optionText;
+
+                    //value won't show implicitly so create a label for it
+                    const label = document.createElement('label');
+                    label.htmlFor = `option${ScOptionCount}`;
+                    label.textContent = optionText;
+
+                    //add input to the list of option
+                    singleChoiceOptionsSection.appendChild(checkboxInput);
+                    singleChoiceOptionsSection.appendChild(label);
+                    singleChoiceOptionsSection.appendChild(hiddenInput);
+
+                    //create a space between options
+                    singleChoiceOptionsSection.appendChild(document.createTextNode(' '));
+                    ScOptionCount++;
+                }
+            });
         }
     });
 
-    // Dropdown Fill Preview
+    document.querySelector('form').addEventListener('submit', function (event) {
+    const questionType = document.getElementById('question-type-dropdown').value;
+
+    if (questionType === 'multiple_choice'){
+        const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
+        if (options.length === 0) {
+            alert('Please add at least one option for the multiple-choice question.');
+            event.preventDefault(); //don't allow the submission to go thru
+        }
+        const answers = document.querySelectorAll('[name="multiple_choice_answers[]"]:checked'); //only the checked ones count as answers
+        if (answers.length === 0 ){
+            alert('Please add at least one right answer for the multiple-choice question.');
+            event.preventDefault(); //don't allow the submission to go thru
+        }
+    } else if (questionType === 'single_choice'){
+        const options = document.querySelectorAll('[name="single_choice_options[]"]');
+        if (options.length === 0) {
+            alert('Please add at least one option for the single-choice question.');
+            event.preventDefault(); //don't allow the submission to go thru
+        }
+        const answers = document.querySelectorAll('[name="single_choice_answers[]"]:checked'); //only the checked ones count as answers
+        if (answers.length === 0 ){
+            alert('Please add at least one right answer for the single-choice question.');
+            event.preventDefault(); //don't allow the submission to go thru
+        }
+        else if (answers.length > 1){
+            alert('You can only choose one right answer for single-choice question.');
+            event.preventDefault();
+        }
+    }
+    });
+
+        // Dropdown Fill Preview
     dropdownInput.addEventListener('input', function() {
         originalText = dropdownInput.value // Current value is the original text - needed for resetting
         const text = dropdownInput.value;

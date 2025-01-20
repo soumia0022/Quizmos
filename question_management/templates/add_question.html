@@ -53,13 +53,27 @@
             <!-- Multiple Choice Fields -->
             <div id="multiple-choice-fields" style="display: none;">
                 <input type="text" name="multiple_choice_question" placeholder="Enter Multiple Choice Question" />
-                <input type="text" name="multiple_choice_options" placeholder="Comma separated options" />
+                <!-- Dynamically add options -->
+                <div id="options-section">
+                    <button type="button" id="multiple-choice-add-option-btn"> Add Option </button>
+
+                    <div id="multiple-choice-options-container">
+                        <!-- Dynamically add options with javascript-->
+                    </div>
+                </div>
             </div>
 
             <!-- Single Choice Fields -->
             <div id="single-choice-fields" style="display: none;">
                 <input type="text" name="single_choice_question" placeholder="Enter Single Choice Question" />
-                <input type="text" name="single_choice_option" placeholder="Single option" />
+                 <!-- Dynamically add options -->
+                <div id="options-section">
+                    <button type="button" id="single-choice-add-option-btn"> Add Option </button>
+
+                    <div id="single-choice-options-container">
+                        <!-- Dynamically add options with javascript-->
+                    </div>
+                </div>
             </div>
 
             <button type="submit">Save Question</button>
