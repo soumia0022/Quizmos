@@ -10,12 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const singleChoiceFields = document.getElementById('single-choice-fields');
     const singleChoiceOptionsSection = document.getElementById('single-choice-options-container');
     const singleChoiceAddOptionBtn = document.getElementById('single-choice-add-option-btn');
+    const singleChoiceInput = singleChoiceFields.querySelector('input[name="single_choice_question"]');
     let ScOptionCount =1;
 
     const multipleChoiceFields = document.getElementById('multiple-choice-fields');
     const multipleChoiceOptionsSection = document.getElementById('multiple-choice-options-container');
     const multipleChoiceAddOptionBtn = document.getElementById('multiple-choice-add-option-btn');
     let McOptionCount = 1; //must be 1 option by default
+    const multipleChoiceInput = multipleChoiceFields.querySelector('input[name="multiple_choice_question"]');
 
     // Specifically for drop-down fill in the blank
     const dropdownInput = document.getElementById('dropdown-fill-input');
@@ -25,8 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let originalText = ""; // Stores the original input text for resetting
     let blankAdded = false; // Used to only allow one blank per question
 
-    const multipleChoiceInput = multipleChoiceFields.querySelector('input[name="multiple_choice_question"]');
-    const singleChoiceInput = singleChoiceFields.querySelector('input[name="single_choice_question"]');
     
     // Show or hide the question form
     addButton.addEventListener('click', function() {
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     });
 
-        // Dropdown Fill Preview
+    // Dropdown Fill Preview
     dropdownInput.addEventListener('input', function() {
         originalText = dropdownInput.value // Current value is the original text - needed for resetting
         const text = dropdownInput.value;
