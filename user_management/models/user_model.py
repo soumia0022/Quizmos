@@ -1,4 +1,4 @@
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinLengthValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
@@ -10,10 +10,11 @@ class User(AbstractUser):
     username = models.CharField(
         max_length=30,
         unique=True,
-        validators=[RegexValidator(
-            regex=r'^@\w{3,}$',
-            message='Username must consist of @ followed by at least three alphanumericals'
-        )]
+        validators=[
+        MinLengthValidator(3, "Username must be at least 3 characters long."),
+        RegexValidator(r'^[a-zA-Z0-9]+$', "Username must only contain letters and numbers."),
+        RegexValidator(r'^(?=.*[a-zA-Z])', "Username must contain at least one letter.")
+        ]
     )
     
     first_name = models.CharField(max_length=50, blank=False)

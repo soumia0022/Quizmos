@@ -16,13 +16,13 @@ class SignUpViewTestCase(TestCase, LogInTester):
         self.form_input = {
             'first_name': 'Jane',
             'last_name': 'Doe',
-            'username': '@janedoe',
+            'username': 'janedoe',
             'email': 'janedoe@example.org',
             'new_password': 'Password123',
             'password_confirmation': 'Password123',
             'role': 'Student',
         }
-        self.user = User.objects.get(username='@johndoe')
+        self.user = User.objects.get(username='johndoe')
 
     def test_sign_up_url(self):
         self.assertEqual(self.url,'/sign_up/')
@@ -63,7 +63,7 @@ class SignUpViewTestCase(TestCase, LogInTester):
         response_url = reverse('dashboard')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'student_dashboard.html')
-        user = User.objects.get(username='@janedoe')
+        user = User.objects.get(username='janedoe')
         self.assertEqual(user.first_name, 'Jane')
         self.assertEqual(user.last_name, 'Doe')
         self.assertEqual(user.email, 'janedoe@example.org')

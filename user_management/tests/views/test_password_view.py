@@ -15,7 +15,7 @@ class PasswordViewTest(TestCase):
     ]
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
+        self.user = User.objects.get(username='johndoe')
         self.url = reverse('password')
         self.form_input = {
             'password': 'Password123',
