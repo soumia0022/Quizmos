@@ -3,17 +3,41 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from user_management.models.user_model import User
-
+import os
 
 
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 
+    @staticmethod
+    def get_profile_pictures():
+        pics_dir = os.path.join('static', 'img')
+        categories = {
+            'Galactic Heroes': [],
+            'Celestial Wonders': [],
+            'Mystical Orbs': [],
+            'Intergalactic Visitors': []
+        }
+        for f in os.listdir(pics_dir):
+            if f.endswith('.png'):
+                if f.startswith('a'):
+                    categories['Galactic Heroes'].append(f)
+                elif f.startswith('s'):
+                    categories['Celestial Wonders'].append(f)
+                elif f.startswith('p'):
+                    categories['Mystical Orbs'].append(f)
+                elif f.startswith('u'):
+                    categories['Intergalactic Visitors'].append(f)
+        return categories
+
+    categories = get_profile_pictures()
+    profile_picture = forms.ChoiceField(choices=[(category, [(pic, pic) for pic in pictures])for category, pictures in categories.items()],required=False,label='Profile Picture')
+    
     class Meta:
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email']
+        fields = ['first_name', 'last_name', 'username', 'email', 'profile_picture']
 
 
 class NewPasswordMixin(forms.Form):

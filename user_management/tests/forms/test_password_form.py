@@ -8,7 +8,7 @@ class PasswordFormTestCase(TestCase):
     fixtures = ['user_management/tests/fixtures/default_user.json']
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
+        self.user = User.objects.get(username='johndoe')
         self.form_input = {
             'password': 'Password123',
             'new_password': 'NewPassword123',

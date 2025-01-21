@@ -10,7 +10,7 @@ class LogInFormTestCase(TestCase):
     fixtures = ['user_management/tests/fixtures/default_user.json']
 
     def setUp(self):
-        self.form_input = {'username': '@janedoe', 'password': 'Password123'}
+        self.form_input = {'username': 'janedoe', 'password': 'Password123'}
 
     def test_form_contains_required_fields(self):
         form = LogInForm()
@@ -44,20 +44,20 @@ class LogInFormTestCase(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_can_authenticate_valid_user(self):
-        fixture = User.objects.get(username='@johndoe')
-        form_input = {'username': '@johndoe', 'password': 'Password123'}
+        fixture = User.objects.get(username='johndoe')
+        form_input = {'username': 'johndoe', 'password': 'Password123'}
         form = LogInForm(data=form_input)
         user = form.get_user()
         self.assertEqual(user, fixture)
 
     def test_invalid_credentials_do_not_authenticate(self):
-        form_input = {'username': '@johndoe', 'password': 'WrongPassword123'}
+        form_input = {'username': 'johndoe', 'password': 'WrongPassword123'}
         form = LogInForm(data=form_input)
         user = form.get_user()
         self.assertEqual(user, None)
 
     def test_blank_password_does_not_authenticate(self):
-        form_input = {'username': '@johndoe', 'password': ''}
+        form_input = {'username': 'johndoe', 'password': ''}
         form = LogInForm(data=form_input)
         user = form.get_user()
         self.assertEqual(user, None)
