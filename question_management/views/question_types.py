@@ -88,6 +88,22 @@ def add_question(request, poll_id):
             )
             question.save()
 
+        elif question_type == 'match_question':
+            question_text = request.POST.get('match_question') #do we need this?
+            match_question = request.POST.get('match_question')
+            match_options = request.POST.getlist('match_options[]')
+            match_answers = request.POST.getlist('match_answers[]')
+
+            question = Question.objects.create(
+                poll_id=poll_id,
+                question_text=question_text,
+                question_type=question_type,
+                match_question=match_question,
+                match_options=match_options,
+                match_answers=match_answers
+            )
+
+
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
     return render(request, "add_question.html", {"poll": poll})
