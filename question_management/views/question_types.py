@@ -93,7 +93,6 @@ def add_question(request, poll_id):
             match_question = request.POST.get('match_question')
             match_options = request.POST.getlist('match_question_options[]')
             match_answers = request.POST.getlist('match_question_answers[]')
-            print("match option: ", match_options)
 
             question = Question.objects.create(
                 poll_id=poll_id,
