@@ -28,8 +28,9 @@ class Question(models.Model):
     single_choice_answers = models.JSONField(blank=True, default=list)
 
     match_question = models.TextField(null=True, blank=True)
-    match_options = models.JSONField(blank=True, default=list) #will be an array with 2 lists - one for LHS, RHS
-    match_answers = models.JSONField(blank=True, default=list) # will be a 2d array with the correct match ups of each card
+    #the index of the option will match up with the index of the answer
+    match_options = models.JSONField(blank=True, default=list)
+    match_answers = models.JSONField(blank=True, default=list)
 
     question_text = models.TextField(null=True, blank=True) # for generalised
     dropdown_correct_answer = models.TextField(null=True, blank=True)  # maybe get rid of this too

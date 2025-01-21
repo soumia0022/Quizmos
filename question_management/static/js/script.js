@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const textFillFields = document.getElementById('text-fill-fields');
     const dropdownFillFields = document.getElementById('dropdown-fill-fields');
 
-
     const singleChoiceFields = document.getElementById('single-choice-fields');
     const singleChoiceOptionsSection = document.getElementById('single-choice-options-container');
     const singleChoiceAddOptionBtn = document.getElementById('single-choice-add-option-btn');
@@ -16,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const multipleChoiceFields = document.getElementById('multiple-choice-fields');
     const multipleChoiceOptionsSection = document.getElementById('multiple-choice-options-container');
     const multipleChoiceAddOptionBtn = document.getElementById('multiple-choice-add-option-btn');
-    let McOptionCount = 1; //must be 1 option by default
     const multipleChoiceInput = multipleChoiceFields.querySelector('input[name="multiple_choice_question"]');
+    let McOptionCount = 1; //must be 1 option by default
 
     // Specifically for drop-down fill in the blank
     const dropdownInput = document.getElementById('dropdown-fill-input');
@@ -26,6 +25,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const resetButton = document.getElementById('reset-preview-btn');
     let originalText = ""; // Stores the original input text for resetting
     let blankAdded = false; // Used to only allow one blank per question
+
+    const matchQuestionFields = document.getElementById('match-fields');
+    const matchQuestionOptionSection = document.getElementById('match-options-container');
+    const matchQuestionAddBtn = document.getElementById('match-add-option-btn');
+    const matchQuestionInput = matchQuestionFields.querySelector('input[name="match_question"]');
+    let matchOptionCount = 1;
 
     
     // Show or hide the question form
@@ -44,7 +49,8 @@ document.addEventListener('DOMContentLoaded', function() {
         multipleChoiceInput.required = false;
         singleChoiceFields.style.display = 'none';
         singleChoiceInput.required = false;
-        //singleChoiceOptionInput.required = false;
+        matchQuestionFields.style.display = 'none';
+        matchQuestionInput.required = false;
 
         // Show the selected fields based on option selected
         if (questionType === 'text_fill') {
@@ -121,6 +127,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     singleChoiceOptionsSection.appendChild(document.createTextNode(' '));
                     ScOptionCount++;
                 }
+            });
+        } else if (questionType === 'match_question') {
+            matchQuestionFields.style.display = 'block';
+            matchQuestionInput.required = true;
+            matchQuestionAddBtn.addEventListener("click", () => {
+                const inputRow = document.createElement("div");
+
+                const option = document.createElement("input");
+                option.type = "text";
+                option.placeholder = `Option ${matchOptionCount}`;
+                option.name = 'match_question_options[]';
+
+                const answer = document.createElement("input");
+                answer.type = "text";
+                answer.placeholder = `Answer ${matchOptionCount}`;
+                answer.name = 'match_question_answers[]';
+
+                inputRow.appendChild(option);
+                inputRow.appendChild(answer)
+
+                matchQuestionOptionSection.appendChild(inputRow);
             });
         }
     });

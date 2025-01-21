@@ -91,8 +91,9 @@ def add_question(request, poll_id):
         elif question_type == 'match_question':
             question_text = request.POST.get('match_question') #do we need this?
             match_question = request.POST.get('match_question')
-            match_options = request.POST.getlist('match_options[]')
-            match_answers = request.POST.getlist('match_answers[]')
+            match_options = request.POST.getlist('match_question_options[]')
+            match_answers = request.POST.getlist('match_question_answers[]')
+            print("match option: ", match_options)
 
             question = Question.objects.create(
                 poll_id=poll_id,
