@@ -7,7 +7,8 @@ from django.shortcuts import redirect, render
 from django.views import View
 from user_management.forms import LogInForm
 from user_management.helpers import login_prohibited
-
+from poll_management.models.poll_model import Poll
+from django.db.models import Count
 
 @login_prohibited
 def home(request):
@@ -15,15 +16,16 @@ def home(request):
 
     return render(request, 'home.html')
 
-
-@login_required
 def dashboard(request):
     """Display the current user's dashboard."""
     current_user = request.user
     if (current_user.role == 'Student'):
         return render(request, 'student_dashboard.html', {'user': current_user})
     else:
-        return render(request, 'lecturer_dashboard.html', {'user': current_user})
+        poll = Poll.objects.filter(user=request.user).annotate(
+            responses_count=Count('response')
+        ).order_by('-created_at')
+        return render(request, 'lecturer_dashboard.html', {'user': current_user, 'polls': poll})
 
 
 class LoginProhibitedMixin:
