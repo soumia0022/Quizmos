@@ -1,0 +1,26 @@
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from poll_management.models.poll_model import Poll
+
+@login_required
+def poll_detail(request, poll_id):
+    poll = get_object_or_404(Poll, id=poll_id, user=request.user)
+    return render(request, 'poll_detail.html', {'poll': poll})
+
+@login_required
+def poll_edit(request, poll_id):
+    poll = get_object_or_404(Poll, id=poll_id, user=request.user)
+    if request.method == 'POST':
+        poll.title = request.POST.get('title', poll.title)
+        poll.status = request.POST.get('status', poll.status)
+        poll.save()
+        return redirect('poll_management:poll_detail', poll_id=poll.id)
+    return render(request, 'poll_edit.html', {'poll': poll})
+
+@login_required
+def poll_delete(request, poll_id):
+    poll = get_object_or_404(Poll, id=poll_id, user=request.user)
+    if request.method == 'POST':
+        poll.delete()
+        return redirect('poll_management:poll_list')
+    return render(request, 'poll_delete.html', {'poll': poll})

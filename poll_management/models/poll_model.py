@@ -9,3 +9,13 @@ class Poll(models.Model):
 
     def _str_(self):
         return self.title
+
+class Response(models.Model):
+    poll = models.ForeignKey(
+        Poll, related_name='response', on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
+    answer = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
