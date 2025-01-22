@@ -138,16 +138,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 option.type = "text";
                 option.placeholder = `Option ${matchOptionCount}`;
                 option.name = 'match_question_options[]';
+                option.required = true;
 
                 const answer = document.createElement("input");
                 answer.type = "text";
                 answer.placeholder = `Answer ${matchOptionCount}`;
                 answer.name = 'match_question_answers[]';
+                answer.required = true;
 
                 inputRow.appendChild(option);
                 inputRow.appendChild(answer)
 
                 matchQuestionOptionSection.appendChild(inputRow);
+                matchOptionCount++;
             });
         }
     });
@@ -180,6 +183,12 @@ document.addEventListener('DOMContentLoaded', function() {
         else if (answers.length > 1){
             alert('You can only choose one right answer for single-choice question.');
             event.preventDefault();
+        }
+    } else if (questionType === 'match_question'){
+        const options = document.querySelectorAll('[name="match_question_options[]"]')
+        if (options.length === 0) {
+            alert('Please add at least one matching card option for the match question.');
+            event.preventDefault(); //don't allow the submission to go thru
         }
     }
     });
