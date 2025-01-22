@@ -94,6 +94,14 @@ def add_question(request, poll_id):
             match_options = request.POST.getlist('match_question_options[]')
             match_answers = request.POST.getlist('match_question_answers[]')
 
+            # Server-side validation
+            if not match_options:
+                return JsonResponse({'error': 'At least one option is required for a multiple-choice question.'},
+                                    status=400)
+            if not match_answers:
+                return JsonResponse({'error': 'At least one answer is required for a multiple-choice question.'},
+                                    status=400)
+
             question = Question.objects.create(
                 poll_id=poll_id,
                 question_text=question_text,
@@ -103,6 +111,8 @@ def add_question(request, poll_id):
                 match_answers=match_answers
             )
 
+            #it saved (showed up in the admin view) even without this line?
+            question.save()
 
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
