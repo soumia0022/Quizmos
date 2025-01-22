@@ -2,14 +2,22 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
+from user_management.models.user_model import User
 
 class QuestionTypesTestCase(TestCase):
+    fixtures = [
+        'user_management/tests/fixtures/default_user.json',
+        'user_management/tests/fixtures/other_users.json'
+    ]
+
     def setUp(self):
         self.client = Client()
+        self.client.login(username='johndoe', password='Password123')
 
         # Create a sample poll
         self.poll = Poll.objects.create(
             title="Sample Poll",
+            user=User.objects.get(username='johndoe'),
         )
 
         # Set the URL for the view handling question creation
