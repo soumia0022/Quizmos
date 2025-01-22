@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from django.contrib.messages import constants as messages
 import environ
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,10 +48,13 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth', 
     'allauth.account',
+    'rest_framework',
 ]
 
 env = environ.Env()
 environ.Env.read_env()  
+
+SITE_ID = 1
 
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 
@@ -65,6 +69,13 @@ if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
 ACCOUNT_EMAIL_VERIFICATION = 'none' 
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email' 
 ACCOUNT_EMAIL_REQUIRED = True
+
+LOGIN_URL = 'log_in' 
+LOGIN_REDIRECT_URL = 'dashboard'  
+
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+ACCOUNT_LOGOUT_REDIRECT_URL = 'log_in'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,7 +93,7 @@ ROOT_URLCONF = 'Quizmos.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

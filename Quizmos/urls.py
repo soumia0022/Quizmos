@@ -27,5 +27,5 @@ urlpatterns = [
     path('responses/', include('response_management.urls')),
     path('analytics/', include('analytics.urls')),
     path('', include('user_management.urls')),
-    path('accounts/', include('allauth.urls')),
+    
 ]
