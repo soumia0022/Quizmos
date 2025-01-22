@@ -84,6 +84,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'production': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'quizmos-database',
+        'USER': 'postgres',
+        'PASSWORD': 'REMOVED_DB_PASSWORD',
+        'HOST': 'quizmos-database.c5gg288eojvr.eu-north-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
