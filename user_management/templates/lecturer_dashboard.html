@@ -3,8 +3,98 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <h1>Welcome to your lecturer dashboard {{ user.username }}</h1>
+      <h1>Welcome to your lecturer dashboard, {{ user.username }}</h1>
+    </div>
+  </div>
+
+  <!-- Section for creating a poll -->
+  {% include 'create_poll.html' %}
+
+  <!-- Section for listing polls -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <h2>Your Polls</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Responses</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for poll in polls %}
+          <tr>
+            <td>{{ poll.title }}</td>
+            <td>{{ poll.status }}</td>
+            <td>{{ poll.created_at|date:"Y-m-d H:i" }}</td>
+            <td>{{ poll.responses_count }}</td>
+            <td>
+              <a href="{% url 'poll_management:poll_detail' poll.id %}">View</a> | 
+              <a href="{% url 'poll_management:poll_edit' poll.id %}">Edit</a> | 
+              <a href="{% url 'poll_management:poll_delete' poll.id %}">Delete</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5">No polls found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
+
+<!-- Embedded CSS for Styling -->
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  thead {
+    background-color: #4CAF50;
+    color: white;
+  }
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  th {
+    font-weight: bold;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+  td a {
+    color: #4CAF50;
+    text-decoration: none;
+    margin-right: 10px;
+  }
+  td a:hover {
+    text-decoration: underline;
+  }
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  .container {
+    padding: 20px;
+  }
+</style>
 {% endblock %}
