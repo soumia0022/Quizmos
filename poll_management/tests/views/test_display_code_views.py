@@ -1,11 +1,20 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 from poll_management.models.poll_model import Poll
+from user_management.models import User
 
 class DisplayCodeViewTest(TestCase):
-    
+     
+    fixtures = [
+        'user_management/tests/fixtures/default_user.json',
+        'user_management/tests/fixtures/other_users.json'
+    ]
+     
     def setUp(self):
-        self.poll = Poll.objects.create(title = 'test_poll')
+        self.user = User.objects.get(username = 'johndoe')
+        self.poll = Poll.objects.create(title = 'test_poll', user=self.user, status= 'active')
+
+        
 
     def test_display_code(self):
         url = reverse('display_code', args=[self.poll.pk]) 
