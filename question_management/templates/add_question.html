@@ -24,6 +24,7 @@
                 <option value="single_choice">Single Choice</option>
                 <option value="text_fill">Text Answer</option>
                 <option value="dropdown_fill">Dropdown Fill in the Blank</option>
+                <option value="wordcloud">Word Cloud</option>
             </select>
 
             <!-- Below fields hidden until option for them is clicked in drop-down (using style display none) -->
@@ -73,6 +74,18 @@
                     <div id="single-choice-options-container">
                         <!-- Dynamically add options with javascript-->
                     </div>
+                </div>
+            </div>
+
+            <!-- Word Cloud Fields -->
+            <div id="word-cloud-fields" style="display: none;">
+                <input type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt" />
+                <div id="actual-wordcloud">
+                <!-- Display the word cloud image if generated -->
+                {% if wordcloud_image %}
+                    <h2>Generated Word Cloud:</h2>
+                    <img src="data:image/png;base64,{{ wordcloud_image | safe }}" alt="Word Cloud">
+                {% endif %}
                 </div>
             </div>
 

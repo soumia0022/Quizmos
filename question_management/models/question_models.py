@@ -7,6 +7,7 @@ class Question(models.Model):
         ('text', 'Text Answer'),
         ('multiple_choice', 'Multiple Choice'),
         ('single_choice', 'Single Choice'),
+        ('wordcloud', 'Word Cloud')
     ]
     poll = models.ForeignKey(Poll, related_name='questions', on_delete=models.CASCADE, default=1) # question associated w poll
                                         # related name questions to allow you to do something like poll.questions.all() to get
@@ -24,6 +25,7 @@ class Question(models.Model):
     single_choice_question = models.TextField(null=True, blank=True)
     single_choice_option = models.JSONField(blank=True, default=list)  #use a json field since models doesnt support arrays
     single_choice_answers = models.JSONField(blank=True, default=list)
+    wordcloud_question = models.TextField(null=True, blank=True)
 
     question_text = models.TextField(null=True, blank=True) # for generalised
     dropdown_correct_answer = models.TextField(null=True, blank=True)  # maybe get rid of this too
