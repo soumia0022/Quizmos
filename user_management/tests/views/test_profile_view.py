@@ -15,12 +15,12 @@ class ProfileViewTest(TestCase):
     ]
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
+        self.user = User.objects.get(username='johndoe')
         self.url = reverse('profile')
         self.form_input = {
             'first_name': 'John2',
             'last_name': 'Doe2',
-            'username': '@johndoe2',
+            'username': 'johndoe2',
             'email': 'johndoe2@example.org',
         }
 
@@ -54,14 +54,14 @@ class ProfileViewTest(TestCase):
         self.assertTrue(isinstance(form, UserForm))
         self.assertTrue(form.is_bound)
         self.user.refresh_from_db()
-        self.assertEqual(self.user.username, '@johndoe')
+        self.assertEqual(self.user.username, 'johndoe')
         self.assertEqual(self.user.first_name, 'John')
         self.assertEqual(self.user.last_name, 'Doe')
         self.assertEqual(self.user.email, 'johndoe@example.org')
 
     def test_unsuccessful_profile_update_due_to_duplicate_username(self):
         self.client.login(username=self.user.username, password='Password123')
-        self.form_input['username'] = '@janedoe'
+        self.form_input['username'] = 'janedoe'
         before_count = User.objects.count()
         response = self.client.post(self.url, self.form_input)
         after_count = User.objects.count()
@@ -72,7 +72,7 @@ class ProfileViewTest(TestCase):
         self.assertTrue(isinstance(form, UserForm))
         self.assertTrue(form.is_bound)
         self.user.refresh_from_db()
-        self.assertEqual(self.user.username, '@johndoe')
+        self.assertEqual(self.user.username, 'johndoe')
         self.assertEqual(self.user.first_name, 'John')
         self.assertEqual(self.user.last_name, 'Doe')
         self.assertEqual(self.user.email, 'johndoe@example.org')
@@ -90,7 +90,7 @@ class ProfileViewTest(TestCase):
         self.assertEqual(len(messages_list), 1)
         self.assertEqual(messages_list[0].level, messages.SUCCESS)
         self.user.refresh_from_db()
-        self.assertEqual(self.user.username, '@johndoe2')
+        self.assertEqual(self.user.username, 'johndoe2')
         self.assertEqual(self.user.first_name, 'John2')
         self.assertEqual(self.user.last_name, 'Doe2')
         self.assertEqual(self.user.email, 'johndoe2@example.org')
