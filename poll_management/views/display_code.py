@@ -20,6 +20,9 @@ def delete_old_qr_codes(poll):
         if filename.startswith(f"qr_code_{poll.title}_{poll.pk}_"):
             os.remove(os.path.join(settings.MEDIA_ROOT, filename))
 
+def generate_number_code():
+    return str(uuid.uuid4().int)[:6]
+
 def display_code(request, pk):
     poll = get_object_or_404(Poll, pk=pk)
     poll.status = 'active'
@@ -34,7 +37,7 @@ def display_code(request, pk):
     )
     # Add the poll's title, primary key, and the unique number code to the QR code data
     unique_id = str(uuid.uuid4())[:8]
-    number_code = str(random.randint(100000, 999999))
+    number_code = generate_number_code()
     qr.add_data(f"{poll.title}-{poll.pk}-{unique_id}")
     qr.make(fit=True)
 
@@ -42,7 +45,6 @@ def display_code(request, pk):
     filename = f"qr_code_{poll.title}_{poll.pk}_{unique_id}.png"
     filepath = os.path.join(settings.MEDIA_ROOT, filename)
     img.save(filepath)
-   
     
     qr_url = os.path.join(settings.MEDIA_URL, filename)
 
