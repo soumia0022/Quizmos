@@ -114,3 +114,27 @@ body #questions-sidebar {
   flex: 1 1 auto; /* Flexible layout */
   padding: 1rem; /* Standard padding */
 }
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.btn-secondary {
+    background-color: #42c5ff;
+    color: #ffffff;
+}
+
+.btn-success {
+    background-color: #8a2dd5;
+}
+
+button:hover, .btn:hover {
+    background-color: #23373c;
+    color: #ffffff;
+}
+
