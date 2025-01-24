@@ -14,7 +14,21 @@ body {
   background: radial-gradient(circle,#42008D, #260c86,#1a237e, #0d0d2d);
   background-size: 200% 200%;
   animation: move-gradient 30s infinite linear;
+    color: #e0e0ff; /* Light text for contrast */
 }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  animation: twinkle 2s infinite ease-in-out;
+}
+
 
 /*background: linear-gradient(135deg, #42008D, #26007B  ,#1a237e , #0d0d2d );*/
 
