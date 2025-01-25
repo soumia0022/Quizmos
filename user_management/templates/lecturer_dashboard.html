@@ -34,7 +34,8 @@
             <td>
               <a href="{% url 'poll_management:poll_detail' poll.id %}">View</a> | 
               <a href="{% url 'poll_management:poll_edit' poll.id %}">Edit</a> | 
-              <a href="{% url 'poll_management:poll_delete' poll.id %}">Delete</a>
+              <a href="{% url 'poll_management:poll_delete' poll.id %}">Delete</a> |
+                <a href="{% url 'poll_management:poll_lock' poll.id %}" >Lock</a>
             </td>
           </tr>
           {% empty %}

@@ -1,5 +1,8 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+
 from poll_management.models.poll_model import Poll
 
 @login_required
@@ -24,3 +27,14 @@ def poll_delete(request, poll_id):
         poll.delete()
         return redirect('poll_management:poll_list')
     return render(request, 'poll_delete.html', {'poll': poll})
+
+@login_required
+def poll_lock(request,poll_id):
+    poll = get_object_or_404(Poll, id=poll_id, user=request.user)
+    if request.method == 'POST':
+        poll.locked = True
+        poll.status = 'closed'
+        poll.save()
+        messages.success(request, f"The poll '{poll.title}' has been locked successfully.")
+        return redirect(reverse('user_management:dashboard'))
+    return render (request, 'lock_poll_confirmation.html', {'poll': poll})
