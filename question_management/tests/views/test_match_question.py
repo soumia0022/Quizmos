@@ -2,18 +2,38 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
+from user_management.models import User
 
 class MatchQuestionTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
+        self.user = User.objects.create_user(
+            username="testuser",
+            first_name="John",
+            last_name="Doe",
+            email="testuser@example.com",
+            password="Password123",
+            role="Lecturer",  # Specify role as required
+        )
+
         # Create a sample poll
         self.poll = Poll.objects.create(
             title="Sample Poll",
+            status="active",  # Setting default status
+            user=self.user,  # Linking to the created user
+            locked=False  # Default locked state
         )
 
         # Set the URL for the view handling question creation
         self.create_question_url = reverse('question_management:add_question', kwargs={'poll_id': self.poll.id})
+
+    def test_poll_creation(self):
+        # Ensure the poll was created correctly
+        self.assertEqual(self.poll.title, "Sample Poll")
+        self.assertEqual(self.poll.status, "active")
+        self.assertFalse(self.poll.locked)
+        self.assertEqual(self.poll.user, self.user)
 
     def test_match_question_creation(self):
         """
