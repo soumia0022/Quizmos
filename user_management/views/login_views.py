@@ -9,6 +9,7 @@ from user_management.forms import LogInForm
 from user_management.helpers import login_prohibited
 from poll_management.models.poll_model import Poll
 from django.db.models import Count
+from poll_management.helpers import create_poll
 
 @login_prohibited
 def home(request):
@@ -25,6 +26,7 @@ def dashboard(request):
         poll = Poll.objects.filter(user=request.user).annotate(
             responses_count=Count('response')
         ).order_by('-created_at')
+        create_poll(request)
         return render(request, 'lecturer_dashboard.html', {'user': current_user, 'polls': poll})
 
 
