@@ -7,7 +7,7 @@ class Poll(models.Model):
     status = models.CharField(max_length=50, choices=[('active', 'Active'), ('closed', 'Closed')], default='closed')
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='polls')
-
+    number_code = models.IntegerField(default=0)
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 

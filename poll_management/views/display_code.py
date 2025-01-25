@@ -36,8 +36,9 @@ def display_code(request, pk):
     )
     # Add the poll's title, primary key, and the unique number code to the QR code data
     unique_id = str(uuid.uuid4())[:8]
-    number_code = generate_number_code()
-    join_url = f"http://localhost:8000/polls/join/{poll.pk}/"
+    poll.number_code = generate_number_code()
+    poll.save()
+    join_url = f"http://localhost:8000/polls/join/{poll.number_code}/"
     qr.add_data(join_url)
     qr.make(fit=True)
 
@@ -50,10 +51,10 @@ def display_code(request, pk):
 
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        f'poll_{number_code}',
+        f'poll_{poll.number_code}',
         {
             'type': 'poll_message',
             'message': f'A student joined the poll: {poll.title}!'
         }
-    )
-    return render(request, 'display_code.html', {'poll': poll, 'code': number_code, 'qrcode': qr_url})
+    )#
+    return render(request, 'display_code.html', {'poll': poll, 'code': poll.number_code, 'qrcode': qr_url})

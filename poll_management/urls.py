@@ -12,7 +12,7 @@ urlpatterns = [
     path('<int:poll_id>/', poll_detail, name='poll_detail'),
     path('<int:poll_id>/edit/', poll_edit, name='poll_edit'),
     path('<int:poll_id>/delete/', poll_delete, name='poll_delete'),
-    path('qr/<int:pk>/', display_code, name= 'display_code'),
-    path('join/<int:pk>/', join_poll, name='join_poll'),
-    path('results/<int:pk>/', poll_results, name='poll_results')
+    path('present/<int:pk>/', display_code, name= 'display_code'),
+    path('join/<int:code>/', join_poll, name='join_poll'),
+    path('results/<int:code>/', poll_results, name='poll_results')
 ]

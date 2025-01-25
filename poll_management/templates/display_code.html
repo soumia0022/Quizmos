@@ -20,7 +20,7 @@
         </ul>
 
         <script>
-          const pollCode = "{{ poll.pk }}";  <!-- Use poll primary key -->
+          const pollCode = "{{ code }}";  <!-- Use poll primary key -->
           const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
 
           ws.onmessage = function(event) {
@@ -29,12 +29,6 @@
             const newStudent = document.createElement('li');
             newStudent.textContent = data.message;
             studentsList.appendChild(newStudent);
-          };
-
-          ws.onopen = function(event) {
-            ws.send(JSON.stringify({
-              'message': 'A student joined the poll!'
-            }));
           };
         </script>
       </body>
