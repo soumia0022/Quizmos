@@ -10,7 +10,7 @@ from user_management.forms import LogInForm
 from user_management.helpers import login_prohibited
 from poll_management.models.poll_model import Poll
 from django.db.models import Count
-from poll_management.helpers import create_poll
+from poll_management.views.create_poll import create_poll
 
 @login_prohibited
 def home(request):
