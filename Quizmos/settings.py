@@ -25,7 +25,13 @@ SECRET_KEY = 'REMOVED_SECRET_KEY'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'ec2-13-48-203-183.eu-north-1.compute.amazonaws.com',
+    '13.48.203.183',
+    'localhost',
+    '127.0.0.1',
+    '[::1]'
+]
 
 
 # Application definition
@@ -84,6 +90,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'production': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'quizmos-database',
+        'USER': 'postgres',
+        'PASSWORD': 'REMOVED_DB_PASSWORD',
+        'HOST': 'quizmos-database.c5gg288eojvr.eu-north-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
