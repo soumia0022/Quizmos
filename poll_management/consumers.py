@@ -1,17 +1,11 @@
 import json
-
-from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
-import logging
-print("hello")
-logger = logging.getLogger(__name__)
+
 class PollConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("hello")
         try:
             self.poll_code = self.scope['url_route']['kwargs']['poll_code']
             self.poll_group_name = f'poll_{self.poll_code}'
-            print(f"Poll Code: {self.poll_code}")
         except Exception as e:
             print(f"Error extracting poll code: {e}")
 
