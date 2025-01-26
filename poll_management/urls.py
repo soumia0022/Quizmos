@@ -5,6 +5,7 @@ from poll_management.views.join_poll import join_poll
 from poll_management.views.display_code import display_code
 from poll_management.views.poll_results import poll_results
 
+app_name = 'poll_management'
 
 urlpatterns = [
     path('create/', create_poll, name='create_poll'), 
