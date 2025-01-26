@@ -12,11 +12,6 @@ class PollCodeForm(forms.Form):
         })
     )
 
-    def clean_poll_code(self):
-        poll_code = self.cleaned_data.get('poll_code')
-        if poll_code == '0':
-            raise forms.ValidationError('Invalid poll code')
-        return poll_code
 
     def validate_and_redirect(self):
         poll_code = self.cleaned_data['poll_code']
