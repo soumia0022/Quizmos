@@ -39,15 +39,15 @@ jobs:
           yes "y" | python manage.py makemigrations --merge
           python manage.py migrate
 
+      - name: Verify Redis Connection
+        run: redis-cli ping
+        env:
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+
       - name: Run Tests
         run: |
           python manage.py test
-
-      - name: Start Redis Server
-        run: redis-server
-
-      - name: Verify Redis Connection
-        run: redis-cli ping
         env:
           REDIS_HOST: redis
           REDIS_PORT: 6379
