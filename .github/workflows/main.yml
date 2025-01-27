@@ -39,6 +39,10 @@ jobs:
           yes "y" | python manage.py makemigrations --merge
           python manage.py migrate
 
+      - name: Wait for Redis to be Ready
+        run: |
+          for i in {1..10}; do redis-cli -h redis ping && break || sleep 5; done
+
       - name: Verify Redis Connection
         run: |
           python -c "import redis; r = redis.Redis(host='redis', port=6379); assert r.ping()"
