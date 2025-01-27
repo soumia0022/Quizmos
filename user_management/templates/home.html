@@ -1,29 +1,32 @@
 {% extends 'base.html' %}
 {% block body %}
-  <div class="container vh-100">
+<div class="container vh-100">
     <div class="row h-100">
-      <div class="col-12 my-auto">
-        <div class="card cover-card offset-sm-2 offset-md-4 offset-lg-7">
-          <h1 class="cover-heading">Quizmos</h1>
-          <p class="cover-text">Welcome to Quizmos</p>
-          <p>
-            <a href='{% url 'user_management:sign_up' %}' class="btn btn-lg btn-secondary">
-              Sign up
-            </a>
-          </p>
-          <p>
-            <a href='{% url 'user_management:log_in' %}' class="btn btn-lg btn-secondary">
-              Log in
-            </a>
-          </p>
+        <div class="col-12 my-auto">
+            <div class="card cover-card offset-sm-2 offset-md-4 offset-lg-7">
+                <h1 class="cover-heading">Quizmos</h1>
+                <p class="cover-text">Welcome to Quizmos</p>
+                <p>
+                    <a href='{% url 'user_management:sign_up' %}' class="btn btn-lg btn-secondary">
+                        Sign up
+                    </a>
+                </p>
+                <p>
+                    <a href='{% url 'user_management:log_in' %}' class="btn btn-lg btn-secondary">
+                        Log in
+                    </a>
+                </p>
+            </div>
         </div>
-    </nav>
+    </div>
+</div>
+
+<nav>
     <div class="container d-flex flex-column justify-content-center align-items-center flex-grow-1">
         <div class="text-center">
             <h1 class="mb-4">Quizmos</h1>
             <div class="card p-4" style="width: 100%; max-width: 400px;">
                 <h2 class="text-center">Join Poll</h2>
-                <!-- Form to join a poll by entering a code -->
                 <form method="post" action="{% url 'user_management:home' %}">
                     {% csrf_token %}
                     <div class="form-group">
@@ -39,6 +42,5 @@
             </div>
         </div>
     </div>
-
-
+</nav>
 {% endblock %}
