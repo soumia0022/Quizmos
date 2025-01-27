@@ -5,7 +5,7 @@
       <div class="col-12 my-auto">
         <div class="card cover-card offset-sm-2 offset-md-4 offset-lg-7">
           <h1 class="cover-heading">Quizmos</h1>
-          <p class="cover-text">Welcome to Quizmos</i></p>
+          <p class="cover-text">Welcome to Quizmos</p>
           <p>
             <a href='{% url 'user_management:sign_up' %}' class="btn btn-lg btn-secondary">
               Sign up
@@ -24,7 +24,7 @@
             <div class="card p-4" style="width: 100%; max-width: 400px;">
                 <h2 class="text-center">Join Poll</h2>
                 <!-- Form to join a poll by entering a code -->
-                <form method="post" action="{% url 'home' %}">
+                <form method="post" action="{% url 'user_management:home' %}">
                     {% csrf_token %}
                     <div class="form-group">
                         {{ form.poll_code }}
