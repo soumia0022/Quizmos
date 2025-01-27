@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<!-- Link to the external CSS file -->
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+{% include 'partials/home_navbuttons.html' %}
+<div class="container vh-100 d-flex align-items-center justify-content-center">
+    <div class="row w-100">
+        <div class="col-12 d-flex justify-content-center">
+            <div class="card about-card shadow-lg">
+                <h1 class="about-heading mb-4">About Quizmos</h1>
+                <div class="about-content text-start">
+                    <p class="lead mb-4">
+                        Quizmos is an interactive platform designed to transform learning and engagement through dynamic polls and quizzes.
+                    </p>
+                    <h3 class="h4 mb-3">Our Mission</h3>
+                    <p class="mb-4">
+                    To empower educators and students alike by creating a dynamic platform for interactive learning. Our mission is to facilitate the exchange of ideas and opinions through engaging, space-themed polls. We aim to make data-driven decisions accessible and fun, helping lecturers spark curiosity and encourage participation in the classroom. We believe in making learning an interactive, collaborative, and enjoyable experience. Quizmos empowers educators, trainers, and learners to create, share, and participate in engaging poll-based learning activities.
+                    </p>
+
+                    <h3 class="h4 mb-3">Our Journey: From Bees to the Cosmos</h3>
+                    <p class="mb-4">
+                        Founded in 2025, Quizmos started as a simple tool to make learning more engaging.Our adventure began with a different name and theme—Pollinators. Inspired by the industrious and collaborative nature of bees, we created a platform for buzzing discussions and poll-driven insights. Like bees gathering nectar, our users contributed their opinions, helping us build a rich hive of data.
+                        However, as our community grew and evolved, so did our vision. We realized that the scope of our mission extended beyond any single theme. We wanted to capture the excitement and boundless possibilities of exploring uncharted territories. Thus, we launched into a new era with a space theme, becoming the cosmic explorers of opinions and ideas.
+                        Today, our poll website not only aims to gather and analyze data but also to embark on a journey of discovery. Just as space exploration inspires curiosity and wonder, we strive to uncover new insights and trends that shape our world. Join us as we continue to explore the vast universe of perspectives—one poll at a time.From our humble beginnings as Pollinators to our current cosmic journey, we remain committed to fostering a community where learning and discovery know no bounds.
+                    </p>
+
+                    <h3 class="h4 mb-3">Key Features</h3>
+                    <ul class="mb-4">
+                        <li><i class="fas fa-clock"></i>Real-time polling and quiz creation</li>
+                        <li> <i class="fas fa-brain"></i>Interactive learning experiences</li>
+                        <li><i class="fas fa-puzzle-piece"></i>Easy-to-use platform for educators and learners</li>
+                        <li><i class="fas fa-chart-pie"></i>Instant result tracking and analytics</li>
+                    </ul>
+                    
+                      
+                    <h3 class="h4 mb-3">Core Values</h3>
+                    <ul class="mb-4">
+                        <li><i class="fas fa-lightbulb"></i> Innovation: Continuously improving and adapting</li>
+                        <li><i class="fas fa-handshake"></i> Integrity: Honest and transparent in all actions</li>
+                        <li><i class="fas fa-users"></i> Collaboration: Working together for better results</li>
+                        <li><i class="fas fa-trophy"></i> Excellence: Striving for the highest quality</li>
+                    </ul>
+                   
+                    <h3 class="h4 mb-3">Our Team</h3>
+                    <div class="team-container mb-4 row">
+                        <div class="col-md-4 mb-3">
+                            <div class="team-member">
+                                <h5>Amina Ali</h5>
+                                <p>CEO & Founder</p>
+                                <blockquote>"Innovation drives progress."</blockquote>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="team-member">
+                                <h5>Rashida Begum</h5>
+                                <p>Head of Engineering</p>
+                                <blockquote>"Technology is the key to unlocking our potential."</blockquote>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="team-member">
+                                <h5>Soumia Bekhli</h5>
+                                <p>Lead Developer</p>
+                                <blockquote>"Empowering education through technology is our mission."</blockquote>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="team-member">
+                                <h5>Alishba Faisal</h5>
+                                <p>UX Designer</p>
+                                <blockquote>"Every challenge is an opportunity to innovate."</blockquote>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="team-member">
+                                <h5>Leyli Jalilova</h5>
+                                <p>Product Manager</p>
+                                <blockquote>"Our journey is defined by the impact we create."</blockquote>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="team-member">
+                                <h5>Eeshal Malik</h5>
+                                <p>Backend Developer</p>
+                                <blockquote>"Collaboration and creativity drive our success."</blockquote>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="team-member">
+                                <h5>Marium Rukiya</h5>
+                                <p>Head of Education</p>
+                                <blockquote>"Transforming education, one poll at a time."</blockquote>
+                            </div>
+                        </div>
+                    </div>
+                  
+                       <!-- Reviews Section -->
+                       <h3 class="h4 mb-3">What Our Users Say</h3>
+                       <div class="reviews-container">
+                           <div class="review-card">
+                               <div class="review-avatar">
+                                   <img src="{% static 'images/placeholder-avatar.png' %}" alt="User Avatar">
+                               </div>
+                               <div class="review-content">
+                                   <div class="review-stars">★★★★★</div>
+                                   <p class="review-text">"Quizmos has revolutionized how I engage with my students. The real-time feedback is invaluable!"</p>
+                                   <p class="review-author">- Sarah Johnson, High School Teacher</p>
+                               </div>
+                           </div>
+   
+
+                           <div class="review-card">
+                               <div class="review-avatar">
+                                   <img src="{% static 'images/placeholder-avatar.png' %}" alt="User Avatar">
+                               </div>
+                               <div class="review-content">
+                                   <div class="review-stars">★★★★★</div>
+                                   <p class="review-text">"Easy to use and incredibly effective for keeping students engaged during online classes."</p>
+                                   <p class="review-author">- Michael Chen, University Professor</p>
+                               </div>
+                           </div>
+   
+                           <div class="review-card">
+                               <div class="review-avatar">
+                                   <img src="{% static 'images/placeholder-avatar.png' %}" alt="User Avatar">
+                               </div>
+                               <div class="review-content">
+                                   <div class="review-stars">★★★★½</div>
+                                   <p class="review-text">"Perfect for corporate training sessions. The analytics help us track engagement effectively."</p>
+                                   <p class="review-author">- Emily Roberts, Corporate Trainer</p>
+                               </div>
+                           </div>
+                       </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'partials/footer.html' %}
+{% endblock %}
+
