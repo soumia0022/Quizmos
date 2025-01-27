@@ -1,7 +1,7 @@
 .idea/
 # Created by https://www.toptal.com/developers/gitignore/api/python,django,venv,virtualenv,pycharm,visualstudiocode,visualstudio,vs,windows,macos,linux,sublimetext
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,django,venv,virtualenv,pycharm,visualstudiocode,visualstudio,vs,windows,macos,linux,sublimetext
-
+.vscode/
 ### Django ###
 *.log
 *.pot
