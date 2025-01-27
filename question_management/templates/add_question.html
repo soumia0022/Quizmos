@@ -39,6 +39,8 @@
                                     <option value="single_choice">Single Choice</option>
                                     <option value="text_fill">Text Answer</option>
                                     <option value="dropdown_fill">Dropdown Fill in the Blank</option>
+                                    <option value="wordcloud">Word Cloud</option>
+                                    <option value="match_question">Match Question</option>
                                 </select>
                             </div>
 
@@ -78,6 +80,31 @@
                                 <div id="options-section" class="mt-2">
                                     <button type="button" id="single-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
                                     <div id="single-choice-options-container"></div>
+                                </div>
+                            </div>
+
+                            <!-- Word Cloud Fields -->
+                            <div id="word-cloud-fields" style="display: none;">
+                                <input type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt" />
+                                <div id="actual-wordcloud">
+                                <!-- Display the word cloud image if generated -->
+                                {% if wordcloud_image %}
+                                    <h2>Generated Word Cloud:</h2>
+                                    <img src="data:image/png;base64,{{ wordcloud_image | safe }}" alt="Word Cloud">
+                                {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Match Question Fields -->
+                            <div id="match-fields" style="display: none;">
+                                <input type="text" name="match_question" placeholder="Enter Match Question e.g. Match the following" />
+                                 <!-- Dynamically add options -->
+                                <div id="options-section">
+                                    <button type="button" id="match-add-option-btn"> Add Matching Card </button>
+
+                                    <div id="match-options-container">
+                                        <!-- Dynamically add options with javascript-->
+                                    </div>
                                 </div>
                             </div>
 
