@@ -35,6 +35,8 @@
               <a href="{% url 'poll_management:poll_detail' poll.id %}">View</a> | 
               <a href="{% url 'poll_management:poll_edit' poll.id %}">Edit</a> | 
               <a href="{% url 'poll_management:poll_delete' poll.id %}">Delete</a> |
+              <a href="{% url 'poll_management:display_code' poll.id %}">Start</a>
+              <a href="{% url 'poll_management:poll_delete' poll.id %}">Delete</a> |
                 <a href="{% url 'poll_management:poll_lock' poll.id %}" >
                     {% if poll.status == 'closed' %}
                         Unlock
@@ -104,4 +106,10 @@
     padding: 20px;
   }
 </style>
+<script>
+  document.querySelector('#room-name-submit').onclick = function(e) {
+    var roomName = document.querySelector('#room-name-input').value;
+    window.location.pathname = '/poll/' + roomName + '/';
+  };
+</script>
 {% endblock %}

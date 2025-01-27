@@ -6,7 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-from user_management.forms import LogInForm
+from user_management.forms import LogInForm, PollCodeForm
 from user_management.helpers import login_prohibited
 from poll_management.models.poll_model import Poll
 from django.db.models import Count
@@ -14,9 +14,17 @@ from poll_management.views.create_poll import create_poll
 
 @login_prohibited
 def home(request):
-    """Display the application's start/home screen."""
+    if request.method == 'POST':
+        form = PollCodeForm(request.POST)
+        if form.is_valid():
+            valid, poll = form.validate_and_redirect()
+            if valid:
 
-    return render(request, 'home.html')
+                return redirect('poll_management:join_poll', code=poll.number_code)
+    else:
+        form = PollCodeForm()
+
+    return render(request, 'home.html', {'form': form})
 
 def dashboard(request):
     """Display the current user's dashboard."""
