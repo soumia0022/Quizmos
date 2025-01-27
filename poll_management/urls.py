@@ -16,7 +16,7 @@ urlpatterns = [
     path('<int:poll_id>/delete/', poll_delete, name='poll_delete'),
     path('present/<int:pk>/', display_code, name= 'display_code'),
     path('join/<int:code>/', join_poll, name='join_poll'),
-    path('results/<int:code>/', poll_results, name='poll_results')
+    path('results/<int:code>/', poll_results, name='poll_results'),
     path('<int:poll_id>/delete/', poll_delete, name='poll_delete'),
     path('<int:poll_id>/lock/', poll_lock, name='poll_lock'),
 ]
