@@ -6,6 +6,7 @@ from poll_management.views.display_code import display_code
 from poll_management.views.poll_results import poll_results
 
 app_name = 'poll_management'
+from poll_management.views.poll_operation import poll_detail, poll_edit, poll_delete, poll_lock
 
 urlpatterns = [
     path('create/', create_poll, name='create_poll'), 
@@ -16,4 +17,6 @@ urlpatterns = [
     path('present/<int:pk>/', display_code, name= 'display_code'),
     path('join/<int:code>/', join_poll, name='join_poll'),
     path('results/<int:code>/', poll_results, name='poll_results')
+    path('<int:poll_id>/delete/', poll_delete, name='poll_delete'),
+    path('<int:poll_id>/lock/', poll_lock, name='poll_lock'),
 ]

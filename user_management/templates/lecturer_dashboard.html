@@ -36,6 +36,14 @@
               <a href="{% url 'poll_management:poll_edit' poll.id %}">Edit</a> | 
               <a href="{% url 'poll_management:poll_delete' poll.id %}">Delete</a> |
               <a href="{% url 'poll_management:display_code' poll.id %}">Start</a>
+              <a href="{% url 'poll_management:poll_delete' poll.id %}">Delete</a> |
+                <a href="{% url 'poll_management:poll_lock' poll.id %}" >
+                    {% if poll.status == 'closed' %}
+                        Unlock
+                    {% else %}
+                        Lock
+                    {% endif %}
+                </a>
             </td>
           </tr>
           {% empty %}
