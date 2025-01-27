@@ -151,10 +151,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user_management.User'
 
 # Login URL for redirecting users from login protected views
-LOGIN_URL = 'log_in'
+LOGIN_URL = 'user_management:log_in'
 
 # URL where @login_prohibited redirects to
-REDIRECT_URL_WHEN_LOGGED_IN = 'dashboard'
+REDIRECT_URL_WHEN_LOGGED_IN = 'user_management:dashboard'
 
 # Convert Django ERROR messages to Bootstrap DANGER messages
 MESSAGE_TAGS = {

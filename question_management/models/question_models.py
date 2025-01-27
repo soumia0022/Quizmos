@@ -19,13 +19,20 @@ class Question(models.Model):
     text_fill_answer = models.TextField(null=True, blank=True)
     dropdown_fill_question = models.TextField(null=True, blank=True)
     dropdown_options = models.TextField(null=True, blank=True)  # comma-separated options for dropdown
+
     multiple_choice_question = models.TextField(null=True, blank=True)
     multiple_choice_options = models.JSONField(blank=True, default=list)  #use a json field since models doesnt support arrays
     multiple_choice_answers = models.JSONField(blank=True, default=list)
+
     single_choice_question = models.TextField(null=True, blank=True)
     single_choice_option = models.JSONField(blank=True, default=list)  #use a json field since models doesnt support arrays
     single_choice_answers = models.JSONField(blank=True, default=list)
     wordcloud_question = models.TextField(null=True, blank=True)
+
+    match_question = models.TextField(null=True, blank=True)
+    #the index of the option will match up with the index of the answer
+    match_options = models.JSONField(blank=True, default=list)
+    match_answers = models.JSONField(blank=True, default=list)
 
     question_text = models.TextField(null=True, blank=True) # for generalised
     dropdown_correct_answer = models.TextField(null=True, blank=True)  # maybe get rid of this too

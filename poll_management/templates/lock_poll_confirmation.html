@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Poll Status</title>
+</head>
+<body>
+    <h1 >
+        Are you sure you want to
+        {% if poll.status == 'closed' %}
+            unlock
+        {% else %}
+            lock
+        {% endif %}
+        {{ poll.title }}?
+    </h1>
+
+    <h2 id="poll-status">Current status: {{ poll.status }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <!-- Add javascript to dynamically hide the unnecassary button e.g. if the poll is locked only show unlock option-->
+        <button type="submit" id="lock" name="action" value="lock">Lock</button>
+        <button type="submit" id="unlock" name="action" value="unlock">Unlock</button>
+        <a href="{% url 'user_management:dashboard'%}">Go back to Dashboard</a>
+    </form>
+
+    <script src="{% static 'js/script.js' %}"></script>
+
+</body>
+</html>

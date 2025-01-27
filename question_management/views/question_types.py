@@ -145,12 +145,32 @@ def add_question(request, poll_id):
             wordcloud_image = base64.b64encode(buffer.getvalue()).decode()
             return render(request, "add_question.html", {"poll": poll, "wordcloud_image": wordcloud_image})
 
+        elif question_type == 'match_question':
+            question_text = request.POST.get('match_question') #do we need this?
+            match_question = request.POST.get('match_question')
+            match_options = request.POST.getlist('match_question_options[]')
+            match_answers = request.POST.getlist('match_question_answers[]')
+
+            # Server-side validation
+            if not match_options:
+                return JsonResponse({'error': 'At least one option is required for a multiple-choice question.'},
+                                    status=400)
+            if not match_answers:
+                return JsonResponse({'error': 'At least one answer is required for a multiple-choice question.'},
+                                    status=400)
+
+            question = Question.objects.create(
+                poll_id=poll_id,
+                question_text=question_text,
+                question_type=question_type,
+                match_question=match_question,
+                match_options=match_options,
+                match_answers=match_answers
+            )
+
+            #it saved (showed up in the admin view) even without this line?
+            question.save()
+
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
     return render(request, "add_question.html", {"poll": poll})
-
-
-
-
-
-

@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.urls import path
 from user_management.views import *
 
+app_name = 'user_management'
 urlpatterns = [
     path('', login_views.home, name='home'),
     path('dashboard/', login_views.dashboard, name='dashboard'),

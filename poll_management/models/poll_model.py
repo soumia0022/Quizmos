@@ -6,6 +6,7 @@ class Poll(models.Model):
     status = models.CharField(max_length=50, choices=[('active', 'Active'), ('closed', 'Closed')], default='active')
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='polls')
+    locked = models.BooleanField(default=False)
 
     def _str_(self):
         return self.title

@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownFillFields = document.getElementById('dropdown-fill-fields');
     const wordCloudFields = document.getElementById('word-cloud-fields');
 
-
     const singleChoiceFields = document.getElementById('single-choice-fields');
     const singleChoiceOptionsSection = document.getElementById('single-choice-options-container');
     const singleChoiceAddOptionBtn = document.getElementById('single-choice-add-option-btn');
@@ -17,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const multipleChoiceFields = document.getElementById('multiple-choice-fields');
     const multipleChoiceOptionsSection = document.getElementById('multiple-choice-options-container');
     const multipleChoiceAddOptionBtn = document.getElementById('multiple-choice-add-option-btn');
-    let McOptionCount = 1; //must be 1 option by default
     const multipleChoiceInput = multipleChoiceFields.querySelector('input[name="multiple_choice_question"]');
+    let McOptionCount = 1; //must be 1 option by default
 
     // Specifically for drop-down fill in the blank
     const dropdownInput = document.getElementById('dropdown-fill-input');
@@ -27,6 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const resetButton = document.getElementById('reset-preview-btn');
     let originalText = ""; // Stores the original input text for resetting
     let blankAdded = false; // Used to only allow one blank per question
+
+    const matchQuestionFields = document.getElementById('match-fields');
+    const matchQuestionOptionSection = document.getElementById('match-options-container');
+    const matchQuestionAddBtn = document.getElementById('match-add-option-btn');
+    const matchQuestionInput = matchQuestionFields.querySelector('input[name="match_question"]');
+    let matchOptionCount = 1;
+
     
     // Show or hide the question form
     addButton.addEventListener('click', function() {
@@ -45,7 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
         singleChoiceFields.style.display = 'none';
         singleChoiceInput.required = false;
         wordCloudFields.style.display = 'none';
-        //singleChoiceOptionInput.required = false;
+        matchQuestionFields.style.display = 'none';
+        matchQuestionInput.required = false;
 
         // Show the selected fields based on option selected
         if (questionType === 'text_fill') {
@@ -125,6 +132,30 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } else if (questionType === "wordcloud") {
             wordCloudFields.style.display = 'block';
+        } else if (questionType === 'match_question') {
+            matchQuestionFields.style.display = 'block';
+            matchQuestionInput.required = true;
+            matchQuestionAddBtn.addEventListener("click", () => {
+                const inputRow = document.createElement("div");
+
+                const option = document.createElement("input");
+                option.type = "text";
+                option.placeholder = `Option ${matchOptionCount}`;
+                option.name = 'match_question_options[]';
+                option.required = true;
+
+                const answer = document.createElement("input");
+                answer.type = "text";
+                answer.placeholder = `Answer ${matchOptionCount}`;
+                answer.name = 'match_question_answers[]';
+                answer.required = true;
+
+                inputRow.appendChild(option);
+                inputRow.appendChild(answer)
+
+                matchQuestionOptionSection.appendChild(inputRow);
+                matchOptionCount++;
+            });
         }
     });
 
@@ -156,6 +187,12 @@ document.addEventListener('DOMContentLoaded', function() {
         else if (answers.length > 1){
             alert('You can only choose one right answer for single-choice question.');
             event.preventDefault();
+        }
+    } else if (questionType === 'match_question'){
+        const options = document.querySelectorAll('[name="match_question_options[]"]')
+        if (options.length === 0) {
+            alert('Please add at least one matching card option for the match question.');
+            event.preventDefault(); //don't allow the submission to go thru
         }
     }
     });
