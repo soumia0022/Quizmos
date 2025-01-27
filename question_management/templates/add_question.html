@@ -3,126 +3,137 @@
 <head>
     <title>Add Question</title>
     {% load static %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> <!-- Bootstrap -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-    <script src="{% static 'js/script.js' %}"></script>  <!-- JavaScript -->
+    <script src="{% static 'js/script.js' %}"></script> <!-- JavaScript -->
 </head>
 <body>
-    <h1>{{ poll.title }}</h1>
 
-    <button id="add-question-btn">Add Question</button>
+    {% include 'partials/background_stars.html' %}
 
-    <!-- Form to add question (hidden initially) -->
-    <div id="question-form" style="display: none;">
-        <form method="POST">
-            {% csrf_token %}
-
-            <!-- Dropdown for selecting question type (visible initially) -->
-            <label for="question_type">Question Type:</label>
-            <select name="question_type" id="question-type-dropdown" required>
-                <option value="">-- Select Type --</option>
-                <option value="multiple_choice">Multiple Choice</option>
-                <option value="single_choice">Single Choice</option>
-                <option value="text_fill">Text Answer</option>
-                <option value="dropdown_fill">Dropdown Fill in the Blank</option>
-                <option value="wordcloud">Word Cloud</option>
-                <option value="match_question">Match Question</option>
-            </select>
-
-            <!-- Below fields hidden until option for them is clicked in drop-down (using style display none) -->
-
-            <!-- Text Fill Fields -->
-            <div id="text-fill-fields" style="display: none;">
-                <input type="text" name="text_fill_question" placeholder="Enter Text Question" />
-                <input type="text" name="text_fill_answer" placeholder="Enter Text Answer" />
+    <div class="container-fluid mt-2 text-center">
+        <div class="row justify-content-center align-items-center mb-3">
+            <div class="col-auto">
+                <h1 class="mb-3">{{ poll.title }}</h1>
             </div>
-
-            <!-- Dropdown Fill Fields -->
-            <div id="dropdown-fill-fields" style="display: none;">
-                <textarea name="dropdown_fill_question" id="dropdown-fill-input" placeholder="Enter Dropdown Fill Question" ></textarea>
-                <div id="text-preview"></div> <!-- Preview area for the text -->
-
-                <label for="dropdown-correct-answer">Correct Answer:</label>
-                <input type="text" name="dropdown_correct_answer" id="dropdown-correct-answer" placeholder="Select a word to use as the blank" readonly />
-
-                <label for="additional-options">Additional Options:</label>
-                <input type="text" name="additional_options" placeholder="Option 1" />
-                <input type="text" name="additional_options" placeholder="Option 2" />
-                <input type="text" name="additional_options" placeholder="Option 3" />
-
-                <button type="button" id="reset-preview-btn">Reset</button>
+            <div class="col-auto">
+                <button id="add-question-btn" class="btn btn-primary">Add Question</button>
             </div>
-
-            <!-- Multiple Choice Fields -->
-            <div id="multiple-choice-fields" style="display: none;">
-                <input type="text" name="multiple_choice_question" placeholder="Enter Multiple Choice Question" />
-                <!-- Dynamically add options -->
-                <div id="options-section">
-                    <button type="button" id="multiple-choice-add-option-btn"> Add Option </button>
-
-                    <div id="multiple-choice-options-container">
-                        <!-- Dynamically add options with javascript-->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Single Choice Fields -->
-            <div id="single-choice-fields" style="display: none;">
-                <input type="text" name="single_choice_question" placeholder="Enter Single Choice Question" />
-                 <!-- Dynamically add options -->
-                <div id="options-section">
-                    <button type="button" id="single-choice-add-option-btn"> Add Option </button>
-
-                    <div id="single-choice-options-container">
-                        <!-- Dynamically add options with javascript-->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Word Cloud Fields -->
-            <div id="word-cloud-fields" style="display: none;">
-                <input type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt" />
-                <div id="actual-wordcloud">
-                <!-- Display the word cloud image if generated -->
-                {% if wordcloud_image %}
-                    <h2>Generated Word Cloud:</h2>
-                    <img src="data:image/png;base64,{{ wordcloud_image | safe }}" alt="Word Cloud">
-                {% endif %}
-                </div>
-            </div>
-
-            <!-- Match Question Fields -->
-            <div id="match-fields" style="display: none;">
-                <input type="text" name="match_question" placeholder="Enter Match Question e.g. Match the following" />
-                 <!-- Dynamically add options -->
-                <div id="options-section">
-                    <button type="button" id="match-add-option-btn"> Add Matching Card </button>
-
-                    <div id="match-options-container">
-                        <!-- Dynamically add options with javascript-->
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit">Save Question</button>
-        </form>
-    </div>
-
-    <!-- Sidebar to display created questions -->
-    <div id="questions-sidebar">
-        <h3>Questions Created:</h3>
-        <div id="questions-list">
-            <!-- Questions list in the sidebar -->
-            {% for question in poll.questions.all %}
-                <div class="question-item">
-                    Question {{ forloop.counter }}: {{ question.question_text }}
-                </div>
-            {% empty %}
-                <p>No questions created yet.</p>
-            {% endfor %}
         </div>
     </div>
 
+    <div class="container-fluid">
+        <div class="row">
+            <div id="main-content"  class="col-lg-8 col-md-7 mb-4">
+                <!-- Form to Add Question (hidden initially) -->
+                <div class="card" id="question-form" style="display: none;">
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <!-- Dropdown for selecting question type -->
+                            <div class="mb-3">
+                                <label for="question_type" class="form-label">Question Type:</label>
+                                <select name="question_type" id="question-type-dropdown" class="form-select" required>
+                                    <option value="">-- Select Type --</option>
+                                    <option value="multiple_choice">Multiple Choice</option>
+                                    <option value="single_choice">Single Choice</option>
+                                    <option value="text_fill">Text Answer</option>
+                                    <option value="dropdown_fill">Dropdown Fill in the Blank</option>
+                                    <option value="wordcloud">Word Cloud</option>
+                                    <option value="match_question">Match Question</option>
+                                </select>
+                            </div>
+
+                            <!-- Text Fill Fields -->
+                            <div id="text-fill-fields" class="mb-3" style="display: none;">
+                                <input type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
+                                <input type="text" name="text_fill_answer" class="form-control" placeholder="Enter Text Answer">
+                            </div>
+
+                            <!-- Dropdown Fill Fields -->
+                            <div id="dropdown-fill-fields" class="mb-3" style="display: none;">
+                                <textarea name="dropdown_fill_question" id="dropdown-fill-input" class="form-control mb-2" placeholder="Enter Dropdown Fill Question"></textarea>
+                                <div id="text-preview" class="mb-3 border p-2"></div> <!-- Preview area for the text -->
+
+                                <label for="dropdown-correct-answer" class="form-label">Correct Answer:</label>
+                                <input type="text" name="dropdown_correct_answer" id="dropdown-correct-answer" class="form-control mb-2" placeholder="Select a word to use as the blank" readonly>
+
+                                <label for="additional-options" class="form-label">Additional Options:</label>
+                                <input type="text" name="additional_options" class="form-control mb-2" placeholder="Option 1">
+                                <input type="text" name="additional_options" class="form-control mb-2" placeholder="Option 2">
+                                <input type="text" name="additional_options" class="form-control mb-2" placeholder="Option 3">
+                                <button type="button" id="reset-preview-btn" class="btn btn-secondary mt-2">Reset</button>
+                            </div>
+
+                            <!-- Multiple Choice Fields -->
+                            <div id="multiple-choice-fields" class="mb-3" style="display: none;">
+                                <input type="text" name="multiple_choice_question" class="form-control mb-2" placeholder="Enter Multiple Choice Question">
+                                <div id="options-section" class="mt-2">
+                                    <button type="button" id="multiple-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
+                                    <div id="multiple-choice-options-container"></div>
+                                </div>
+                            </div>
+
+                            <!-- Single Choice Fields -->
+                            <div id="single-choice-fields" class="mb-3" style="display: none;">
+                                <input type="text" name="single_choice_question" class="form-control mb-2" placeholder="Enter Single Choice Question">
+                                <div id="options-section" class="mt-2">
+                                    <button type="button" id="single-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
+                                    <div id="single-choice-options-container"></div>
+                                </div>
+                            </div>
+
+                            <!-- Word Cloud Fields -->
+                            <div id="word-cloud-fields" style="display: none;">
+                                <input type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt" />
+                                <div id="actual-wordcloud">
+                                <!-- Display the word cloud image if generated -->
+                                {% if wordcloud_image %}
+                                    <h2>Generated Word Cloud:</h2>
+                                    <img src="data:image/png;base64,{{ wordcloud_image | safe }}" alt="Word Cloud">
+                                {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Match Question Fields -->
+                            <div id="match-fields" style="display: none;">
+                                <input type="text" name="match_question" placeholder="Enter Match Question e.g. Match the following" />
+                                 <!-- Dynamically add options -->
+                                <div id="options-section">
+                                    <button type="button" id="match-add-option-btn"> Add Matching Card </button>
+
+                                    <div id="match-options-container">
+                                        <!-- Dynamically add options with javascript-->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Save Question Button -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success">Save Question</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar for Created Questions -->
+            <div class="col-lg-4 col-md-5">
+                <div id="questions-sidebar" class="border rounded bg-light p-3">
+                    <h3 class="text-center">Questions Created:</h3>
+                    <div id="questions-list">
+                        {% for question in poll.questions.all %}
+                            <div class="question-item mb-2">
+                                <strong>Question {{ forloop.counter }}:</strong> {{ question.question_text }}
+                            </div>
+                        {% empty %}
+                            <p class="text-muted text-center">No questions created yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
-
