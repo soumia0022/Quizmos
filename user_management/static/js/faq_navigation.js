@@ -4,11 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     navButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Update buttons
             navButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-
-            // Update sections
             sections.forEach(section => section.classList.remove('active'));
             document.getElementById(button.dataset.target).classList.add('active');
         });

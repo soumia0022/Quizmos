@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     createStars();
     createMeteors();
     
-    // Recreate meteors periodically
     setInterval(() => {
         createMeteors();
     }, 5000);

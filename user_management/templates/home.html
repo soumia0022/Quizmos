@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body %}
-<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+
 {% include 'partials/home_navbuttons.html' %}
 
 <div class="stars" id="stars-container"></div>
@@ -36,5 +39,5 @@
 
 {% include 'partials/footer.html' %}
 
-<script src="{% static 'js/stars_and_meteors.js' %}"></script>
+<script src="{% static 'js/space_animation.js' %}"></script>
 {% endblock %}
