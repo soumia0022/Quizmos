@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from user_management.views import *
-from .views.home_views import *
+from user_management import views as home_views 
 
 app_name = 'user_management'
 urlpatterns = [
