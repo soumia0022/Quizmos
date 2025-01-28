@@ -1,7 +1,16 @@
+import base64
+
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
+
+import os, io
+from collections import Counter
+from django.http import HttpResponse
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from PIL import ImageFont
 
 # FOR REFACTORING, BELOW THE QUESTION_TEXT AND THE SPECIFIC QUESTIONS HAVE THE SAME LINE (SAME THING)
 # PUT THIS IN A CLASS PLS BEFORE MERGING TO MAIN
@@ -72,10 +81,10 @@ def add_question(request, poll_id):
 
             # Server-side validation
             if not single_choice_option:
-                return JsonResponse({'error': 'At least one option is required for a multiple-choice question.'},
+                return JsonResponse({'error': 'At least one option is required for a single-choice question.'},
                                     status=400)
             if not single_choice_answers:
-                return JsonResponse({'error': 'At least one answer is required for a multiple-choice question.'},
+                return JsonResponse({'error': 'At least one answer is required for a single-choice question.'},
                                     status=400)
 
             question = Question.objects.create(
@@ -88,8 +97,80 @@ def add_question(request, poll_id):
             )
             question.save()
 
+        elif question_type == 'wordcloud':
+            question_text = request.POST.get('wordcloud_question')
+            question = Question.objects.create(
+                poll_id=poll_id,
+                question_text=question_text,
+                wordcloud_question=question_text
+            )
+            question.save()
+
+            text = ("Testing Testing the Word Cloud hello hello hello SEG SEG SEG wow amazing great yay woohoo "
+                    "Hello Soumia Soumia Amina Amina Leyli Leyli Eeshal Marium Rashida Rashida Alishba Alishba Alishba")
+            word_frequencies = Counter(text.split())
+
+            font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                                     "static/fonts/RobotoMono-Regular.ttf")
+
+            # Later create html pages for the errors below (so it looks nice and fits UI, and user informed of error)
+            if not os.path.exists(font_path):
+                raise FileNotFoundError("Font file not found")
+            else: # File has been found
+                try:
+                    font = ImageFont.truetype(font_path) # Font is TrueType
+                except IOError:
+                    raise ValueError("Only supported for TrueType fonts")
+
+            wordcloud = WordCloud(
+                width=800,
+                height=400,
+                background_color='white',
+                colormap='twilight',  # Colour scheme
+                max_font_size=100,
+                min_font_size=10,
+                stopwords={'and', 'the', 'of'},  # Exclude common words
+                font_path=font_path,
+            ).generate_from_frequencies(word_frequencies)
+
+            plt.figure(figsize=(10, 5))
+            plt.imshow(wordcloud, interpolation="bilinear")
+            plt.axis("off")
+
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            plt.close()
+
+            wordcloud_image = base64.b64encode(buffer.getvalue()).decode()
+            return render(request, "add_question.html", {"poll": poll, "wordcloud_image": wordcloud_image})
+
+        elif question_type == 'match_question':
+            question_text = request.POST.get('match_question') #do we need this?
+            match_question = request.POST.get('match_question')
+            match_options = request.POST.getlist('match_question_options[]')
+            match_answers = request.POST.getlist('match_question_answers[]')
+
+            # Server-side validation
+            if not match_options:
+                return JsonResponse({'error': 'At least one option is required for a multiple-choice question.'},
+                                    status=400)
+            if not match_answers:
+                return JsonResponse({'error': 'At least one answer is required for a multiple-choice question.'},
+                                    status=400)
+
+            question = Question.objects.create(
+                poll_id=poll_id,
+                question_text=question_text,
+                question_type=question_type,
+                match_question=match_question,
+                match_options=match_options,
+                match_answers=match_answers
+            )
+
+            #it saved (showed up in the admin view) even without this line?
+            question.save()
+
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
     return render(request, "add_question.html", {"poll": poll})
-
-
