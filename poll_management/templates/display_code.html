@@ -1,0 +1,38 @@
+<!-- templates/poll_detail.html -->
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body>
+        <h1>{{ poll.title }}</h1>
+        <h1>{{ code }}</h1>
+        <img src="{{ qrcode }}" alt="QR Code for {{ poll.title }}">
+
+        <!-- Section to display the list of students who have joined -->
+        <h2>Students Joined:</h2>
+        <ul id="students-list">
+          <!-- This list will be updated in real-time -->
+        </ul>
+
+        <script>
+          const pollCode = "{{ code }}";  <!-- Use poll primary key -->
+          const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
+
+          ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const studentsList = document.getElementById('students-list');
+            const newStudent = document.createElement('li');
+            newStudent.textContent = data.message;
+            studentsList.appendChild(newStudent);
+          };
+        </script>
+      </body>
+    </div>
+  </div>
+</div>
+{% endblock %}

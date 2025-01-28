@@ -12,7 +12,7 @@ class PollListViewTest(TestCase):
 
     def test_poll_list_view(self):
         self.client.login(username='testuser', password='password')
-        response = self.client.get(reverse('dashboard'))
+        response = self.client.get(reverse('user_management:dashboard'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Poll 1')
         self.assertContains(response, 'Poll 2')

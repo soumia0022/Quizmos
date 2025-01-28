@@ -11,6 +11,7 @@ reset_password_patterns = [
     path('reset/complete/', auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
 ]
 
+app_name = 'user_management'
 urlpatterns = [
     path('', login_views.home, name='home'),
     path('dashboard/', login_views.dashboard, name='dashboard'),

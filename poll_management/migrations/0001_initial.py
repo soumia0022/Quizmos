@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=255)),
                 ('status', models.CharField(choices=[('active', 'Active'), ('closed', 'Closed')], default='active', max_length=50)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('locked', models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(
