@@ -1,37 +1,78 @@
-<!-- templates/poll_detail.html -->
 {% extends 'base_content.html' %}
 {% block content %}
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body>
-        <h1>{{ poll.title }}</h1>
-        <h1>{{ code }}</h1>
-        <img src="{{ qrcode }}" alt="QR Code for {{ poll.title }}">
+      <h1>{{ poll.title }}</h1>
+      <h1>{{ code }}</h1>
+      <img src="{{ qrcode }}" alt="QR Code for {{ poll.title }}">
 
-        <!-- Section to display the list of students who have joined -->
-        <h2>Students Joined:</h2>
-        <ul id="students-list">
-          <!-- This list will be updated in real-time -->
-        </ul>
+      <h2>Students Joined:</h2>
+      <ul id="students-list">
+        <!-- This list will be updated in real-time -->
+      </ul>
 
-        <script>
-          const pollCode = "{{ code }}";  <!-- Use poll primary key -->
-          const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
+      <h2>Start Poll:</h2>
+      <select id="question">
+        {% for question in poll.questions.all %}
+          <option value="{{ question.id }}">{{ question.question_text }}</option>
+        {% endfor %}
+      </select>
+      <button onclick="startPoll()">Start Poll</button>
 
-          ws.onmessage = function(event) {
-            const data = JSON.parse(event.data);
+      <script>
+        // Add debug logging to check the value
+        const pollCode = "{{ code }}";
+        console.log("Poll code:", pollCode);
+
+        // Check if we have a valid poll code
+        if (!pollCode) {
+          console.error("No poll code found!");
+          // Maybe display an error message to the user
+        }
+
+        // Construct the WebSocket URL more carefully
+        const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${pollCode}/`;
+        console.log("Attempting to connect to:", wsUrl);
+
+        const ws = new WebSocket(wsUrl);
+
+        ws.onopen = function() {
+          console.log("WebSocket connection established");
+        };
+
+        ws.onerror = function(error) {
+          console.error("WebSocket error:", error);
+        };
+
+        ws.onclose = function(event) {
+          console.log("WebSocket connection closed:", event.code, event.reason);
+        };
+
+        ws.onmessage = function(event) {
+          console.log("Received message:", event.data);
+          const data = JSON.parse(event.data);
+          if (data.type === 'message') {
             const studentsList = document.getElementById('students-list');
             const newStudent = document.createElement('li');
             newStudent.textContent = data.message;
             studentsList.appendChild(newStudent);
-          };
-        </script>
-      </body>
+          } else if (data.type === 'question') {
+            // Handle receiving questions (if needed)
+          }
+        };
+
+        function startPoll() {
+          if (ws.readyState === WebSocket.OPEN) {
+            const questionId = document.getElementById('question').value;
+            ws.send(JSON.stringify({ type: 'question', question_id: questionId }));
+          } else {
+            console.error("WebSocket is not connected!");
+            // Maybe display an error message to the user
+          }
+        }
+      </script>
     </div>
   </div>
 </div>
