@@ -303,7 +303,7 @@
     console.log("WebSocket connection closed:", event.code, event.reason);
   };
 
-  ws.onmessage = function(event) {//change this later to have number of students joined instead of showing a list of students
+  ws.onmessage = function(event) {// maybe change this later to have number of students joined instead of showing a list of students
     console.log("Received message:", event.data);
     const data = JSON.parse(event.data);
     if (data.type === 'message') {
