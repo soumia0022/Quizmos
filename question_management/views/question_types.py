@@ -102,7 +102,8 @@ def add_question(request, poll_id):
             question = Question.objects.create(
                 poll_id=poll_id,
                 question_text=question_text,
-                wordcloud_question=question_text
+                wordcloud_question=question_text,
+                question_type = question_type
             )
             question.save()
 

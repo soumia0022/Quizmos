@@ -4,10 +4,11 @@ from poll_management.models.poll_model import Poll
 class Question(models.Model):
     QUESTION_TYPES = [
         ('dropdown_fill', 'Dropdown Fill in the Blank'), # database name, display name
-        ('text', 'Text Answer'),
+        ('text_fill', 'Text Answer'),
         ('multiple_choice', 'Multiple Choice'),
         ('single_choice', 'Single Choice'),
-        ('wordcloud', 'Word Cloud')
+        ('wordcloud', 'Word Cloud'),
+        ('match_question', 'Match Question'),
     ]
     poll = models.ForeignKey(Poll, related_name='questions', on_delete=models.CASCADE, default=1) # question associated w poll
                                         # related name questions to allow you to do something like poll.questions.all() to get

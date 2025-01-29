@@ -117,25 +117,29 @@
   const pollCode = "{{ code }}";
   let currentQuestionIndex = 0;
 
-  // Store questions with their full data
+  // Store questions with their data depending on their type
   const questions = [
     {% for question in poll.questions.all %}
       {
         id: "{{ question.id }}",
         type: "{{ question.question_type }}",
         {% if question.question_type == 'dropdown_fill' %}
-          text: "{{ question.dropdown_fill_question }}",
+          text: "{{ question.dropdown_fill_question|default:'' }}",
           options: {{ question.get_dropdown_options|safe|default:"[]" }},
-        {% elif question.question_type == 'text' %}
-          text: "{{ question.text_fill_question }}",
+        {% elif question.question_type == 'text_fill' %}
+          text: "{{ question.text_fill_question|default:'' }}",
         {% elif question.question_type == 'multiple_choice' %}
-          text: "{{ question.multiple_choice_question }}",
+          text: "{{ question.multiple_choice_question|default:'' }}",
           options: {{ question.multiple_choice_options|safe|default:"[]" }},
         {% elif question.question_type == 'single_choice' %}
-          text: "{{ question.single_choice_question }}",
+          text: "{{ question.single_choice_question|default:'' }}",
           options: {{ question.single_choice_option|safe|default:"[]" }},
         {% elif question.question_type == 'wordcloud' %}
-          text: "{{ question.wordcloud_question }}",
+          text: "{{ question.wordcloud_question|default:'' }}",
+        {% elif question.question_type == 'match_question' %}
+          text: "{{ question.match_question|default:'' }}",
+          options: {{ question.match_options|safe|default:"[]" }},
+          answers: {{ question.match_answers|safe|default:"[]" }},
         {% endif %}
       },
     {% endfor %}
@@ -143,37 +147,35 @@
 
 
   function createQuestionHTML(question) {
-    let html = '<div class="question-title">';
+    let html = '<div class="question-title">';//this will store the final html content needed to display the question
 
     switch(question.type) {
-      case 'dropdown_fill':
-        // Split the question text and insert dropdowns
-        const parts = question.text.split('___');
+       case 'dropdown_fill':
+        const parts = question.text.split('___'); // split the text where there are blank spaces (3 underscores ___)
         html += '<p>';
         parts.forEach((part, index) => {
-          html += part;
+          html += part; // for each part in the question, add it to the HTML content
           if (index < parts.length - 1) {
-            html += `<select class="form-select d-inline-block mx-2" style="width: auto">
-              <option value="">Select...</option>
-              ${question.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-            </select>`;
+            // Add some empty spaces (3 spaces per blank)
+            html += '&nbsp;&nbsp;&nbsp;';
           }
         });
         html += '</p>';
         break;
 
-      case 'text':
+      case 'text_fill':
         html += `<p>${question.text}</p>
-                 <textarea class="form-control mt-3" rows="3" placeholder="Enter your answer"></textarea>`;
+                 <div class="form-group">
+                   <textarea class="form-control mt-3" rows="3" placeholder="Enter your answer"></textarea>
+                 </div>`;
         break;
 
       case 'multiple_choice':
         html += `<p>${question.text}</p>
                  <div class="options-container">
                    ${question.options.map(option => `
-                     <div class="form-check option-item">
-                       <input class="form-check-input" type="checkbox" value="${option}">
-                       <label class="form-check-label">${option}</label>
+                     <div class="card" style = "margin-bottom: 10px; padding: 5px;">
+                       <label >${option}</label>
                      </div>
                    `).join('')}
                  </div>`;
@@ -183,9 +185,8 @@
         html += `<p>${question.text}</p>
                  <div class="options-container">
                    ${question.options.map(option => `
-                     <div class="form-check option-item">
-                       <input class="form-check-input" type="radio" name="singleChoice" value="${option}">
-                       <label class="form-check-label">${option}</label>
+                     <div class="card" style = "margin-bottom: 10px; padding: 5px;">
+                       <label >${option}</label>
                      </div>
                    `).join('')}
                  </div>`;
@@ -193,7 +194,36 @@
 
       case 'wordcloud':
         html += `<p>${question.text}</p>
-                 <input type="text" class="form-control wordcloud-input" placeholder="Enter your word or phrase">`;
+                 <div class="form-group">
+                   <input type="text" class="form-control wordcloud-input"
+                          placeholder="Enter your word or phrase">
+                 </div>`;
+        break;
+
+      case 'match_question':
+        html += `<p>${question.text}</p>
+                 <div class="matching-container mt-3">
+                   ${question.options.map((option, index) => `
+                     <div class="matching-item mb-3">
+                       <div class="row align-items-center">
+                         <div class="col-5">
+                           <span class="option-text">${option}</span>
+                         </div>
+                         <div class="col-2 text-center">
+                           <span class="arrow">→</span>
+                         </div>
+                         <div class="col-5">
+                           <select class="form-select">
+                             <option value="">Select match...</option>
+                             ${question.answers.map((answer, ansIndex) =>
+                               `<option value="${ansIndex}">${answer}</option>`
+                             ).join('')}
+                           </select>
+                         </div>
+                       </div>
+                     </div>
+                   `).join('')}
+                 </div>`;
         break;
     }
 
@@ -261,7 +291,7 @@
     console.log("WebSocket connection closed:", event.code, event.reason);
   };
 
-  ws.onmessage = function(event) {
+  ws.onmessage = function(event) {//change this later to have number of students joined instead of showing a list of students
     console.log("Received message:", event.data);
     const data = JSON.parse(event.data);
     if (data.type === 'message') {
