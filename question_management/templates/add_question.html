@@ -43,7 +43,13 @@
                                     <option value="match_question">Match Question</option>
                                 </select>
                             </div>
-
+                            
+                            <!-- Timer Input Field (Initially Hidden) -->
+                            <div id="timer-settings" class="mb-3" style="display: none;">
+                                <label for="timer_duration" class="form-label">Set Timer (Seconds):</label>
+                                <input type="number" name="timer_duration" id="timer_duration" class="form-control" placeholder="Enter seconds">
+                            </div>
+                        
                             <!-- Text Fill Fields -->
                             <div id="text-fill-fields" class="mb-3" style="display: none;">
                                 <input type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
@@ -134,6 +140,47 @@
             </div>
         </div>
     </div>
+
+    <!-- Timer Display -->
+    <div id="timer" style="display: none; text-align: center; margin-top: 10px;">
+        Time Left: <span id="timeLeft"></span> seconds
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const questionTypeDropdown = document.getElementById("question-type-dropdown");
+            const timerSettings = document.getElementById("timer-settings");
+            const timerDiv = document.getElementById("timer");
+
+            // Show Timer Input Only for Relevant Question Types
+            questionTypeDropdown.addEventListener("change", function () {
+                if (this.value === "multiple_choice" || this.value === "single_choice" || this.value === "text_fill") {
+                    timerSettings.style.display = "block";
+                } else {
+                    timerSettings.style.display = "none";
+                }
+            });
+
+            // Timer Functionality
+            let timeLeft = {{ question.timer_duration|default:0 }};
+            if (timeLeft > 0) {
+                timerDiv.style.display = "block";
+                document.getElementById("timeLeft").innerText = timeLeft;
+
+                let timer = setInterval(function () {
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        alert("Time's up!");
+                        document.getElementById("submitBtn").click();  // Auto-submit
+                    } else {
+                        timeLeft--;
+                        document.getElementById("timeLeft").innerText = timeLeft;
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+
 
 </body>
 </html>

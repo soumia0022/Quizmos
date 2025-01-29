@@ -1,5 +1,5 @@
 import base64
-
+import time
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from question_management.models.question_models import Question
@@ -20,6 +20,7 @@ def add_question(request, poll_id):
     poll = Poll.objects.get(id=poll_id) # get object or 404
     if request.method == 'POST':
         question_type = request.POST.get('question_type')
+        timer = request.POST.get('question_timer')
 
         # Get the relevant question fields based on question type:
 
@@ -31,7 +32,8 @@ def add_question(request, poll_id):
                 question_text=question_text,
                 question_type=question_type,
                 text_fill_question=question_text,
-                text_fill_answer=question_answer
+                text_fill_answer=question_answer,
+                timer=timer
             )
             question.save()
         elif question_type == 'dropdown_fill':
@@ -47,7 +49,8 @@ def add_question(request, poll_id):
                 question_text=question_text,
                 question_type=question_type,
                 dropdown_fill_question=question_with_blank,
-                dropdown_options=','.join([correct_answer] + additional_options)  # Store all options
+                dropdown_options=','.join([correct_answer] + additional_options),  # Store all options
+                timer=timer
             )
             question.save()
         elif question_type == 'multiple_choice':
@@ -70,7 +73,8 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 multiple_choice_question=multiple_choice_question,
                 multiple_choice_options=multiple_choice_options,
-                multiple_choice_answers=multiple_choice_answers
+                multiple_choice_answers=multiple_choice_answers,
+                timer=timer
             )
             question.save()
         elif question_type == 'single_choice':
@@ -93,7 +97,8 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 single_choice_question=single_choice_question,
                 single_choice_option=single_choice_option,
-                single_choice_answers=single_choice_answers
+                single_choice_answers=single_choice_answers,
+                timer=timer
             )
             question.save()
 
@@ -102,7 +107,9 @@ def add_question(request, poll_id):
             question = Question.objects.create(
                 poll_id=poll_id,
                 question_text=question_text,
-                wordcloud_question=question_text
+                question_type=question_type,
+                wordcloud_question=question_text,
+                timer=timer
             )
             question.save()
 
@@ -165,7 +172,8 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 match_question=match_question,
                 match_options=match_options,
-                match_answers=match_answers
+                match_answers=match_answers,
+                timer=timer
             )
 
             #it saved (showed up in the admin view) even without this line?
@@ -174,3 +182,6 @@ def add_question(request, poll_id):
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
     return render(request, "add_question.html", {"poll": poll})
+
+
+
