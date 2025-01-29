@@ -7,7 +7,7 @@
 
       <div id="question">Waiting for a question...</div>
       <input type="text" id="answer" placeholder="Your answer" />
-      <button onclick="submitAnswer()">Submit</button>
+      <button>Submit</button>
 
       <script>
         const pollCode = "{{ poll.number_code }}";
@@ -19,11 +19,6 @@
             document.getElementById('question').innerText = data.question.text;
           }
         };
-
-        function submitAnswer() {
-          const answer = document.getElementById('answer').value;
-          ws.send(JSON.stringify({ type: 'answer', answer: answer }));
-        }
       </script>
     </div>
   </div>

@@ -2,78 +2,274 @@
 {% block content %}
 <div class="container">
   <div class="row">
-    <div class="col-12">
-      <h1>{{ poll.title }}</h1>
-      <h1>{{ code }}</h1>
-      <img src="{{ qrcode }}" alt="QR Code for {{ poll.title }}">
+    <div class="col-6">
+      <!-- Left Column -->
+      <div class="left-column">
+        <h1>{{ poll.title }}</h1>
 
-      <h2>Students Joined:</h2>
-      <ul id="students-list">
-        <!-- This list will be updated in real-time -->
-      </ul>
+        <div id="poll-controls">
+          <button id="start-poll-btn" onclick="startPoll()" class="btn btn-primary mb-3">Start Poll</button>
 
-      <h2>Start Poll:</h2>
-      <select id="question">
-        {% for question in poll.questions.all %}
-          <option value="{{ question.id }}">{{ question.question_text }}</option>
-        {% endfor %}
-      </select>
-      <button onclick="startPoll()">Start Poll</button>
+          <div id="question-display" style="display: none;">
+            <div id="question-container">
+              <!-- Question stuff will be here -->
+            </div>
+            <div class="navigation-buttons mt-3">
+              <button id="prev-btn" onclick="previousQuestion()" class="btn btn-secondary me-2">Previous</button>
+              <button id="next-btn" onclick="nextQuestion()" class="btn btn-secondary">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <script>
-        // Add debug logging to check the value
-        const pollCode = "{{ code }}";
-        console.log("Poll code:", pollCode);
+    <!-- Right Column -->
+    <div class="col-6">
+      <div class="right-column">
+        <div class="text-center mb-4">
+          <h3>Session Code</h3>
+          <h2 class="display-4">{{ code }}</h2>
+          <img src="{{ qrcode }}" alt="QR Code for {{ poll.title }}" class="img-fluid mb-4" style="max-width: 200px;">
+        </div>
 
-        // Check if we have a valid poll code
-        if (!pollCode) {
-          console.error("No poll code found!");
-          // Maybe display an error message to the user
-        }
-
-        // Construct the WebSocket URL more carefully
-        const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-        const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${pollCode}/`;
-        console.log("Attempting to connect to:", wsUrl);
-
-        const ws = new WebSocket(wsUrl);
-
-        ws.onopen = function() {
-          console.log("WebSocket connection established");
-        };
-
-        ws.onerror = function(error) {
-          console.error("WebSocket error:", error);
-        };
-
-        ws.onclose = function(event) {
-          console.log("WebSocket connection closed:", event.code, event.reason);
-        };
-
-        ws.onmessage = function(event) {
-          console.log("Received message:", event.data);
-          const data = JSON.parse(event.data);
-          if (data.type === 'message') {
-            const studentsList = document.getElementById('students-list');
-            const newStudent = document.createElement('li');
-            newStudent.textContent = data.message;
-            studentsList.appendChild(newStudent);
-          } else if (data.type === 'question') {
-            // Handle receiving questions (if needed)
-          }
-        };
-
-        function startPoll() {
-          if (ws.readyState === WebSocket.OPEN) {
-            const questionId = document.getElementById('question').value;
-            ws.send(JSON.stringify({ type: 'question', question_id: questionId }));
-          } else {
-            console.error("WebSocket is not connected!");
-            // Maybe display an error message to the user
-          }
-        }
-      </script>
+        <div class="students-section">
+          <h3>Students Joined:</h3>
+          <div class="card">
+            <div class="card-body">
+              <ul id="students-list" class="list-unstyled">
+                <!-- This list will be updated in real-time -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<style>
+  .left-column {
+    padding: 20px;
+    border-right: 1px solid #dee2e6;
+    min-height: 100vh;
+  }
+
+  .right-column {
+    padding: 20px;
+  }
+
+  .students-section {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  #students-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  #students-list li:last-child {
+    border-bottom: none;
+  }
+
+  .navigation-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  #question-display {
+    margin-top: 20px;
+  }
+
+  .question-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  .options-container {
+    margin-top: 1rem;
+  }
+
+  .option-item {
+    margin: 0.5rem 0;
+  }
+
+  .dropdown-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-blank {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .wordcloud-input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 1rem;
+  }
+</style>
+
+<script>
+  const pollCode = "{{ code }}";
+  let currentQuestionIndex = 0;
+
+  // Store questions with their full data
+  const questions = [
+    {% for question in poll.questions.all %}
+      {
+        id: "{{ question.id }}",
+        type: "{{ question.question_type }}",
+        {% if question.question_type == 'dropdown_fill' %}
+          text: "{{ question.dropdown_fill_question }}",
+          options: {{ question.get_dropdown_options|safe|default:"[]" }},
+        {% elif question.question_type == 'text' %}
+          text: "{{ question.text_fill_question }}",
+        {% elif question.question_type == 'multiple_choice' %}
+          text: "{{ question.multiple_choice_question }}",
+          options: {{ question.multiple_choice_options|safe|default:"[]" }},
+        {% elif question.question_type == 'single_choice' %}
+          text: "{{ question.single_choice_question }}",
+          options: {{ question.single_choice_option|safe|default:"[]" }},
+        {% elif question.question_type == 'wordcloud' %}
+          text: "{{ question.wordcloud_question }}",
+        {% endif %}
+      },
+    {% endfor %}
+  ];
+
+
+  function createQuestionHTML(question) {
+    let html = '<div class="question-title">';
+
+    switch(question.type) {
+      case 'dropdown_fill':
+        // Split the question text and insert dropdowns
+        const parts = question.text.split('___');
+        html += '<p>';
+        parts.forEach((part, index) => {
+          html += part;
+          if (index < parts.length - 1) {
+            html += `<select class="form-select d-inline-block mx-2" style="width: auto">
+              <option value="">Select...</option>
+              ${question.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+            </select>`;
+          }
+        });
+        html += '</p>';
+        break;
+
+      case 'text':
+        html += `<p>${question.text}</p>
+                 <textarea class="form-control mt-3" rows="3" placeholder="Enter your answer"></textarea>`;
+        break;
+
+      case 'multiple_choice':
+        html += `<p>${question.text}</p>
+                 <div class="options-container">
+                   ${question.options.map(option => `
+                     <div class="form-check option-item">
+                       <input class="form-check-input" type="checkbox" value="${option}">
+                       <label class="form-check-label">${option}</label>
+                     </div>
+                   `).join('')}
+                 </div>`;
+        break;
+
+      case 'single_choice':
+        html += `<p>${question.text}</p>
+                 <div class="options-container">
+                   ${question.options.map(option => `
+                     <div class="form-check option-item">
+                       <input class="form-check-input" type="radio" name="singleChoice" value="${option}">
+                       <label class="form-check-label">${option}</label>
+                     </div>
+                   `).join('')}
+                 </div>`;
+        break;
+
+      case 'wordcloud':
+        html += `<p>${question.text}</p>
+                 <input type="text" class="form-control wordcloud-input" placeholder="Enter your word or phrase">`;
+        break;
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  function updateQuestionDisplay() {
+    const questionContainer = document.getElementById('question-container');
+    const currentQuestion = questions[currentQuestionIndex];
+
+    // Update the question display
+    questionContainer.innerHTML = createQuestionHTML(currentQuestion);
+
+    // Update navigation buttons
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    prevBtn.disabled = currentQuestionIndex === 0;
+    nextBtn.disabled = currentQuestionIndex === questions.length - 1;
+
+    // Send question update to WebSocket
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: 'question',
+        question_id: currentQuestion.id
+      }));
+    }
+  }
+
+  function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      updateQuestionDisplay();
+    }
+  }
+
+  function nextQuestion() {
+    if (currentQuestionIndex < questions.length - 1) {
+      currentQuestionIndex++;
+      updateQuestionDisplay();
+    }
+  }
+
+  function startPoll() {
+    document.getElementById('start-poll-btn').style.display = 'none';
+    document.getElementById('question-display').style.display = 'block';
+    updateQuestionDisplay();
+  }
+
+  // WebSocket setup
+  const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${pollCode}/`;
+
+  const ws = new WebSocket(wsUrl);
+
+  ws.onopen = function() {
+    console.log("WebSocket connection established");
+  };
+
+  ws.onerror = function(error) {
+    console.error("WebSocket error:", error);
+  };
+
+  ws.onclose = function(event) {
+    console.log("WebSocket connection closed:", event.code, event.reason);
+  };
+
+  ws.onmessage = function(event) {
+    console.log("Received message:", event.data);
+    const data = JSON.parse(event.data);
+    if (data.type === 'message') {
+      const studentsList = document.getElementById('students-list');
+      const newStudent = document.createElement('li');
+      newStudent.textContent = data.message;
+      studentsList.appendChild(newStudent);
+    }
+  };
+</script>
 {% endblock %}

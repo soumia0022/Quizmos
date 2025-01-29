@@ -42,4 +42,7 @@ class Question(models.Model):
         return self.poll.title
 
     def get_dropdown_options(self):
-        return self.dropdown_options.split(',') if self.dropdown_options else []
+        if not self.dropdown_options:
+            return []
+        options = [opt.strip() for opt in self.dropdown_options.split(',')]
+        return options
