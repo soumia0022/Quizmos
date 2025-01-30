@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
+from django.contrib.auth.decorators import login_required
+from user_management.helpers import role_required 
 
 import os, io
 
@@ -30,6 +32,9 @@ def get_timer(request):
             timer = None
 
     return timer
+
+@login_required
+@role_required('Lecturer')
 def add_question(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user) # get object or 404
     if request.method == 'POST':
