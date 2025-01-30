@@ -46,8 +46,8 @@
                             
                             <!-- Timer Input Field (Initially Hidden) -->
                             <div id="timer-settings" class="mb-3" style="display: none;">
-                                <label for="timer_duration" class="form-label">Set Timer (Seconds):</label>
-                                <input type="number" name="timer_duration" id="timer_duration" class="form-control" placeholder="Enter seconds">
+                                <label for="question_timer" class="form-label">Set Timer (Seconds):</label>
+                                <input type="number" name="question_timer" id="question_timer" class="form-control" placeholder="Enter seconds">
                             </div>
                         
                             <!-- Text Fill Fields -->
@@ -154,30 +154,9 @@
 
             // Show Timer Input Only for Relevant Question Types
             questionTypeDropdown.addEventListener("change", function () {
-                if (this.value === "multiple_choice" || this.value === "single_choice" || this.value === "text_fill") {
                     timerSettings.style.display = "block";
-                } else {
-                    timerSettings.style.display = "none";
-                }
+               
             });
-
-            // Timer Functionality
-            let timeLeft = {{ question.timer_duration|default:0 }};
-            if (timeLeft > 0) {
-                timerDiv.style.display = "block";
-                document.getElementById("timeLeft").innerText = timeLeft;
-
-                let timer = setInterval(function () {
-                    if (timeLeft <= 0) {
-                        clearInterval(timer);
-                        alert("Time's up!");
-                        document.getElementById("submitBtn").click();  // Auto-submit
-                    } else {
-                        timeLeft--;
-                        document.getElementById("timeLeft").innerText = timeLeft;
-                    }
-                }, 1000);
-            }
         });
     </script>
 
