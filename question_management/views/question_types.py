@@ -1,7 +1,7 @@
 import base64
 import time
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
 
@@ -31,7 +31,7 @@ def get_timer(request):
 
     return timer
 def add_question(request, poll_id):
-    poll = Poll.objects.get(id=poll_id) # get object or 404
+    poll = get_object_or_404(Poll, id=poll_id, user=request.user) # get object or 404
     if request.method == 'POST':
         question_type = request.POST.get('question_type')
 
