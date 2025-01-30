@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from user_management.views import *
+from user_management.views import login_views, profile_update_views, signup_views, home_views
 
 app_name = 'user_management'
 urlpatterns = [
@@ -12,5 +12,7 @@ urlpatterns = [
     path('password/', profile_update_views.PasswordView.as_view(), name='password'),
     path('profile/', profile_update_views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', signup_views.SignUpView.as_view(), name='sign_up'),
+    path('about/', home_views.AboutView.as_view(), name='about'),
+    path('faq/', home_views.FaqView.as_view(), name='faq'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
