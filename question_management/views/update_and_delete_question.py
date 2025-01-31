@@ -30,6 +30,8 @@ def edit_question(request, poll_id):
             question.multiple_choice_answers = newAnswers
             #print("answers:", question.multiple_choice_answers)
 
+            #TO DO: add contraints options or answers can't be empty
+
         elif question.question_type == "single_choice":
             # replace the sc question
             question.single_choice_question = request.POST.get("question_text")
@@ -42,6 +44,9 @@ def edit_question(request, poll_id):
             # don't need to append as the html checks if the original options are now marked as checked
             question.single_choice_answers = request.POST.getlist("single_choice_answers[]")
             print("answers:", question.single_choice_answers)
+
+            # TO DO: add contraints options or answers can't be empty
+            # TO DO: there can onyl be 1 answer
 
         elif question.question_type == "dropdown_fill":
             question.dropdown_options = request.POST.get("dropdown_options", "")
