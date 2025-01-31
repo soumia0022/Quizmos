@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const MCAddBtn = document.getElementById('multiple-choice-add-option-btn');
-    const multipleChoiceOptionsSection = document.getElementById('multiple-choice-option-section');
-    let McOptionCount = multipleChoiceOptionsSection.children.length + 1;
+    const multipleChoiceOptionsSetSection = document.getElementById('multiple-choice-option-section');
+    const multipleChoiceOptionsSection = document.getElementById('multiple-choice-options-container')
+    let McOptionCount = multipleChoiceOptionsSetSection.children.length + 1;
 
     MCAddBtn.addEventListener('click', function() {
         console.log('Button pressed');

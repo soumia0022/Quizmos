@@ -29,7 +29,7 @@
         <!-- Editable Question Timer -->
         <div id="timer">
             <label><strong> Timer </strong> </label>
-            <input type="number" name="question_timer" value="{{ question.timer }}">
+            <input type="number" name="question_timer" value="{{ question.timer|default:0 }}">
         </div>
 
         <!-- Display & Edit Options Based on Question Type -->
@@ -45,17 +45,24 @@
                     </div>
                 {% endfor %}
 
+
+                <div id="multiple-choice-options-container"></div>
                 <!-- Option to add new option -->
                 <button type="button" id="multiple-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
-                <div id="multiple-choice-options-container"></div>
             </div>
         {% elif question.question_type == "single_choice" %}
             <div>
-                <label><strong>Single Choice Options:</strong></label>
                 {% for option in question.single_choice_option %}
-                    <input type="text" name="single_choice_options" value="{{ option }}">
+                    <div id="single-choice-option-section">
+                        <input type="checkbox" name="single_choice_answers[]" value="{{ option }}"
+                            {% if option in question.single_choice_answers %} checked {% endif %}>
+                        <label>{{ option }}</label>
+                    </div>
                 {% endfor %}
-                <input type="text" name="single_choice_options" placeholder="Add new option">
+
+                <div id="single-choice-options-container"></div>
+                <!-- Option to add new option -->
+                <button type="button" id="single-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
             </div>
         {% elif question.question_type == "dropdown_fill" %}
             <div>
@@ -65,15 +72,7 @@
         {% endif %}
 
         <!-- Editable Answer -->
-        {% if question.question_type == "single_choice" %}
-            <div>
-                <label><strong>Correct Answer:</strong></label>
-                {% for answer in question.single_choice_answers %}
-                    <input type="text" name="single_choice_answers" value="{{ answer }}">
-                {% endfor %}
-                <input type="text" name="single_choice_answers" placeholder="Add new correct answer">
-            </div>
-        {% elif question.question_type == "dropdown_fill" %}
+        {% if question.question_type == "dropdown_fill" %}
             <div>
                 <label><strong>Correct Answer:</strong></label>
                 <input type="text" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}">
