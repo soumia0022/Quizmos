@@ -1,15 +1,22 @@
-# views.py
-from allauth.account.views import PasswordResetView
-from ..forms.forgot_password_forms import CustomResetPasswordForm  #custom form
-from ..utils import reverse_without_namespace  # custom resolver
+from django.views import View
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.middleware.csrf import get_token
+from user_management.forms.forgot_password_forms import CustomSetPasswordForm
 
-class CustomPasswordResetView(PasswordResetView):
-    form_class = CustomResetPasswordForm 
+class CustomPasswordResetConfirmView(View):
+    form_class = CustomSetPasswordForm
+    template_name = 'account/password_reset_confirm.html'
+    success_url = reverse_lazy('user_management:dashboard')
 
-    def get_context_data(self, **kwargs):
-        ret = super().get_context_data(**kwargs)
-        login_url = self.passthrough_next_url(reverse_without_namespace("account_login"))  
-        signup_url = self.passthrough_next_url(reverse_without_namespace("account_signup"))  
-        ret["password_reset_form"] = ret.get("form")
-        ret.update({"login_url": login_url, "signup_url": signup_url})  
-        return ret
+    def get(self, request, uidb64, token):
+        form = self.form_class()
+        get_token(request)  # Refresh CSRF token
+        return render(request, self.template_name, {'form': form, 'uidb64': uidb64, 'token': token})
+
+    def post(self, request, uidb64, token):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            if form.save(uidb64, token, request):
+                return redirect(self.success_url)
+        return render(request, self.template_name, {'form': form, 'uidb64': uidb64, 'token': token})
