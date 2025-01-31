@@ -31,9 +31,17 @@ def edit_question(request, poll_id):
             #print("answers:", question.multiple_choice_answers)
 
         elif question.question_type == "single_choice":
+            # replace the sc question
             question.single_choice_question = request.POST.get("question_text")
-            question.single_choice_option = request.POST.get("single_choice_option", "").split(',')
-            question.single_choice_answers = request.POST.get("single_choice_answers", "")
+            # append to the exiting options
+            existingOptions = question.single_choice_options
+            newOptions = request.POST.getlist("single_choice_options[]")
+            question.single_choice_option = existingOptions + newOptions
+            print("options:", question.single_choice_options)
+
+            # don't need to append as the html checks if the original options are now marked as checked
+            question.single_choice_answers = request.POST.getlist("single_choice_answers[]")
+            print("answers:", question.single_choice_answers)
 
         elif question.question_type == "dropdown_fill":
             question.dropdown_options = request.POST.get("dropdown_options", "")
