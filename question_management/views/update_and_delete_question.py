@@ -11,6 +11,10 @@ def edit_question(request, poll_id):
     if request.method == "POST":
         question.question_text = request.POST.get("question_text")
 
+        # send the updated timer field (called question_timer in html)
+        question.timer = request.POST.get("question_timer")
+        #print(question.timer)
+
         # Save options based on question type
         if question.question_type == "multiple_choice":
             #replace the mc question
@@ -19,12 +23,12 @@ def edit_question(request, poll_id):
             existingOptions = question.multiple_choice_options
             newOptions = request.POST.getlist("multiple_choice_options[]")
             question.multiple_choice_options = existingOptions + newOptions
-            print("options:", question.multiple_choice_options)
+            #print("options:", question.multiple_choice_options)
 
             #don't need to append as the html checks if the original options are now marked as checked
             newAnswers = request.POST.getlist("multiple_choice_answers[]")
             question.multiple_choice_answers = newAnswers
-            print("answers:", question.multiple_choice_answers)
+            #print("answers:", question.multiple_choice_answers)
 
         elif question.question_type == "single_choice":
             question.single_choice_question = request.POST.get("question_text")

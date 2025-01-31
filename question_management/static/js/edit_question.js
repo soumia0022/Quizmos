@@ -34,4 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 multipleChoiceOptionsSection.appendChild(document.createTextNode(' '));
             }
     });
+
+    //TO DO: add mc and sc option constraints e.g. have to pick at least one answer, has to be at least one option, only one option
+    //TO DO: allow user to delete options
+    //TO DO: question text must be filled
+
 });

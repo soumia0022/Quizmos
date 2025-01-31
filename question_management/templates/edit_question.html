@@ -26,6 +26,12 @@
         </div>
 
 
+        <!-- Editable Question Timer -->
+        <div id="timer">
+            <label><strong> Timer </strong> </label>
+            <input type="number" name="question_timer" value="{{ question.timer }}">
+        </div>
+
         <!-- Display & Edit Options Based on Question Type -->
         {% if question.question_type == "multiple_choice" %}
             <div>
