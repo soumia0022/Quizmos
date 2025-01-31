@@ -26,6 +26,7 @@ urlpatterns = [
     path('polls/', include(('poll_management.urls', 'poll_management'), namespace='poll_management')),
     path('responses/', include('response_management.urls')),
     path('analytics/', include('analytics.urls')),
+    path('', include('django.contrib.auth.urls')),
     path('', include('user_management.urls')),
     
 ]
