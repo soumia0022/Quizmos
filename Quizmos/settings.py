@@ -78,12 +78,12 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email' 
 ACCOUNT_EMAIL_REQUIRED = True
 
-LOGIN_URL = 'user_management:"user_management:account_login"' 
+LOGIN_URL = 'user_management:log_in' 
 LOGIN_REDIRECT_URL = 'dashboard'  
 
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
-ACCOUNT_LOGOUT_REDIRECT_URL = 'user_management:"user_management:account_login"'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'user_management:log_in'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
