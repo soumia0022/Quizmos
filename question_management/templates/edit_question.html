@@ -34,7 +34,7 @@
 
                 {% for option in question.multiple_choice_options %}
                     <div id="multiple-choice-option-section">
-                        <input type="checkbox" name="multiple_choice_answers" value="{{ option }}"
+                        <input type="checkbox" name="multiple_choice_answers[]" value="{{ option }}"
                             {% if option in question.multiple_choice_answers %} checked {% endif %}>
                         <label>{{ option }}</label>
                     </div>
