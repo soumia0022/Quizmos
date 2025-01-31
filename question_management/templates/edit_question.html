@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Question {{ question.id }}</title>
+</head>
+<body>
+    <h2>Edit Question {{ question.id }}</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Display Question Type (Not Editable) -->
+        <div>
+            <label><strong>Question Type:</strong></label>
+            <input type="text" value="{{ question.get_question_type_display }}" readonly>
+        </div>
+
+        <!-- Editable Question Text -->
+        <div>
+            <label><strong>Question Text:</strong></label>
+            <input type="text" name="question_text" value="{{ question.question_text }}">
+        </div>
+
+
+        <!-- Display & Edit Options Based on Question Type -->
+        {% if question.question_type == "multiple_choice" %}
+            <div>
+                <label><strong>Multiple Choice Options:</strong></label>
+
+                {% for option in question.multiple_choice_options %}
+                    <div>
+                        <input type="checkbox" name="multiple_choice_answers" value="{{ option }}"
+                            {% if option in question.multiple_choice_answers %} checked {% endif %}>
+                        <label>{{ option }}</label>
+                    </div>
+                {% endfor %}
+
+                <!-- Option to add new option -->
+                <div>
+                    <input type="text" name="new_multiple_choice_option" placeholder="Add new option">
+                </div>
+            </div>
+        {% elif question.question_type == "single_choice" %}
+            <div>
+                <label><strong>Single Choice Options:</strong></label>
+                {% for option in question.single_choice_option %}
+                    <input type="text" name="single_choice_options" value="{{ option }}">
+                {% endfor %}
+                <input type="text" name="single_choice_options" placeholder="Add new option">
+            </div>
+        {% elif question.question_type == "dropdown_fill" %}
+            <div>
+                <label><strong>Dropdown Options:</strong></label>
+                <input type="text" name="dropdown_options" value="{{ question.dropdown_options }}">
+            </div>
+        {% endif %}
+
+        <!-- Editable Answer -->
+        {% if question.question_type == "single_choice" %}
+            <div>
+                <label><strong>Correct Answer:</strong></label>
+                {% for answer in question.single_choice_answers %}
+                    <input type="text" name="single_choice_answers" value="{{ answer }}">
+                {% endfor %}
+                <input type="text" name="single_choice_answers" placeholder="Add new correct answer">
+            </div>
+        {% elif question.question_type == "dropdown_fill" %}
+            <div>
+                <label><strong>Correct Answer:</strong></label>
+                <input type="text" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}">
+            </div>
+        {% endif %}
+
+        <br>
+        <button type="submit">Save Changes</button>
+        <a href="{% url 'question_management:add_question' poll_id=question.poll.id %}">Cancel</a>
+    </form>
+</body>
+</html>

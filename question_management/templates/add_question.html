@@ -129,8 +129,20 @@
                     <h3 class="text-center">Questions Created:</h3>
                     <div id="questions-list">
                         {% for question in poll.questions.all %}
-                            <div class="question-item mb-2">
-                                <strong>Question {{ forloop.counter }}:</strong> {{ question.question_text }}
+                            <div class="question-item mb-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Question {{ forloop.counter }}:</strong> {{ question.question_text }}
+                                </div>
+                                <div>
+                                    <a href="{% url 'question_management:edit_question' poll.id %}?question_id={{ question.id }}" class="btn btn-sm btn-warning">
+                                        Edit
+                                    </a>
+                                    <a href="{% url 'question_management:delete_question' poll.id %}?question_id={{ question.id }}"
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this question?');">
+                                        Delete
+                                    </a>
+                                </div>
                             </div>
                         {% empty %}
                             <p class="text-muted text-center">No questions created yet.</p>
