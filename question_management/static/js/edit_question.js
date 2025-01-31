@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const MCAddBtn = document.getElementById('multiple-choice-add-option-btn');
     const multipleChoiceOptionsSection = document.getElementById('multiple-choice-option-section');
-    const McOptionCount = multipleChoiceOptionsSection.children.length + 1;
+    let McOptionCount = multipleChoiceOptionsSection.children.length + 1;
 
     MCAddBtn.addEventListener('click', function() {
         console.log('Button pressed');
@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 //create a space between options
                 multipleChoiceOptionsSection.appendChild(document.createTextNode(' '));
+
+                McOptionCount++;
             }
     });
 
