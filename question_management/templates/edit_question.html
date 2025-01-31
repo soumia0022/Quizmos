@@ -64,6 +64,12 @@
                 <!-- Option to add new option -->
                 <button type="button" id="single-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
             </div>
+
+        {% elif question.question_type == "text_fill" %}
+            <div id="text-fill-fields">
+                <label><strong>Question Answer:</strong></label>
+                <input type="text" name="text_fill_answer" value="{{ question.text_fill_answer}}">
+            </div>
         {% elif question.question_type == "dropdown_fill" %}
             <div>
                 <label><strong>Dropdown Options:</strong></label>

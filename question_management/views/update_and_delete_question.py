@@ -48,6 +48,13 @@ def edit_question(request, poll_id):
             # TO DO: add contraints options or answers can't be empty
             # TO DO: there can onyl be 1 answer
 
+        elif question.question_type == "text_fill":
+            question.text_fill_question = request.POST.get("question_text")
+            #print("text fill question:", question.text_fill_question)
+            question.text_fill_answer = request.POST.get("text_fill_answer")
+            #print("text fill answer:", question.text_fill_answer)
+
+
         elif question.question_type == "dropdown_fill":
             question.dropdown_options = request.POST.get("dropdown_options", "")
             question.dropdown_correct_answer = request.POST.get("dropdown_correct_answer", "")
