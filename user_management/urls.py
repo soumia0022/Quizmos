@@ -3,15 +3,16 @@ from django.conf.urls.static import static
 from django.urls import path ,include
 from user_management.views import *
 from django.contrib.auth import views as auth_views
-
-reset_password_patterns = [
-    path('reset/', auth_views.PasswordResetView.as_view(),name="reset_password"),
-    path('reset/done/', auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
-    path('reset/confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path('reset/complete/', auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
-]
+from user_management.views.forgot_password_views import CustomPasswordResetView  
 
 app_name = 'user_management'
+reset_password_patterns = [
+    path('reset/', CustomPasswordResetView.as_view(), name='reset_password'),
+    path('reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+]
+
 urlpatterns = [
     path('', login_views.home, name='home'),
     path('dashboard/', login_views.dashboard, name='dashboard'),
@@ -20,8 +21,11 @@ urlpatterns = [
     path('password/', profile_update_views.PasswordView.as_view(), name='password'),
     path('profile/', profile_update_views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', signup_views.SignUpView.as_view(), name='sign_up'),
-    path('accounts/', include('allauth.urls')),
+    path('accounts/login/', auth_views.LoginView.as_view(), name='account_login'),
+    path('accounts/signup/', signup_views.SignUpView.as_view(), name='account_signup'),
     path('accounts/password/', include(reset_password_patterns)),
+    path('accounts/', include('allauth.urls')),
+    
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
