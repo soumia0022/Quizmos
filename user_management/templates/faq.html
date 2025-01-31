@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/faq.css' %}">
+
+{% include 'partials/home_navbuttons.html' %}
+<div class="container vh-100 d-flex align-items-center justify-content-center">
+    <div class="row w-100">
+        <div class="col-12 d-flex justify-content-center">
+            <div class="card faq-card shadow-lg">
+                <h1 class="faq-heading mb-4">Frequently Asked Questions</h1>
+                
+                <!-- FAQ Navigation -->
+                <div class="faq-nav mb-4">
+                    <button class="faq-nav-btn active" data-target="general-faqs">General</button>
+                    <button class="faq-nav-btn" data-target="student-faqs">Students</button>
+                    <button class="faq-nav-btn" data-target="lecturer-faqs">Lecturers</button>
+                </div>
+
+                <div class="faq-content text-start">
+                    <!-- General FAQs -->
+                    <div id="general-faqs" class="faq-section active">
+                        <h2 class="faq-section-heading">General Questions</h2>
+                        <div class="faq-item">
+                            <p class="faq-question">How do Polls work?</p>
+                            <p class="faq-answer">
+                                Polls are interactive questions that can be answered in real-time. 
+                                Participants can submit their responses, and results are displayed instantly. 
+                            </p>
+                        </div>
+                        <div class="faq-item">
+                            <p class="faq-question">Is the platform free?</p>
+                            <p class="faq-answer">
+                                It is completely free to use. 
+                            </p>
+                        </div>
+                        <div class="faq-item">
+                            <p class="faq-question">Do Polls work on all devices?</p>
+                            <p class="faq-answer">
+                                Polls are designed to be responsive and work seamlessly across all devices, including smartphones, tablets, and desktops via the web browser.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">What should I do if I forget my account password?</p>
+                            <p class="faq-answer">
+                                If you forget your password, you can use the 'Forgot Password' link on the login page to reset it. 
+                                Follow the instructions sent to your email.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">How secure is my data?</p>
+                            <p class="faq-answer">
+                                We take data security seriously. 
+                                We never share your personal information with third parties.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">What types of questions are there?</p>
+                            <p class="faq-answer">
+                                We support multiple question types including multiple choice, drag and drop, matching and word clouds. 
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Student FAQs -->
+                    <div id="student-faqs" class="faq-section">
+                        <h2 class="faq-section-heading">Student Questions</h2>
+                        <div class="faq-item">
+                            <p class="faq-question">How do I join a Poll?</p>
+                            <p class="faq-answer">
+                                Enter the Poll code or scan the QR code shared with you.
+                            </p>
+                        </div>
+                        <div class="faq-item">
+                            <p class="faq-question">Do I need an account to participate?</p>
+                            <p class="faq-answer">
+                                No, you can participate as a guest using just the Poll code or scanning the QR code. 
+                                However, creating an account helps track your progress.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">Can I participate in a Poll at any time?</p>
+                            <p class="faq-answer">
+                                No, you can only participate when the Poll has been started by the lecturer.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">How do I access Polls on my mobile device?</p>
+                            <p class="faq-answer">
+                                You can access Polls via the web browser on your mobile device.
+                                Just enter the Poll code or scan the QR code.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">Can I see my past Poll results?</p>
+                            <p class="faq-answer">
+                                Yes, if you have an account, all your Poll attempts and scores are saved in your dashboard.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Lecturer FAQs -->
+                    <div id="lecturer-faqs" class="faq-section">
+                        <h2 class="faq-section-heading">Lecturer Questions</h2>
+                        <div class="faq-item">
+                            <p class="faq-question">How do I create a Poll?</p>
+                            <p class="faq-answer">
+                                Log in to your account, and click the 'Create Poll' button
+                                You can then select the type of questions you want and add them to your Poll.
+                            </p>
+                        </div>
+                        <div class="faq-item">
+                            <p class="faq-question">Can I reuse my Polls?</p>
+                            <p class="faq-answer">
+                                Yes, all your Polls are saved in your dashboard and can be reused. 
+                            </p>
+                        </div>
+                        <div class="faq-item">
+                            <p class="faq-question">How do I share my Poll with students?</p>
+                            <p class="faq-answer">
+                                After creating your Poll, you will have the option to start the Poll.
+                                Once the Poll is started, you can display a Poll code and QR code that students can use to join.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">Can I export Poll results?</p>
+                            <p class="faq-answer">
+                                Yes, you can export the results to a CSV file for further analysis or record-keeping.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">Can I embed media into the questions</p>
+                            <p class="faq-answer">
+                                Yes, you can add video, audio and pictures into your questions.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">Can I set a time limit for my Poll?</p>
+                            <p class="faq-answer">
+                                Yes, you can incorporate a timer into the questions.
+                            </p>
+                        </div>
+
+                        <div class="faq-item">
+                            <p class="faq-question">How do I view Poll analytics?</p>
+                            <p class="faq-answer">
+                                Access detailed analytics for each Poll from your dashboard.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'partials/footer.html' %}
+
+<script src="{% static 'js/faq_navigation.js' %}"></script>
+{% endblock %}

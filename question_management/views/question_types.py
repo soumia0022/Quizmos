@@ -1,21 +1,35 @@
 import base64
-
+import time
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
 
 import os, io
+
 from collections import Counter
 from django.http import HttpResponse
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from PIL import ImageFont
+import matplotlib
+matplotlib.use('Agg')
 
 # FOR REFACTORING, BELOW THE QUESTION_TEXT AND THE SPECIFIC QUESTIONS HAVE THE SAME LINE (SAME THING)
 # PUT THIS IN A CLASS PLS BEFORE MERGING TO MAIN
 # MAKE TEMPLATES FOLDER A DIRECTORY NOT A PACKAGE!!
+def get_timer(request):
+    timer = request.POST.get('question_timer')
 
+    if not timer:
+        timer = None
+    else:
+        try:
+            timer = int(timer)
+        except ValueError:
+            timer = None
+
+    return timer
 def add_question(request, poll_id):
     poll = Poll.objects.get(id=poll_id) # get object or 404
     if request.method == 'POST':
@@ -26,12 +40,14 @@ def add_question(request, poll_id):
         if question_type == 'text_fill': # E.g., 'What is an apple?', 'a fruit' (as text, not as an option)
             question_text = request.POST.get('text_fill_question')
             question_answer = request.POST.get('text_fill_answer')
+            timer = get_timer(request)
             question = Question.objects.create(
                 poll_id=poll_id,
                 question_text=question_text,
                 question_type=question_type,
                 text_fill_question=question_text,
-                text_fill_answer=question_answer
+                text_fill_answer=question_answer,
+                timer=timer
             )
             question.save()
         elif question_type == 'dropdown_fill':
@@ -40,6 +56,7 @@ def add_question(request, poll_id):
             correct_answer = request.POST.get('dropdown_correct_answer')
             additional_options = request.POST.getlist('additional_options')
             question_with_blank = original_text.replace(correct_answer, '_____') # The original text with blank to replace
+            timer = get_timer(request)
 
             question = Question.objects.create(
                 poll=poll,
@@ -47,7 +64,8 @@ def add_question(request, poll_id):
                 question_text=question_text,
                 question_type=question_type,
                 dropdown_fill_question=question_with_blank,
-                dropdown_options=','.join([correct_answer] + additional_options)  # Store all options
+                dropdown_options=','.join([correct_answer] + additional_options),  # Store all options
+                timer=timer
             )
             question.save()
         elif question_type == 'multiple_choice':
@@ -55,6 +73,8 @@ def add_question(request, poll_id):
             multiple_choice_question = request.POST.get('multiple_choice_question')
             multiple_choice_options = request.POST.getlist('multiple_choice_options[]')
             multiple_choice_answers = request.POST.getlist('multiple_choice_answers[]')
+            timer = get_timer(request)
+
 
             # Server-side validation
             if not multiple_choice_options:
@@ -70,10 +90,12 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 multiple_choice_question=multiple_choice_question,
                 multiple_choice_options=multiple_choice_options,
-                multiple_choice_answers=multiple_choice_answers
+                multiple_choice_answers=multiple_choice_answers,
+                timer=timer
             )
             question.save()
         elif question_type == 'single_choice':
+            timer = get_timer(request)
             question_text = request.POST.get('single_choice_question')
             single_choice_question = request.POST.get('single_choice_question')
             single_choice_option = request.POST.getlist('single_choice_options[]')
@@ -93,16 +115,21 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 single_choice_question=single_choice_question,
                 single_choice_option=single_choice_option,
-                single_choice_answers=single_choice_answers
+                single_choice_answers=single_choice_answers,
+                timer=timer
             )
             question.save()
 
         elif question_type == 'wordcloud':
             question_text = request.POST.get('wordcloud_question')
+            timer = get_timer(request)
+
             question = Question.objects.create(
                 poll_id=poll_id,
                 question_text=question_text,
-                wordcloud_question=question_text
+                question_type=question_type,
+                wordcloud_question=question_text,
+                timer=timer
             )
             question.save()
 
@@ -121,7 +148,7 @@ def add_question(request, poll_id):
                     font = ImageFont.truetype(font_path) # Font is TrueType
                 except IOError:
                     raise ValueError("Only supported for TrueType fonts")
-
+            matplotlib.use('Agg')
             wordcloud = WordCloud(
                 width=800,
                 height=400,
@@ -129,8 +156,7 @@ def add_question(request, poll_id):
                 colormap='twilight',  # Colour scheme
                 max_font_size=100,
                 min_font_size=10,
-                stopwords={'and', 'the', 'of'},  # Exclude common words
-                font_path=font_path,
+                font_path=font_path
             ).generate_from_frequencies(word_frequencies)
 
             plt.figure(figsize=(10, 5))
@@ -150,6 +176,8 @@ def add_question(request, poll_id):
             match_question = request.POST.get('match_question')
             match_options = request.POST.getlist('match_question_options[]')
             match_answers = request.POST.getlist('match_question_answers[]')
+            timer = get_timer(request)
+
 
             # Server-side validation
             if not match_options:
@@ -165,7 +193,8 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 match_question=match_question,
                 match_options=match_options,
-                match_answers=match_answers
+                match_answers=match_answers,
+                timer=timer
             )
 
             #it saved (showed up in the admin view) even without this line?
@@ -174,3 +203,6 @@ def add_question(request, poll_id):
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
     return render(request, "add_question.html", {"poll": poll})
+
+
+
