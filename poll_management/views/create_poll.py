@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render
 from django.urls import reverse
-
+from user_management.helpers import role_required 
 from poll_management.models.poll_model import Poll
 
+@role_required('Lecturer')
 def create_poll(request):
     if request.method == "POST":
         title = request.POST.get("title")

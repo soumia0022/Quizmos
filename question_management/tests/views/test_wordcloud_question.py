@@ -15,6 +15,7 @@ class WordcloudTestCase(TestCase):
         self.factory = RequestFactory()
         self.client = Client()
         self.user = User.objects.create_user(username='testuser', password='password', role='Lecturer')
+        self.client.login(username='testuser', password='password')
         self.poll = Poll.objects.create(title='Poll 1', user=self.user, status='active')
         self.font_path = os.path.join(
             settings.BASE_DIR, "question_management", "static", "fonts", "RobotoMono-Regular.ttf"
