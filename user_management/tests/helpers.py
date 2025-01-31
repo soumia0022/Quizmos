@@ -22,7 +22,7 @@ class MenuTesterMixin(AssertHTMLMixin):
     """Class to extend tests with tools to check the presents of menu items."""
 
     menu_urls = [
-        reverse('user_management:password'), reverse('user_management:profile'), reverse('user_management:log_out')
+        reverse('password'), reverse('profile'), reverse('log_out')
     ]
 
     def assert_menu(self, response):

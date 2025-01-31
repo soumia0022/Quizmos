@@ -32,7 +32,7 @@ class PasswordView(LoginRequiredMixin, FormView):
         """Redirect the user after successful password change."""
 
         messages.add_message(self.request, messages.SUCCESS, "Password updated!")
-        return reverse('user_management:dashboard')
+        return reverse('dashboard')
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):

@@ -12,7 +12,7 @@ class SignUpViewTestCase(TestCase, LogInTester):
     fixtures = ['user_management/tests/fixtures/default_user.json']
 
     def setUp(self):
-        self.url = reverse('user_management:sign_up')
+        self.url = reverse('sign_up')
         self.form_input = {
             'first_name': 'Jane',
             'last_name': 'Doe',
@@ -38,7 +38,7 @@ class SignUpViewTestCase(TestCase, LogInTester):
     def test_get_sign_up_redirects_when_logged_in(self):
         self.client.login(username=self.user.username, password="Password123")
         response = self.client.get(self.url, follow=True)
-        redirect_url = reverse('user_management:dashboard')
+        redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'lecturer_dashboard.html')
 
@@ -60,7 +60,7 @@ class SignUpViewTestCase(TestCase, LogInTester):
         response = self.client.post(self.url, self.form_input, follow=True)
         after_count = User.objects.count()
         self.assertEqual(after_count, before_count+1)
-        response_url = reverse('user_management:dashboard')
+        response_url = reverse('dashboard')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'student_dashboard.html')
         user = User.objects.get(username='janedoe')
@@ -77,6 +77,6 @@ class SignUpViewTestCase(TestCase, LogInTester):
         response = self.client.post(self.url, self.form_input, follow=True)
         after_count = User.objects.count()
         self.assertEqual(after_count, before_count)
-        redirect_url = reverse('user_management:dashboard')
+        redirect_url = reverse('dashboard')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'lecturer_dashboard.html')

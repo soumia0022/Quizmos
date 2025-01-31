@@ -101,7 +101,7 @@ def log_out(request):
     """Log out the current user"""
 
     logout(request)
-    return redirect(reverse('user_management:home'))
+    return redirect(reverse('home'))
 
 
 

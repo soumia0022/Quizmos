@@ -35,7 +35,7 @@ class PollLockTestCase(TestCase):
         self.poll.refresh_from_db()
         self.assertTrue(self.poll.locked)
         self.assertEqual(self.poll.status, 'closed')
-        self.assertRedirects(response, reverse('user_management:dashboard'))
+        self.assertRedirects(response, reverse('dashboard'))
 
     def test_poll_lock_post_unlock(self):
         """Test the POST request to unlock a poll."""
@@ -48,7 +48,7 @@ class PollLockTestCase(TestCase):
         self.poll.refresh_from_db()
         self.assertFalse(self.poll.locked)
         self.assertEqual(self.poll.status, 'active')
-        self.assertRedirects(response, reverse('user_management:dashboard'))
+        self.assertRedirects(response, reverse('dashboard'))
 
     # def test_poll_lock_requires_authentication(self):
     #     """Test that the poll_lock view requires a logged-in user."""

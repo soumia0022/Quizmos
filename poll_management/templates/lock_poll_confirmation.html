@@ -22,7 +22,7 @@
         <!-- Add javascript to dynamically hide the unnecassary button e.g. if the poll is locked only show unlock option-->
         <button type="submit" id="lock" name="action" value="lock">Lock</button>
         <button type="submit" id="unlock" name="action" value="unlock">Unlock</button>
-        <a href="{% url 'user_management:dashboard'%}">Go back to Dashboard</a>
+        <a href="{% url 'dashboard'%}">Go back to Dashboard</a>
     </form>
 
     <script src="{% static 'js/lock_poll.js' %}"></script>
