@@ -16,6 +16,7 @@ class MatchQuestionTestCase(TestCase):
             password="Password123",
             role="Lecturer",  # Specify role as required
         )
+        self.client.login(username='testuser', password='Password123')
 
         # Create a sample poll
         self.poll = Poll.objects.create(
