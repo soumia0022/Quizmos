@@ -7,6 +7,8 @@ class CreatePollViewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user.role = 'Lecturer' 
+        self.user.save() 
         self.create_url = reverse('poll_management:create_poll')
 
     def test_create_poll_view_get(self):
@@ -25,3 +27,16 @@ class CreatePollViewTest(TestCase):
         poll = Poll.objects.get(title='Sample Poll')
         self.assertIsNotNone(poll)
         self.assertEqual(poll.user, self.user)
+
+    def test_create_poll_view_unauthorized(self):
+        unauthorized_user = User.objects.create_user(
+            username='teststudentuser',
+            password='testpassword',
+            email='teststudentuser@example.com'  
+        )
+        unauthorized_user.role = 'Student'  
+        unauthorized_user.save()
+        self.client.login(username='teststudentuser', password='testpassword')
+        
+        response = self.client.get(self.create_url)
+        self.assertEqual(response.status_code, 404)  # Expect a 404 for unauthorized users

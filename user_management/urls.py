@@ -1,14 +1,19 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path ,include
 from user_management.views import login_views, profile_update_views, signup_views, home_views
+from user_management.views import *
+from django.urls import path ,include, reverse_lazy
+from user_management.forms.forgot_password_forms import CustomPasswordResetForm 
 from django.contrib.auth import views as auth_views
 
+app_name = 'user_management'
+
 reset_password_patterns = [
-    path('reset/', auth_views.PasswordResetView.as_view(),name="reset_password"),
-    path('reset/done/', auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
-    path('reset/confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path('reset/complete/', auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
+    path('reset/', auth_views.PasswordResetView.as_view(template_name='account/password_reset.html',
+    form_class=CustomPasswordResetForm , success_url=reverse_lazy('user_management:password_reset_done')), name='password_reset'),
+    path('reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='account/password_reset_done.html'), name='password_reset_done'),
+    path('reset/confirm/<uidb64>/<token>/', forgot_password_views.CustomPasswordResetConfirmView.as_view(template_name='account/password_reset_from_key.html'), name='password_reset_confirm'),
+    path('reset/complete/', auth_views.PasswordResetCompleteView.as_view(template_name='account/password_reset_complete.html'), name='password_reset_complete'),
 ]
 
 urlpatterns = [
@@ -19,10 +24,9 @@ urlpatterns = [
     path('password/', profile_update_views.PasswordView.as_view(), name='password'),
     path('profile/', profile_update_views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', signup_views.SignUpView.as_view(), name='sign_up'),
+    path('accounts/password/', include(reset_password_patterns)),
     path('about/', home_views.AboutView.as_view(), name='about'),
     path('faq/', home_views.FaqView.as_view(), name='faq'),
-    path('accounts/', include('allauth.urls')),
-    path('accounts/password/', include(reset_password_patterns)),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
