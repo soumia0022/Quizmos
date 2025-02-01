@@ -70,6 +70,7 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 dropdown_fill_question=question_with_blank,
                 dropdown_options=','.join([correct_answer] + additional_options),  # Store all options
+                dropdown_correct_answer=correct_answer,
                 timer=timer
             )
             question.save()
