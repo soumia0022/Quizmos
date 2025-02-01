@@ -2,6 +2,8 @@ import base64
 import time
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+
+from question_management.forms.question_forms import QuestionForm
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
 from django.contrib.auth.decorators import login_required
@@ -39,9 +41,13 @@ def add_question(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user) # get object or 404
     if request.method == 'POST':
         question_type = request.POST.get('question_type')
-        audio_file = request.FILES.get('audio_file')
-        video_file = request.FILES.get('video_file')
+        # audio_file = request.FILES.get('audio_file')
+        # video_file = request.FILES.get('video_file')
         youtube_link = request.POST.get('youtube_link')
+
+        # print("Audio File Received:", audio_file)
+        # print("Video File Received:", video_file)
+        print("YouTube Link Received:", youtube_link)
 
         # Get the relevant question fields based on question type:
 
@@ -55,12 +61,20 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 text_fill_question=question_text,
                 text_fill_answer=question_answer,
-                audio_file=audio_file,
-                video_file=video_file,
+                # audio_file=audio_file,
+                # video_file=video_file,
                 youtube_link=youtube_link,
                 timer=timer
             )
-            question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
+
         elif question_type == 'dropdown_fill':
             original_text = request.POST.get('dropdown_fill_question') # The original text that is inputted
             question_text = request.POST.get('dropdown_fill_question')
@@ -228,7 +242,15 @@ def add_question(request, poll_id):
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
 
-    return render(request, "add_question.html", {"poll": poll})
+    question_form = QuestionForm()
+    return render(request, "add_question.html", {
+        'poll': poll,
+        'question_form': question_form,
+    })
+
+# was return render something instead of question form (look at github commits to find last line)
+
+# also, can probably delete question form and media form if above is not used (will have to see tho)
 
 
 
