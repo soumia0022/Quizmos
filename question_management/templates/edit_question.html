@@ -71,9 +71,21 @@
                 <input type="text" name="text_fill_answer" value="{{ question.text_fill_answer}}">
             </div>
         {% elif question.question_type == "dropdown_fill" %}
-            <div>
-                <label><strong>Dropdown Options:</strong></label>
-                <input type="text" name="dropdown_options" value="{{ question.dropdown_options }}">
+            <div id="dropdown-fill-fields" class="mb-3" style="display: none;">
+                <textarea name="dropdown_fill_question" id="dropdown-fill-input" value="{{ question.dropdown_fill_question }}"></textarea>
+                <div id="text-preview" class="mb-3 border p-2"></div> <!-- Preview area for the text -->
+
+                <label for="dropdown-correct-answer" class="form-label">Correct Answer:</label>
+                <input type="text" name="dropdown_correct_answer" id="dropdown-correct-answer" class="form-control mb-2" value="{{ question.dropdown_correct_answer }}" readonly>
+
+                <!-- Loop through existing options -->
+                {% for option in dropdown_options %}
+                    <input type="text" name="additional_options" class="form-control mb-2" value="{{ option }}">
+                {% endfor %}
+
+                <label for="additional-options" class="form-label">Additional Options:</label>
+                <input type="text" name="additional_options" class="form-control mb-2" placeholder="Extra Option">
+                <button type="button" id="reset-preview-btn" class="btn btn-secondary mt-2">Reset</button>
             </div>
         {% endif %}
 
@@ -83,6 +95,11 @@
                 <label><strong>Correct Answer:</strong></label>
                 <input type="text" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}">
             </div>
+
+            <!-- Loop through existing options -->
+            {% for option in dropdown_options %}
+                <input type="text" name="additional_options" value="{{ option }}">
+            {% endfor %}
         {% endif %}
 
         <br>
