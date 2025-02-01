@@ -1,4 +1,3 @@
-# user_management/views/forgot_password_views.py
 from django.views import View
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
