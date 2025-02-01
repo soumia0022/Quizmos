@@ -58,6 +58,10 @@ class CustomSetPasswordForm(forms.Form):
     new_password = forms.CharField(widget=forms.PasswordInput)
     new_password_confirm = forms.CharField(widget=forms.PasswordInput)
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("new_password")
@@ -72,6 +76,10 @@ class CustomSetPasswordForm(forms.Form):
         # Basic password validation: at least 8 characters, one number, one uppercase, one lowercase
         if len(password) < 8 or not re.search(r'\d', password) or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password):
             raise ValidationError("Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter.")
+
+        # Ensure the new password is not the same as the old password
+        if self.user and self.user.check_password(password):
+            raise ValidationError("New password cannot be the same as the old password.")
 
         return cleaned_data
 
