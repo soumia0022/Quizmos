@@ -29,3 +29,4 @@ whitenoise==6.5.0
 gunicorn==21.2.0
 pytest-django==4.5.2
 redis==5.0.0
+pytest-asyncio==0.23.5
