@@ -98,7 +98,7 @@
 
             <!-- Loop through existing options -->
             {% for option in dropdown_options %}
-                <input type="text" name="additional_options" value="{{ option }}">
+                <input type="text" name="dropdown_options[]" value="{{ option }}">
             {% endfor %}
         {% endif %}
 

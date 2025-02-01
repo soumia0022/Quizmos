@@ -56,7 +56,7 @@ def edit_question(request, poll_id):
 
 
         elif question.question_type == "dropdown_fill":
-            question.dropdown_options = request.POST.get("dropdown_options", "")
+            question.dropdown_options = ','.join(request.POST.getlist("dropdown_options[]"))
             question.dropdown_correct_answer = request.POST.get("dropdown_correct_answer", "")
 
         question.save()
