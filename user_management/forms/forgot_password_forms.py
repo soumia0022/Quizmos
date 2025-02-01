@@ -63,6 +63,9 @@ class CustomSetPasswordForm(forms.Form):
         password = cleaned_data.get("new_password")
         password_confirm = cleaned_data.get("new_password_confirm")
 
+        if not password or not password_confirm:
+            raise ValidationError("Both password fields are required.")
+
         if password != password_confirm:
             raise ValidationError("Passwords do not match.")
 
