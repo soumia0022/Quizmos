@@ -79,7 +79,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 
 LOGIN_URL = 'user_management:log_in' 
-LOGIN_REDIRECT_URL = 'dashboard'  
+LOGIN_REDIRECT_URL = 'user_management:dashboard'  
 
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
@@ -186,14 +186,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user_management.User'
 
 # Login URL for redirecting users from login protected views
-LOGIN_URL = 'log_in'
+LOGIN_URL = 'user_management:log_in'
 
 # URL where @login_prohibited redirects to
-REDIRECT_URL_WHEN_LOGGED_IN = 'dashboard'
+REDIRECT_URL_WHEN_LOGGED_IN = 'user_management:dashboard'
 
 # Convert Django ERROR messages to Bootstrap DANGER messages
 MESSAGE_TAGS = {
-    messages.ERROR: 'danger',
+    messages.ERROR: 'user_management:danger',
 }
 
 MEDIA_URL = '/media/'

@@ -9,7 +9,7 @@ class HomeViewTestCase(TestCase):
     fixtures = ['user_management/tests/fixtures/default_user.json']
 
     def setUp(self):
-        self.url = reverse('home')
+        self.url = reverse('user_management:home')
         self.user = User.objects.get(username='johndoe')
         self.poll = Poll.objects.create(title='Test Poll', user=self.user, number_code='123456')
 
@@ -24,7 +24,7 @@ class HomeViewTestCase(TestCase):
     def test_get_home_redirects_when_logged_in(self):
         self.client.login(username=self.user.username, password="Password123")
         response = self.client.get(self.url, follow=True)
-        redirect_url = reverse('dashboard')
+        redirect_url = reverse('user_management:dashboard')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'lecturer_dashboard.html')
 

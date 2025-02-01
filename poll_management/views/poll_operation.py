@@ -35,7 +35,7 @@ def poll_lock(request, poll_id):
     if request.method == 'POST':
         action = request.POST.get('action')  # Get the action from the button pressed
         lock_or_unlock(request, action, poll)
-        return redirect(reverse('dashboard'))
+        return redirect(reverse('user_management:dashboard'))
 
     return render(request, 'lock_poll_confirmation.html', {'poll': poll})
 

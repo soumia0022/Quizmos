@@ -18,7 +18,7 @@
                 
                 <div class="poll-code">
                     <h2 class="h4 mb-3">Join Poll</h2>
-                    <form method="post" action="{% url 'home' %}">
+                    <form method="post" action="{% url 'user_management:home' %}">
                         {% csrf_token %}
                         <div class="form-group">
                             {{ form.poll_code }}
