@@ -8,6 +8,7 @@ from user_management.views import *
 from django.contrib.auth import views as auth_views
 
 app_name = 'user_management'
+
 reset_password_patterns = [
     path('reset/', auth_views.PasswordResetView.as_view(template_name='account/password_reset.html',
     form_class=CustomPasswordResetForm , success_url=reverse_lazy('user_management:password_reset_done')), name='password_reset'),
@@ -24,9 +25,7 @@ urlpatterns = [
     path('password/', profile_update_views.PasswordView.as_view(), name='password'),
     path('profile/', profile_update_views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', signup_views.SignUpView.as_view(), name='sign_up'),
-    path(r'^accounts/$', include('allauth.urls')),
     path('accounts/password/', include(reset_password_patterns)),
-    
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
