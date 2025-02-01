@@ -63,7 +63,7 @@ def edit_question(request, poll_id):
         return redirect("question_management:add_question", poll_id=poll.id)
 
     dropdown_options = question.dropdown_options.split(',') if question.dropdown_options else []
-    print(dropdown_options)
+    #print(dropdown_options)
     context = {
         'question': question,
         'dropdown_options': dropdown_options,
