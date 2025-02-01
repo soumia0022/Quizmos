@@ -59,6 +59,9 @@ def edit_question(request, poll_id):
             question.dropdown_options = ','.join(request.POST.getlist("dropdown_options[]"))
             question.dropdown_correct_answer = request.POST.get("dropdown_correct_answer", "")
 
+        elif question.question_type == "wordcloud":
+            question.wordcloud_question = request.POST.get("question_text")
+
         #Only update the wordcloud question
 
 

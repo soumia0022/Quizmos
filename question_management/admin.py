@@ -19,27 +19,36 @@ class QuestionForm(forms.ModelForm):
 
         # Hide all fields initially
         self.fields['text_fill_question'].widget.attrs['style'] = 'display:none;'
+        self.fields['text_fill_answer'].widget.attrs['style'] = 'display:none;'
+
         self.fields['dropdown_fill_question'].widget.attrs['style'] = 'display:none;'
         self.fields['dropdown_options'].widget.attrs['style'] = 'display:none;'
+
         self.fields['multiple_choice_question'].widget.attrs['style'] = 'display:none;'
         self.fields['multiple_choice_options'].widget.attrs['style'] = 'display:none;'
+
         self.fields['single_choice_question'].widget.attrs['style'] = 'display:none;'
         self.fields['single_choice_option'].widget.attrs['style'] = 'display:none;'
 
         if question_type == 'text_fill':
             self.fields['text_fill_question'].widget.attrs['style'] = ''
+            self.fields['text_fill_answer'].widget.attrs['style'] = ''
+
         elif question_type == 'dropdown_fill':
             self.fields['dropdown_fill_question'].widget.attrs['style'] = ''
             self.fields['dropdown_options'].widget.attrs['style'] = ''
             self.fields['dropdown_correct_answer'].widget.attrs['style'] = ''
+
         elif question_type == 'multiple_choice':
             self.fields['multiple_choice_question'].widget.attrs['style'] = ''
             self.fields['multiple_choice_options'].widget.attrs['style'] = ''
             self.fields['multiple_choice_answers'].widget.attrs['style'] = ''
+
         elif question_type == 'single_choice':
             self.fields['single_choice_question'].widget.attrs['style'] = ''
             self.fields['single_choice_option'].widget.attrs['style'] = ''
             self.fields['single_choice_answers'].widget.attrs['style'] = ''
+
         elif question_type == 'match_question':
             self.fields['match_question'].widget.attrs['style'] = ''
             self.fields['match_options'].widget.attrs['style'] = ''
@@ -48,10 +57,10 @@ class QuestionForm(forms.ModelForm):
 class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
     list_display = ('poll', 'poll_title', 'question_type', 'timer',
-                    'text_fill_question', 'dropdown_fill_question', 'dropdown_options', 'dropdown_correct_answer',
+                    'text_fill_question', 'text_fill_answer', 'dropdown_fill_question', 'dropdown_options', 'dropdown_correct_answer',
                     'multiple_choice_question', 'multiple_choice_options', 'multiple_choice_answers',
                     'single_choice_question', 'single_choice_option', 'single_choice_answers',
-                    'match_question', 'match_options', 'match_answers')
+                    'match_question', 'match_options', 'match_answers', 'wordcloud_question')
     list_filter = ('poll', 'question_type')
     search_fields = ('text_fill_question', 'dropdown_fill_question', 'multiple_choice_question',
                      'single_choice_question', 'match_question')
