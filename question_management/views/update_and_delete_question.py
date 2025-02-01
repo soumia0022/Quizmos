@@ -59,6 +59,9 @@ def edit_question(request, poll_id):
             question.dropdown_options = ','.join(request.POST.getlist("dropdown_options[]"))
             question.dropdown_correct_answer = request.POST.get("dropdown_correct_answer", "")
 
+        #Only update the wordcloud question
+
+
         question.save()
         return redirect("question_management:add_question", poll_id=poll.id)
 
@@ -72,4 +75,11 @@ def edit_question(request, poll_id):
 
 
 def delete_question(request, poll_id):
-    question_id = request.GET.get('question_id')
+    pass
+    # poll = get_object_or_404(Poll, id=poll_id)
+    # question_id = request.GET.get("question_id")  # Get question_id from query params
+    # question = get_object_or_404(Question, id=question_id, poll=poll)
+    #
+    # question.delete()
+    #
+    # return redirect("question_management:add_question", poll_id=poll.id)

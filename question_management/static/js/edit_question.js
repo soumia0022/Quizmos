@@ -7,9 +7,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const singleChoiceOptionsSection = document.getElementById('single-choice-options-container');
     const singleChoiceOptionSetSection = document.getElementById('single-choice-option-section');
 
+    const matchQuestionOptionSection = document.getElementById('match-options-container');
+    const matchQuestionSetSection = document.getElementById('match-pre-filled-options')
+    const matchQuestionAddBtn = document.getElementById('match-add-option-btn');
+
     // Ensure sections exist before counting their children
     let McOptionCount = multipleChoiceOptionsSetSection ? multipleChoiceOptionsSetSection.children.length + 1 : 1;
     let ScOptionCount = singleChoiceOptionSetSection ? singleChoiceOptionSetSection.children.length + 1 : 1;
+    //Check to make sure the first 2 ones are working properly
+    let matchOptionCount = matchQuestionSetSection ? (matchQuestionSetSection.children.length) : 1;
 
     if (MCAddBtn) {
         MCAddBtn.addEventListener('click', function () {
@@ -76,7 +82,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 ScOptionCount++;
             }
         });
+
     }
+
+    if (matchQuestionAddBtn){
+        matchQuestionAddBtn.addEventListener("click", () => {
+            const inputRow = document.createElement("div");
+
+            const option = document.createElement("input");
+            option.type = "text";
+            option.placeholder = `Option ${matchOptionCount}`;
+            option.name = 'match_question_options[]';
+            option.required = true;
+
+            const answer = document.createElement("input");
+            answer.type = "text";
+            answer.placeholder = `Answer ${matchOptionCount}`;
+            answer.name = 'match_question_answers[]';
+            answer.required = true;
+
+            inputRow.appendChild(option);
+            inputRow.appendChild(answer)
+
+            matchQuestionOptionSection.appendChild(inputRow);
+            matchOptionCount++;
+        });
+    }
+
 
     // TO DO: Add MC and SC option constraints (e.g., at least one answer, at least one option)
     // TO DO: Allow users to delete options
