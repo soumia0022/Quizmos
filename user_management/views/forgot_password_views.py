@@ -13,7 +13,7 @@ class CustomPasswordResetConfirmView(View):
     success_url = reverse_lazy('user_management:dashboard')
 
     def get(self, request, uidb64, token):
-        form = self.form_class()
+        form = self.form_class(initial={'uidb64': uidb64})
         get_token(request)  # Refresh CSRF token
         user_model = get_user_model()
         try:
@@ -44,13 +44,14 @@ class CustomPasswordResetConfirmView(View):
         })
 
     def post(self, request, uidb64, token):
-        form = self.form_class(request.POST)
         user_model = get_user_model()
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
             user = user_model.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, user_model.DoesNotExist):
             user = None
+
+        form = self.form_class(request.POST, user=user)
 
         if user is not None and default_token_generator.check_token(user, token):
             validlink = True
@@ -75,3 +76,4 @@ class CustomPasswordResetConfirmView(View):
             'error_message': error_message,
             'token_fail': token_fail
         })
+
