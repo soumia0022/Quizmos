@@ -53,19 +53,24 @@
                     </div>
                 {% endfor %}
 
-
-
                 <div id="multiple-choice-options-container"></div>
                 <!-- Option to add new option -->
                 <button type="button" id="multiple-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
             </div>
         {% elif question.question_type == "single_choice" %}
             <div>
+
                 {% for option in question.single_choice_option %}
-                    <div id="single-choice-option-section">
+                    <div class="single-choice-option" id="option-container-{{ forloop.counter }}">
                         <input type="checkbox" name="single_choice_answers[]" value="{{ option }}"
                             {% if option in question.single_choice_answers %} checked {% endif %}>
                         <label>{{ option }}</label>
+
+                        <!-- Hidden input to store option -->
+                        <input type="hidden" name="single_choice_options[]" value="{{ option }}">
+
+                        <!-- Delete button -->
+                        <button type="button" class="btn btn-danger btn-sm delete-option-btn">X</button>
                     </div>
                 {% endfor %}
 

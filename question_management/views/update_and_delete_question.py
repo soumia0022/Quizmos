@@ -19,12 +19,6 @@ def edit_question(request, poll_id):
         if question.question_type == "multiple_choice":
             #replace the mc question
             question.multiple_choice_question = request.POST.get("question_text")
-            #append to the exiting options
-            """old way"""
-            #existingOptions = question.multiple_choice_options
-            #newOptions = request.POST.getlist("multiple_choice_options[]")
-            #question.multiple_choice_options = existingOptions + newOptions
-            #print("options:", question.multiple_choice_options)
 
             question.multiple_choice_options = request.POST.getlist("multiple_choice_options[]")
 
@@ -38,11 +32,8 @@ def edit_question(request, poll_id):
         elif question.question_type == "single_choice":
             # replace the sc question
             question.single_choice_question = request.POST.get("question_text")
-            # append to the exiting options
-            existingOptions = question.single_choice_option
-            newOptions = request.POST.getlist("single_choice_options[]")
-            question.single_choice_option = existingOptions + newOptions
-            print("options:", question.single_choice_option)
+
+            question.single_choice_option = request.POST.getlist("single_choice_options[]")
 
             # don't need to append as the html checks if the original options are now marked as checked
             question.single_choice_answers = request.POST.getlist("single_choice_answers[]")

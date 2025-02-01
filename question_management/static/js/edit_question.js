@@ -78,6 +78,10 @@ document.addEventListener('DOMContentLoaded', function () {
         SCAddBtn.addEventListener('click', function () {
             const optionText = prompt('Enter a new Option');
             if (optionText) {
+                const optionContainer = document.createElement('div');
+                optionContainer.className = 'single-choice-option';
+                optionContainer.id = `option-container-${ScOptionCount}`;
+
                 // Create hidden input for options
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
@@ -96,11 +100,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 label.htmlFor = `option${ScOptionCount}`;
                 label.textContent = optionText;
 
+                // Create delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'btn btn-danger btn-sm ms-2';
+                deleteBtn.textContent = 'X';
+                deleteBtn.addEventListener('click', function () {
+                    optionContainer.remove(); // Remove the option container
+                });
+
                 // Append elements to the container
-                singleChoiceOptionsSection.appendChild(checkboxInput);
-                singleChoiceOptionsSection.appendChild(label);
-                singleChoiceOptionsSection.appendChild(hiddenInput);
-                singleChoiceOptionsSection.appendChild(document.createElement('br')); // Line break for spacing
+                optionContainer.appendChild(checkboxInput);
+                optionContainer.appendChild(label);
+                optionContainer.appendChild(hiddenInput);
+                optionContainer.appendChild(deleteBtn);
+
+                singleChoiceOptionsSection.appendChild(optionContainer);
 
                 ScOptionCount++;
             }
