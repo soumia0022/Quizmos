@@ -114,6 +114,34 @@
                                 </div>
                             </div>
 
+                           <!-- Add Audio and Video Buttons -->
+                            <div id="media-buttons" class="mb-3">
+                                <button type="button" id="add-audio-btn" class="btn btn-secondary mb-2">Add Audio</button>
+                                <button type="button" id="add-video-btn" class="btn btn-secondary mb-2">Add Video</button>
+                            </div>
+
+                            <!-- Video Upload and YouTube Link Buttons (Initially Hidden) -->
+                            <div id="video-options" class="mb-3" style="display: none;">
+                                <button type="button" id="upload-video-btn" class="btn btn-secondary mb-2">Upload Video</button>
+                                <button type="button" id="add-youtube-btn" class="btn btn-secondary mb-2">Add YouTube Link</button>
+                            </div>
+
+                            <!-- Audio Upload Field -->
+                            <div id="audio-upload-field" style="display: none;">
+                                <input type="file" name="audio_file" class="form-control mb-2" accept="audio/*">
+                            </div>
+
+                            <!-- Video Upload Field -->
+                            <div id="video-upload-field" style="display: none;">
+                                <input type="file" name="video_file" class="form-control mb-2" accept="video/*">
+                            </div>
+
+                            <!-- YouTube URL Input Field -->
+                            <div id="youtube-url-field" style="display: none;">
+                                <input type="text" name="youtube_link" class="form-control mb-2" placeholder="Enter YouTube video URL">
+                            </div>
+
+
                             <!-- Save Question Button -->
                             <div class="text-center">
                                 <button type="submit" class="btn btn-success">Save Question</button>
@@ -158,6 +186,38 @@
                
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const questionTypeDropdown = document.getElementById("question-type-dropdown");
+        const timerSettings = document.getElementById("timer-settings");
+        const mediaButtons = document.getElementById("media-buttons");
+        const videoOptions = document.getElementById("video-options");
+
+        questionTypeDropdown.addEventListener("change", function () {
+            const selectedType = questionTypeDropdown.value;
+            timerSettings.style.display = "block";
+            mediaButtons.style.display = "block";
+        });
+
+        document.getElementById("add-audio-btn").addEventListener("click", function () {
+            document.getElementById("audio-upload-field").style.display = "block";
+        });
+
+        document.getElementById("add-video-btn").addEventListener("click", function () {
+            videoOptions.style.display = "block";
+        });
+
+        document.getElementById("upload-video-btn").addEventListener("click", function () {
+            document.getElementById("video-upload-field").style.display = "block";
+        });
+
+        document.getElementById("add-youtube-btn").addEventListener("click", function () {
+            document.getElementById("youtube-url-field").style.display = "block";
+        });
+    });
+
+
+
     </script>
 
 
