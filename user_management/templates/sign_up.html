@@ -1,5 +1,10 @@
 {% extends 'base_content.html' %}
+{% load static %}
 {% block content %}
+
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
 <div class="container">
   <div class="row">
     <div class="col-12">
@@ -9,6 +14,11 @@
         {% include 'partials/bootstrap_form.html' with form=form %}
         <input type="submit" value="Sign up" class="btn btn-primary">
       </form>
+
+      <div class="prompt">
+        Already have an account? <a href="{% url 'user_management:log_in' %}">Log in</a>
+    </div>
+
     </div>
   </div>
 </div>

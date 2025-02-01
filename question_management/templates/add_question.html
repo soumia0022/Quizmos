@@ -43,7 +43,13 @@
                                     <option value="match_question">Match Question</option>
                                 </select>
                             </div>
-
+                            
+                            <!-- Timer Input Field (Initially Hidden) -->
+                            <div id="timer-settings" class="mb-3" style="display: none;">
+                                <label for="question_timer" class="form-label">Set Timer (Seconds):</label>
+                                <input type="number" name="question_timer" id="question_timer" class="form-control" placeholder="Enter seconds">
+                            </div>
+                        
                             <!-- Text Fill Fields -->
                             <div id="text-fill-fields" class="mb-3" style="display: none;">
                                 <input type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
@@ -134,6 +140,26 @@
             </div>
         </div>
     </div>
+
+    <!-- Timer Display -->
+    <div id="timer" style="display: none; text-align: center; margin-top: 10px;">
+        Time Left: <span id="timeLeft"></span> seconds
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const questionTypeDropdown = document.getElementById("question-type-dropdown");
+            const timerSettings = document.getElementById("timer-settings");
+            const timerDiv = document.getElementById("timer");
+
+            // Show Timer Input Only for Relevant Question Types
+            questionTypeDropdown.addEventListener("change", function () {
+                    timerSettings.style.display = "block";
+               
+            });
+        });
+    </script>
+
 
 </body>
 </html>

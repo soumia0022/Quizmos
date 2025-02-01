@@ -9,11 +9,16 @@ class Question(models.Model):
         ('single_choice', 'Single Choice'),
         ('wordcloud', 'Word Cloud'),
         ('match_question', 'Match Question'),
+
     ]
     poll = models.ForeignKey(Poll, related_name='questions', on_delete=models.CASCADE, default=1) # question associated w poll
                                         # related name questions to allow you to do something like poll.questions.all() to get
                                         # all qs for that poll
     question_type = models.CharField(max_length=20, choices=QUESTION_TYPES, default='multiple_choice')
+
+    # Timer field (time in seconds)
+    timer = models.IntegerField(null=True, blank=True, help_text="Time limit in seconds", default=None)
+
 
     # Fields for different question types
     text_fill_question = models.TextField(null=True, blank=True)
