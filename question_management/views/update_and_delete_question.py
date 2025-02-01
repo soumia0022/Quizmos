@@ -62,7 +62,10 @@ def edit_question(request, poll_id):
         elif question.question_type == "wordcloud":
             question.wordcloud_question = request.POST.get("question_text")
 
-        #Only update the wordcloud question
+        elif question.question_type == "match_question":
+            question.match_question = request.POST.get("question_text")
+            question.match_options = request.POST.getlist("match_question_options[]")
+            question.match_answers = request.POST.getlist("match_question_answers[]")
 
 
         question.save()
