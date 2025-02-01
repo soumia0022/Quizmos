@@ -91,11 +91,19 @@ def add_question(request, poll_id):
                 dropdown_fill_question=question_with_blank,
                 dropdown_options=','.join([correct_answer] + additional_options),  # Store all options
                 timer=timer,
-                audio_file=audio_file,
-                video_file=video_file,
+                # audio_file=audio_file,
+                # video_file=video_file,
                 youtube_link=youtube_link
             )
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
         elif question_type == 'multiple_choice':
             question_text = request.POST.get('multiple_choice_question')
             multiple_choice_question = request.POST.get('multiple_choice_question')
@@ -119,11 +127,19 @@ def add_question(request, poll_id):
                 multiple_choice_options=multiple_choice_options,
                 multiple_choice_answers=multiple_choice_answers,
                 timer=timer,
-                audio_file=audio_file,
-                video_file=video_file,
+                # audio_file=audio_file,
+                # video_file=video_file,
                 youtube_link=youtube_link
             )
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
         elif question_type == 'single_choice':
             timer = get_timer(request)
             question_text = request.POST.get('single_choice_question')
@@ -147,11 +163,19 @@ def add_question(request, poll_id):
                 single_choice_option=single_choice_option,
                 single_choice_answers=single_choice_answers,
                 timer=timer,
-                audio_file=audio_file,
-                video_file=video_file,
+                # audio_file=audio_file,
+                # video_file=video_file,
                 youtube_link=youtube_link
             )
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
 
         elif question_type == 'wordcloud':
             question_text = request.POST.get('wordcloud_question')
@@ -163,11 +187,20 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 wordcloud_question=question_text,
                 timer=timer,
-                audio_file=audio_file,
-                video_file=video_file,
+                # audio_file=audio_file,
+                # video_file=video_file,
                 youtube_link=youtube_link
             )
             question.save()
+
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
 
             text = ("Testing Testing the Word Cloud hello hello hello SEG SEG SEG wow amazing great yay woohoo "
                     "Hello Soumia Soumia Amina Amina Leyli Leyli Eeshal Marium Rashida Rashida Alishba Alishba Alishba")
@@ -231,13 +264,22 @@ def add_question(request, poll_id):
                 match_options=match_options,
                 match_answers=match_answers,
                 timer=timer,
-                audio_file=audio_file,
-                video_file=video_file,
+                # audio_file=audio_file,
+                # video_file=video_file,
                 youtube_link=youtube_link
             )
 
+
             #it saved (showed up in the admin view) even without this line?
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
 
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
