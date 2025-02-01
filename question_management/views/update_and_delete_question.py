@@ -75,11 +75,10 @@ def edit_question(request, poll_id):
 
 
 def delete_question(request, poll_id):
-    pass
-    # poll = get_object_or_404(Poll, id=poll_id)
-    # question_id = request.GET.get("question_id")  # Get question_id from query params
-    # question = get_object_or_404(Question, id=question_id, poll=poll)
-    #
-    # question.delete()
-    #
-    # return redirect("question_management:add_question", poll_id=poll.id)
+    poll = get_object_or_404(Poll, id=poll_id)
+    question_id = request.GET.get("question_id")  # Get question_id from query params
+    question = get_object_or_404(Question, id=question_id, poll=poll)
+
+    question.delete()
+
+    return redirect("question_management:add_question", poll_id=poll.id)
