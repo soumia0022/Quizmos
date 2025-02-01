@@ -20,10 +20,13 @@ def edit_question(request, poll_id):
             #replace the mc question
             question.multiple_choice_question = request.POST.get("question_text")
             #append to the exiting options
-            existingOptions = question.multiple_choice_options
-            newOptions = request.POST.getlist("multiple_choice_options[]")
-            question.multiple_choice_options = existingOptions + newOptions
+            """old way"""
+            #existingOptions = question.multiple_choice_options
+            #newOptions = request.POST.getlist("multiple_choice_options[]")
+            #question.multiple_choice_options = existingOptions + newOptions
             #print("options:", question.multiple_choice_options)
+
+            question.multiple_choice_options = request.POST.getlist("multiple_choice_options[]")
 
             #don't need to append as the html checks if the original options are now marked as checked
             newAnswers = request.POST.getlist("multiple_choice_answers[]")

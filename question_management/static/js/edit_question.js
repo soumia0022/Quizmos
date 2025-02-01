@@ -17,11 +17,24 @@ document.addEventListener('DOMContentLoaded', function () {
     //Check to make sure the first 2 ones are working properly
     let matchOptionCount = matchQuestionSetSection ? (matchQuestionSetSection.children.length) : 1;
 
+    const deleteButtons = document.querySelectorAll('.delete-option-btn');
+
+    deleteButtons.forEach((btn) => {
+        btn.addEventListener('click', function () {
+            const optionContainer = this.parentElement; // Get the div containing the option
+            optionContainer.remove(); // Remove the option
+        });
+    });
+
     if (MCAddBtn) {
         MCAddBtn.addEventListener('click', function () {
             console.log('Button pressed');
             const optionText = prompt('Enter a new Option');
             if (optionText) {
+                const optionContainer = document.createElement('div');
+                optionContainer.className = 'multiple-choice-option';
+                optionContainer.id = `option-container-${McOptionCount}`;
+
                 // Create hidden input for all options to be stored in DB (unchecked ones)
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
@@ -40,12 +53,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 label.htmlFor = `option${McOptionCount}`;
                 label.textContent = optionText;
 
-                // Append elements to the container
-                multipleChoiceOptionsSection.appendChild(checkboxInput);
-                multipleChoiceOptionsSection.appendChild(label);
-                multipleChoiceOptionsSection.appendChild(hiddenInput);
-                multipleChoiceOptionsSection.appendChild(document.createElement('br')); // Line break for spacing
+                // Create delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'btn btn-danger btn-sm ms-2';
+                deleteBtn.textContent = 'X';
+                deleteBtn.addEventListener('click', function () {
+                    optionContainer.remove(); // Remove the option container
+                });
 
+                // Append elements to the container
+                optionContainer.appendChild(checkboxInput);
+                optionContainer.appendChild(label);
+                optionContainer.appendChild(hiddenInput);
+                optionContainer.appendChild(deleteBtn);
+
+                multipleChoiceOptionsSection.appendChild(optionContainer);
                 McOptionCount++;
             }
         });

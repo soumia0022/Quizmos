@@ -40,12 +40,19 @@
                 <label><strong>Multiple Choice Options:</strong></label>
 
                 {% for option in question.multiple_choice_options %}
-                    <div id="multiple-choice-option-section">
+                    <div class="multiple-choice-option" id="option-container-{{ forloop.counter }}">
                         <input type="checkbox" name="multiple_choice_answers[]" value="{{ option }}"
                             {% if option in question.multiple_choice_answers %} checked {% endif %}>
                         <label>{{ option }}</label>
+
+                        <!-- Hidden input to store option -->
+                        <input type="hidden" name="multiple_choice_options[]" value="{{ option }}">
+
+                        <!-- Delete button -->
+                        <button type="button" class="btn btn-danger btn-sm delete-option-btn">X</button>
                     </div>
                 {% endfor %}
+
 
 
                 <div id="multiple-choice-options-container"></div>
