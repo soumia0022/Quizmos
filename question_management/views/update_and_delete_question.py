@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
 from django.shortcuts import render, get_object_or_404, redirect
@@ -23,11 +24,16 @@ def edit_question(request, poll_id):
             question.multiple_choice_options = request.POST.getlist("multiple_choice_options[]")
 
             #don't need to append as the html checks if the original options are now marked as checked
-            newAnswers = request.POST.getlist("multiple_choice_answers[]")
-            question.multiple_choice_answers = newAnswers
+            question.multiple_choice_answers = request.POST.getlist("multiple_choice_answers[]")
             #print("answers:", question.multiple_choice_answers)
 
-            #TO DO: add contraints options or answers can't be empty
+            # Server-side validation
+            if not question.multiple_choice_options:
+                return JsonResponse({'error': 'At least one option is required for a multiple-choice question.'},
+                                    status=400)
+            if not question.multiple_choice_answers:
+                return JsonResponse({'error': 'At least one answer is required for a multiple-choice question.'},
+                                    status=400)
 
         elif question.question_type == "single_choice":
             # replace the sc question
