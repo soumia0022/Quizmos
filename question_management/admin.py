@@ -8,7 +8,7 @@ class QuestionForm(forms.ModelForm):
         model = Question
         fields = ['poll', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'dropdown_options',
                   'multiple_choice_question', 'multiple_choice_options', 'single_choice_question',
-                  'single_choice_option', 'dropdown_correct_answer']
+                  'single_choice_option', 'dropdown_correct_answer', 'code_question_text', 'code_language', 'code_test_cases']
 
     # Override the form to conditionally show/hide fields based on the question type
     def __init__(self, *args, **kwargs):
@@ -25,30 +25,45 @@ class QuestionForm(forms.ModelForm):
         self.fields['single_choice_question'].widget.attrs['style'] = 'display:none;'
         self.fields['single_choice_option'].widget.attrs['style'] = 'display:none;'
 
+
+        self.fields['code_question_text'].widget.attrs['style'] = 'display:none;'
+        self.fields['code_language'].widget.attrs['style'] = 'display:none;'
+        self.fields['code_test_cases'].widget.attrs['style'] = 'display:none;'
+
+
         if question_type == 'text_fill':
             self.fields['text_fill_question'].widget.attrs['style'] = ''
+
         elif question_type == 'dropdown_fill':
             self.fields['dropdown_fill_question'].widget.attrs['style'] = ''
             self.fields['dropdown_options'].widget.attrs['style'] = ''
+
         elif question_type == 'multiple_choice':
             self.fields['multiple_choice_question'].widget.attrs['style'] = ''
             self.fields['multiple_choice_options'].widget.attrs['style'] = ''
             self.fields['multiple_choice_answers'].widget.attrs['style'] = ''
+
         elif question_type == 'single_choice':
             self.fields['single_choice_question'].widget.attrs['style'] = ''
             self.fields['single_choice_option'].widget.attrs['style'] = ''
             self.fields['single_choice_answers'].widget.attrs['style'] = ''
+
         elif question_type == 'match_question':
             self.fields['match_question'].widget.attrs['style'] = ''
             self.fields['match_options'].widget.attrs['style'] = ''
             self.fields['match_answers'].widget.attrs['style'] = ''
+
+        elif question_type == 'code_question':
+            self.fields['code_question_text'].widget.attrs['style'] = ''
+            self.fields['code_language'].widget.attrs['style'] = ''
+            self.fields['code_test_cases'].widget.attrs['style'] = ''
 
 
 class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
     list_display = ('poll', 'poll_title', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'dropdown_options', 'multiple_choice_question',
                     'multiple_choice_options', 'multiple_choice_answers','single_choice_question', 'single_choice_option', 'single_choice_answers',
-                    'match_question', 'match_options', 'match_answers')
+                    'match_question', 'match_options', 'match_answers', 'code_question_text', 'code_language', 'code_test_cases')
     list_filter = ('poll', 'question_type')
     search_fields = (
     'text_fill_question', 'dropdown_fill_question', 'multiple_choice_question', 'single_choice_question', 'match_question')
