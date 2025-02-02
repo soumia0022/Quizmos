@@ -41,13 +41,7 @@ def add_question(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user) # get object or 404
     if request.method == 'POST':
         question_type = request.POST.get('question_type')
-        # audio_file = request.FILES.get('audio_file')
-        # video_file = request.FILES.get('video_file')
         youtube_link = request.POST.get('youtube_link')
-
-        # print("Audio File Received:", audio_file)
-        # print("Video File Received:", video_file)
-        print("YouTube Link Received:", youtube_link)
 
         # Get the relevant question fields based on question type:
 

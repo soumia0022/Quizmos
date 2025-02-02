@@ -139,7 +139,7 @@
 
                             <!-- YouTube URL Input Field -->
                             <div id="youtube-url-field" style="display: none;">
-                                <input type="text" name="youtube_link" class="form-control mb-2" placeholder="Enter YouTube video URL">
+                                <input type="url" name="youtube_link" class="form-control mb-2" placeholder="Enter YouTube video URL">
                             </div>
 
 
@@ -218,7 +218,6 @@
         });
 
 
-
         // Show audio upload field and hide other media options
         addAudioBtn.addEventListener("click", function () {
             audioFields.style.display = "block";
@@ -252,7 +251,9 @@
                 addVideoBtn.disabled = true;
                 uploadVideoBtn.disabled = true;
                 addYoutubeBtn.disabled = true;
-                }
+            }
+            // Can change allowed types based on what can be implemented when embedding
+            validateFileInput(audioFileInput, ["audio/mpeg", "audio/wav", "audio/ogg", "audio/flac", "audio/mp4", "audio/x-m4a"]);
         });
 
         // Disable other media options once a video file is uploaded
@@ -262,14 +263,39 @@
                 addVideoBtn.disabled = true;
                 addYoutubeBtn.disabled = true;
             }
+            // Can change allowed types based on what can be implemented when embedding
+            validateFileInput(videoFileInput, ["video/mp4", "video/avi", "video/quicktime", "video/x-msvideo", "video/x-matroska", "video/x-flv", "video/x-ms-wmv"]);
         });
 
-        youtubeLinkInput.addEventListener("change", function() {
+
+        youtubeLinkInput.addEventListener("change", function(e) {
             addVideoBtn.disabled = true;
             addAudioBtn.disabled = true;
             uploadVideoBtn.disabled = true;
 
+            // Validation to ensure a valid URL is entered for the YouTube link
+            const urlPattern = /^(https?:\/\/)/;
+            if (!urlPattern.test(youtubeLinkInput.value)) {
+                alert("Please enter a valid URL (must start with http:// or https://)");
+                e.preventDefault();
+            }
+
         });
+
+        // Validation for audio and video files (disallow certain types)
+        function validateFileInput(input, allowedTypes) {
+            if (input.files.length > 0) {
+                let file = input.files[0];
+                let fileType = file.type;
+                let fileName = file.name.toLowerCase();
+
+                // Check MIME type
+                if (!allowedTypes.includes(fileType)) {
+                    alert("Invalid file type! Please upload a valid file.");
+                    return;
+                }
+            }
+        }
 
         resetMediaBtn.addEventListener("click", function() {
             addVideoBtn.disabled = false;
@@ -284,8 +310,6 @@
         });
 
     });
-
-
 
     </script>
 
