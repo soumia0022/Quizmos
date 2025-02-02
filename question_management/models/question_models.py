@@ -39,6 +39,11 @@ class Question(models.Model):
     question_text = models.TextField(null=True, blank=True) # for generalised
     dropdown_correct_answer = models.TextField(null=True, blank=True)  # maybe get rid of this too
 
+    # Coding question fields
+    code_question_text = models.TextField(null=True, blank=True)  # Prompt for the coding question
+    code_language = models.CharField(max_length=20, default="python", null=True, blank=True)  # Programming language
+    code_test_cases = models.JSONField(default=list, blank=True)  # JSON field for test cases
+
     @property
     def poll_title(self):
         return self.poll.title

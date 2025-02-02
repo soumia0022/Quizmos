@@ -1,4 +1,5 @@
 import base64
+import json
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -169,6 +170,26 @@ def add_question(request, poll_id):
             )
 
             #it saved (showed up in the admin view) even without this line?
+            question.save()
+
+        elif question_type == "code_question":
+            question_text = request.POST.get("code_question_text", "")
+            code_language = request.POST.get("code_language", "python")
+            code_test_cases_raw = request.POST.get("code_test_cases", "[]")
+
+            try:
+                code_test_cases = json.loads(code_test_cases_raw)  # Parse test cases as JSON
+            except json.JSONDecodeError:
+                return JsonResponse({"error": "Invalid JSON format for test cases."}, status=400)
+
+            question = Question.objects.create(
+                poll_id=poll_id,
+                question_text=question_text,
+                question_type=question_type,
+                code_question_text=question_text,
+                code_language=code_language,
+                code_test_cases=code_test_cases,
+            )
             question.save()
 
         # Save the question instance

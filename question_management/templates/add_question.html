@@ -41,6 +41,7 @@
                                     <option value="dropdown_fill">Dropdown Fill in the Blank</option>
                                     <option value="wordcloud">Word Cloud</option>
                                     <option value="match_question">Match Question</option>
+                                    <option value="code_question">Code Question</option>
                                 </select>
                             </div>
 
@@ -107,6 +108,25 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Coding Question Fields -->
+                            <div id="code-question-fields" class="mb-3" style="display: none;">
+                                <label for="code_question_text" class="form-label">Coding Question:</label>
+                                <textarea name="code_question_text" class="form-control mb-2" placeholder="Enter coding question prompt"></textarea>
+
+                                <label for="code_language" class="form-label">Select Language:</label>
+                                <select name="code_language" class="form-select mb-2">
+                                    <option value="python">Python</option>
+                                    <option value="javascript">JavaScript</option>
+                                    <option value="java">Java</option>
+                                    <option value="c">C</option>
+                                    <option value="cpp">C++</option>
+                                </select>
+
+                                <label for="code_test_cases" class="form-label">Test Cases (JSON Format):</label>
+                                <textarea name="code_test_cases" class="form-control" placeholder='Example: [{"input": "2,3", "output": "5"}]'></textarea>
+                            </div>
+
 
                             <!-- Save Question Button -->
                             <div class="text-center">
