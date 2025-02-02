@@ -17,17 +17,18 @@ def poll_edit(request, poll_id):
         poll.title = request.POST.get('title', poll.title)
         poll.status = request.POST.get('status', poll.status)
         poll.save()
-        return redirect('user_management:dashboard')
+        return redirect('poll_management:poll_detail', poll_id=poll.id)
     return render(request, 'poll_edit.html', {'poll': poll})
 
 @login_required
 def poll_delete(request, poll_id):
-    poll = get_object_or_404(Poll, id=poll_id, user=request.user)
     if request.method == 'POST':
+        poll = get_object_or_404(Poll, id=poll_id, user=request.user)
         poll.delete()
+        return redirect('user_management:dashboard') 
+    else:
         return redirect('user_management:dashboard')
-    return render(request, 'poll_delete.html', {'poll': poll})
-
+    
 @login_required
 def poll_lock(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user)
