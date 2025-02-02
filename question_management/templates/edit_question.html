@@ -84,24 +84,6 @@
                 <label><strong>Question Answer:</strong></label>
                 <input type="text" name="text_fill_answer" value="{{ question.text_fill_answer}}">
             </div>
-{#        {% elif question.question_type == "dropdown_fill" %}#}
-{#            <div id="dropdown-fill-fields" class="mb-3" style="display: none;">#}
-{#                <textarea name="dropdown_fill_question" id="dropdown-fill-input" value="{{ question.dropdown_fill_question }}"></textarea>#}
-{#                <div id="text-preview" class="mb-3 border p-2"></div> <!-- Preview area for the text -->#}
-{##}
-{#                <label for="dropdown-correct-answer" class="form-label">Correct Answer:</label>#}
-{#                <input type="text" name="dropdown_correct_answer" id="dropdown-correct-answer" class="form-control mb-2" value="{{ question.dropdown_correct_answer }}" readonly>#}
-{##}
-{#                <!-- Loop through existing options -->#}
-{#                <label for="dropdown-correct-answer" class="form-label">Options</label>#}
-{#                {% for option in dropdown_options %}#}
-{#                    <input type="text" name="additional_options" class="form-control mb-2" value="{{ option }}">#}
-{#                {% endfor %}#}
-{##}
-{#                <label for="additional-options" class="form-label">Additional Options:</label>#}
-{#                <input type="text" name="additional_options" class="form-control mb-2" placeholder="Extra Option">#}
-{#                <button type="button" id="reset-preview-btn" class="btn btn-secondary mt-2">Reset</button>#}
-{#            </div>#}
         {% endif %}
 
         <!-- Editable Answer -->
@@ -125,24 +107,27 @@
 
                 <div id="match-options-container">
                     <div class="row">
-                        <!-- Left Column for Options -->
-                        <div id="match-pre-filled-options" class="col-md-6">
-                            <h5>Options</h5>
-                            {% for option in question.match_options %}
-                                <input type="text" name="match_question_options[]" value="{{ option }}" class="form-control mb-2">
-                            {% endfor %}
-                        </div>
+                        <h5 class="col-12">Match Options</h5>
 
-                        <!-- Right Column for Answers -->
-                        <div class="col-md-6">
-                            <h5>Answers</h5>
-                            {% for answer in question.match_answers %}
-                                <input type="text" name="match_question_answers[]" value="{{ answer }}" class="form-control mb-2">
-                            {% endfor %}
-                        </div>
+                        {% for option, answer in match_pairs %}
+                            <div id="match-question-row" class="row align-items-center mb-2">
+                                <!-- Option Input -->
+                                <div class="col-md-3">
+                                    <input type="text" name="match_question_options[]" value="{{ option }}" class="form-control">
+                                </div>
+
+                                <!-- Answer Input -->
+                                <div class="col-md-3">
+                                    <input type="text" name="match_question_answers[]" value="{{ answer }}" class="form-control">
+                                </div>
+
+                                <!-- Delete Button -->
+                                <button type="button" class="btn btn-danger btn-sm delete-option-btn">X</button>
+                            </div>
+                        {% endfor %}
                     </div>
-                    <!-- Dynamically add options with javascript-->
                 </div>
+                    <!-- Dynamically add options with javascript-->
             </div>
 
         {% endif %}

@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     deleteButtons.forEach((btn) => {
         btn.addEventListener('click', function () {
             const optionContainer = this.parentElement; // Get the div containing the option
+            console.log(optionContainer.id)
             optionContainer.remove(); // Remove the option
         });
     });
@@ -139,8 +140,19 @@ document.addEventListener('DOMContentLoaded', function () {
             answer.name = 'match_question_answers[]';
             answer.required = true;
 
+            // Create delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'btn btn-danger btn-sm ms-2';
+            deleteBtn.textContent = 'X';
+            deleteBtn.addEventListener('click', function () {
+                inputRow.remove(); // Remove the option container
+                matchOptionCount--;
+            });
+
             inputRow.appendChild(option);
             inputRow.appendChild(answer)
+            inputRow.appendChild(deleteBtn)
 
             matchQuestionOptionSection.appendChild(inputRow);
             matchOptionCount++;

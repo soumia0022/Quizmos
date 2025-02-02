@@ -66,10 +66,12 @@ def edit_question(request, poll_id):
         return redirect("question_management:add_question", poll_id=poll.id)
 
     dropdown_options = question.dropdown_options.split(',') if question.dropdown_options else []
+    match_pairs = zip(question.match_options, question.match_answers)
     #print(dropdown_options)
     context = {
         'question': question,
         'dropdown_options': dropdown_options,
+        'match_pairs': match_pairs,
     }
     return render(request, 'edit_question.html', context)
 
