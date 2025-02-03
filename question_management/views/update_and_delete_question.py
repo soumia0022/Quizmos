@@ -116,10 +116,25 @@ def edit_question(request, poll_id):
 
 
         elif question.question_type == "match_question":
+
             question.match_question = request.POST.get("question_text")
+
             question.match_options = request.POST.getlist("match_question_options[]")
+
             question.match_answers = request.POST.getlist("match_question_answers[]")
 
+            # Server-side validation
+
+            if not question.match_options:
+                return JsonResponse({'error': 'At least one option is required for a match question.'}, status=400)
+
+            if not question.match_answers:
+                return JsonResponse({'error': 'At least one answer is required for a match question.'}, status=400)
+
+            if len(question.match_options) != len(question.match_answers):
+                return JsonResponse({'error': 'The number of options must match the number of answers.'}, status=400)
+
+            question.save()
 
         question.save()
         return redirect("question_management:add_question", poll_id=poll.id)
