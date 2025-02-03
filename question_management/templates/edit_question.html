@@ -91,13 +91,17 @@
         {% if question.question_type == "dropdown_fill" %}
             <div>
                 <label><strong>Correct Answer:</strong></label>
-                <input type="text" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}">
+                <input type="text" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}" readonly>
             </div>
 
             <!-- Loop through existing options -->
             <label for="dropdown-correct-answer" class="form-label">Options:</label>
             {% for option in dropdown_options %}
-                <input type="text" name="dropdown_options[]" value="{{ option }}">
+                {% if option == question.dropdown_correct_answer %}
+                    <input type="text" name="dropdown_options[]" value="{{ option }}" readonly>
+                {% else %}
+                    <input type="text" name="dropdown_options[]" value="{{ option }}">
+                {% endif %}
             {% endfor %}
         {% endif %}
 
