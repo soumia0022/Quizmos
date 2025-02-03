@@ -35,18 +35,37 @@ def edit_question(request, poll_id):
                 return JsonResponse({'error': 'At least one answer is required for a multiple-choice question.'},
                                     status=400)
 
+
         elif question.question_type == "single_choice":
+
             # replace the sc question
+
             question.single_choice_question = request.POST.get("question_text")
 
             question.single_choice_option = request.POST.getlist("single_choice_options[]")
 
-            # don't need to append as the html checks if the original options are now marked as checked
-            question.single_choice_answers = request.POST.getlist("single_choice_answers[]")
-            print("answers:", question.single_choice_answers)
+            #print("options: ", question.single_choice_option)
 
-            # TO DO: add contraints options or answers can't be empty
-            # TO DO: there can onyl be 1 answer
+            # don't need to append as the html checks if the original options are now marked as checked
+
+            question.single_choice_answers = request.POST.getlist("single_choice_answers[]")
+
+            #print("answers:", question.single_choice_answers)
+
+            # Server-side validation
+
+            if not question.single_choice_answers or question.single_choice_answers == ['']:
+                return JsonResponse({'error': 'At least one answer is required for a single-choice question.'},
+
+                                    status=400)
+
+            if not question.single_choice_option or question.single_choice_option == ['']:
+                return JsonResponse({'error': 'At least one option is required for a single-choice question.'},
+
+                                    status=400)
+
+            if len(question.single_choice_answers) > 1:
+                return JsonResponse({'error': 'Only one answer is allowed for a single-choice question.'}, status=400)
 
         elif question.question_type == "text_fill":
             question.text_fill_question = request.POST.get("question_text")
