@@ -85,10 +85,23 @@ def edit_question(request, poll_id):
             question.save()
 
 
-
         elif question.question_type == "dropdown_fill":
+
             question.dropdown_options = ','.join(request.POST.getlist("dropdown_options[]"))
+
             question.dropdown_correct_answer = request.POST.get("dropdown_correct_answer", "")
+
+            # Server-side validation
+
+            if not question.dropdown_options:
+                return JsonResponse({'error': 'At least one option is required for a dropdown-fill question.'},
+                                    status=400)
+
+            if not question.dropdown_correct_answer:
+                return JsonResponse({'error': 'A correct answer is required for a dropdown-fill question.'}, status=400)
+
+            question.save()
+
 
         elif question.question_type == "wordcloud":
             question.wordcloud_question = request.POST.get("question_text")
