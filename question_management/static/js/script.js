@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
             multipleChoiceFields.style.display = 'block';
             multipleChoiceInput.required = true;
             multipleChoiceAddOptionBtn.addEventListener("click", () => {
-                console.log("add option button pressed");
+                //console.log("add option button pressed");
                 //create a new input filed for another option with placeholder text
                 const optionText=prompt('Enter a new Option');
                 if (optionText){

@@ -90,7 +90,8 @@ def add_question(request, poll_id):
                 timer=timer,
                 # audio_file=audio_file,
                 # video_file=video_file,
-                youtube_link=youtube_link
+                youtube_link=youtube_link,
+                dropdown_correct_answer=correct_answer,
             )
             question.save()
             if 'audio_file' in request.FILES:
