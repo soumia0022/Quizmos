@@ -267,9 +267,16 @@ def add_question(request, poll_id):
                 youtube_link=youtube_link
             )
 
-
             #it saved (showed up in the admin view) even without this line?
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
 
         elif question_type == "code_question":
             question_text = request.POST.get("code_question_text", "")
@@ -291,14 +298,6 @@ def add_question(request, poll_id):
             )
             question.save()
 
-        if 'audio_file' in request.FILES:
-            question.audio_file = request.FILES['audio_file']
-            question.save()
-
-            # Handling the video file after the question is saved
-        if 'video_file' in request.FILES:
-            question.video_file = request.FILES['video_file']
-            question.save()
 
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
