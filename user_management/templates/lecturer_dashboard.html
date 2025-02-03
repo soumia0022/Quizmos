@@ -33,7 +33,7 @@
             <td>{{ poll.created_at|date:"Y-m-d H:i" }}</td>
             <td>{{ poll.responses_count }}</td>
             <td>
-              <a href="{% url 'poll_management:poll_detail' poll.id %}">View</a> | 
+              <a href="{% url 'poll_management:view_poll' poll.id %}">View</a> | 
               <a href="{% url 'poll_management:poll_edit' poll.id %}">Edit</a> | 
               <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
                 {% csrf_token %}

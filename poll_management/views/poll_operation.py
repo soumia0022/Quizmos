@@ -5,10 +5,11 @@ from django.urls import reverse
 
 from poll_management.models.poll_model import Poll
 
+
 @login_required
-def poll_detail(request, poll_id):
-    poll = get_object_or_404(Poll, id=poll_id, user=request.user)
-    return render(request, 'poll_results.html', {'poll': poll})
+def view_poll(request, poll_id):
+    poll = get_object_or_404(Poll, id=poll_id)
+    return render(request, 'view_poll.html', {'poll': poll})
 
 @login_required
 def poll_edit(request, poll_id):
@@ -17,7 +18,7 @@ def poll_edit(request, poll_id):
         poll.title = request.POST.get('title', poll.title)
         poll.status = request.POST.get('status', poll.status)
         poll.save()
-        return redirect('poll_management:poll_detail', poll_id=poll.id)
+        return redirect('poll_management:view_poll', poll_id=poll.id)
     return render(request, 'poll_edit.html', {'poll': poll})
 
 @login_required
