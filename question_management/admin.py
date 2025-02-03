@@ -9,7 +9,7 @@ class QuestionForm(forms.ModelForm):
         model = Question
         fields = ['poll', 'question_type', 'text_fill_question', 'dropdown_fill_question', 'dropdown_options',
                   'multiple_choice_question', 'multiple_choice_options', 'single_choice_question',
-                  'single_choice_option', 'dropdown_correct_answer']
+                  'single_choice_option', 'dropdown_correct_answer', 'wordcloud_question']
 
     # Override the form to conditionally show/hide fields based on the question type
     def __init__(self, *args, **kwargs):
@@ -25,6 +25,7 @@ class QuestionForm(forms.ModelForm):
         self.fields['multiple_choice_options'].widget.attrs['style'] = 'display:none;'
         self.fields['single_choice_question'].widget.attrs['style'] = 'display:none;'
         self.fields['single_choice_option'].widget.attrs['style'] = 'display:none;'
+        self.fields['word_cloud_question'].widget.attrs['style'] = 'display:none;'
 
         if question_type == 'text_fill':
             self.fields['text_fill_question'].widget.attrs['style'] = ''
@@ -43,18 +44,20 @@ class QuestionForm(forms.ModelForm):
             self.fields['match_question'].widget.attrs['style'] = ''
             self.fields['match_options'].widget.attrs['style'] = ''
             self.fields['match_answers'].widget.attrs['style'] = ''
+        elif question_type == 'word_cloud':
+            self.fields['wordcloud_question'].widget.attrs['style'] = ''
 
 class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
+
     list_display = ('poll', 'poll_title', 'question_type', 'timer',
                     'text_fill_question', 'dropdown_fill_question', 'dropdown_options',
                     'multiple_choice_question', 'multiple_choice_options', 'multiple_choice_answers',
                     'single_choice_question', 'single_choice_option', 'single_choice_answers',
-                    'match_question', 'match_options', 'match_answers', 'audio_file', 'video_file', 'youtube_link')
+                    'match_question', 'match_options', 'match_answers', 'wordcloud_question', 'audio_file', 'video_file', 'youtube_link')
     list_filter = ('poll', 'question_type')
     search_fields = ('text_fill_question', 'dropdown_fill_question', 'multiple_choice_question',
-                     'single_choice_question', 'match_question')
-
+                     'single_choice_question', 'match_question','wordcloud_question')
 
 # Display fields based on the question type
     def get_fields(self, request, obj=None):
@@ -68,6 +71,9 @@ class QuestionAdmin(admin.ModelAdmin):
             fields.extend(['multiple_choice_question', 'multiple_choice_options','timer'])
         elif obj and obj.question_type == 'single_choice':
             fields.extend(['single_choice_question', 'single_choice_option', 'timer'])
+        elif obj and obj.question_type == 'word_cloud':
+            fields.extend(['wordcloud_question', 'timer'])
+
 
         return fields
 

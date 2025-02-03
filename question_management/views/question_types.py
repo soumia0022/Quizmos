@@ -2,7 +2,6 @@ import base64
 import time
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
 from django.contrib.auth.decorators import login_required
@@ -60,6 +59,7 @@ def add_question(request, poll_id):
                 youtube_link=youtube_link,
                 timer=timer
             )
+            question.save()
             if 'audio_file' in request.FILES:
                 question.audio_file = request.FILES['audio_file']
                 question.save()
@@ -83,6 +83,7 @@ def add_question(request, poll_id):
                 question_text=question_text,
                 question_type=question_type,
                 dropdown_fill_question=question_with_blank,
+                dropdown_answer = correct_answer,
                 dropdown_options=','.join([correct_answer] + additional_options),  # Store all options
                 timer=timer,
                 # audio_file=audio_file,
@@ -279,7 +280,6 @@ def add_question(request, poll_id):
         return redirect("question_management:add_question", poll_id=poll.id)
 
     return render(request, "add_question.html", {"poll": poll})
-
 
 
 
