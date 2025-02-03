@@ -1,12 +1,8 @@
-<!-- templates/poll_detail.html -->
+
 {% extends 'base_content.html' %}
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head><body>
 <div class="container">
-  <body class="row">
+  <div class="row">
     <div class="col-6">
       <!-- Left Column -->
       <div class="left-column">
@@ -14,18 +10,6 @@
 
         <div id="poll-controls">
           <button id="start-poll-btn" onclick="startPoll()" class="btn btn-primary mb-3">Start Poll</button>
-        <h1>{{ code }}</h1>
-        <img src="{{ qrcode }}" alt="QR Code for {{ poll.title }}" style="width: 200px; height: 200px;"> <!-- Initial size set to 200px -->
-
-        <!-- Magnifying glass for enlarging the QR code -->
-        <span id="magnify" style="cursor: pointer; font-size: 24px;">🔍</span>
-        <div id="qrOverlay" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 2px solid black; z-index: 1000; width: 420px; height: 420px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);">
-          <button id="close" style="position: absolute; top: 10px; right: 10px; background: white; border: none; font-size: 20px; cursor: pointer;">✖</button>
-          <img id="largeQr" src="{{ qrcode }}" style="width: 100%; height: 100%;">
-        </div>
-
-
-
 
           <div id="question-display" style="display: none;">
             <div id="question-container">
@@ -46,7 +30,14 @@
         <div class="text-center mb-4">
           <h3>Session Code</h3>
           <h2 class="display-4">{{ code }}</h2>
-          <img src="{{ qrcode }}" alt="QR Code for {{ poll.title }}" class="img-fluid mb-4" style="max-width: 200px;">
+          <img src="{{ qrcode }}" alt="QR Code for {{ poll.title }}" style="width: 200px; height: 200px;"> <!-- Initial size set to 200px -->
+
+            <!-- Magnifying glass for enlarging the QR code -->
+            <span id="magnify" style="cursor: pointer; font-size: 24px;">🔍</span>
+            <div id="qrOverlay" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 2px solid black; z-index: 1000; width: 420px; height: 420px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);">
+              <button id="close" style="position: absolute; top: 10px; right: 10px; background: white; border: none; font-size: 20px; cursor: pointer;">✖</button>
+              <img id="largeQr" src="{{ qrcode }}" style="width: 100%; height: 100%;">
+            </div>
         </div>
 
         <div class="students-section">
@@ -130,10 +121,189 @@
   }
 </style>
 
-        <script>
-          const pollCode = "{{ code }}";  <!-- Use poll primary key -->
-          const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
-        ws.onerror = function(error) {
+<script>
+  const pollCode = "{{ code }}";
+  let currentQuestionIndex = 0;
+
+  // Store questions with their data depending on their type
+  const questions = [
+    {% for question in poll.questions.all %}
+      {
+        id: "{{ question.id }}",
+        type: "{{ question.question_type }}",
+        {% if question.question_type == 'dropdown_fill' %}
+          text: "{{ question.dropdown_fill_question|default:'' }}",
+          options: {{ question.get_dropdown_options|safe|default:"[]" }},
+        {% elif question.question_type == 'text_fill' %}
+          text: "{{ question.text_fill_question|default:'' }}",
+        {% elif question.question_type == 'multiple_choice' %}
+          text: "{{ question.multiple_choice_question|default:'' }}",
+          options: {{ question.multiple_choice_options|safe|default:"[]" }},
+        {% elif question.question_type == 'single_choice' %}
+          text: "{{ question.single_choice_question|default:'' }}",
+          options: {{ question.single_choice_option|safe|default:"[]" }},
+        {% elif question.question_type == 'wordcloud' %}
+          text: "{{ question.wordcloud_question|default:'' }}",
+        {% elif question.question_type == 'match_question' %}
+          text: "{{ question.match_question|default:'' }}",
+          options: {{ question.match_options|safe|default:"[]" }},
+          answers: {{ question.match_answers|safe|default:"[]" }},
+        {% endif %}
+      },
+    {% endfor %}
+  ];
+
+  function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+  function createQuestionHTML(question) {
+    let html = '<div class="question-title">';//this will store the final html content needed to display the question
+
+    switch(question.type) {
+       case 'dropdown_fill':
+        const parts = question.text.split('___'); // split the text where there are blank spaces (3 underscores ___)
+        html += `<p>`;
+        parts.forEach((part, index) => {
+          html += part; // for each part in the question, add it to the HTML content
+          if (index < parts.length - 1) {
+            // Add some empty spaces (3 spaces per blank)
+            html += '&nbsp;&nbsp;&nbsp;';
+          }
+        });
+         html += `</p>`;
+         html += `<div class="options-container">
+               ${question.options.map(option =>
+                 `<div class="card" style="margin-bottom: 10px; padding: 5px;">
+                   <label>${option}</label>
+                 </div>`
+               ).join('')}
+             </div>`;
+        break;
+
+      case 'text_fill':
+        html += `<p>${question.text}</p>
+                 <div class="form-group">
+                  <div class="form-control mt-3" style="height: auto; min-height: 50px; border: 1px solid #ced4da; padding: 10px; background-color: #f8f9fa;">
+                    Type your answer here
+                  </div>
+                </div>`
+
+        break;
+
+      case 'multiple_choice':
+        html += `<p>${question.text}</p>
+                 <div class="options-container">
+                   ${question.options.map(option => `
+                     <div class="card" style = "margin-bottom: 10px; padding: 5px;">
+                       <label >${option}</label>
+                     </div>
+                   `).join('')}
+                 </div>`;
+        break;
+
+      case 'single_choice':
+        html += `<p>${question.text}</p>
+                 <div class="options-container">
+                   ${question.options.map(option => `
+                     <div class="card" style = "margin-bottom: 10px; padding: 5px;">
+                       <label >${option}</label>
+                     </div>
+                   `).join('')}
+                 </div>`;
+        break;
+
+      case 'wordcloud':
+        html += `<p>${question.text}</p>
+                 <div class="form-group">
+                  <div class="form-control mt-3" style="height: auto; min-height: 50px; border: 1px solid #ced4da; padding: 10px; background-color: #f8f9fa;">
+                    Type your answer here
+                  </div>
+                </div>`;
+        break;
+
+      case 'match_question':
+
+        const shuffledAnswers = shuffleArray([...question.answers]);
+
+         html += `<p>${question.text}</p>
+           <div class="matching-container mt-3">
+             ${question.options.map((option, index) => `
+               <div class="matching-item mb-3">
+                 <div class="row">
+                   <div class="col-5">
+                     <div class="card p-3 text-center">
+                       <span class="option-text">${option}</span>
+                     </div>
+                   </div>
+                   <div class="col-5">
+                     <div class="card p-3 text-center">
+                       <span class="answer-text">${shuffledAnswers[index]}</span>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             `).join('')}
+           </div>`;
+  break;
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  function updateQuestionDisplay() {
+    const questionContainer = document.getElementById('question-container');
+    const currentQuestion = questions[currentQuestionIndex];
+
+    // Update the question display
+    questionContainer.innerHTML = createQuestionHTML(currentQuestion);
+
+    // Update navigation buttons
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    prevBtn.disabled = currentQuestionIndex === 0;
+    nextBtn.disabled = currentQuestionIndex === questions.length - 1;
+
+    // Send question update to WebSocket
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: 'question',
+        question_id: currentQuestion.id
+      }));
+    }
+  }
+
+  function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      updateQuestionDisplay();
+    }
+  }
+
+  function nextQuestion() {
+    if (currentQuestionIndex < questions.length - 1) {
+      currentQuestionIndex++;
+      updateQuestionDisplay();
+    }
+  }
+
+  function startPoll() {
+    document.getElementById('start-poll-btn').style.display = 'none';
+    document.getElementById('question-display').style.display = 'block';
+    updateQuestionDisplay();
+  }
+
+  // WebSocket setup
+  const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${pollCode}/`;
+
+  const ws = new WebSocket(wsUrl);
+
+  ws.onopen = function() {
+    console.log("WebSocket connection established");
+  };
+
+  ws.onerror = function(error) {
     console.error("WebSocket error:", error);
   };
 
@@ -151,29 +321,18 @@
       studentsList.appendChild(newStudent);
     }
   };
-          ws.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            const studentsList = document.getElementById('students-list');
-            const newStudent = document.createElement('li');
-            newStudent.textContent = data.message;
-            studentsList.appendChild(newStudent);
-          };
-          // Magnifying glass functionality
-          const magnifyIcon = document.getElementById('magnify');
-          const qrOverlay = document.getElementById('qrOverlay');
-          const closeButton = document.getElementById('close');
+    // Magnifying glass functionality
+      const magnifyIcon = document.getElementById('magnify');
+      const qrOverlay = document.getElementById('qrOverlay');
+      const closeButton = document.getElementById('close');
 
-          magnifyIcon.addEventListener('click', function() {
-            qrOverlay.style.display = 'block';
-          });
+      magnifyIcon.addEventListener('click', function() {
+        qrOverlay.style.display = 'block';
+      });
 
-          closeButton.addEventListener('click', function() {
-            qrOverlay.style.display = 'none';
-          });
-        </script>
+      closeButton.addEventListener('click', function() {
+        qrOverlay.style.display = 'none';
+      });
 
-    </div>
-  </div>
-</div>
-  </body>
+</script>
 {% endblock %}
