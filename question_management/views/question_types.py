@@ -3,7 +3,6 @@ import time
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
-# from question_management.forms.question_forms import QuestionForm
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
 from django.contrib.auth.decorators import login_required
@@ -280,16 +279,6 @@ def add_question(request, poll_id):
 
     return render(request, "add_question.html", {"poll": poll})
 
-    # question_form = QuestionForm()
-    # return render(request, "add_question.html", {
-    #     'poll': poll,
-    #     'question_form': question_form,
-    # })
-
-# return render(request, "add_question.html", {"poll": poll})
-# was return render something instead of question form (look at github commits to find last line)
-
-# also, can probably delete question form and media form if above is not used (will have to see tho)
 
 
 

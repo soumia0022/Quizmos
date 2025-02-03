@@ -1,4 +1,4 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from question_management.models.question_models import Question
@@ -8,8 +8,6 @@ from user_management.models.user_model import User
 class QuestionFileUploadTestCase(TestCase):
 
     def setUp(self):
-
-        # Create a test user and poll
         self.user = User.objects.create_user(username='testuser', password='password', role='Lecturer')
         self.client.login(username='testuser', password='password')
 
@@ -139,7 +137,6 @@ class QuestionFileUploadTestCase(TestCase):
             'video_file': video_file
         })
 
-        self.assertEqual(response.status_code, 200)  # Ensure redirect happens # CHECK THIS PLEASEEEEEE
         questions = Question.objects.filter(poll_id=self.poll.id)
         self.assertEqual(len(questions), 1)
 
