@@ -11,11 +11,15 @@ class AddBlankQuestionViewTests(TestCase):
         'user_management/tests/fixtures/other_users.json'
     ]
     def setUp(self):
+        self.client = Client()
+        self.user = User.objects.get(username='johndoe')
+        self.user.set_password('password')  
+        self.user.save()
+        self.client.login(username='johndoe', password='password')
         self.poll = Poll.objects.create(
             title="Sample Poll",
-            user=User.objects.get(username='johndoe'),
-                                        )
-        self.client = Client()
+            user=self.user,
+        )
         self.url = reverse("question_management:add_question", args=[self.poll.id])
 
     def test_get_add_question_page(self):

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ question.question_text }}</title>
+</head>
+<body>
+    <h1>{{ question.question_text }}</h1>
+    <p>Type: {{ question.get_question_type_display }}</p>
+    <p>Timer: {{ question.timer }}</p>
+
+    <!-- Load the custom filter -->
+    {% load custom_filters %}
+
+    <!-- Display options based on question type -->
+    {% if question.question_type == 'multiple_choice' %}
+        <h2>Options:</h2>
+        <ul>
+            {% for option in question.multiple_choice_options %}
+                <li>{{ option }}</li>
+            {% endfor %}
+        </ul>
+    {% elif question.question_type == 'single_choice' %}
+        <h2>Options:</h2>
+        <ul>
+            {% for option in question.single_choice_option %}
+                <li>{{ option }}</li>
+            {% endfor %}
+        </ul>
+    {% elif question.question_type == 'dropdown_fill' %}
+        <h2>Dropdown Options:</h2>
+        <ul>
+            {% for option in question.get_dropdown_options %}
+                <li>{{ option }}</li>
+            {% endfor %}
+        </ul>
+    {% elif question.question_type == 'match_question' %}
+        <h2>Match Options:</h2>
+        <ul>
+            {% for option, answer in question.match_options|zip_lists:question.match_answers %}
+                <li>{{ option }} - {{ answer }}</li>
+            {% endfor %}
+        </ul>
+    {% elif question.question_type == 'text' %}
+        <h2>Answer:</h2>
+        <p>{{ question.text_fill_answer }}</p>
+    {% elif question.question_type == 'wordcloud' %}
+        <h2>Word Cloud Prompt:</h2>
+        <p>{{ question.wordcloud_question }}</p>
+    {% endif %}
+</body>
+</html>
