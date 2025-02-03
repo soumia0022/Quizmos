@@ -54,7 +54,7 @@ class QuestionAdmin(admin.ModelAdmin):
                     'text_fill_question', 'dropdown_fill_question', 'dropdown_options',
                     'multiple_choice_question', 'multiple_choice_options', 'multiple_choice_answers',
                     'single_choice_question', 'single_choice_option', 'single_choice_answers',
-                    'match_question', 'match_options', 'match_answers', 'wordcloud_question')
+                    'match_question', 'match_options', 'match_answers', 'wordcloud_question', 'audio_file', 'video_file', 'youtube_link')
     list_filter = ('poll', 'question_type')
     search_fields = ('text_fill_question', 'dropdown_fill_question', 'multiple_choice_question',
                      'single_choice_question', 'match_question','wordcloud_question')

@@ -44,6 +44,11 @@ class Question(models.Model):
     question_text = models.TextField(null=True, blank=True) # for generalised
     dropdown_correct_answer = models.TextField(null=True, blank=True)  # maybe get rid of this too
 
+
+    audio_file = models.FileField(upload_to='uploads/audio/', null=True, blank=True)
+    video_file = models.FileField(upload_to='uploads/video/', null=True, blank=True)
+    youtube_link = models.URLField(max_length = 100, null=True, blank=True)
+
     @property
     def poll_title(self):
         return self.poll.title
