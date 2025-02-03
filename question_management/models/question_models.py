@@ -26,6 +26,7 @@ class Question(models.Model):
     dropdown_fill_question = models.TextField(null=True, blank=True)
     dropdown_options = models.TextField(null=True, blank=True)  # comma-separated options for dropdown
     dropdown_correct_answer = models.TextField(null=True, blank=True)
+    dropdown_answer = models.TextField(null=True, blank=True)
 
     multiple_choice_question = models.TextField(null=True, blank=True)
     multiple_choice_options = models.JSONField(blank=True, default=list)  #use a json field since models doesnt support arrays
@@ -44,9 +45,17 @@ class Question(models.Model):
 
     question_text = models.TextField(null=True, blank=True) # for generalised
 
+
+    audio_file = models.FileField(upload_to='uploads/audio/', null=True, blank=True)
+    video_file = models.FileField(upload_to='uploads/video/', null=True, blank=True)
+    youtube_link = models.URLField(max_length = 100, null=True, blank=True)
+
     @property
     def poll_title(self):
         return self.poll.title
 
     def get_dropdown_options(self):
-        return self.dropdown_options.split(',') if self.dropdown_options else []
+        if not self.dropdown_options:
+            return []
+        options = [opt.strip() for opt in self.dropdown_options.split(',')]
+        return options

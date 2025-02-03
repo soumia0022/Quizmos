@@ -20,6 +20,7 @@ matplotlib.use('Agg')
 # FOR REFACTORING, BELOW THE QUESTION_TEXT AND THE SPECIFIC QUESTIONS HAVE THE SAME LINE (SAME THING)
 # PUT THIS IN A CLASS PLS BEFORE MERGING TO MAIN
 # MAKE TEMPLATES FOLDER A DIRECTORY NOT A PACKAGE!!
+
 def get_timer(request):
     timer = request.POST.get('question_timer')
 
@@ -39,6 +40,7 @@ def add_question(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user) # get object or 404
     if request.method == 'POST':
         question_type = request.POST.get('question_type')
+        youtube_link = request.POST.get('youtube_link')
 
         # Get the relevant question fields based on question type:
 
@@ -52,9 +54,21 @@ def add_question(request, poll_id):
                 question_type=question_type,
                 text_fill_question=question_text,
                 text_fill_answer=question_answer,
+                # audio_file=audio_file,
+                # video_file=video_file,
+                youtube_link=youtube_link,
                 timer=timer
             )
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
+
         elif question_type == 'dropdown_fill':
             original_text = request.POST.get('dropdown_fill_question') # The original text that is inputted
             question_text = request.POST.get('dropdown_fill_question')
@@ -69,18 +83,29 @@ def add_question(request, poll_id):
                 question_text=question_text,
                 question_type=question_type,
                 dropdown_fill_question=question_with_blank,
+                dropdown_answer = correct_answer,
                 dropdown_options=','.join([correct_answer] + additional_options),  # Store all options
+                timer=timer,
+                # audio_file=audio_file,
+                # video_file=video_file,
+                youtube_link=youtube_link,
                 dropdown_correct_answer=correct_answer,
-                timer=timer
             )
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
         elif question_type == 'multiple_choice':
             question_text = request.POST.get('multiple_choice_question')
             multiple_choice_question = request.POST.get('multiple_choice_question')
             multiple_choice_options = request.POST.getlist('multiple_choice_options[]')
             multiple_choice_answers = request.POST.getlist('multiple_choice_answers[]')
             timer = get_timer(request)
-
 
             # Server-side validation
             if not multiple_choice_options:
@@ -97,9 +122,20 @@ def add_question(request, poll_id):
                 multiple_choice_question=multiple_choice_question,
                 multiple_choice_options=multiple_choice_options,
                 multiple_choice_answers=multiple_choice_answers,
-                timer=timer
+                timer=timer,
+                # audio_file=audio_file,
+                # video_file=video_file,
+                youtube_link=youtube_link
             )
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
         elif question_type == 'single_choice':
             timer = get_timer(request)
             question_text = request.POST.get('single_choice_question')
@@ -122,9 +158,20 @@ def add_question(request, poll_id):
                 single_choice_question=single_choice_question,
                 single_choice_option=single_choice_option,
                 single_choice_answers=single_choice_answers,
-                timer=timer
+                timer=timer,
+                # audio_file=audio_file,
+                # video_file=video_file,
+                youtube_link=youtube_link
             )
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
 
         elif question_type == 'wordcloud':
             question_text = request.POST.get('wordcloud_question')
@@ -135,9 +182,21 @@ def add_question(request, poll_id):
                 question_text=question_text,
                 question_type=question_type,
                 wordcloud_question=question_text,
-                timer=timer
+                timer=timer,
+                # audio_file=audio_file,
+                # video_file=video_file,
+                youtube_link=youtube_link
             )
             question.save()
+
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
 
             text = ("Testing Testing the Word Cloud hello hello hello SEG SEG SEG wow amazing great yay woohoo "
                     "Hello Soumia Soumia Amina Amina Leyli Leyli Eeshal Marium Rashida Rashida Alishba Alishba Alishba")
@@ -200,14 +259,27 @@ def add_question(request, poll_id):
                 match_question=match_question,
                 match_options=match_options,
                 match_answers=match_answers,
-                timer=timer
+                timer=timer,
+                # audio_file=audio_file,
+                # video_file=video_file,
+                youtube_link=youtube_link
             )
+
 
             #it saved (showed up in the admin view) even without this line?
             question.save()
+            if 'audio_file' in request.FILES:
+                question.audio_file = request.FILES['audio_file']
+                question.save()
+
+                # Handling the video file after the question is saved
+            if 'video_file' in request.FILES:
+                question.video_file = request.FILES['video_file']
+                question.save()
 
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
+
     return render(request, "add_question.html", {"poll": poll})
 
 

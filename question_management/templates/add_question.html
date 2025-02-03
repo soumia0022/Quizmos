@@ -4,8 +4,9 @@
     <title>Add Question</title>
     {% load static %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-    <script src="{% static 'js/script.js' %}"></script> <!-- JavaScript -->
+
 </head>
 <body>
 
@@ -28,7 +29,7 @@
                 <!-- Form to Add Question (hidden initially) -->
                 <div class="card" id="question-form" style="display: none;">
                     <div class="card-body">
-                        <form method="POST">
+                        <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <!-- Dropdown for selecting question type -->
                             <div class="mb-3">
@@ -114,6 +115,35 @@
                                 </div>
                             </div>
 
+                           <!-- Add Audio and Video Buttons -->
+                            <div id="media-buttons" class="mb-3" style="display: none;">
+                                <button type="button" id="add-audio-btn" class="btn btn-secondary mb-2">Add Audio</button>
+                                <button type="button" id="add-video-btn" class="btn btn-secondary mb-2">Add Video</button>
+                                <button type="button" id="reset-media-btn" class="btn btn-secondary mt-2">Reset Media</button>
+                            </div>
+
+                            <!-- Video Upload and YouTube Link Buttons (Initially Hidden) -->
+                            <div id="video-options" class="mb-3" style="display: none;">
+                                <button type="button" id="upload-video-btn" class="btn btn-secondary mb-2">Upload Video</button>
+                                <button type="button" id="add-youtube-btn" class="btn btn-secondary mb-2">Add YouTube Link</button>
+                            </div>
+
+                            <!-- Audio Upload Field -->
+                            <div id="audio-upload-field" style="display: none;">
+                                <input type="file" name="audio_file" class="form-control mb-2" accept="audio/*">
+                            </div>
+
+                            <!-- Video Upload Field -->
+                            <div id="video-upload-field" style="display: none;">
+                                <input type="file" name="video_file" class="form-control mb-2" accept="video/*">
+                            </div>
+
+                            <!-- YouTube URL Input Field -->
+                            <div id="youtube-url-field" style="display: none;">
+                                <input type="url" name="youtube_link" class="form-control mb-2" placeholder="Enter YouTube video URL">
+                            </div>
+
+
                             <!-- Save Question Button -->
                             <div class="text-center">
                                 <button type="submit" class="btn btn-success">Save Question</button>
@@ -124,34 +154,46 @@
             </div>
 
             <!-- Sidebar for Created Questions -->
-            <div class="col-lg-4 col-md-5">
+            <div class="col-lg-4 col-md-5 position-relative">
                 <div id="questions-sidebar" class="border rounded bg-light p-3">
                     <h3 class="text-center">Questions Created:</h3>
                     <div id="questions-list">
                         {% for question in poll.questions.all %}
-                            <div class="question-item mb-2 d-flex justify-content-between align-items-center">
+                           <div class="question-item mb-2 d-flex justify-content-between align-items-center" data-id="{{ question.id }}" style="position:relative;">
                                 <div>
                                     <strong>Question {{ forloop.counter }}:</strong> {{ question.question_text }}
                                 </div>
                                 <div>
+                                    <!-- Edit Button -->
                                     <a href="{% url 'question_management:edit_question' poll.id %}?question_id={{ question.id }}" class="btn btn-sm btn-warning">
                                         Edit
                                     </a>
+
+                                    <!-- Delete Button -->
                                     <a href="{% url 'question_management:delete_question' poll.id %}?question_id={{ question.id }}"
                                        class="btn btn-sm btn-danger"
                                        onclick="return confirm('Are you sure you want to delete this question?');">
                                         Delete
                                     </a>
+
+                                    <!-- Full-page preview button -->
+                                    <a href="{% url 'question_management:question_detail' question.id %}" class="btn btn-info" title="View Full Page">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
                                 </div>
                             </div>
+
                         {% empty %}
                             <p class="text-muted text-center">No questions created yet.</p>
                         {% endfor %}
                     </div>
                 </div>
+                <!-- Box outside of container -->
+                <div id="hover-popup-box" class="hover-popup"></div>
             </div>
         </div>
     </div>
+
 
     <!-- Timer Display -->
     <div id="timer" style="display: none; text-align: center; margin-top: 10px;">
@@ -170,8 +212,135 @@
                
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const questionTypeDropdown = document.getElementById("question-type-dropdown");
+        const mediaButtons = document.getElementById("media-buttons");
+        const videoOptions = document.getElementById("video-options");
+        const audioFields = document.getElementById("audio-upload-field");
+        const videoFields = document.getElementById("video-upload-field");
+        const youtubeFields = document.getElementById("youtube-url-field");
+        const addAudioBtn = document.getElementById("add-audio-btn");
+        const addVideoBtn = document.getElementById("add-video-btn");
+        const uploadVideoBtn = document.getElementById("upload-video-btn");
+        const addYoutubeBtn = document.getElementById("add-youtube-btn");
+        const audioFileInput = document.querySelector("input[name='audio_file']");
+        const videoFileInput = document.querySelector("input[name='video_file']");
+        const youtubeLinkInput = document.querySelector("input[name='youtube_link']");
+        const resetMediaBtn = document.getElementById("reset-media-btn");
+
+
+        questionTypeDropdown.addEventListener("change", function () {
+            const selectedType = questionTypeDropdown.value;
+            mediaButtons.style.display = selectedType ? "block" : "none";
+            audioFields.style.display = "none";
+            videoFields.style.display = "none";
+            youtubeFields.style.display = "none";
+            addAudioBtn.disabled = false;
+            addVideoBtn.disabled = false;
+            uploadVideoBtn.disabled = false;
+            addYoutubeBtn.disabled = false;
+        });
+
+
+        // Show audio upload field and hide other media options
+        addAudioBtn.addEventListener("click", function () {
+            audioFields.style.display = "block";
+            videoFields.style.display = "none";
+            youtubeFields.style.display = "none";
+            videoOptions.style.display = "none";
+        });
+
+        // Show video options and hide other media options
+        addVideoBtn.addEventListener("click", function () {
+            audioFields.style.display = "none";
+            videoOptions.style.display = "block";
+            youtubeFields.style.display = "none";
+        });
+
+        // Show video upload field and hide YouTube URL field
+        uploadVideoBtn.addEventListener("click", function () {
+            videoFields.style.display = "block";
+            youtubeFields.style.display = "none";
+        });
+
+        // Show YouTube URL field and hide video upload field
+        addYoutubeBtn.addEventListener("click", function () {
+            youtubeFields.style.display = "block";
+            videoFields.style.display = "none";
+        });
+
+        // Disable other media options once an audio file is uploaded
+        audioFileInput.addEventListener("change", function () {
+            if (audioFileInput.files.length > 0) {
+                addVideoBtn.disabled = true;
+                uploadVideoBtn.disabled = true;
+                addYoutubeBtn.disabled = true;
+            }
+            // Can change allowed types based on what can be implemented when embedding
+            validateFileInput(audioFileInput, ["audio/mpeg", "audio/wav", "audio/ogg", "audio/flac", "audio/mp4", "audio/x-m4a"]);
+        });
+
+        // Disable other media options once a video file is uploaded
+        videoFileInput.addEventListener("change", function () {
+            if (videoFileInput.files.length > 0) {
+                addAudioBtn.disabled = true;
+                addVideoBtn.disabled = true;
+                addYoutubeBtn.disabled = true;
+            }
+            // Can change allowed types based on what can be implemented when embedding
+            validateFileInput(videoFileInput, ["video/mp4", "video/avi", "video/quicktime", "video/x-msvideo", "video/x-matroska", "video/x-flv", "video/x-ms-wmv"]);
+        });
+
+
+        youtubeLinkInput.addEventListener("change", function(e) {
+            addVideoBtn.disabled = true;
+            addAudioBtn.disabled = true;
+            uploadVideoBtn.disabled = true;
+
+            // Validation to ensure a valid URL is entered for the YouTube link
+            const urlPattern = /^(https?:\/\/)/;
+            if (!urlPattern.test(youtubeLinkInput.value)) {
+                alert("Please enter a valid URL (must start with http:// or https://)");
+                e.preventDefault();
+            }
+
+        });
+
+        // Validation for audio and video files (disallow certain types)
+        function validateFileInput(input, allowedTypes) {
+            if (input.files.length > 0) {
+                let file = input.files[0];
+                let fileType = file.type;
+                let fileName = file.name.toLowerCase();
+
+                // Check MIME type
+                if (!allowedTypes.includes(fileType)) {
+                    alert("Invalid file type! Please upload a valid file.");
+                    return;
+                }
+            }
+        }
+
+        resetMediaBtn.addEventListener("click", function() {
+            addVideoBtn.disabled = false;
+            addAudioBtn.disabled = false;
+            addYoutubeBtn.disabled = false;
+            uploadVideoBtn.disabled = false;
+
+            audioFileInput.value = '';
+            videoFileInput.value = '';
+            youtubeLinkInput.value = '';
+
+        });
+
+    });
+
     </script>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/hover_script.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 
 </body>
 </html>
