@@ -67,11 +67,23 @@ def edit_question(request, poll_id):
             if len(question.single_choice_answers) > 1:
                 return JsonResponse({'error': 'Only one answer is allowed for a single-choice question.'}, status=400)
 
+
         elif question.question_type == "text_fill":
+
             question.text_fill_question = request.POST.get("question_text")
-            #print("text fill question:", question.text_fill_question)
+
             question.text_fill_answer = request.POST.get("text_fill_answer")
-            #print("text fill answer:", question.text_fill_answer)
+
+            # Server-side validation
+
+            if not question.text_fill_question:
+                return JsonResponse({'error': 'Question text is required'}, status=400)
+
+            if not question.text_fill_answer:
+                return JsonResponse({'error': 'Text fill answer is required'}, status=400)
+
+            question.save()
+
 
 
         elif question.question_type == "dropdown_fill":
