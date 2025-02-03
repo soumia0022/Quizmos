@@ -104,7 +104,16 @@ def edit_question(request, poll_id):
 
 
         elif question.question_type == "wordcloud":
+
             question.wordcloud_question = request.POST.get("question_text")
+
+            # Server-side validation
+
+            if not question.wordcloud_question:
+                return JsonResponse({'error': 'Question text is required for a wordcloud question.'}, status=400)
+
+            question.save()
+
 
         elif question.question_type == "match_question":
             question.match_question = request.POST.get("question_text")
