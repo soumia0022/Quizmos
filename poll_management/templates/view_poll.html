@@ -1,0 +1,36 @@
+<!-- templates/polls/poll_results.html -->
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Results for Poll: {{ poll.title }}</h1>
+            <!-- Add the logic to display the results of the poll -->
+            <p>Status: {{ poll.status|capfirst }}</p>
+
+            {% if poll.questions.exists %}
+            <h2>Questions and Responses:</h2>
+            <ul>
+                {% for question in poll.questions.all %}
+                <li>
+                    <strong>{{ question.question_text }}</strong>
+                    <ul>
+                        {% if question.question_type == 'multiple_choice' or question.question_type == 'single_choice' %}
+                        {% for option in question.get_options %}
+                        {% endfor %}
+                        {% elif question.question_type == 'text_fill' %}
+                        <li>Responses: {{ question.text_fill_responses|join:", " }}</li>
+                        {% elif question.question_type == 'dropdown_fill' %}
+                        <li>Selected Answers: {{ question.dropdown_fill_responses|join:", " }}</li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No questions have been added to this poll yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Delete Poll</title>
+</head>
+<body>
+    <h1>Delete Poll</h1>
+    <p>Are you sure you want to delete the poll "{{ poll.title }}"?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+        <a href="{% url 'poll_management:poll_results' poll.number_code %}">Cancel</a>
+    </form>
+</body>
+</html>
