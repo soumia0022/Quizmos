@@ -289,14 +289,15 @@ def add_question(request, poll_id):
                 code_test_cases=code_test_cases,
             )
             question.save()
-            if 'audio_file' in request.FILES:
-                question.audio_file = request.FILES['audio_file']
-                question.save()
 
-                # Handling the video file after the question is saved
-            if 'video_file' in request.FILES:
-                question.video_file = request.FILES['video_file']
-                question.save()
+        if 'audio_file' in request.FILES:
+            question.audio_file = request.FILES['audio_file']
+            question.save()
+
+            # Handling the video file after the question is saved
+        if 'video_file' in request.FILES:
+            question.video_file = request.FILES['video_file']
+            question.save()
 
         # Save the question instance
         return redirect("question_management:add_question", poll_id=poll.id)
