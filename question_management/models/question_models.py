@@ -9,7 +9,6 @@ class Question(models.Model):
         ('single_choice', 'Single Choice'),
         ('wordcloud', 'Word Cloud'),
         ('match_question', 'Match Question'),
-
     ]
     poll = models.ForeignKey(Poll, related_name='questions', on_delete=models.CASCADE, default=1) # question associated w poll
                                         # related name questions to allow you to do something like poll.questions.all() to get
@@ -23,8 +22,10 @@ class Question(models.Model):
     # Fields for different question types
     text_fill_question = models.TextField(null=True, blank=True)
     text_fill_answer = models.TextField(null=True, blank=True)
+
     dropdown_fill_question = models.TextField(null=True, blank=True)
     dropdown_options = models.TextField(null=True, blank=True)  # comma-separated options for dropdown
+    dropdown_correct_answer = models.TextField(null=True, blank=True)
     dropdown_answer = models.TextField(null=True, blank=True)
 
     multiple_choice_question = models.TextField(null=True, blank=True)
@@ -34,6 +35,7 @@ class Question(models.Model):
     single_choice_question = models.TextField(null=True, blank=True)
     single_choice_option = models.JSONField(blank=True, default=list)  #use a json field since models doesnt support arrays
     single_choice_answers = models.JSONField(blank=True, default=list)
+
     wordcloud_question = models.TextField(null=True, blank=True)
 
     match_question = models.TextField(null=True, blank=True)
@@ -42,7 +44,6 @@ class Question(models.Model):
     match_answers = models.JSONField(blank=True, default=list)
 
     question_text = models.TextField(null=True, blank=True) # for generalised
-    dropdown_correct_answer = models.TextField(null=True, blank=True)  # maybe get rid of this too
 
 
     audio_file = models.FileField(upload_to='uploads/audio/', null=True, blank=True)
