@@ -1,11 +1,28 @@
-<!-- templates/polls/poll_results.html -->
 {% extends 'base_content.html' %}
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-12">
-            
-        </div>
+
+  <div class="row">
+    <div class="col-12">
+      <h1>Welcome to {{ poll.title }}!</h1>
+
+      <div id="question">Waiting for a question...</div>
+      <input type="text" id="answer" placeholder="Your answer" />
+      <button>Submit</button>
+
+      <script>
+        const pollCode = "{{ poll.number_code }}";
+        const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
+
+        ws.onmessage = function(event) {
+          const data = JSON.parse(event.data);
+          if (data.type === 'question') {
+            document.getElementById('question').innerText = data.question.text;
+          }
+        };
+      </script>
+
     </div>
+  </div>
 </div>
 {% endblock %}

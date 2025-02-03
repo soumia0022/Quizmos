@@ -1,0 +1,36 @@
+<html>
+<head>
+    <title>Questions</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.question-item').hover(function(){
+                const questionId = $(this).data('id');
+                $.get(`/question/${questionId}/preview/`, function(data) {
+                    $('#preview-box').html(`
+                        <p>Type: ${data.question_type}</p>
+                        <p>Timer: ${data.timer || 'None'}</p>
+                        <p>Text: ${data.question_text}</p>
+                    `);
+                });
+            }, function(){
+                $('#preview-box').empty();
+            });
+
+            $('.question-item').click(function(){
+                const questionId = $(this).data('id');
+                window.location.href = `/question/${questionId}/`;
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Questions</h1>
+    <ul>
+        {% for question in questions %}
+            <li class="question-item" data-id="{{ question.id }}">{{ question.question_text }}</li>
+        {% endfor %}
+    </ul>
+    <div id="preview-box"></div>
+</body>
+</html>

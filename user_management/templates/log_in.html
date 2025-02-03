@@ -1,5 +1,10 @@
 {% extends 'base_content.html' %}
+{% load static %}
 {% block content %}
+
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
 <div class="container">
   <div class="row">
     <div class="col-sm-12 col-md-6 offset-md-3">
@@ -10,6 +15,14 @@
         {% include 'partials/bootstrap_form.html' with form=form %}
         <input type="submit" value="Log in" class="btn btn-primary">
       </form>
+      <div> 
+        <a href="{% url 'user_management:password_reset' %}">Forgotten Password?</a>
+      </div>
+
+      <div class="prompt">
+        Don't have an account? <a href="{% url 'user_management:sign_up' %}">Sign up</a>
+    </div>
+
     </div>
   </div>
 </div>
