@@ -145,7 +145,20 @@ export class QuestionManager {
                 question_id: currentQuestion.id
             }));
         }
-        
+
+
+
+        // Update progress bar
+        const progressBar = document.getElementById('progress-bar');
+        const currentQuestionSpan = document.getElementById('current-question');
+        const totalQuestionsSpan = document.getElementById('total-questions');
+
+        currentQuestionSpan.textContent = this.currentIndex + 1;
+        totalQuestionsSpan.textContent = this.questions.length;
+
+        const progressPercentage = ((this.currentIndex + 1) / this.questions.length) * 100;
+        progressBar.style.width = progressPercentage + '%';
+        progressBar.style.height = 100;
     }
     
 

@@ -24,7 +24,7 @@
 
 {% block extra_js %}
 <script>
-  // Configuration object with all necessary data from Django
+  // Configuration object
   const pollConfig = {
     code: "{{ code }}",
     questions: {{ questions_json|safe }},
