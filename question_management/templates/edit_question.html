@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Question {{ question.id }}</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/edit_question.js' %}"></script>
+</head>
+<body>
+    <h2>Edit Question {{ question.id }}</h2>
+
+    <!-- MAKE ALL QUESTION FIELDS REQUIRED-->
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Display Question Type (Not Editable) -->
+        <div>
+            <label><strong>Question Type: {{ question.get_question_type_display }}</strong></label>
+            <input type="hidden" id="question-type" value="{{ question.question_type }}">
+        </div>
+
+        <!-- Editable Question Text -->
+        <div>
+            <label><strong>Question Text:</strong></label>
+            <input type="text" name="question_text" value="{{ question.question_text }}">
+        </div>
+
+
+        <!-- Editable Question Timer -->
+        <div id="timer">
+            <label><strong> Timer </strong> </label>
+            <input type="number" name="question_timer" value="{{ question.timer|default:0 }}">
+        </div>
+
+        <!-- Display & Edit Options Based on Question Type -->
+        {% if question.question_type == "multiple_choice" %}
+            <div>
+                <label><strong>Multiple Choice Options:</strong></label>
+
+                {% for option in question.multiple_choice_options %}
+                    <div class="multiple-choice-option" id="option-container-{{ forloop.counter }}">
+                        <input type="checkbox" name="multiple_choice_answers[]" value="{{ option }}"
+                            {% if option in question.multiple_choice_answers %} checked {% endif %}>
+                        <label>{{ option }}</label>
+
+                        <!-- Hidden input to store option -->
+                        <input type="hidden" name="multiple_choice_options[]" value="{{ option }}">
+
+                        <!-- Delete button -->
+                        <button type="button" class="btn btn-danger btn-sm delete-option-btn">X</button>
+                    </div>
+                {% endfor %}
+
+                <div id="multiple-choice-options-container"></div>
+                <!-- Option to add new option -->
+                <button type="button" id="multiple-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
+            </div>
+        {% elif question.question_type == "single_choice" %}
+            <div>
+
+                {% for option in question.single_choice_option %}
+                    <div class="single-choice-option" id="option-container-{{ forloop.counter }}">
+                        <input type="checkbox" name="single_choice_answers[]" value="{{ option }}"
+                            {% if option in question.single_choice_answers %} checked {% endif %}>
+                        <label>{{ option }}</label>
+
+                        <!-- Hidden input to store option -->
+                        <input type="hidden" name="single_choice_options[]" value="{{ option }}">
+
+                        <!-- Delete button -->
+                        <button type="button" class="btn btn-danger btn-sm delete-option-btn">X</button>
+                    </div>
+                {% endfor %}
+
+                <div id="single-choice-options-container"></div>
+                <!-- Option to add new option -->
+                <button type="button" id="single-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
+            </div>
+
+        {% elif question.question_type == "text_fill" %}
+            <div id="text-fill-fields">
+                <label><strong>Question Answer:</strong></label>
+                <input type="text" name="text_fill_answer" value="{{ question.text_fill_answer}}">
+            </div>
+        {% endif %}
+
+        <!-- Editable Answer -->
+        {% if question.question_type == "dropdown_fill" %}
+            <div>
+                <label><strong>Correct Answer:</strong></label>
+                <input type="text" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}" readonly>
+            </div>
+
+            <!-- Loop through existing options -->
+            <label for="dropdown-correct-answer" class="form-label">Options:</label>
+            {% for option in dropdown_options %}
+                {% if option == question.dropdown_correct_answer %}
+                    <input type="text" name="dropdown_options[]" value="{{ option }}" readonly>
+                {% else %}
+                    <input type="text" name="dropdown_options[]" value="{{ option }}">
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if question.question_type == "match_question" %}
+
+             <div id="options-section">
+                <button type="button" id="match-add-option-btn"> Add Matching Card </button>
+
+                <div id="match-options-container">
+                    <div class="row">
+                        <h5 class="col-12">Match Options</h5>
+
+                        {% for option, answer in match_pairs %}
+                            <div id="match-question-row" class="row align-items-center mb-2">
+                                <!-- Option Input -->
+                                <div class="col-md-3">
+                                    <input type="text" name="match_question_options[]" value="{{ option }}" class="form-control">
+                                </div>
+
+                                <!-- Answer Input -->
+                                <div class="col-md-3">
+                                    <input type="text" name="match_question_answers[]" value="{{ answer }}" class="form-control">
+                                </div>
+
+                                <!-- Delete Button -->
+                                <button type="button" class="btn btn-danger btn-sm delete-option-btn">X</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                    <!-- Dynamically add options with javascript-->
+            </div>
+
+        {% endif %}
+
+        <br>
+        <button type="submit">Save Changes</button>
+        <a href="{% url 'question_management:add_question' poll_id=question.poll.id %}">Cancel</a>
+    </form>
+</body>
+</html>
