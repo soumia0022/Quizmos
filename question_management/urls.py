@@ -19,4 +19,5 @@ urlpatterns = [
     path('poll/<int:poll_id>/add-question/', question_types.add_question, name='add_question'),
     path('question/', include(question_patterns)),
     path('', question_list, name='question_list'),
+
 ]

@@ -33,6 +33,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const matchQuestionInput = matchQuestionFields.querySelector('input[name="match_question"]');
     let matchOptionCount = 1;
 
+    // New Code Question fields
+    const codeQuestionFields = document.getElementById('code-question-fields');
+    // const codeQuestionTextInput = codeQuestionFields.querySelector('input[name="code_question_text"]');
+    // const codeLanguageSelect = codeQuestionFields.querySelector('select[name="code_language"]');
+    // const codeTestCasesInput = codeQuestionFields.querySelector('textarea[name="code_test_cases"]');
+
+
     
     // Show or hide the question form
     addButton.addEventListener('click', function() {
@@ -45,14 +52,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Hide all fields
         textFillFields.style.display = 'none';
+
         dropdownFillFields.style.display = 'none';
+
         multipleChoiceFields.style.display = 'none';
         multipleChoiceInput.required = false;
+
         singleChoiceFields.style.display = 'none';
         singleChoiceInput.required = false;
+
         wordCloudFields.style.display = 'none';
+
         matchQuestionFields.style.display = 'none';
         matchQuestionInput.required = false;
+
+        codeQuestionFields.style.display = 'none';
+        //codeQuestionTextInput.required = false;
 
         // Show the selected fields based on option selected
         if (questionType === 'text_fill') {
@@ -156,6 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 matchQuestionOptionSection.appendChild(inputRow);
                 matchOptionCount++;
             });
+        } else if (questionType === 'code_question') {
+            codeQuestionFields.style.display = 'block';
         }
     });
 

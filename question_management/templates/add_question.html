@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/script.js' %}"></script> <!-- JavaScript -->
 
 </head>
 <body>
@@ -42,15 +43,16 @@
                                     <option value="dropdown_fill">Dropdown Fill in the Blank</option>
                                     <option value="wordcloud">Word Cloud</option>
                                     <option value="match_question">Match Question</option>
+                                    <option value="code_question">Code Question</option>
                                 </select>
                             </div>
-                            
+
                             <!-- Timer Input Field (Initially Hidden) -->
                             <div id="timer-settings" class="mb-3" style="display: none;">
                                 <label for="question_timer" class="form-label">Set Timer (Seconds):</label>
                                 <input type="number" name="question_timer" id="question_timer" class="form-control" placeholder="Enter seconds">
                             </div>
-                        
+
                             <!-- Text Fill Fields -->
                             <div id="text-fill-fields" class="mb-3" style="display: none;">
                                 <input type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
@@ -114,6 +116,25 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Coding Question Fields -->
+                            <div id="code-question-fields" class="mb-3" style="display: none;">
+                                <label for="code_question_text" class="form-label">Coding Question:</label>
+                                <textarea name="code_question_text" class="form-control mb-2" placeholder="Enter coding question prompt"></textarea>
+
+                                <label for="code_language" class="form-label">Select Language:</label>
+                                <select name="code_language" class="form-select mb-2">
+                                    <option value="python">Python</option>
+                                    <option value="javascript">JavaScript</option>
+                                    <option value="java">Java</option>
+                                    <option value="c">C</option>
+                                    <option value="cpp">C++</option>
+                                </select>
+
+                                <label for="code_test_cases" class="form-label">Test Cases (JSON Format):</label>
+                                <textarea name="code_test_cases" class="form-control" placeholder='Example: [{"input": "2,3", "output": "5"}]'></textarea>
+                            </div>
+
 
                            <!-- Add Audio and Video Buttons -->
                             <div id="media-buttons" class="mb-3" style="display: none;">
@@ -209,7 +230,7 @@
             // Show Timer Input Only for Relevant Question Types
             questionTypeDropdown.addEventListener("change", function () {
                     timerSettings.style.display = "block";
-               
+
             });
         });
 

@@ -9,6 +9,7 @@ class Question(models.Model):
         ('single_choice', 'Single Choice'),
         ('wordcloud', 'Word Cloud'),
         ('match_question', 'Match Question'),
+        ('code_question', 'Code Question'),
     ]
     poll = models.ForeignKey(Poll, related_name='questions', on_delete=models.CASCADE, default=1) # question associated w poll
                                         # related name questions to allow you to do something like poll.questions.all() to get
@@ -44,6 +45,11 @@ class Question(models.Model):
     match_answers = models.JSONField(blank=True, default=list)
 
     question_text = models.TextField(null=True, blank=True) # for generalised
+
+    # Coding question fields
+    code_question_text = models.TextField(null=True, blank=True)  # Prompt for the coding question
+    code_language = models.CharField(max_length=20, default="python", null=True, blank=True)  # Programming language
+    code_test_cases = models.JSONField(default=list, blank=True)  # JSON field for test cases
 
 
     audio_file = models.FileField(upload_to='uploads/audio/', null=True, blank=True)
