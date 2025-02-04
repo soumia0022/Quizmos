@@ -3,6 +3,12 @@
     <button id="start-poll-btn" class="btn btn-primary mb-3">Start Poll</button>
 
     <div id="question-display" style="display: none;">
+        <div>
+       <!-- In components/poll_controls.html -->
+        <div class="d-flex align-items-center">
+            <i class="bi bi-lock" data-locked="false" style="cursor: pointer;"></i>
+        </div>
+        </div>
         <div id="question-container" class="mb-4">
             <!-- Questions will be dynamically inserted here -->
         </div>
@@ -19,5 +25,7 @@
                 </div>
             </div>
         </div>
+
+
     </div>
 </div>

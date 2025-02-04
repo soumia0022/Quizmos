@@ -39,8 +39,17 @@ class PollConsumer(AsyncWebsocketConsumer):
         message_type = text_data_json.get('type')
         message_content = text_data_json.get('message')
         question_id = text_data_json.get('question_id')
-
-        if message_type == 'message':
+        if message_type == 'lock_status':
+            is_locked = text_data_json.get('is_locked', False)
+            # Broadcast the lock status to all connected clients
+            await self.channel_layer.group_send(
+                self.poll_group_name,
+                {
+                    "type": "lock_status_update",
+                    "is_locked": is_locked
+                }
+            )
+        elif message_type == 'message':
             # If it's a regular message, broadcast it to everyone in the poll group
             await self.channel_layer.group_send(
                 self.poll_group_name,
@@ -88,3 +97,10 @@ class PollConsumer(AsyncWebsocketConsumer):
             }
         except Question.DoesNotExist:
             return None
+
+    async def lock_status_update(self, event):
+        # Send lock status to WebSocket
+        await self.send(text_data=json.dumps({
+            'type': 'lock_status',
+            'is_locked': event['is_locked']
+        }))
