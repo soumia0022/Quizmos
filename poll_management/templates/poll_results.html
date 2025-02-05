@@ -31,8 +31,13 @@
               document.getElementById('question_options').innerText = data.question.single_option;
             
             }
-
+            else if (data.question.type == 'dropdown_fill'){
+              document.getElementById('question_options').innerText = data.question.dropdown_options;
           }
+          else if (data.question.type == 'text_fill'){
+              document.getElementById('question_options').innerText = ' ';
+          }
+        }
         };
       </script>
 
