@@ -44,11 +44,17 @@ def dashboard(request):
             responses_count=Count('response')
         )
 
-        # Sort based on user selection (either by 'title' or 'created_at')
-        if sort_by == 'title':
-            poll = poll.order_by('title')
-        else:
-            poll = poll.order_by('-created_at')  # Default: sort by date created
+        # Apply sorting logic
+        if sort_by == 'title_asc':
+            poll = poll.order_by('title')  # A → Z
+        elif sort_by == 'title_desc':
+            poll = poll.order_by('-title')  # Z → A
+        elif sort_by == 'created_at_asc':
+            poll = poll.order_by('created_at')  # Oldest first
+        else:  #  (newest first)
+            poll = poll.order_by('-created_at')
+
+
 
         # Paginate the polls
         paginator = Paginator(poll, 10)
