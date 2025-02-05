@@ -53,8 +53,9 @@ INSTALLED_APPS = [
     'question_management',
     'analytics',
     'response_management',
+    'ui_components'
     'django.contrib.sites',
-    'allauth', 
+    'allauth',
     'allauth.account',
     'rest_framework',
 ]
