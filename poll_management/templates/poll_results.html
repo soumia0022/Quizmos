@@ -33,16 +33,16 @@
             } else if (data.question.type === 'single_choice') {
               let options = "";
               data.question.single_option.forEach(option => {
-                options += `<input type="radio" name="single_choice_answers" value="${option}"><label>${option}</label><br>`;
+                options += `<input type="radio" name="single_choice_answer" value="${option}"><label>${option}</label><br>`;
               });
               document.getElementById('question_options').innerHTML = options;
 
             } else if (data.question.type === 'dropdown_fill') {
-              let options = `<select name="dropdown_answers">`;
+              let options = "";
               data.question.dropdown_options.forEach(option => {
-                options += `<option value="${option}">${option}</option>`;
+                options += `<input type="radio" name="dropdown_answer" value="${option}"><label>${option}</label><br>`;
               });
-              options += `</select>`;
+              // options += `</select>`;
               document.getElementById('question_options').innerHTML = options;
 
             } else if (data.question.type === 'text_fill') {

@@ -80,13 +80,14 @@ class PollConsumer(AsyncWebsocketConsumer):
         # Decorated with database_sync_to_async because database operations are synchronous
         try:
             question = Question.objects.get(id=question_id)
+            dropdown_options = question.dropdown_options.split(',') if question.dropdown_options else []
             return {
                 'id': question.id,
                 'text': question.question_text,
                 'type': question.question_type,
                 'mcq_options' : question.multiple_choice_options,
                 'single_option': question.single_choice_option,
-                'dropdown_options': question.dropdown_options,
+                'dropdown_options': dropdown_options,
                 # 'text_fill_options': question.text_fill_answer,
 
             }
