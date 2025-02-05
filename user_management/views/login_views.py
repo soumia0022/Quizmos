@@ -11,6 +11,7 @@ from user_management.helpers import login_prohibited
 from poll_management.models.poll_model import Poll
 from django.db.models import Count
 from poll_management.views.create_poll import create_poll
+from django.core.paginator import Paginator
 
 @login_prohibited
 def home(request):
@@ -26,18 +27,41 @@ def home(request):
 
     return render(request, 'home.html', {'form': form})
 
+
 def dashboard(request):
     """Display the current user's dashboard."""
     current_user = request.user
-    if (current_user.role == 'Student'):
+
+    if current_user.role == 'Student':
         return render(request, 'student_dashboard.html', {'user': current_user})
     else:
-        poll = Poll.objects.filter(user=request.user).annotate(
-            responses_count=Count('response')
-        ).order_by('-created_at')
-        create_poll(request)
-        return render(request, 'lecturer_dashboard.html', {'user': current_user, 'polls': poll})
+        # Filtering polls based on user and sorting by chosen criteria
+        sort_by = request.GET.get('sort_by', 'created_at')  # Default sorting by date created
+        search_query = request.GET.get('search', '')  # Get search query
 
+        # Filter by search if provided
+        poll = Poll.objects.filter(user=request.user, title__icontains=search_query).annotate(
+            responses_count=Count('response')
+        )
+
+        # Sort based on user selection (either by 'title' or 'created_at')
+        if sort_by == 'title':
+            poll = poll.order_by('title')
+        else:
+            poll = poll.order_by('-created_at')  # Default: sort by date created
+
+        # Paginate the polls
+        paginator = Paginator(poll, 10)
+        page_number = request.GET.get('page')  # Get the page number
+        page_obj = paginator.get_page(page_number)  # Get the page object
+
+        # Render the template with the context
+        return render(request, 'lecturer_dashboard.html', {
+            'user': current_user,
+            'polls': page_obj,
+            'sort_by': sort_by,
+            'search_query': search_query,
+        })
 
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
@@ -102,10 +126,3 @@ def log_out(request):
 
     logout(request)
     return redirect(reverse('user_management:home'))
-
-
-
-
-
-
-
