@@ -9,7 +9,7 @@
       <div id="question">Waiting for a question...</div>
       <input type="text" id="answer" placeholder="Your answer" />
 
-      <div id = 'question_options'>= Waiting for options... </div>
+      <div id="question_options">Waiting for options...</div>
       <button>Submit</button>
 
       <script>
@@ -23,21 +23,32 @@
           if (data.type === 'question') {
             document.getElementById('question').innerText = data.question.text;
 
-            if(data.question.type == 'multiple_choice'){
-              document.getElementById('question_options').innerText = data.question.mcq_options;
-            
+            if (data.question.type === 'multiple_choice') {
+              let options = "";
+              data.question.mcq_options.forEach(option => {
+                options += `<input type="checkbox" name="multiple_choice_answers[]" value="${option}"><label>${option}</label><br>`;
+              });
+              document.getElementById('question_options').innerHTML = options;
+
+            } else if (data.question.type === 'single_choice') {
+              let options = "";
+              data.question.single_option.forEach(option => {
+                options += `<input type="radio" name="single_choice_answers" value="${option}"><label>${option}</label><br>`;
+              });
+              document.getElementById('question_options').innerHTML = options;
+
+            } else if (data.question.type === 'dropdown_fill') {
+              let options = `<select name="dropdown_answers">`;
+              data.question.dropdown_options.forEach(option => {
+                options += `<option value="${option}">${option}</option>`;
+              });
+              options += `</select>`;
+              document.getElementById('question_options').innerHTML = options;
+
+            } else if (data.question.type === 'text_fill') {
+              document.getElementById('question_options').innerHTML = '';
             }
-            else if (data.question.type == 'single_choice'){
-              document.getElementById('question_options').innerText = data.question.single_option;
-            
-            }
-            else if (data.question.type == 'dropdown_fill'){
-              document.getElementById('question_options').innerText = data.question.dropdown_options;
           }
-          else if (data.question.type == 'text_fill'){
-              document.getElementById('question_options').innerText = ' ';
-          }
-        }
         };
       </script>
 
