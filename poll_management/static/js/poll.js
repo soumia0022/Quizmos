@@ -135,6 +135,8 @@ break;
   function startPoll() {
     document.getElementById('start-poll-btn').style.display = 'none';
     document.getElementById('question-display').style.display = 'block';
+    document.getElementById('unlock').style.display = '';
+
     updateQuestionDisplay();
   }
 

@@ -1,0 +1,15 @@
+
+<h3>Session Code</h3>
+<h2 class="display-4">{{ code }}</h2>
+<img src="{{ qrcode }}" alt="QR Code for {{ poll.title }}" class="img-fluid mb-4" style="max-width: 200px;">
+
+<div class="students-section">
+  <h3>Students Joined:</h3>
+  <div class="card">
+    <div class="card-body">
+      <ul id="students-list" class="list-unstyled">
+    <!-- This list will be updated in real-time -->
+      </ul>
+    </div>
+  </div>
+</div>
