@@ -20,6 +20,8 @@
           const data = JSON.parse(event.data);
           console.log(data);
 
+          document.getElementById('answer').style.display = 'none';
+
           if (data.type === 'question') {
             document.getElementById('question').innerText = data.question.text;
 
@@ -47,6 +49,7 @@
 
             } else if (data.question.type === 'text_fill') {
               document.getElementById('question_options').innerHTML = '';
+              document.getElementById('answer').style.display = 'block'; 
             }
           }
         };
