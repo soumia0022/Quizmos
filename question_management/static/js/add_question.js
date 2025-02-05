@@ -75,42 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
             multipleChoiceFields.style.display = 'block';
             multipleChoiceInput.required = true;
             multipleChoiceAddOptionBtn.addEventListener("click", () => {
-                addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection);
+                //function in another file, returns new McOptionCount
+                McOptionCount = addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection);
             });
         } else if (questionType === 'single_choice') {
             singleChoiceFields.style.display = 'block';
             singleChoiceInput.required = true;
             singleChoiceAddOptionBtn.addEventListener("click", () => {
-                //create a new input filed for another option with placeholder text
-                const optionText=prompt('Enter a new Option');
-                if (optionText){
-                    //create hidden input for all the options to be stored in DB otherwise only checked boxes are stored
-                    const hiddenInput = document.createElement('input');
-                    hiddenInput.type = 'hidden';
-                    hiddenInput.name = 'single_choice_options[]';
-                    hiddenInput.value = optionText;
-
-                    const checkboxInput = document.createElement('input');
-                    checkboxInput.type = 'checkbox';
-                    checkboxInput.id = `option${ScOptionCount}`;
-                    //only the checked inboxes will be saved as answers
-                    checkboxInput.name = 'single_choice_answers[]';
-                    checkboxInput.value = optionText;
-
-                    //value won't show implicitly so create a label for it
-                    const label = document.createElement('label');
-                    label.htmlFor = `option${ScOptionCount}`;
-                    label.textContent = optionText;
-
-                    //add input to the list of option
-                    singleChoiceOptionsSection.appendChild(checkboxInput);
-                    singleChoiceOptionsSection.appendChild(label);
-                    singleChoiceOptionsSection.appendChild(hiddenInput);
-
-                    //create a space between options
-                    singleChoiceOptionsSection.appendChild(document.createTextNode(' '));
-                    ScOptionCount++;
-                }
+               ScOptionCount = addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection)
             });
         } else if (questionType === "wordcloud") {
             wordCloudFields.style.display = 'block';
