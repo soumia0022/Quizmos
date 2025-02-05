@@ -31,49 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (MCAddBtn) {
         MCAddBtn.addEventListener('click', function () {
-            console.log('Button pressed');
-            const optionText = prompt('Enter a new Option');
-            if (optionText) {
-                const optionContainer = document.createElement('div');
-                optionContainer.className = 'multiple-choice-option';
-                optionContainer.id = `option-container-${McOptionCount}`;
-
-                // Create hidden input for all options to be stored in DB (unchecked ones)
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'multiple_choice_options[]';
-                hiddenInput.value = optionText;
-
-                // Create checkbox input
-                const checkboxInput = document.createElement('input');
-                checkboxInput.type = 'checkbox';
-                checkboxInput.id = `option${McOptionCount}`;
-                checkboxInput.name = 'multiple_choice_answers[]';
-                checkboxInput.value = optionText;
-
-                // Create label for the checkbox
-                const label = document.createElement('label');
-                label.htmlFor = `option${McOptionCount}`;
-                label.textContent = optionText;
-
-                // Create delete button
-                const deleteBtn = document.createElement('button');
-                deleteBtn.type = 'button';
-                deleteBtn.className = 'btn btn-danger btn-sm ms-2';
-                deleteBtn.textContent = 'X';
-                deleteBtn.addEventListener('click', function () {
-                    optionContainer.remove(); // Remove the option container
-                });
-
-                // Append elements to the container
-                optionContainer.appendChild(checkboxInput);
-                optionContainer.appendChild(label);
-                optionContainer.appendChild(hiddenInput);
-                optionContainer.appendChild(deleteBtn);
-
-                multipleChoiceOptionsSection.appendChild(optionContainer);
-                McOptionCount++;
-            }
+            addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection);
         });
     }
 

@@ -35,9 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // New Code Question fields
     const codeQuestionFields = document.getElementById('code-question-fields');
-    // const codeQuestionTextInput = codeQuestionFields.querySelector('input[name="code_question_text"]');
-    // const codeLanguageSelect = codeQuestionFields.querySelector('select[name="code_language"]');
-    // const codeTestCasesInput = codeQuestionFields.querySelector('textarea[name="code_test_cases"]');
 
 
     
@@ -78,37 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
             multipleChoiceFields.style.display = 'block';
             multipleChoiceInput.required = true;
             multipleChoiceAddOptionBtn.addEventListener("click", () => {
-                //console.log("add option button pressed");
-                //create a new input filed for another option with placeholder text
-                const optionText=prompt('Enter a new Option');
-                if (optionText){
-                    //create hidden input for all the options to be stored in DB otherwise only checked boxes are stored
-                    const hiddenInput = document.createElement('input');
-                    hiddenInput.type = 'hidden';
-                    hiddenInput.name = 'multiple_choice_options[]';
-                    hiddenInput.value = optionText;
-
-                    const checkboxInput = document.createElement('input');
-                    checkboxInput.type = 'checkbox';
-                    checkboxInput.id = `option${McOptionCount}`;
-                    //only the checked inboxes will be saved as answers
-                    checkboxInput.name = 'multiple_choice_answers[]';
-                    checkboxInput.value = optionText;
-
-                    //value won't show implicitly so create a label for it
-                    const label = document.createElement('label');
-                    label.htmlFor = `option${McOptionCount}`;
-                    label.textContent = optionText;
-
-                    //add input to the list of option
-                    multipleChoiceOptionsSection.appendChild(checkboxInput);
-                    multipleChoiceOptionsSection.appendChild(label);
-                    multipleChoiceOptionsSection.appendChild(hiddenInput);
-
-                    //create a space between options
-                    multipleChoiceOptionsSection.appendChild(document.createTextNode(' '));
-                    McOptionCount++;
-                }
+                addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection);
             });
         } else if (questionType === 'single_choice') {
             singleChoiceFields.style.display = 'block';
