@@ -8,6 +8,8 @@
 
       <div id="question">Waiting for a question...</div>
       <input type="text" id="answer" placeholder="Your answer" />
+
+      <div id = 'question_options'>= Waiting for options... </div>
       <button>Submit</button>
 
       <script>
@@ -16,8 +18,20 @@
 
         ws.onmessage = function(event) {
           const data = JSON.parse(event.data);
+          console.log(data);
+
           if (data.type === 'question') {
             document.getElementById('question').innerText = data.question.text;
+
+            if(data.question.type == 'multiple_choice'){
+              document.getElementById('question_options').innerText = data.question.mcq_options;
+            
+            }
+            else if (data.question.type == 'single_choice'){
+              document.getElementById('question_options').innerText = data.question.single_option;
+            
+            }
+
           }
         };
       </script>

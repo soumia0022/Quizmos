@@ -84,6 +84,8 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'id': question.id,
                 'text': question.question_text,
                 'type': question.question_type,
+                'mcq_options' : question.multiple_choice_options,
+                'single_option': question.single_choice_option,
 
             }
         except Question.DoesNotExist:
