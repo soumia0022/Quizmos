@@ -1,3 +1,4 @@
+{% load info_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <script src="{% static 'js/script.js' %}"></script> <!-- JavaScript -->
-
 </head>
 <body>
 
@@ -55,18 +55,23 @@
 
                             <!-- Text Fill Fields -->
                             <div id="text-fill-fields" class="mb-3" style="display: none;">
+                                <p>{% info_button "Allows students to type a free-form response" %}</p>
                                 <input type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
                                 <input type="text" name="text_fill_answer" class="form-control" placeholder="Enter Text Answer">
+
                             </div>
+
 
                             <!-- Dropdown Fill Fields -->
                             <div id="dropdown-fill-fields" class="mb-3" style="display: none;">
+                                <p>{% info_button "Enter a sentence and click a word that will be missing" %}</p>
                                 <textarea name="dropdown_fill_question" id="dropdown-fill-input" class="form-control mb-2" placeholder="Enter Dropdown Fill Question"></textarea>
                                 <div id="text-preview" class="mb-3 border p-2"></div> <!-- Preview area for the text -->
 
                                 <label for="dropdown-correct-answer" class="form-label">Correct Answer:</label>
                                 <input type="text" name="dropdown_correct_answer" id="dropdown-correct-answer" class="form-control mb-2" placeholder="Select a word to use as the blank" readonly>
 
+                                <p>{% info_button "Add at least 1 and up to 3 more incorrect options" %}</p>
                                 <label for="additional-options" class="form-label">Additional Options:</label>
                                 <input type="text" name="additional_options" class="form-control mb-2" placeholder="Option 1">
                                 <input type="text" name="additional_options" class="form-control mb-2" placeholder="Option 2">
@@ -76,6 +81,7 @@
 
                             <!-- Multiple Choice Fields -->
                             <div id="multiple-choice-fields" class="mb-3" style="display: none;">
+                                <p>{% info_button "Students can select more than one correct option" %}</p>
                                 <input type="text" name="multiple_choice_question" class="form-control mb-2" placeholder="Enter Multiple Choice Question">
                                 <div id="options-section" class="mt-2">
                                     <button type="button" id="multiple-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
@@ -85,6 +91,7 @@
 
                             <!-- Single Choice Fields -->
                             <div id="single-choice-fields" class="mb-3" style="display: none;">
+                                <p>{% info_button "Students can only select one correct answer" %}</p>
                                 <input type="text" name="single_choice_question" class="form-control mb-2" placeholder="Enter Single Choice Question">
                                 <div id="options-section" class="mt-2">
                                     <button type="button" id="single-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
@@ -94,6 +101,7 @@
 
                             <!-- Word Cloud Fields -->
                             <div id="word-cloud-fields" style="display: none;">
+                                <p>{% info_button "Add a prompt for which students will add word responses to live in the lesson" %}</p>
                                 <input type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt" />
                                 <div id="actual-wordcloud">
                                 <!-- Display the word cloud image if generated -->
@@ -106,6 +114,7 @@
 
                             <!-- Match Question Fields -->
                             <div id="match-fields" style="display: none;">
+                                <p>{% info_button "Add matching options which students will drag and drop" %}</p>
                                 <input type="text" name="match_question" placeholder="Enter Match Question e.g. Match the following" />
                                  <!-- Dynamically add options -->
                                 <div id="options-section">
@@ -119,6 +128,7 @@
 
                             <!-- Coding Question Fields -->
                             <div id="code-question-fields" class="mb-3" style="display: none;">
+                                <p>{% info_button "Provide a coding problem with a prompt and test cases" %}</p>
                                 <label for="code_question_text" class="form-label">Coding Question:</label>
                                 <textarea name="code_question_text" class="form-control mb-2" placeholder="Enter coding question prompt"></textarea>
 
@@ -140,7 +150,7 @@
                             <div id="media-buttons" class="mb-3" style="display: none;">
                                 <button type="button" id="add-audio-btn" class="btn btn-secondary mb-2">Add Audio</button>
                                 <button type="button" id="add-video-btn" class="btn btn-secondary mb-2">Add Video</button>
-                                <button type="button" id="reset-media-btn" class="btn btn-secondary mt-2">Reset Media</button>
+                                <button type="button" id="reset-media-btn" class="btn btn-secondary mt-2">Reset Media</button> {% info_button "You can only upload one media type" %}
                             </div>
 
                             <!-- Video Upload and YouTube Link Buttons (Initially Hidden) -->
@@ -163,7 +173,6 @@
                             <div id="youtube-url-field" style="display: none;">
                                 <input type="url" name="youtube_link" class="form-control mb-2" placeholder="Enter YouTube video URL">
                             </div>
-
 
                             <!-- Save Question Button -->
                             <div class="text-center">
