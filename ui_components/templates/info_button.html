@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+<div class="info-button-wrapper" style="position: relative; display: inline-block;">
+    <i class="info-button bi bi-info-circle"></i>
+    <div class="info-popup" style="display: none; position: absolute; background: #fff; border: 1px solid #ccc; padding: 10px; z-index: 1000; border-radius: 5px; width: 300px; color: #003366; font-size: 12px;">
+        {{ info_text }}
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('.info-button-wrapper');
+        buttons.forEach(buttonWrapper => {
+            const button = buttonWrapper.querySelector('.info-button');
+            const popup = buttonWrapper.querySelector('.info-popup');
+
+            button.addEventListener('mouseenter', () => {
+                popup.style.display = 'block';
+            });
+
+            button.addEventListener('mouseleave', () => {
+                popup.style.display = 'none';
+            });
+        });
+    });
+</script>
