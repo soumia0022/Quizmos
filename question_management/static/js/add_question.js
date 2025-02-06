@@ -43,77 +43,125 @@ document.addEventListener('DOMContentLoaded', function() {
         questionForm.style.display = questionForm.style.display === 'none' ? 'block' : 'none';
     });
 
+    multipleChoiceAddOptionBtn.addEventListener("click", () => {
+        //function in another file, returns new McOptionCount
+        McOptionCount = addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection);
+    });
+
+    singleChoiceAddOptionBtn.addEventListener("click", () => {
+        //function in another file, returns new OptionCount
+       ScOptionCount = addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection)
+    });
+
+    matchQuestionAddBtn.addEventListener("click", () => {
+        const inputRow = document.createElement("div");
+
+        const option = document.createElement("input");
+        option.type = "text";
+        option.placeholder = `Option ${matchOptionCount}`;
+        option.name = 'match_question_options[]';
+        option.required = true;
+
+        const answer = document.createElement("input");
+        answer.type = "text";
+        answer.placeholder = `Answer ${matchOptionCount}`;
+        answer.name = 'match_question_answers[]';
+        answer.required = true;
+
+        inputRow.appendChild(option);
+        inputRow.appendChild(answer)
+
+        matchQuestionOptionSection.appendChild(inputRow);
+        matchOptionCount++;
+    });
+
     // Show the correct fields based on selected question type
     questionTypeDropdown.addEventListener('change', function() {
         const questionType = questionTypeDropdown.value;
 
         // Hide all fields
-        textFillFields.style.display = 'none';
+        const fields = [textFillFields, dropdownFillFields, multipleChoiceFields, singleChoiceFields, wordCloudFields, matchQuestionFields, codeQuestionFields];
+        const inputFields = [multipleChoiceInput, singleChoiceInput, matchQuestionInput]
 
-        dropdownFillFields.style.display = 'none';
+        fields.forEach(field => field.style.display = 'none');
+        inputFields.forEach(field => field.required = false);
 
-        multipleChoiceFields.style.display = 'none';
-        multipleChoiceInput.required = false;
-
-        singleChoiceFields.style.display = 'none';
-        singleChoiceInput.required = false;
-
-        wordCloudFields.style.display = 'none';
-
-        matchQuestionFields.style.display = 'none';
-        matchQuestionInput.required = false;
-
-        codeQuestionFields.style.display = 'none';
-        //codeQuestionTextInput.required = false;
-
-        // Show the selected fields based on option selected
-        if (questionType === 'text_fill') {
-            textFillFields.style.display = 'block';
-        } else if (questionType === 'dropdown_fill') {
-            dropdownFillFields.style.display = 'block';
-        } else if (questionType === 'multiple_choice') {
-            multipleChoiceFields.style.display = 'block';
-            multipleChoiceInput.required = true;
-            multipleChoiceAddOptionBtn.addEventListener("click", () => {
-                //function in another file, returns new McOptionCount
-                McOptionCount = addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection);
-            });
-        } else if (questionType === 'single_choice') {
-            singleChoiceFields.style.display = 'block';
-            singleChoiceInput.required = true;
-            singleChoiceAddOptionBtn.addEventListener("click", () => {
-               ScOptionCount = addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection)
-            });
-        } else if (questionType === "wordcloud") {
-            wordCloudFields.style.display = 'block';
-        } else if (questionType === 'match_question') {
-            matchQuestionFields.style.display = 'block';
-            matchQuestionInput.required = true;
-            matchQuestionAddBtn.addEventListener("click", () => {
-                const inputRow = document.createElement("div");
-
-                const option = document.createElement("input");
-                option.type = "text";
-                option.placeholder = `Option ${matchOptionCount}`;
-                option.name = 'match_question_options[]';
-                option.required = true;
-
-                const answer = document.createElement("input");
-                answer.type = "text";
-                answer.placeholder = `Answer ${matchOptionCount}`;
-                answer.name = 'match_question_answers[]';
-                answer.required = true;
-
-                inputRow.appendChild(option);
-                inputRow.appendChild(answer)
-
-                matchQuestionOptionSection.appendChild(inputRow);
-                matchOptionCount++;
-            });
-        } else if (questionType === 'code_question') {
-            codeQuestionFields.style.display = 'block';
+        //show relevant field
+        switch (questionType) {
+            case 'text_fill':
+                textFillFields.style.display = 'block';
+                break;
+            case 'dropdown_fill':
+                dropdownFillFields.style.display = 'block';
+                break;
+            case 'multiple_choice':
+                multipleChoiceFields.style.display = 'block';
+                multipleChoiceInput.required = true;
+                break;
+            case 'single_choice':
+                singleChoiceFields.style.display = 'block';
+                singleChoiceInput.required = true;
+                break;
+            case 'wordcloud':
+                wordCloudFields.style.display = 'block';
+                break;
+            case 'match_question':
+                matchQuestionFields.style.display = 'block';
+                matchQuestionInput.required = true;
+                break;
+            case 'code_question':
+                codeQuestionFields.style.display = 'block';
+                break;
         }
     });
+    //     // Show the selected fields based on option selected
+    //     if (questionType === 'text_fill') {
+    //         textFillFields.style.display = 'block';
+    //     } else if (questionType === 'dropdown_fill') {
+    //         dropdownFillFields.style.display = 'block';
+    //     } else if (questionType === 'multiple_choice') {
+    //         multipleChoiceFields.style.display = 'block';
+    //         multipleChoiceInput.required = true;
+    //         // multipleChoiceAddOptionBtn.addEventListener("click", () => {
+    //         //     //function in another file, returns new McOptionCount
+    //         //     McOptionCount = addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection);
+    //         // });
+    //     } else if (questionType === 'single_choice') {
+    //         singleChoiceFields.style.display = 'block';
+    //         singleChoiceInput.required = true;
+    //         // singleChoiceAddOptionBtn.addEventListener("click", () => {
+    //         //    ScOptionCount = addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection)
+    //         // });
+    //     } else if (questionType === "wordcloud") {
+    //         wordCloudFields.style.display = 'block';
+    //     } else if (questionType === 'match_question') {
+    //         matchQuestionFields.style.display = 'block';
+    //         matchQuestionInput.required = true;
+    //         // matchQuestionAddBtn.addEventListener("click", () => {
+    //         //     const inputRow = document.createElement("div");
+    //         //
+    //         //     const option = document.createElement("input");
+    //         //     option.type = "text";
+    //         //     option.placeholder = `Option ${matchOptionCount}`;
+    //         //     option.name = 'match_question_options[]';
+    //         //     option.required = true;
+    //         //
+    //         //     const answer = document.createElement("input");
+    //         //     answer.type = "text";
+    //         //     answer.placeholder = `Answer ${matchOptionCount}`;
+    //         //     answer.name = 'match_question_answers[]';
+    //         //     answer.required = true;
+    //         //
+    //         //     inputRow.appendChild(option);
+    //         //     inputRow.appendChild(answer)
+    //         //
+    //         //     matchQuestionOptionSection.appendChild(inputRow);
+    //         //     matchOptionCount++;
+    //         // });
+    //     } else if (questionType === 'code_question') {
+    //         codeQuestionFields.style.display = 'block';
+    //     }
+    // });
 
     document.querySelector('form').addEventListener('submit', function (event) {
     const questionType = document.getElementById('question-type-dropdown').value;
