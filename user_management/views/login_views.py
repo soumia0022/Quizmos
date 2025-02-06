@@ -35,9 +35,9 @@ def dashboard(request):
     if current_user.role == 'Student':
         return render(request, 'student_dashboard.html', {'user': current_user})
     else:
-        # Filtering polls based on user and sorting by chosen criteria
-        sort_by = request.GET.get('sort_by', 'created_at')  # Default sorting by date created
-        search_query = request.GET.get('search', '')  # Get search query
+
+        sort_by = request.GET.get('sort_by', 'created_at')  # sorting by date created
+        search_query = request.GET.get('search', '')
 
         # Filter by search if provided
         poll = Poll.objects.filter(user=request.user, title__icontains=search_query).annotate(
@@ -46,22 +46,22 @@ def dashboard(request):
 
         # Apply sorting logic
         if sort_by == 'title_asc':
-            poll = poll.order_by('title')  # A → Z
+            poll = poll.order_by('title')  # A to Z
         elif sort_by == 'title_desc':
-            poll = poll.order_by('-title')  # Z → A
+            poll = poll.order_by('-title')  # Z to A
         elif sort_by == 'created_at_asc':
             poll = poll.order_by('created_at')  # Oldest first
-        else:  #  (newest first)
+        else:  #  newest first
             poll = poll.order_by('-created_at')
 
 
 
-        # Paginate the polls
+        #This where I paginate the polls
         paginator = Paginator(poll, 10)
-        page_number = request.GET.get('page')  # Get the page number
-        page_obj = paginator.get_page(page_number)  # Get the page object
+        page_number = request.GET.get('page')  # Getting the page number
+        page_obj = paginator.get_page(page_number)  # Getting the page object
 
-        # Render the template with the context
+        # Essentially rendering the template
         return render(request, 'lecturer_dashboard.html', {
             'user': current_user,
             'polls': page_obj,
