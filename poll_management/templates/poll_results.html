@@ -10,7 +10,12 @@
       <input type="text" id="answer" placeholder="Your answer" />
 
       <div id="question_options">Waiting for options...</div>
-      <button>Submit</button>
+      
+      <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
 
       <script>
         const pollCode = "{{ poll.number_code }}";
