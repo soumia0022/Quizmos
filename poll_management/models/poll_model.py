@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-import random
 
 class Poll(models.Model):
     title = models.CharField(max_length=255)
@@ -16,13 +15,3 @@ class Poll(models.Model):
 
     def __str__(self):
         return self.title
-
-class Response(models.Model):
-    poll = models.ForeignKey(
-        Poll, related_name='response', on_delete=models.CASCADE
-    )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
-    )
-    answer = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
