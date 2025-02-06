@@ -1,14 +1,14 @@
 function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
-    multipleChoiceOptionsSection.appendChild(addOptionComponents('multiple_choice', McOptionCount));
+    multipleChoiceOptionsSection.appendChild(addChoiceOptionComponents('multiple_choice', McOptionCount));
     return McOptionCount + 1;
 }
 
 function addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection) {
-    singleChoiceOptionsSection.appendChild(addOptionComponents('single_choice', ScOptionCount));
+    singleChoiceOptionsSection.appendChild(addChoiceOptionComponents('single_choice', ScOptionCount));
     return ScOptionCount + 1; // Increment and return the updated count
 }
 
-function addOptionComponents(question_type, optionCount){
+function addChoiceOptionComponents(question_type, optionCount){
     const optionText = prompt('Enter a new Option');
     if (!optionText) return;
 
