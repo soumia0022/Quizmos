@@ -43,6 +43,7 @@ def dashboard(request):
         poll = Poll.objects.filter(user=request.user, title__icontains=search_query).annotate(
             responses_count=Count('response')
         )
+        create_poll(request)
 
         # Apply sorting logic
         if sort_by == 'title_asc':
