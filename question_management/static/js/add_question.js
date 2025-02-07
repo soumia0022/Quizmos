@@ -54,25 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     matchQuestionAddBtn.addEventListener("click", () => {
-        const inputRow = document.createElement("div");
-
-        const option = document.createElement("input");
-        option.type = "text";
-        option.placeholder = `Option ${matchOptionCount}`;
-        option.name = 'match_question_options[]';
-        option.required = true;
-
-        const answer = document.createElement("input");
-        answer.type = "text";
-        answer.placeholder = `Answer ${matchOptionCount}`;
-        answer.name = 'match_question_answers[]';
-        answer.required = true;
-
-        inputRow.appendChild(option);
-        inputRow.appendChild(answer)
-
-        matchQuestionOptionSection.appendChild(inputRow);
-        matchOptionCount++;
+        matchOptionCount =addMatchOptionComponents(matchQuestionOptionSection, matchOptionCount);
     });
 
     // Show the correct fields based on selected question type

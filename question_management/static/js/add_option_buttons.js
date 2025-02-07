@@ -37,7 +37,7 @@ function addChoiceOptionComponents(question_type, optionCount){
     // Add a delete button if needed
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
-    deleteBtn.className = 'btn btn-danger btn-sm ms-2';
+    deleteBtn.className = 'btn btn-danger btn-sm ms-2 delete-option-btn';
     deleteBtn.textContent = 'X';
     deleteBtn.addEventListener('click', function () {
         optionContainer.remove(); // Remove the option container
@@ -50,4 +50,37 @@ function addChoiceOptionComponents(question_type, optionCount){
     optionContainer.appendChild(deleteBtn);
 
     return optionContainer;
+}
+
+function addMatchOptionComponents(matchQuestionOptionSection, matchOptionCount){
+    const inputRow = document.createElement("div");
+
+    const option = document.createElement("input");
+    option.type = "text";
+    option.placeholder = `Option ${matchOptionCount}`;
+    option.name = 'match_question_options[]';
+    option.required = true;
+
+    const answer = document.createElement("input");
+    answer.type = "text";
+    answer.placeholder = `Answer ${matchOptionCount}`;
+    answer.name = 'match_question_answers[]';
+    answer.required = true;
+
+    // Create delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.type = 'button';
+    deleteBtn.className = 'btn btn-danger btn-sm ms-2';
+    deleteBtn.textContent = 'X';
+    deleteBtn.addEventListener('click', function () {
+        inputRow.remove(); // Remove the option container
+        matchOptionCount--;
+    });
+
+    inputRow.appendChild(option);
+    inputRow.appendChild(answer)
+    inputRow.appendChild(deleteBtn)
+
+    matchQuestionOptionSection.appendChild(inputRow);
+    return matchOptionCount+1;
 }
