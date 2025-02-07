@@ -13,7 +13,7 @@ function addChoiceOptionComponents(question_type, optionCount){
     if (!optionText) return;
 
     const optionContainer = document.createElement('div');
-    optionContainer.className = 'single-choice-option';
+    optionContainer.className = `${question_type}-option`;
     optionContainer.id = `option-container-${optionCount}`;
 
     // Create hidden input for options
