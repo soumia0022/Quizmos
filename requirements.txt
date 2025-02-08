@@ -31,3 +31,4 @@ gunicorn==21.2.0
 pytest-asyncio==0.23.5
 pytest-django==4.7.0
 redis==5.0.0
+django-guest-user==0.5.5

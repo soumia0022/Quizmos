@@ -58,8 +58,13 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_framework',
+    'guest_user'
 ]
 
+AUTHENTICATION_BACKENDS = [
+   "django.contrib.auth.backends.ModelBackend",
+   "guest_user.backends.GuestBackend",
+]
 env = environ.Env()
 environ.Env.read_env()  
 
