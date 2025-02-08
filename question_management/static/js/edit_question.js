@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
     //for the delete buttons that appear with the pre-existing data
     const deleteButtons = document.querySelectorAll('.delete-option-btn');
 
+    /* Event listeners*/
+
     deleteButtons.forEach((btn) => {
         btn.addEventListener('click', function () {
             const optionContainer = this.parentElement; // Get the div containing the option
@@ -53,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // TO DO: Add MC and SC option constraints (e.g., at least one answer, at least one option)
     // TO DO: Allow users to delete options
     // TO DO: Ensure question text is filled before submission
+    //TO DO: Make sure there's at least one dropdwon_options
      document.querySelector('form').addEventListener('submit', function (event) {
          console.log("question type is: ", questionType)
         if (questionType === 'multiple_choice'){
@@ -82,10 +85,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 event.preventDefault();
             }
         } else if (questionType === 'match_question'){
-            const options = document.querySelectorAll('[name="match_question_options[]"]')
+            const options = document.querySelectorAll('[name="match_question_options[]"]');
             if (options.length === 0) {
                 alert('Please add at least one matching card option for the match question.');
-                event.preventDefault(); //don't allow the submission to go thru
+                event.preventDefault(); //don't allow the submission to go through
+            }
+        } else if (questionType === 'dropdown_fill'){
+            const options = document.querySelectorAll('[name="dropdown_options[]"]');
+            let count = 0;
+            options.forEach(option => {
+                if (option.value.trim() !== '') {
+                    count++;
+                }
+            });
+            if (count === 1) {
+                alert('Please add at least one non-correct answer for the drop down question');
+                event.preventDefault(); //don't allow the submission to go through
             }
         }
     });
