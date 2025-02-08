@@ -1,4 +1,6 @@
 from django.shortcuts import  render, get_object_or_404
+from django.urls import reverse
+
 from poll_management.models.poll_model import Poll
 from django.conf import settings
 from asgiref.sync import async_to_sync
@@ -7,7 +9,7 @@ import uuid
 import qrcode
 import os
 
-
+#move these to helpers.py--------
 def ensure_media_directory_exists():
     if not os.path.exists(settings.MEDIA_ROOT):
         os.makedirs(settings.MEDIA_ROOT)
@@ -21,7 +23,7 @@ def delete_old_qr_codes(poll):
 
 def generate_number_code():
     return str(uuid.uuid4().int)[:6]
-
+#------------------------------------
 def display_code(request, pk):
     poll = get_object_or_404(Poll, pk=pk)
     poll.status = 'active'
@@ -38,7 +40,9 @@ def display_code(request, pk):
     unique_id = str(uuid.uuid4())[:8]
     poll.number_code = generate_number_code()
     poll.save()
-    join_url = f"http://localhost:8000/polls/join/{poll.number_code}/"
+    relative_url = reverse('poll_management:join_poll', kwargs={'code': poll.number_code})
+
+    join_url = request.build_absolute_uri(relative_url)
     qr.add_data(join_url)
     qr.make(fit=True)
 

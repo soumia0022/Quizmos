@@ -5,6 +5,19 @@ from functools import wraps
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 import uuid
+import random
+
+
+
+
+def generate_guest_user_name():
+    first_words = ["Nebula", "Star", "Galactic", "Cosmic", "Astral", "Lunar", "Solar", "Celestial"]
+    second_words = ["Nomad", "Seeker", "Traveler", "Voyager", "Adventurer", "Explorer", "Surfer", "Chaser"]
+    first = random.choice(first_words)
+    second = random.choice(second_words)
+    unique_id = str(uuid.uuid4())[:8]
+    return f"{first}{second}{unique_id}"
+
 
 def custom_guest_user(view_func):
     """Decorator for view functions that creates guest users"""
@@ -12,10 +25,9 @@ def custom_guest_user(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
             User = get_user_model()
-            # Generate a unique username and email
-            unique_id = str(uuid.uuid4())[:8]
-            username = f'guest_{unique_id}'
-            email = f'guest_{unique_id}@temporary.com'
+
+            username = generate_guest_user_name()
+            email = f'guest_{username}@temporary.com'
 
 
             guest_user = User.objects.create_user(
@@ -23,7 +35,7 @@ def custom_guest_user(view_func):
                 email=email,
                 password=None,
                 first_name='Guest',# to identify guests
-                last_name=unique_id,
+                last_name='Guest',
                 role='Student'
             )
 
