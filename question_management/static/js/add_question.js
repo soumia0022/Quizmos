@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Specifically for drop-down fill in the blank
     const dropdownInput = document.getElementById('dropdown-fill-input');
+    const dropdownOption1Input = dropdownFillFields.querySelector('input[name="additional_options"]'); // First additional option input
     const textPreview = document.getElementById('text-preview');
     const dropdownCorrectAnswerField = document.getElementById('dropdown-correct-answer');
     const resetButton = document.getElementById('reset-preview-btn');
@@ -68,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Hide all fields
         const fields = [textFillFields, dropdownFillFields, multipleChoiceFields, singleChoiceFields, wordCloudFields, matchQuestionFields, codeQuestionFields];
-        const inputFields = [multipleChoiceInput, singleChoiceInput, matchQuestionInput, textFillQuestionInput, textFillAnswerInput, wordCloudQuestionInput]
+        const inputFields = [multipleChoiceInput, singleChoiceInput, matchQuestionInput, textFillQuestionInput, textFillAnswerInput, wordCloudQuestionInput, dropdownOption1Input]
 
         fields.forEach(field => field.style.display = 'none');
         inputFields.forEach(field => field.required = false);
@@ -131,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'dropdown_fill':
                 dropdownFillFields.style.display = 'block';
                 dropdownInput.required = true;
+                dropdownOption1Input.required = true;
                 break;
             case 'multiple_choice':
                 multipleChoiceFields.style.display = 'block';
@@ -191,8 +193,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Please add at least one matching card option for the match question.');
                 event.preventDefault(); //don't allow the submission to go thru
             }
+        } else if (questionType === 'dropdown_fill') {
+            if (!dropdownCorrectAnswerField.value){
+                dropdownCorrectAnswerField.style.border = '1px solid red';
+                event.preventDefault();
+                alert('Please fill out all required fields.');
+            }
+            else{
+                dropdownCorrectAnswerField.style.border = ''; // Remove highlighting
+            }
         }
     });
+
+    /* This is how to do the validation testing without the required field
+
+    // Validation checking (for text answer and drop-down question types) below
+    const form = document.querySelector('form');
+    const textFillQuestionInput = document.querySelector('input[name="text_fill_question"]');
+    const textFillAnswerInput = document.querySelector('input[name="text_fill_answer"]');
+    const dropdownOption1Input = dropdownFillFields.querySelector('input[name="additional_options"]'); // First additional option input
+    const wordCloudQuestionInput = document.querySelector('input[name="wordcloud_question"]');
 
     // Form validation before submission without using `required` attribute
     form.addEventListener('submit', function(event) { // When the form is submitted
@@ -200,9 +220,13 @@ document.addEventListener('DOMContentLoaded', function() {
         let isValid = true;
         let fieldsToCheck = [];
 
-        if (questionType === 'dropdown_fill') {
-            const dropdownOption1Input = dropdownFillFields.querySelector('input[name="additional_options"]'); // First additional option input
-            fieldsToCheck = [dropdownCorrectAnswerField, dropdownOption1Input];
+        // Fields that require an answer before saving
+        if (questionType === 'text_fill') {
+            fieldsToCheck = [textFillQuestionInput, textFillAnswerInput];
+        } else if (questionType === 'dropdown_fill') {
+            fieldsToCheck = [dropdownInput, dropdownCorrectAnswerField, dropdownOption1Input];
+        } else if (questionType === 'wordcloud') {
+            fieldsToCheck = [wordCloudQuestionInput]
         }
 
         // To check if the form is valid (so allowed to be saved)
@@ -219,6 +243,6 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             alert('Please fill out all required fields.');
         }
-    });
+    }); */
 
 });
