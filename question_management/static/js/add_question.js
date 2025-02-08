@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const textFillQuestionInput = document.querySelector('input[name="text_fill_question"]');
     const textFillAnswerInput = document.querySelector('input[name="text_fill_answer"]');
 
+    const wordCloudQuestionInput = document.querySelector('input[name="wordcloud_question"]');
+
     const singleChoiceFields = document.getElementById('single-choice-fields');
     const singleChoiceOptionsSection = document.getElementById('single-choice-options-container');
     const singleChoiceAddOptionBtn = document.getElementById('single-choice-add-option-btn');
@@ -66,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Hide all fields
         const fields = [textFillFields, dropdownFillFields, multipleChoiceFields, singleChoiceFields, wordCloudFields, matchQuestionFields, codeQuestionFields];
-        const inputFields = [multipleChoiceInput, singleChoiceInput, matchQuestionInput, textFillQuestionInput, textFillAnswerInput]
+        const inputFields = [multipleChoiceInput, singleChoiceInput, matchQuestionInput, textFillQuestionInput, textFillAnswerInput, wordCloudQuestionInput]
 
         fields.forEach(field => field.style.display = 'none');
         inputFields.forEach(field => field.required = false);
@@ -140,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'wordcloud':
                 wordCloudFields.style.display = 'block';
+                wordCloudQuestionInput.required = true
                 break;
             case 'match_question':
                 matchQuestionFields.style.display = 'block';
@@ -197,18 +200,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let isValid = true;
         let fieldsToCheck = [];
 
-        // Fields that require an answer before saving
-        // if (questionType === 'text_fill') {
-        //     const textFillQuestionInput = document.querySelector('input[name="text_fill_question"]');
-        //     const textFillAnswerInput = document.querySelector('input[name="text_fill_answer"]');
-        //     fieldsToCheck = [textFillQuestionInput, textFillAnswerInput];
-        //}
         if (questionType === 'dropdown_fill') {
             const dropdownOption1Input = dropdownFillFields.querySelector('input[name="additional_options"]'); // First additional option input
             fieldsToCheck = [dropdownCorrectAnswerField, dropdownOption1Input];
-        } else if (questionType === 'wordcloud') {
-            const wordCloudQuestionInput = document.querySelector('input[name="wordcloud_question"]');
-            fieldsToCheck = [wordCloudQuestionInput]
         }
 
         // To check if the form is valid (so allowed to be saved)
