@@ -34,7 +34,7 @@ class WordcloudTestCase(TestCase):
 
     # Test that a non-true-type font would raise an OS error (as not supported by required libraries)
     def test_non_truetype_font(self):
-        with patch('question_management.views.question_types.ImageFont.truetype') as mock_truetype:
+        with patch('question_management.helpers.ImageFont.truetype') as mock_truetype:
             mock_truetype.side_effect = OSError("Only supported for TrueType fonts")
             with self.assertRaises(OSError):
                 ImageFont.truetype(self.font_path)
@@ -72,11 +72,11 @@ class WordcloudTestCase(TestCase):
     # Test that a question/prompt can be inputted for the wordcloud
     def test_post_request_with_wordcloud_question(self):
         data = {'question_type': 'wordcloud', 'wordcloud_question': 'What is your favourite word?'}
-        with patch('question_management.views.question_types.plt') as mock_plt:
+        with patch('question_management.helpers.plt') as mock_plt:
             mock_buffer = Mock()
             mock_buffer.getvalue.return_value = b'test_image_data'
 
-            with patch('question_management.views.question_types.io.BytesIO', return_value=mock_buffer):
+            with patch('question_management.helpers.io.BytesIO', return_value=mock_buffer):
                 response = self.client.post(self.add_question_url, data)
 
                 self.assertEqual(response.status_code, 200)
@@ -86,7 +86,7 @@ class WordcloudTestCase(TestCase):
     # Test that the page is displayed correctly
     def test_rendered_html_output(self):
         data = {'question_type': 'wordcloud', 'wordcloud_question': 'What is your favourite word?'}
-        with patch('question_management.views.question_types.plt.savefig') as mock_savefig:
+        with patch('question_management.helpers.plt.savefig') as mock_savefig:
             mock_savefig.return_value = None
 
             response = self.client.post(self.add_question_url, data)
@@ -109,7 +109,7 @@ class WordcloudTestCase(TestCase):
 
     # Test that the correct error is raised for an invalid true-type font
     def test_invalid_truetype_font(self):
-        font_path = "/path/to/existing/invalid_font.ttf"
+        font_path = "/path/to/existing/invalid_font.ttf" # Invalid path
         with patch('os.path.exists', return_value=True):
             with patch('PIL.ImageFont.truetype', side_effect=IOError("Only supported for TrueType fonts")):
                 with self.assertRaises(ValueError) as context:

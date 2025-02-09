@@ -1,18 +1,17 @@
 import os
-import json
-
 import matplotlib
-from django.http import JsonResponse
-from question_management.models.question_models import Question
 from collections import Counter
+
+from django.http import JsonResponse
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from PIL import ImageFont
 import base64
 import io
-from django.core.exceptions import ValidationError
 
 def get_timer(request):
+    """Get and validate the timer for each question."""
+
     timer = request.POST.get('question_timer')
     if not timer:
         return None
@@ -22,15 +21,17 @@ def get_timer(request):
         return None
 
 def save_files(request, question):
-    if 'audio_file' in request.FILES:
-        question.audio_file = request.FILES['audio_file']
-        question.save()
+    """Saves uploaded audio and video files to the question."""
 
-    if 'video_file' in request.FILES:
-        question.video_file = request.FILES['video_file']
-        question.save()
+    for file_type in ['audio_file', 'video_file']:
+        if file_type in request.FILES:
+            setattr(question, file_type, request.FILES[file_type])
+            question.save()
+
 
 def generate_wordcloud_image(text, font_path):
+    """Generate a wordcloud with pre-given text."""
+
     word_frequencies = Counter(text.split())
 
     if not os.path.exists(font_path):
@@ -62,9 +63,11 @@ def generate_wordcloud_image(text, font_path):
 
     return base64.b64encode(buffer.getvalue()).decode()
 
-def validate_question_data(question_data, required_fields):
-    for field in required_fields:
-        if not question_data.get(field):
-            raise ValidationError(f'{field.replace("_", " ").title()} is required.')
+def validate_question_options_and_answers(options, answers, question_type):
+    """Validation for choice questions."""
 
-    return True
+    if not options:
+        return JsonResponse({'error': f'At least one option is required for a {question_type} question.'}, status=400)
+    if not answers:
+        return JsonResponse({'error': f'At least one answer is required for a {question_type} question.'}, status=400)
+    return None
