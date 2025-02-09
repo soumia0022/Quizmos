@@ -84,3 +84,39 @@ function addMatchOptionComponents(matchQuestionOptionSection, matchOptionCount){
     matchQuestionOptionSection.appendChild(inputRow);
     return matchOptionCount+1;
 }
+
+function dropdownInputChanged(originalText, textPreview, dropdownInput){
+     originalText = dropdownInput.value // Current value is the original text - needed for resetting
+    const text = dropdownInput.value;
+
+    textPreview.innerHTML = text
+        .split(' ')// Text is split into words
+        .map(word => `<span class="word">${word}</span>`) // For handling each word separately
+        .join(' ');
+}
+
+function resetButtonChanged(dropdownInput, textPreview, originalText, dropdownCorrectAnswerField){
+    dropdownInput.value = originalText; // Restore the original text
+    textPreview.innerHTML = originalText
+        .split(' ')
+        .map(word => `<span class="word">${word}</span>`)
+        .join(' ');
+
+    // Reset to original
+    dropdownCorrectAnswerField.value = "";
+}
+
+function clickTextPreview(dropdownCorrectAnswerField, dropdownInput, textPreview){
+    const word = event.target.textContent; // Gets the word
+    dropdownCorrectAnswerField.value = word;
+
+    // Replace the word with a blank (this becomes the question)
+    const updatedText = dropdownInput.value.replace(word, '_____');
+    dropdownInput.value = updatedText;
+
+    // Update the preview with the new text which contains the blank
+    textPreview.innerHTML = updatedText
+        .split(' ')
+        .map(w => (w === '_____' ? `<span class="blank">_____</span>` : `<span class="word">${w}</span>`))
+        .join(' ');
+}
