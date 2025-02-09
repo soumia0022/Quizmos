@@ -1,8 +1,9 @@
-from django.test import TestCase
+from django.test import Client
 from channels.testing import WebsocketCommunicator
 from channels.db import database_sync_to_async
 from channels.routing import URLRouter
 from django.urls import re_path
+from asgiref.sync import sync_to_async
 from poll_management.consumers import PollConsumer
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
@@ -18,6 +19,7 @@ class TestPollConsumer(TransactionTestCase):
     async def asyncSetUp(self):
         # create a test poll
         self.user = await database_sync_to_async(User.objects.get)(username='johndoe')
+        self.student = await database_sync_to_async(User.objects.get)(username='janedoe')
         self.poll = await database_sync_to_async(Poll.objects.create)(
 
             title="Test Poll",
@@ -44,6 +46,7 @@ class TestPollConsumer(TransactionTestCase):
         ])
 
     def setUp(self):
+        self.client = Client()
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
         self.loop.run_until_complete(self.asyncSetUp())
@@ -53,19 +56,25 @@ class TestPollConsumer(TransactionTestCase):
         super().tearDown()
 
     async def test_connect(self):
+        await sync_to_async(self.client.login)(username = self.user.username, password= "Password123")
         communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+
+        communicator.scope['user'] = self.user
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
         await communicator.disconnect()
 
     async def test_disconnect(self):
         communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator.scope['user'] = self.user
         await communicator.connect()
         await communicator.disconnect()
 
     async def test_receive_message(self):
         communicator1 = WebsocketCommunicator(self.application, "/ws/poll/123456/")
         communicator2 = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator1.scope['user'] = self.user
+        communicator2.scope['user'] = self.user
         await communicator1.connect()
         await communicator2.connect()
 
@@ -80,6 +89,7 @@ class TestPollConsumer(TransactionTestCase):
 
     async def test_receive_question(self):
         communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator.scope['user'] = self.user
         await communicator.connect()
 
         message = {'type': 'question', 'question_id': self.question.id}
@@ -91,6 +101,7 @@ class TestPollConsumer(TransactionTestCase):
         self.assertEqual(response['question']['type'], "multiple_choice")
 
         await communicator.disconnect()
+
 
 
 
