@@ -10,7 +10,6 @@ import io
 
 def get_timer(request):
     """Use and validate the timer for each question."""
-
     timer = request.POST.get('question_timer')
     if not timer:
         return None
@@ -19,10 +18,8 @@ def get_timer(request):
     except ValueError:
         return None
 
-
 def generate_wordcloud_image(text, font_path):
     """Generate a wordcloud with pre-given text."""
-
     word_frequencies = Counter(text.split())
 
     if not os.path.exists(font_path):
@@ -46,7 +43,6 @@ def generate_wordcloud_image(text, font_path):
     plt.figure(figsize=(10, 5))
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
-
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
@@ -56,7 +52,6 @@ def generate_wordcloud_image(text, font_path):
 
 def validate_question_options_and_answers(options, answers, question_type):
     """Validation for choice and matching questions."""
-
     if not options:
         return JsonResponse({'error': f'At least one option is required for a {question_type} question.'}, status=400)
     if not answers:

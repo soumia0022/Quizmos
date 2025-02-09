@@ -7,7 +7,6 @@ matplotlib.use('Agg')
 from question_management.models.question_models import Question
 from question_management.helpers import generate_wordcloud_image, validate_question_options_and_answers
 
-
 class QuestionManager:
     """Class-based view to handle the creation of different types of questions.
 

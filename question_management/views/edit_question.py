@@ -27,11 +27,9 @@ class EditQuestionView(View):
         question_id = request.GET.get("question_id")
         question = get_object_or_404(Question, id=question_id, poll=poll)
 
-        # Update basic fields
         question.question_text = request.POST.get("question_text")
         question.timer = request.POST.get("question_timer")
 
-        # Process based on question type
         validation_response = None
         if question.question_type == "multiple_choice":
             question.multiple_choice_question = request.POST.get("question_text")
