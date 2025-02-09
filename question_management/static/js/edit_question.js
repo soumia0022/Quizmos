@@ -51,10 +51,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // TO DO: Add MC and SC option constraints (e.g., at least one answer, at least one option)
-    // TO DO: Allow users to delete options
-    // TO DO: Ensure question text is filled before submission
-    //TO DO: Make sure there's at least one dropdwon_options
      document.querySelector('form').addEventListener('submit', function (event) {
         if (questionType === 'multiple_choice'){
             const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
