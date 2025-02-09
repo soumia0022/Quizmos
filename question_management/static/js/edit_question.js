@@ -103,19 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    dropdownCorrectAnswerField.addEventListener('input', function () {
-        const newValue = dropdownCorrectAnswerField.value;
-
-        // Select all option inputs
-        const optionInputs = document.querySelectorAll('input[name="dropdown_options[]"]');
-
-        optionInputs.forEach(input => {
-            if (input.value === newValue) {
-                input.value = newValue; // Update value if it matches
-            }
-        });
-    });
-
      document.querySelector('form').addEventListener('submit', function (event) {
         if (questionType === 'multiple_choice'){
             const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
