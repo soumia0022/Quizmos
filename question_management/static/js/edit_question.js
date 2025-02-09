@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
     deleteButtons.forEach((btn) => {
         btn.addEventListener('click', function () {
             const optionContainer = this.parentElement; // Get the div containing the option
-            console.log(optionContainer.id)
             optionContainer.remove(); // Remove the option
         });
     });
@@ -57,52 +56,35 @@ document.addEventListener('DOMContentLoaded', function () {
     // TO DO: Ensure question text is filled before submission
     //TO DO: Make sure there's at least one dropdwon_options
      document.querySelector('form').addEventListener('submit', function (event) {
-         console.log("question type is: ", questionType)
         if (questionType === 'multiple_choice'){
             const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
-            if (options.length === 0) {
-                alert('Please add at least one option for the multiple-choice question.');
-                event.preventDefault(); //don't allow the submission to go through
-            }
             const answers = document.querySelectorAll('[name="multiple_choice_answers[]"]:checked'); //only the checked ones count as answers
-            if (answers.length === 0 ){
-                alert('Please add at least one right answer for the multiple-choice question.');
-                event.preventDefault(); //don't allow the submission to go through
-            }
+            McConstraints(options, answers, 'multiple choice')
         } else if (questionType === 'single_choice'){
             const options = document.querySelectorAll('[name="single_choice_options[]"]');
-            if (options.length === 0) {
-                alert('Please add at least one option for the single-choice question.');
-                event.preventDefault(); //don't allow the submission to go through
-            }
             const answers = document.querySelectorAll('[name="single_choice_answers[]"]:checked'); //only the checked ones count as answers
-            if (answers.length === 0 ){
-                alert('Please add at least one right answer for the single-choice question.');
-                event.preventDefault(); //don't allow the submission to go through
-            }
-            else if (answers.length > 1){
-                alert('You can only choose one right answer for single-choice question.');
-                event.preventDefault();
-            }
+            ScConstraints(options, answers, 'single choice')
         } else if (questionType === 'match_question'){
             const options = document.querySelectorAll('[name="match_question_options[]"]');
             if (options.length === 0) {
-                alert('Please add at least one matching card option for the match question.');
-                event.preventDefault(); //don't allow the submission to go through
+                displayErrorMessage('Please add at least one matching card option for the match question.', event);
             }
         } else if (questionType === 'dropdown_fill'){
             const options = document.querySelectorAll('[name="dropdown_options[]"]');
-            let count = 0;
+            dropdownConstraint(options);
+        }
+    });
+
+    function dropdownConstraint(options){
+         let count = 0;
             options.forEach(option => {
                 if (option.value.trim() !== '') {
                     count++;
                 }
             });
-            if (count === 1) {
-                alert('Please add at least one non-correct answer for the drop down question');
-                event.preventDefault(); //don't allow the submission to go through
+            console.log(count);
+            if (!(count > 1)) {
+                displayErrorMessage('Please add at least one non-correct answer for the drop down question', event);
             }
-        }
-    });
-
+    }
 });

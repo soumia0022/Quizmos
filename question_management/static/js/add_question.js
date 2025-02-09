@@ -161,43 +161,23 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function (event) {
         const questionType = questionTypeDropdown.value;
 
-        if (questionType === 'multiple_choice'){
+         if (questionType === 'multiple_choice'){
             const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
-            if (options.length === 0) {
-                alert('Please add at least one option for the multiple-choice question.');
-                event.preventDefault(); //don't allow the submission to go through
-            }
             const answers = document.querySelectorAll('[name="multiple_choice_answers[]"]:checked'); //only the checked ones count as answers
-            if (answers.length === 0 ){
-                alert('Please add at least one right answer for the multiple-choice question.');
-                event.preventDefault(); //don't allow the submission to go through
-            }
+            McConstraints(options, answers, 'multiple choice')
         } else if (questionType === 'single_choice'){
             const options = document.querySelectorAll('[name="single_choice_options[]"]');
-            if (options.length === 0) {
-                alert('Please add at least one option for the single-choice question.');
-                event.preventDefault(); //don't allow the submission to go through
-            }
             const answers = document.querySelectorAll('[name="single_choice_answers[]"]:checked'); //only the checked ones count as answers
-            if (answers.length === 0 ){
-                alert('Please add at least one right answer for the single-choice question.');
-                event.preventDefault(); //don't allow the submission to go through
-            }
-            else if (answers.length > 1){
-                alert('You can only choose one right answer for single-choice question.');
-                event.preventDefault();
-            }
+            ScConstraints(options, answers, 'single choice')
         } else if (questionType === 'match_question'){
             const options = document.querySelectorAll('[name="match_question_options[]"]')
             if (options.length === 0) {
-                alert('Please add at least one matching card option for the match question.');
-                event.preventDefault(); //don't allow the submission to go thru
+                displayErrorMessage('Please add at least one matching card option for the match question.', event);
             }
         } else if (questionType === 'dropdown_fill') {
             if (!dropdownCorrectAnswerField.value){
                 dropdownCorrectAnswerField.style.border = '1px solid red';
-                event.preventDefault();
-                alert('Please fill out all required fields.');
+                displayErrorMessage('Please fill out all required fields.', event);
             }
             else{
                 dropdownCorrectAnswerField.style.border = ''; // Remove highlighting
