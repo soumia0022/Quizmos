@@ -11,6 +11,7 @@
       <button>Submit</button>
 
       <script>
+
         const pollCode = "{{ poll.number_code }}";
         const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
 
@@ -20,6 +21,8 @@
             document.getElementById('question').innerText = data.question.text;
           }
         };
+
+
       </script>
 
     </div>
