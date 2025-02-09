@@ -11,9 +11,9 @@ from question_management.helpers import generate_wordcloud_image, validate_quest
 class QuestionManager:
     """Class-based view to handle the creation of different types of questions.
 
-     The QuestionManager class is responsible for the handling of questions when a user wants to add a question to a
-     poll. It creates a base question that contains the basic fields each question consists of, and then adds the
-     specific relevant fields to the question type chosen.
+     The QuestionManager class is responsible for handling the creation of questions when a user wants to add a
+     question to a poll. It creates a base question that contains the fields that every question consists of, and then
+     sets the relevant fields to their values for the specific question type chosen.
      """
 
     def __init__(self, request, poll_id, youtube_link, timer):

@@ -1,7 +1,8 @@
 from django.urls.conf import path, include
 
 from question_management.views.add_question import add_question
-from question_management.views.edit_and_delete_question import edit_question, delete_question
+from question_management.views.edit_question import EditQuestionView
+from question_management.views.delete_question import delete_question
 from question_management.views.question_previews import question_preview, question_detail
 from question_management.views.question_list import question_list
 
@@ -14,7 +15,7 @@ question_patterns = [
 
 urlpatterns = [
     path('poll/<int:poll_id>/add-question/', add_question, name='add_question'),
-    path('poll/<int:poll_id>/edit-question/', edit_question, name='edit_question'),
+    path('poll/<int:poll_id>/edit-question/', EditQuestionView.as_view(), name='edit_question'),
     path('poll/<int:poll_id>/delete-question/', delete_question, name='delete_question'),
     path('question/', include(question_patterns)),
     path('', question_list, name='question_list'),

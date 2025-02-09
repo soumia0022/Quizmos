@@ -10,7 +10,7 @@ import base64
 import io
 
 def get_timer(request):
-    """Get and validate the timer for each question."""
+    """Use and validate the timer for each question."""
 
     timer = request.POST.get('question_timer')
     if not timer:
@@ -63,3 +63,5 @@ def validate_question_options_and_answers(options, answers, question_type):
     if not answers:
         return JsonResponse({'error': f'At least one answer is required for a {question_type} question.'}, status=400)
     return None
+
+from django.http import JsonResponse
