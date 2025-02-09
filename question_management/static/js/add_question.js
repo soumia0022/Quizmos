@@ -78,26 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
         showRelevantField(questionType)
     });
 
-        // Handle word selection for the blank
-    textPreview.addEventListener('click', function(event) { // Listener for clicks on textPreview element
-        if (event.target.classList.contains('word') && !blankAdded) { // If the element clicked has class word & blank hasn't been added before
-            const word = event.target.textContent; // Gets the word
-            dropdownCorrectAnswerField.value = word;
-
-            // Replace the word with a blank (this becomes the question)
-            const updatedText = dropdownInput.value.replace(word, '_____');
-            dropdownInput.value = updatedText;
-
-            // Update the preview with the new text which contains the blank
-            textPreview.innerHTML = updatedText
-                .split(' ')
-                .map(w => (w === '_____' ? `<span class="blank">_____</span>` : `<span class="word">${w}</span>`))
-                .join(' ');
-
-            blankAdded = true;
-        }
-    });
-
     // Dropdown Fill Preview
     dropdownInput.addEventListener('input', function() {
         originalText = dropdownInput.value // Current value is the original text - needed for resetting
@@ -120,6 +100,26 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset to original
         dropdownCorrectAnswerField.value = "";
         blankAdded = false;
+    });
+
+        // Handle word selection for the blank
+    textPreview.addEventListener('click', function(event) { // Listener for clicks on textPreview element
+        if (event.target.classList.contains('word') && !blankAdded) { // If the element clicked has class word & blank hasn't been added before
+            const word = event.target.textContent; // Gets the word
+            dropdownCorrectAnswerField.value = word;
+
+            // Replace the word with a blank (this becomes the question)
+            const updatedText = dropdownInput.value.replace(word, '_____');
+            dropdownInput.value = updatedText;
+
+            // Update the preview with the new text which contains the blank
+            textPreview.innerHTML = updatedText
+                .split(' ')
+                .map(w => (w === '_____' ? `<span class="blank">_____</span>` : `<span class="word">${w}</span>`))
+                .join(' ');
+
+            blankAdded = true;
+        }
     });
 
     function showRelevantField(questionType){

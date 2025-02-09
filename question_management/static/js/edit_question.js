@@ -13,6 +13,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const matchQuestionSetSection = document.getElementById('match-pre-filled-options')
     const matchQuestionAddBtn = document.getElementById('match-add-option-btn');
 
+    const dropdownQuestionText = document.getElementById('dropdown-question-text')
+    const dropdownInput = document.getElementById('dropdown-fill-input');
+    const textPreview = document.getElementById('text-preview');
+    const dropdownCorrectAnswerField = document.getElementById('dropdown-correct-answer');
+    const resetButton = document.getElementById('reset-preview-btn');
+    let originalText = ""; // Stores the original input text for resetting
+    let blankAdded = false; // Used to only allow one blank per question
+
     // Ensure sections exist before counting their children
     let McOptionCount = multipleChoiceOptionsSetSection ? multipleChoiceOptionsSetSection.children.length + 1 : 1;
     let ScOptionCount = singleChoiceOptionSetSection ? singleChoiceOptionSetSection.children.length + 1 : 1;
@@ -50,6 +58,63 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+     // Dropdown Fill Preview
+    dropdownInput.addEventListener('input', function() {
+        originalText = dropdownInput.value // Current value is the original text - needed for resetting
+        const text = dropdownInput.value;
+
+        textPreview.innerHTML = text
+            .split(' ')// Text is split into words
+            .map(word => `<span class="word">${word}</span>`) // For handling each word separately
+            .join(' ');
+    });
+
+        // Reset Button Logic (brings back original text - sentence no longer contains a blank)
+    resetButton.addEventListener('click', function() {
+        dropdownInput.value = originalText; // Restore the original text
+        textPreview.innerHTML = originalText
+            .split(' ')
+            .map(word => `<span class="word">${word}</span>`)
+            .join(' ');
+
+        // Reset to original
+        dropdownCorrectAnswerField.value = "";
+        blankAdded = false;
+    });
+
+        // Handle word selection for the blank
+    textPreview.addEventListener('click', function(event) { // Listener for clicks on textPreview element
+        if (event.target.classList.contains('word') && !blankAdded) { // If the element clicked has class word & blank hasn't been added before
+            const word = event.target.textContent; // Gets the word
+            dropdownCorrectAnswerField.value = word;
+
+            // Replace the word with a blank (this becomes the question)
+            const updatedText = dropdownInput.value.replace(word, '_____');
+            dropdownInput.value = updatedText;
+
+            // Update the preview with the new text which contains the blank
+            textPreview.innerHTML = updatedText
+                .split(' ')
+                .map(w => (w === '_____' ? `<span class="blank">_____</span>` : `<span class="word">${w}</span>`))
+                .join(' ');
+
+            blankAdded = true;
+            dropdownQuestionText.value = dropdownInput.value;
+        }
+    });
+
+    dropdownCorrectAnswerField.addEventListener('input', function () {
+        const newValue = dropdownCorrectAnswerField.value;
+
+        // Select all option inputs
+        const optionInputs = document.querySelectorAll('input[name="dropdown_options[]"]');
+
+        optionInputs.forEach(input => {
+            if (input.value === newValue) {
+                input.value = newValue; // Update value if it matches
+            }
+        });
+    });
 
      document.querySelector('form').addEventListener('submit', function (event) {
         if (questionType === 'multiple_choice'){
@@ -79,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
             console.log(count);
-            if (!(count > 1)) {
+            if (!(count > 0)) {
                 displayErrorMessage('Please add at least one non-correct answer for the drop down question', event);
             }
     }
