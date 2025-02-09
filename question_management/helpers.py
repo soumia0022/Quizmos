@@ -1,7 +1,6 @@
 import os
 import matplotlib
 from collections import Counter
-
 from django.http import JsonResponse
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
@@ -63,5 +62,3 @@ def validate_question_options_and_answers(options, answers, question_type):
     if not answers:
         return JsonResponse({'error': f'At least one answer is required for a {question_type} question.'}, status=400)
     return None
-
-from django.http import JsonResponse
