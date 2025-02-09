@@ -1,6 +1,6 @@
 from django.urls.conf import path, include
 
-from question_management.views.question_types import add_question
+from question_management.views.add_question import add_question
 from question_management.views.edit_and_delete_question import edit_question, delete_question
 from question_management.views.question_previews import question_preview, question_detail
 from question_management.views.question_list import question_list

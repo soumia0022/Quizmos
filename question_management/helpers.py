@@ -20,14 +20,6 @@ def get_timer(request):
     except ValueError:
         return None
 
-def save_files(request, question):
-    """Saves uploaded audio and video files to the question."""
-
-    for file_type in ['audio_file', 'video_file']:
-        if file_type in request.FILES:
-            setattr(question, file_type, request.FILES[file_type])
-            question.save()
-
 
 def generate_wordcloud_image(text, font_path):
     """Generate a wordcloud with pre-given text."""
@@ -64,7 +56,7 @@ def generate_wordcloud_image(text, font_path):
     return base64.b64encode(buffer.getvalue()).decode()
 
 def validate_question_options_and_answers(options, answers, question_type):
-    """Validation for choice questions."""
+    """Validation for choice and matching questions."""
 
     if not options:
         return JsonResponse({'error': f'At least one option is required for a {question_type} question.'}, status=400)
