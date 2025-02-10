@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'user_management',
     'question_management',
+    'Quizmos',
     'analytics',
     'poll_management',
     'response_management',
