@@ -1,0 +1,22 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div>
+                <h5>Join Poll</h5>
+            </div>
+            <div>
+                <p>How would you like to join this poll?</p>
+            </div>
+            <div>
+                <a href="{% url 'user_management:guest_logout' %}?next={% url 'poll_management:poll_results' code=code %}" class="btn btn-primary">Login</a>
+                <form action="{% url 'poll_management:poll_results' code=code %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary">Continue as Guest</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
