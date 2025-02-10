@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
+
 env = environ.Env()
 environ.Env.read_env()  
 
@@ -117,6 +118,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Quizmos.wsgi.application'
 ASGI_APPLICATION = 'Quizmos.asgi.application'
+
 
 
 # Database

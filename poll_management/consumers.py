@@ -25,6 +25,17 @@ class PollConsumer(AsyncWebsocketConsumer):
         # Accept the WebSocket connection
         await self.accept()
 
+        # Send message when a student connects
+        if self.scope["user"].role == 'Student':
+            await self.channel_layer.group_send(
+                self.poll_group_name,
+                {
+                    'type': 'poll_message',
+                    'message': f'A student joined the poll: {self.scope["user"].username}!'
+                })
+
+
+
     async def disconnect(self, close_code):
         # When a client disconnects, remove them from the poll group
         await self.channel_layer.group_discard(

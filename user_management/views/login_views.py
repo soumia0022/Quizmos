@@ -106,17 +106,19 @@ class LogInView(LoginProhibitedMixin, View):
     def get(self, request):
         """Display log in template."""
 
-        self.next = request.GET.get('next') or ''
+        self.next = request.GET.get('next') or request.session.get('poll_redirect_url') or ''
         return self.render()
 
     def post(self, request):
         """Handle log in attempt."""
 
         form = LogInForm(request.POST)
-        self.next = request.POST.get('next') or settings.REDIRECT_URL_WHEN_LOGGED_IN
+        self.next = request.POST.get('next') or request.session.get('poll_redirect_url') or settings.REDIRECT_URL_WHEN_LOGGED_IN
         user = form.get_user()
         if user is not None:
             login(request, user)
+            if 'poll_redirect_url' in request.session:
+                del request.session['poll_redirect_url']
             return redirect(self.next)
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
         return self.render()

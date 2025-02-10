@@ -2,7 +2,49 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.http import Http404
 from functools import wraps
+from django.contrib.auth import get_user_model
+from django.contrib.auth import login
+import uuid
+import random
 
+
+
+
+def generate_guest_user_name():
+    first_words = ["Nebula", "Star", "Galactic", "Cosmic", "Astral", "Lunar", "Solar", "Celestial"]
+    second_words = ["Nomad", "Seeker", "Traveler", "Voyager", "Adventurer", "Explorer", "Surfer", "Chaser"]
+    first = random.choice(first_words)
+    second = random.choice(second_words)
+    unique_id = str(uuid.uuid4())[:8]
+    return f"{first}{second}{unique_id}"
+
+
+def custom_guest_user(view_func):
+    """Decorator for view functions that creates guest users"""
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            User = get_user_model()
+
+            username = generate_guest_user_name()
+            email = f'guest_{username}@temporary.com'
+
+
+            guest_user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=None,
+                first_name='Guest',# to identify guests
+                last_name='Guest',
+                role='Student'
+            )
+
+            guest_user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, guest_user)
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
 
 def login_prohibited(view_function):
     """Decorator for view functions that redirect users away if they are logged in."""
