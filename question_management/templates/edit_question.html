@@ -1,3 +1,4 @@
+{% load info_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,11 +8,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> <!-- Bootstrap -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <script src="{% static 'js/edit_question.js' %}"></script>
+    <script src="{% static 'js/question_buttons.js' %}"></script>
+    <script src="{% static 'js/question_constraints.js' %}"></script>
+
 </head>
 <body>
     <h2>Edit Question {{ question.id }}</h2>
-
-    <!-- MAKE ALL QUESTION FIELDS REQUIRED-->
 
     <form method="POST">
         {% csrf_token %}
@@ -22,10 +24,14 @@
             <input type="hidden" id="question-type" value="{{ question.question_type }}">
         </div>
 
-        <!-- Editable Question Text -->
+        <!-- Editable Question Text (not for dropdown question)-->
         <div>
-            <label><strong>Question Text:</strong></label>
-            <input type="text" name="question_text" value="{{ question.question_text }}">
+            {% if question.question_type != 'dropdown_fill' %}
+                <label><strong>Question Text:</strong></label>
+                <input type="text" name="question_text" value="{{ question.question_text }}" required>
+            {% else %}
+                <input type="hidden" id="dropdown-question-text" name="question_text" value="{{ question.question_text }}">
+            {% endif %}
         </div>
 
 
@@ -83,26 +89,34 @@
         {% elif question.question_type == "text_fill" %}
             <div id="text-fill-fields">
                 <label><strong>Question Answer:</strong></label>
-                <input type="text" name="text_fill_answer" value="{{ question.text_fill_answer}}">
+                <input type="text" name="text_fill_answer" value="{{ question.text_fill_answer}}" required>
             </div>
         {% endif %}
 
         <!-- Editable Answer -->
         {% if question.question_type == "dropdown_fill" %}
+            <p>{% info_button "Enter a sentence and click a word that will be missing" %}</p>
+            <textarea name="dropdown_fill_question" id="dropdown-fill-input" class="form-control mb-2" >{{ question.question_text }}</textarea>
+            <div id="text-preview" class="mb-3 border p-2"></div> <!-- Preview area for the text -->
+
             <div>
                 <label><strong>Correct Answer:</strong></label>
-                <input type="text" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}" readonly>
+                <input type="text" id="dropdown-correct-answer" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}" readonly>
             </div>
 
             <!-- Loop through existing options -->
-            <label for="dropdown-correct-answer" class="form-label">Options:</label>
+            <label for="dropdown-correct-answer" class="form-label">Additional Options:</label>
             {% for option in dropdown_options %}
                 {% if option == question.dropdown_correct_answer %}
-                    <input type="text" name="dropdown_options[]" value="{{ option }}" readonly>
+{#                    <input type="text" name="dropdown_options[]" value="{{ option }}" readonly>#}
                 {% else %}
                     <input type="text" name="dropdown_options[]" value="{{ option }}">
                 {% endif %}
             {% endfor %}
+
+
+            <button type="button" id="reset-preview-btn" class="btn btn-secondary mt-2">Reset</button>
+
         {% endif %}
 
         {% if question.question_type == "match_question" %}
