@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Dropdown Fill Preview
     dropdownInput.addEventListener('input', function() {
-        dropdownInputChanged(originalText, textPreview, dropdownInput);
+        originalText = dropdownInputChanged(originalText, textPreview, dropdownInput);
     });
 
         // Reset Button Logic (brings back original text - sentence no longer contains a blank)

@@ -93,9 +93,12 @@ function dropdownInputChanged(originalText, textPreview, dropdownInput){
         .split(' ')// Text is split into words
         .map(word => `<span class="word">${word}</span>`) // For handling each word separately
         .join(' ');
+
+    return originalText;
 }
 
 function resetButtonChanged(dropdownInput, textPreview, originalText, dropdownCorrectAnswerField){
+    console.log(originalText)
     dropdownInput.value = originalText; // Restore the original text
     textPreview.innerHTML = originalText
         .split(' ')
