@@ -2,6 +2,8 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from poll_management.models.poll_model import Poll
 from user_management.models.user_model import User
+from response_management.models.response_model import MatchQuestionResponse
+import json
 
 class PollResultsViewTest(TestCase):
     fixtures = [
@@ -11,14 +13,27 @@ class PollResultsViewTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.get(username = 'johndoe')
+        self.user = User.objects.get(username='johndoe')
         self.poll = Poll.objects.create(title='Poll 1', user=self.user, status='active', number_code=111111)
-        self.poll_results_url = reverse('poll_management:view_poll', kwargs={'poll_id': self.poll.number_code})
+        self.poll_results_url = reverse('poll_management:poll_results', kwargs={'code': self.poll.number_code})
 
     def test_poll_results_view(self):
         self.client.force_login(self.user)
-        url = reverse('poll_management:view_poll', kwargs={'poll_id': self.poll.id})
-        response = self.client.get(url)
+        response = self.client.get(self.poll_results_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'view_poll.html')
+        self.assertTemplateUsed(response, 'poll_results.html')
         self.assertContains(response, self.poll.title)
+
+    def test_poll_not_found(self):
+        self.client.force_login(self.user)
+        url = reverse('poll_management:view_poll', kwargs={'poll_id': 999999})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_request_poll_results(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.poll_results_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'poll_results.html')
+        self.assertContains(response, self.poll.title)
+

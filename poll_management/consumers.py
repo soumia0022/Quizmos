@@ -91,10 +91,19 @@ class PollConsumer(AsyncWebsocketConsumer):
         # Decorated with database_sync_to_async because database operations are synchronous
         try:
             question = Question.objects.get(id=question_id)
+            dropdown_options = question.dropdown_options.split(',') if question.dropdown_options else []
+            match_options = question.match_options
+            match_answers = question.match_answers
             return {
                 'id': question.id,
                 'text': question.question_text,
                 'type': question.question_type,
+                'mcq_options' : question.multiple_choice_options,
+                'single_option': question.single_choice_option,
+                'dropdown_options': dropdown_options,
+                'match_options': match_options,
+                'match_answers': match_answers,
+                # 'text_fill_options': question.text_fill_answer,
 
             }
         except Question.DoesNotExist:
