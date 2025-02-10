@@ -1,66 +1,128 @@
 {% extends 'base_content.html' %}
 {% block content %}
-<div class="container">
-
-  <div class="row">
-    <div class="col-12">
-      <h1>Welcome to {{ poll.title }}!</h1>
-
-      <div id="question">Waiting for a question...</div>
-      <input type="text" id="answer" placeholder="Your answer" />
-
-      <div id="question_options">Waiting for options...</div>
-      
-      <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-
-      <script>
-        const pollCode = "{{ poll.number_code }}";
-        const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
-
-        ws.onmessage = function(event) {
-          const data = JSON.parse(event.data);
-          console.log(data);
-
-          document.getElementById('answer').style.display = 'none';
-
-          if (data.type === 'question') {
-            document.getElementById('question').innerText = data.question.text;
-
-            if (data.question.type === 'multiple_choice') {
-              let options = "";
-              data.question.mcq_options.forEach(option => {
-                options += `<input type="checkbox" name="multiple_choice_answers[]" value="${option}"><label>${option}</label><br>`;
-              });
-              document.getElementById('question_options').innerHTML = options;
-
-            } else if (data.question.type === 'single_choice') {
-              let options = "";
-              data.question.single_option.forEach(option => {
-                options += `<input type="radio" name="single_choice_answer" value="${option}"><label>${option}</label><br>`;
-              });
-              document.getElementById('question_options').innerHTML = options;
-
-            } else if (data.question.type === 'dropdown_fill') {
-              let options = "";
-              data.question.dropdown_options.forEach(option => {
-                options += `<input type="radio" name="dropdown_answer" value="${option}"><label>${option}</label><br>`;
-              });
-              // options += `</select>`;
-              document.getElementById('question_options').innerHTML = options;
-
-            } else if (data.question.type === 'text_fill') {
-              document.getElementById('question_options').innerHTML = '';
-              document.getElementById('answer').style.display = 'block'; 
-            }
-          }
-        };
-      </script>
-
+<head>
+  <title>{{ poll.title }}</title>
+  <style>
+    .container { display: flex; flex-direction: column; }
+    .row { display: flex; align-items: center; }
+    .left { width: 50%; }
+    .box { border: 1px solid #ccc; padding: 10px; margin: 5px; }
+    .dropzone-box { border: 1px dashed #ccc; padding: 10px; margin: 5px; min-height: 50px; display: flex; align-items: center; width: 50%; }
+    .draggable { cursor: pointer; }
+    .dragging { opacity: 0.5; }
+    .flex-container { display: flex; align-items: center; justify-content: space-between; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1>Welcome to {{ poll.title }}!</h1>
+        <div id="question">Waiting for a question...</div>
+        <input type="text" id="answer" placeholder="Your answer" />
+        <div id="question_options">Waiting for options...</div>
+        <form method="POST">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit">Submit</button>
+        </form>
+      </div>
     </div>
   </div>
-</div>
+
+  <script>
+    const pollCode = "{{ poll.number_code }}";
+    const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
+
+    ws.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      console.log(data);
+
+      document.getElementById('answer').style.display = 'none';
+
+      if (data.type === 'question') {
+        document.getElementById('question').innerText = data.question.text;
+
+        if (data.question.type === 'multiple_choice') {
+          let options = "";
+          data.question.mcq_options.forEach(option => {
+            options += `<input type="checkbox" name="multiple_choice_answers[]" value="${option}"><label>${option}</label><br>`;
+          });
+          document.getElementById('question_options').innerHTML = options;
+
+        } else if (data.question.type === 'single_choice') {
+          let options = "";
+          data.question.single_option.forEach(option => {
+            options += `<input type="radio" name="single_choice_answer" value="${option}"><label>${option}</label><br>`;
+          });
+          document.getElementById('question_options').innerHTML = options;
+
+        } else if (data.question.type === 'dropdown_fill') {
+          let options = "";
+          data.question.dropdown_options.forEach(option => {
+            options += `<input type="radio" name="dropdown_answer" value="${option}"><label>${option}</label><br>`;
+          });
+          document.getElementById('question_options').innerHTML = options;
+
+        } else if (data.question.type === 'text_fill') {
+          document.getElementById('question_options').innerHTML = '';
+          document.getElementById('answer').style.display = 'block'; 
+        } else if (data.question.type === 'match_question') {
+          let leftOptions = "";
+          let rightOptions = "";
+
+          data.question.match_options.forEach((option) => {
+              leftOptions += `
+                  <div class="flex-container">
+                      <div class="box left">${option}</div>
+                      <div class="dropzone-box dropzone right"></div>
+                  </div>`;
+          });
+
+          data.question.match_answers.forEach(answer => {
+              rightOptions += `<div class="box draggable" draggable="true">${answer}</div>`;
+          });
+
+          document.getElementById('question_options').innerHTML = `
+              <div id="options-container" class="flex-container">
+                <div id="left" class="left">${leftOptions}</div>
+              </div>
+              <div class="row">
+                <div id="right" class="right">${rightOptions}</div>
+              </div>`;
+
+          initializeSortable();
+        }
+      }
+    };
+
+    function initializeSortable() {
+      const rightContainer = document.getElementById('right');
+
+      new Sortable(rightContainer, {
+        group: "shared",
+        animation: 150
+      });
+
+      const dropzones = document.querySelectorAll('.dropzone');
+      dropzones.forEach(dropzone => {
+        new Sortable(dropzone, {
+          group: "shared",
+          animation: 150,
+          onAdd: function(evt) {
+            if (dropzone.children.length > 1) {
+              const oldItem = dropzone.children[0];
+              rightContainer.appendChild(oldItem);
+            }
+          }
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeSortable();
+    });
+  </script>
+</body>
 {% endblock %}
