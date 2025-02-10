@@ -25,6 +25,17 @@ class PollConsumer(AsyncWebsocketConsumer):
         # Accept the WebSocket connection
         await self.accept()
 
+        # Send message when a student connects
+        if self.scope["user"].role == 'Student':
+            await self.channel_layer.group_send(
+                self.poll_group_name,
+                {
+                    'type': 'poll_message',
+                    'message': f'A student joined the poll: {self.scope["user"].username}!'
+                })
+
+
+
     async def disconnect(self, close_code):
         # When a client disconnects, remove them from the poll group
         await self.channel_layer.group_discard(
@@ -80,10 +91,19 @@ class PollConsumer(AsyncWebsocketConsumer):
         # Decorated with database_sync_to_async because database operations are synchronous
         try:
             question = Question.objects.get(id=question_id)
+            dropdown_options = question.dropdown_options.split(',') if question.dropdown_options else []
+            match_options = question.match_options
+            match_answers = question.match_answers
             return {
                 'id': question.id,
                 'text': question.question_text,
                 'type': question.question_type,
+                'mcq_options' : question.multiple_choice_options,
+                'single_option': question.single_choice_option,
+                'dropdown_options': dropdown_options,
+                'match_options': match_options,
+                'match_answers': match_answers,
+                # 'text_fill_options': question.text_fill_answer,
 
             }
         except Question.DoesNotExist:

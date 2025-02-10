@@ -8,58 +8,83 @@
     </div>
   </div>
 
+<!-- Search and Sort Form -->
+<form method="GET" >
+    <input type="text" name="search" placeholder="Search polls..." value="{{ search_query }}">
+
+    <select name="sort_by" onchange="this.form.submit()">
+        <option value="created_at_desc" {% if sort_by == "created_at_desc" %}selected{% endif %}>Newest First</option>
+        <option value="created_at_asc" {% if sort_by == "created_at_asc" %}selected{% endif %}>Oldest First</option>
+        <option value="title_asc" {% if sort_by == "title_asc" %}selected{% endif %}>A-Z</option>
+        <option value="title_desc" {% if sort_by == "title_desc" %}selected{% endif %}>Z-A</option>
+    </select>
+
+    <button type="submit">Apply</button>
+</form>
   <!-- Section for creating a poll -->
   {% include 'create_poll.html' %}
-
-  <!-- Section for listing polls -->
+ <!-- Section for listing polls -->
   <div class="row mt-4">
     <div class="col-12">
-      <h2>Your Polls</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Created At</th>
-            <th>Responses</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for poll in polls %}
-          <tr>
-            <td>{{ poll.title }}</td>
-            <td>{{ poll.status }}</td>
-            <td>{{ poll.created_at|date:"Y-m-d H:i" }}</td>
-            <td>{{ poll.responses_count }}</td>
-            <td>
-              <a href="{% url 'poll_management:view_poll' poll.id %}">View</a> | 
-              <a href="{% url 'poll_management:poll_edit' poll.id %}">Edit</a> | 
-              <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
-                {% csrf_token %}
-                <button 
-                type="button" 
-                onclick="confirmDelete(poll.id)" 
-                data-id="{{ poll.id }}" 
-                style="color: red; cursor: pointer;">
-                Delete
-            </button>
-                          </form> |
-              <a href="{% url 'poll_management:display_code' poll.id %}">Start</a> |
+        <h2>Your Polls</h2>
+        <div class="poll-container row">
+            {% for poll in polls %}
+            <div class="col-md-4 mb-4">
+                <div class="poll-card card">
+                    <!-- Poll Header -->
+                    <div class="card-header">
+                        <span class="poll-emoji">🚀</span>
+                        <h5 class="card-title">{{ poll.title }}</h5>
+                    </div>
 
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="5">No polls found.</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                    <!-- Poll Body -->
+                    <div class="card-body">
+                        <p><strong>Status:</strong> {{ poll.status }}</p>
+                        <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
+                        <p><strong>Responses:</strong> {{ poll.responses_count }}</p>
+                    </div>
+
+                    <!-- Poll Footer (Actions) -->
+                    <div class="card-footer text-muted">
+                        <a href="{% url 'poll_management:view_poll' poll.id %}" class="btn btn-primary btn-sm">View</a>
+                        <a href="{% url 'poll_management:poll_edit' poll.id %}" class="btn btn-secondary btn-sm">Edit</a>
+                        <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="button" onclick="confirmDelete({{ poll.id }})" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                        <a href="{% url 'poll_management:display_code' poll.id %}" class="btn btn-success btn-sm">Start</a>
+                        
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No polls found.</p>
+            {% endfor %}
+        </div>
+
     </div>
   </div>
-</div>
 
+
+    <!-- Pagination Links -->
+  <div class="pagination">
+      <span class="step-links">
+          {% if polls.has_previous %}
+              <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">&laquo; first</a>
+              <a href="?page={{ polls.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">previous</a>
+          {% endif %}
+
+          <span class="current">
+              Page {{ polls.number }} of {{ polls.paginator.num_pages }}.
+          </span>
+
+          {% if polls.has_next %}
+              <a href="?page={{ polls.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">next</a>
+              <a href="?page={{ polls.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">last &raquo;</a>
+          {% endif %}
+      </span>
+  </div>
+</div>
 
 <!-- confirm deletion pop up -->
 <div id="custom-popup" class="popup-overlay" style="display: none;">
@@ -71,8 +96,6 @@
 </div>
 
 <script src="{% static 'js/confirm_delete.js' %}"></script>
-
-
 
 <!-- Embedded CSS for Styling -->
 <style>
@@ -110,53 +133,60 @@
     background-color: #ddd;
 }
 
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  thead {
-    background-color: #4CAF50;
-    color: white;
-  }
-  th, td {
-    padding: 12px;
-    text-align: left;
+.card {
     border: 1px solid #ddd;
-  }
-  th {
-    font-weight: bold;
-  }
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  tr:hover {
-    background-color: #f1f1f1;
-  }
-  td a {
-    color: #4CAF50;
-    text-decoration: none;
-    margin-right: 10px;
-  }
-  td a:hover {
-    text-decoration: underline;
-  }
-  h1 {
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #f7f7f7;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-footer {
+    padding: 10px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
+.poll-emoji {
     font-size: 24px;
-    margin-bottom: 20px;
+    margin-right: 10px;
+}
+
+h1, h2 {
     color: #333;
-  }
-  h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  .container {
+}
+
+.container {
     padding: 20px;
-  }
+}
+
+.btn-sm {
+    margin-right: 5px;
+}
+
+.poll-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.poll-card {
+    flex: 1 1 calc(33.333% - 15px);
+    margin-bottom: 15px;
+}
 </style>
 
 <script>

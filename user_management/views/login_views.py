@@ -9,8 +9,9 @@ from django.views import View
 from user_management.forms import LogInForm, PollCodeForm
 from user_management.helpers import login_prohibited
 from poll_management.models.poll_model import Poll
-from django.db.models import Count
+from django.db.models import Count, Q
 from poll_management.views.create_poll import create_poll
+from django.core.paginator import Paginator
 
 @login_prohibited
 def home(request):
@@ -26,17 +27,63 @@ def home(request):
 
     return render(request, 'home.html', {'form': form})
 
+
 def dashboard(request):
     """Display the current user's dashboard."""
     current_user = request.user
-    if (current_user.role == 'Student'):
+    
+    if current_user.role == 'Student':
         return render(request, 'student_dashboard.html', {'user': current_user})
     else:
+        sort_by = request.GET.get('sort_by', 'created_at_desc')  # Default sorting
+        search_query = request.GET.get('search', '')  # Get the search query
+
         poll = Poll.objects.filter(user=request.user).annotate(
-            responses_count=Count('response')
-        ).order_by('-created_at')
+            multiple_choice_responses_count=Count('multiplechoiceresponse'),
+            single_choice_responses_count=Count('singlechoiceresponse'),
+            dropdown_fill_responses_count=Count('dropdownfillresponse'),
+            text_fill_responses_count=Count('textfillresponse'),
+            match_question_responses_count=Count('matchquestionresponse')
+        )
+
+        # Filtering based on search query
+        if search_query:
+            poll = poll.filter(Q(title__icontains=search_query))
+
+        # Sorting logic based on sort_by parameter
+        if sort_by == 'title_asc':
+            poll = poll.order_by('title')
+        elif sort_by == 'title_desc':
+            poll = poll.order_by('-title')
+        elif sort_by == 'created_at_asc':
+            poll = poll.order_by('created_at')
+        elif sort_by == 'created_at_desc':
+            poll = poll.order_by('-created_at')
+
+        # Add up all response counts for each poll
+        for p in poll:
+            p.total_responses_count = (
+                p.multiple_choice_responses_count +
+                p.single_choice_responses_count +
+                p.dropdown_fill_responses_count +
+                p.text_fill_responses_count +
+                p.match_question_responses_count
+            )
+
         create_poll(request)
-        return render(request, 'lecturer_dashboard.html', {'user': current_user, 'polls': poll})
+
+         #This where I paginate the polls
+        paginator = Paginator(poll, 10)
+        page_number = request.GET.get('page')  # Getting the page number
+        page_obj = paginator.get_page(page_number)  # Getting the page object
+
+        # Essentially rendering the template
+        return render(request, 'lecturer_dashboard.html', {
+            'user': current_user,
+            'polls': page_obj,
+            'sort_by': sort_by,
+            'search_query': search_query,
+        })
 
 
 class LoginProhibitedMixin:
@@ -75,17 +122,19 @@ class LogInView(LoginProhibitedMixin, View):
     def get(self, request):
         """Display log in template."""
 
-        self.next = request.GET.get('next') or ''
+        self.next = request.GET.get('next') or request.session.get('poll_redirect_url') or ''
         return self.render()
 
     def post(self, request):
         """Handle log in attempt."""
 
         form = LogInForm(request.POST)
-        self.next = request.POST.get('next') or settings.REDIRECT_URL_WHEN_LOGGED_IN
+        self.next = request.POST.get('next') or request.session.get('poll_redirect_url') or settings.REDIRECT_URL_WHEN_LOGGED_IN
         user = form.get_user()
         if user is not None:
             login(request, user)
+            if 'poll_redirect_url' in request.session:
+                del request.session['poll_redirect_url']
             return redirect(self.next)
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
         return self.render()
@@ -102,10 +151,3 @@ def log_out(request):
 
     logout(request)
     return redirect(reverse('user_management:home'))
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.http import HttpRequest
-from question_management.views.question_types import get_timer
+from question_management.helpers import get_timer
 
 class TimerTestCase(TestCase):
 

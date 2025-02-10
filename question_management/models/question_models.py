@@ -65,3 +65,67 @@ class Question(models.Model):
             return []
         options = [opt.strip() for opt in self.dropdown_options.split(',')]
         return options
+
+# When refactoring models, use the below code:
+# from django.db import models
+# from poll_management.models.poll_model import Poll
+#
+#
+# class Question(models.Model):
+#     QUESTION_TYPES = [
+#         ('dropdown_fill', 'Dropdown Fill in the Blank'),
+#         ('text_fill', 'Text Answer'),
+#         ('multiple_choice', 'Multiple Choice'),
+#         ('single_choice', 'Single Choice'),
+#         ('wordcloud', 'Word Cloud'),
+#         ('match_question', 'Match Question'),
+#         ('code_question', 'Code Question'),
+#     ]
+#
+#     poll = models.ForeignKey(Poll, related_name='questions', on_delete=models.CASCADE)
+#     question_type = models.CharField(max_length=20, choices=QUESTION_TYPES, default='multiple_choice')
+#     timer = models.IntegerField(null=True, blank=True, help_text="Time limit in seconds", default=None)
+#     question_text = models.TextField(null=True, blank=True)  # General question text
+#
+#     class Meta:
+#         abstract = True  # This model is abstract and will not be created as a table
+#
+#
+# class MultipleChoiceQuestion(Question):
+#     multiple_choice_question = models.TextField(null=True, blank=True)
+#     multiple_choice_options = models.JSONField(blank=True, default=list)
+#     multiple_choice_answers = models.JSONField(blank=True, default=list)
+#
+#
+# class SingleChoiceQuestion(Question):
+#     single_choice_question = models.TextField(null=True, blank=True)
+#     single_choice_option = models.JSONField(blank=True, default=list)
+#     single_choice_answers = models.JSONField(blank=True, default=list)
+#
+#
+# class TextFillQuestion(Question):
+#     text_fill_question = models.TextField(null=True, blank=True)
+#     text_fill_answer = models.TextField(null=True, blank=True)
+#
+#
+# class DropdownFillQuestion(Question):
+#     dropdown_fill_question = models.TextField(null=True, blank=True)
+#     dropdown_options = models.TextField(null=True, blank=True)  # Comma-separated options
+#     dropdown_correct_answer = models.TextField(null=True, blank=True)
+#     dropdown_answer = models.TextField(null=True, blank=True)
+#
+#
+# class WordCloudQuestion(Question):
+#     wordcloud_question = models.TextField(null=True, blank=True)
+#
+#
+# class MatchQuestion(Question):
+#     match_question = models.TextField(null=True, blank=True)
+#     match_options = models.JSONField(blank=True, default=list)
+#     match_answers = models.JSONField(blank=True, default=list)
+#
+#
+# class CodeQuestion(Question):
+#     code_question_text = models.TextField(null=True, blank=True)
+#     code_language = models.CharField(max_length=20, default="python", null=True, blank=True)
+#     code_test_cases = models.JSONField(default=list, blank=True)

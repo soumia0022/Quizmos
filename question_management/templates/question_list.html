@@ -1,28 +1,10 @@
+{% load static %}
+
 <html>
 <head>
     <title>Questions</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $('.question-item').hover(function(){
-                const questionId = $(this).data('id');
-                $.get(`/question/${questionId}/preview/`, function(data) {
-                    $('#preview-box').html(`
-                        <p>Type: ${data.question_type}</p>
-                        <p>Timer: ${data.timer || 'None'}</p>
-                        <p>Text: ${data.question_text}</p>
-                    `);
-                });
-            }, function(){
-                $('#preview-box').empty();
-            });
-
-            $('.question-item').click(function(){
-                const questionId = $(this).data('id');
-                window.location.href = `/question/${questionId}/`;
-            });
-        });
-    </script>
+    <script src="{% static 'js/question_list.js' %}"></script>  <!-- Link to external JavaScript -->
 </head>
 <body>
     <h1>Questions</h1>

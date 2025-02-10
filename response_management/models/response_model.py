@@ -1,0 +1,29 @@
+from django.db import models
+from question_management.models.question_models import Question
+from poll_management.models.poll_model import Poll 
+from django.conf import settings
+
+
+class Response(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE, default=1)
+    submitted_on = models.DateTimeField(auto_now_add=True) 
+
+    class Meta:
+        abstract = True
+
+class MultipleChoiceResponse(Response):
+    selected_options = models.JSONField()
+
+class SingleChoiceResponse(Response):
+    selected_option = models.TextField()
+    
+class TextFillResponse(Response):
+    answer_text = models.TextField()
+
+class DropdownFillResponse(Response):
+    selected_option = models.TextField()
+
+class MatchQuestionResponse(Response):
+    match_responses = models.JSONField()  

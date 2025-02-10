@@ -49,15 +49,18 @@ INSTALLED_APPS = [
     'channels',
     'widget_tweaks',
     'user_management',
-    'poll_management',
     'question_management',
+    'Quizmos',
     'analytics',
+    'poll_management',
     'response_management',
+    'ui_components',
     'django.contrib.sites',
-    'allauth', 
+    'allauth',
     'allauth.account',
     'rest_framework',
 ]
+
 
 env = environ.Env()
 environ.Env.read_env()  
@@ -118,6 +121,7 @@ WSGI_APPLICATION = 'Quizmos.wsgi.application'
 ASGI_APPLICATION = 'Quizmos.asgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -170,7 +174,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
 STATIC_ROOT = 'assets/'
 STATICFILES_DIRS = [
