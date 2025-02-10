@@ -9,7 +9,7 @@ from django.views import View
 from user_management.forms import LogInForm, PollCodeForm
 from user_management.helpers import login_prohibited
 from poll_management.models.poll_model import Poll
-from django.db.models import Count
+from django.db.models import Count, Q
 from poll_management.views.create_poll import create_poll
 from django.core.paginator import Paginator
 
@@ -31,18 +31,36 @@ def home(request):
 def dashboard(request):
     """Display the current user's dashboard."""
     current_user = request.user
-
+    
     if current_user.role == 'Student':
         return render(request, 'student_dashboard.html', {'user': current_user})
     else:
+        sort_by = request.GET.get('sort_by', 'created_at_desc')  # Default sorting
+        search_query = request.GET.get('search', '')  # Get the search query
+
         poll = Poll.objects.filter(user=request.user).annotate(
             multiple_choice_responses_count=Count('multiplechoiceresponse'),
             single_choice_responses_count=Count('singlechoiceresponse'),
             dropdown_fill_responses_count=Count('dropdownfillresponse'),
             text_fill_responses_count=Count('textfillresponse'),
             match_question_responses_count=Count('matchquestionresponse')
-        ).order_by('-created_at')
+        )
 
+        # Filtering based on search query
+        if search_query:
+            poll = poll.filter(Q(title__icontains=search_query))
+
+        # Sorting logic based on sort_by parameter
+        if sort_by == 'title_asc':
+            poll = poll.order_by('title')
+        elif sort_by == 'title_desc':
+            poll = poll.order_by('-title')
+        elif sort_by == 'created_at_asc':
+            poll = poll.order_by('created_at')
+        elif sort_by == 'created_at_desc':
+            poll = poll.order_by('-created_at')
+
+        # Add up all response counts for each poll
         for p in poll:
             p.total_responses_count = (
                 p.multiple_choice_responses_count +
@@ -53,31 +71,7 @@ def dashboard(request):
             )
 
         create_poll(request)
-
-        # Apply sorting logic
-        if sort_by == 'title_asc':
-            poll = poll.order_by('title')  # A to Z
-        elif sort_by == 'title_desc':
-            poll = poll.order_by('-title')  # Z to A
-        elif sort_by == 'created_at_asc':
-            poll = poll.order_by('created_at')  # Oldest first
-        else:  #  newest first
-            poll = poll.order_by('-created_at')
-
-
-
-        #This where I paginate the polls
-        paginator = Paginator(poll, 10)
-        page_number = request.GET.get('page')  # Getting the page number
-        page_obj = paginator.get_page(page_number)  # Getting the page object
-
-        # Essentially rendering the template
-        return render(request, 'lecturer_dashboard.html', {
-            'user': current_user,
-            'polls': page_obj,
-            'sort_by': sort_by,
-            'search_query': search_query,
-        })
+        return render(request, 'lecturer_dashboard.html', {'user': current_user, 'polls': poll})
 
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""

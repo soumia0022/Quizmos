@@ -1,7 +1,8 @@
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
+from django.utils.timezone import now
+from datetime import timedelta
 from poll_management.models.poll_model import Poll
-from django.utils.timezone import now, timedelta
 
 class DashboardSortingSearchingTests(TestCase):
     def setUp(self):
@@ -10,7 +11,7 @@ class DashboardSortingSearchingTests(TestCase):
         self.user = get_user_model().objects.create_user(username='testuser', password='password123', role='Lecturer')
         self.client.login(username='testuser', password='password123')
 
-        # im creating testing polls
+        # Creating testing polls
         self.poll1 = Poll.objects.create(user=self.user, title="Space", created_at=now() - timedelta(days=5))
         self.poll2 = Poll.objects.create(user=self.user, title="Rocket", created_at=now() - timedelta(days=3))
         self.poll3 = Poll.objects.create(user=self.user, title="Stars", created_at=now() - timedelta(days=1))
@@ -18,9 +19,9 @@ class DashboardSortingSearchingTests(TestCase):
     def test_search_polls(self):
         """Test that search returns correct results"""
         response = self.client.get('/dashboard/', {'search': 'Space'})
-        self.assertContains(response, "Space")  # is meant to find space ??- ask about wording of comments in meeting!!
-        self.assertNotContains(response, "Rocket")  # is meant to not find rocket
-        self.assertNotContains(response, "Stars") # is meant to not find Stars
+        self.assertContains(response, "Space")  # Should find Space
+        self.assertNotContains(response, "Rocket")  # Should not find Rocket
+        self.assertNotContains(response, "Stars")  # Should not find Stars
 
     def test_sort_title_ascending(self):
         """Test sorting A-Z"""
