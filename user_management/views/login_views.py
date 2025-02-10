@@ -73,6 +73,20 @@ def dashboard(request):
         create_poll(request)
         return render(request, 'lecturer_dashboard.html', {'user': current_user, 'polls': poll})
 
+         #This where I paginate the polls
+        paginator = Paginator(poll, 10)
+        page_number = request.GET.get('page')  # Getting the page number
+        page_obj = paginator.get_page(page_number)  # Getting the page object
+
+        # Essentially rendering the template
+        return render(request, 'lecturer_dashboard.html', {
+            'user': current_user,
+            'polls': page_obj,
+            'sort_by': sort_by,
+            'search_query': search_query,
+        })
+
+
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
