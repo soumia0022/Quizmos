@@ -80,7 +80,10 @@
                   </div>`;
           });
 
-          data.question.match_answers.forEach(answer => {
+          // Shuffle the match answers
+          const shuffledAnswers = shuffleArray(data.question.match_answers);
+
+          shuffledAnswers.forEach(answer => {
               rightOptions += `<div class="box draggable" draggable="true">${answer}</div>`;
           });
 
@@ -96,6 +99,15 @@
         }
       }
     };
+
+    // Function to shuffle an array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
 
     function initializeSortable() {
       const rightContainer = document.getElementById('right');
