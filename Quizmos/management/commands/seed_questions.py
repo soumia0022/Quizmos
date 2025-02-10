@@ -7,7 +7,7 @@ import random
 class Command(BaseCommand):
     """Build automation command to seed questions in the database"""
 
-    QUESTION_PER_POLL = 10
+    QUESTION_PER_POLL = 7
     help = 'Seed the database with questions'
 
     def __init__(self):
@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
         for poll in polls:
             self.seed_questions_for_poll(poll)
-            print(f"Seeded {self.QUESTION_PER_POLL} questions for poll '{poll.title}'")
+            print(f"Seeded {self.QUESTION_PER_POLL} questions for poll '{poll.title}'                             ", end='\r')
 
     def seed_questions_for_poll(self, poll):
         """Generate 10 questions per poll, one for each type"""

@@ -7,7 +7,7 @@ from faker import Faker
 class Command(BaseCommand):
     """Build automation command to seed the database"""
 
-    POLL_COUNT_PER_LECTURER = 15
+    POLL_COUNT_PER_LECTURER = 5
     help = 'Seed the database with polls'
 
     def __init__(self):
