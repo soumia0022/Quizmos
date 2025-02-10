@@ -71,7 +71,6 @@ def dashboard(request):
             )
 
         create_poll(request)
-        return render(request, 'lecturer_dashboard.html', {'user': current_user, 'polls': poll})
 
          #This where I paginate the polls
         paginator = Paginator(poll, 10)
