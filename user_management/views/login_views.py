@@ -35,6 +35,8 @@ def dashboard(request):
     if current_user.role == 'Student':
         return render(request, 'student_dashboard.html', {'user': current_user})
     else:
+        create_poll(request)
+        
         sort_by = request.GET.get('sort_by', 'created_at_desc')  # Default sorting
         search_query = request.GET.get('search', '')  # Get the search query
 
@@ -69,8 +71,6 @@ def dashboard(request):
                 p.text_fill_responses_count +
                 p.match_question_responses_count
             )
-
-        create_poll(request)
 
          #This where I paginate the polls
         paginator = Paginator(poll, 10)
