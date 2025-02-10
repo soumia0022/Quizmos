@@ -29,12 +29,26 @@ def home(request):
 def dashboard(request):
     """Display the current user's dashboard."""
     current_user = request.user
-    if (current_user.role == 'Student'):
+    if current_user.role == 'Student':
         return render(request, 'student_dashboard.html', {'user': current_user})
     else:
         poll = Poll.objects.filter(user=request.user).annotate(
-            responses_count=Count('response')
+            multiple_choice_responses_count=Count('multiplechoiceresponse'),
+            single_choice_responses_count=Count('singlechoiceresponse'),
+            dropdown_fill_responses_count=Count('dropdownfillresponse'),
+            text_fill_responses_count=Count('textfillresponse'),
+            match_question_responses_count=Count('matchquestionresponse')
         ).order_by('-created_at')
+
+        for p in poll:
+            p.total_responses_count = (
+                p.multiple_choice_responses_count +
+                p.single_choice_responses_count +
+                p.dropdown_fill_responses_count +
+                p.text_fill_responses_count +
+                p.match_question_responses_count
+            )
+
         create_poll(request)
         return render(request, 'lecturer_dashboard.html', {'user': current_user, 'polls': poll})
 
