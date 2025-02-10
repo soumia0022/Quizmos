@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
-from user_management.models import User  # Import your custom user model
+from user_management.models import User
 
 class QuestionPreviewViewTest(TestCase):
     def setUp(self):

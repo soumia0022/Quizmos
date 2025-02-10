@@ -19,5 +19,4 @@ urlpatterns = [
     path('poll/<int:poll_id>/delete-question/', delete_question, name='delete_question'),
     path('question/', include(question_patterns)),
     path('', question_list, name='question_list'),
-
 ]
