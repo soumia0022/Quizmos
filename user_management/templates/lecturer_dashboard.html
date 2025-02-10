@@ -53,13 +53,7 @@
                             <button type="button" onclick="confirmDelete({{ poll.id }})" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                         <a href="{% url 'poll_management:display_code' poll.id %}" class="btn btn-success btn-sm">Start</a>
-                        <a href="{% url 'poll_management:poll_lock' poll.id %}" class="btn btn-warning btn-sm">
-                            {% if poll.status == 'closed' %}
-                                Unlock
-                            {% else %}
-                                Lock
-                            {% endif %}
-                        </a>
+                        
                     </div>
                 </div>
             </div>
@@ -67,6 +61,7 @@
             <p>No polls found.</p>
             {% endfor %}
         </div>
+
     </div>
   </div>
 

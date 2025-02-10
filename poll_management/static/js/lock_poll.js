@@ -1,13 +1,22 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const pollStatus = document.getElementById("poll-status").textContent.split(": ")[1].trim();
+function unlock(){
+    const unlockButton = document.getElementById("unlock");
+    const lockButton = document.getElementById("lock");
+    if (unlockButton.style.display == ""){
+        lockButton.style.display = "";
+        unlockButton.style.display = "none";
+    }
 
+}
+
+function lock() {
     const lockButton = document.getElementById("lock");
     const unlockButton = document.getElementById("unlock");
 
-    //show or hide buttons based on poll status
-    if (pollStatus === "active") {
-        unlockButton.style.display = "none";
-    } else if (pollStatus === "closed") {
+    if (lockButton.style.display == ""){
         lockButton.style.display = "none";
+        unlockButton.style.display = "";
     }
-});
+
+}
+
+
