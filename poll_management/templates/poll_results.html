@@ -94,10 +94,11 @@
             });
             document.getElementById('question_options').innerHTML = options;
           } else if (data.question.type === 'dropdown_fill') {
-            let options = "";
+            let options = '<select name="dropdown_answer"><option value="" disabled selected>Select an option</option>';
             data.question.dropdown_options.forEach(option => {
-              options += `<input type="radio" name="dropdown_answer" value="${option}"><label>${option}</label><br>`;
+              options += `<option value="${option}">${option}</option>`;
             });
+            options += '</select>';
             document.getElementById('question_options').innerHTML = options;
           } else if (data.question.type === 'text_fill') {
             document.getElementById('question_options').innerHTML = '';
@@ -177,14 +178,14 @@
         }
         form.appendChild(singleChoiceInput);
 
-        const DropdownFillResponse = document.querySelector('input[name="dropdown_answer"]:checked');
-        const DropdownFillInput = document.createElement('input');
-        DropdownFillInput.type = 'hidden';
-        DropdownFillInput.name = 'dropdown_response';
-        if (DropdownFillResponse) {
-          DropdownFillInput.value = DropdownFillResponse.value;
+        const dropdownFillResponse = document.querySelector('select[name="dropdown_answer"]');
+        const dropdownFillInput = document.createElement('input');
+        dropdownFillInput.type = 'hidden';
+        dropdownFillInput.name = 'dropdown_response';
+        if (dropdownFillResponse && dropdownFillResponse.value) {
+          dropdownFillInput.value = dropdownFillResponse.value;
         }
-        form.appendChild(DropdownFillInput);
+        form.appendChild(dropdownFillInput);
 
         const textFillResponse = document.querySelector('input[name="text_fill_response"]');
         const textFillInput = document.createElement('input');
