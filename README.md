@@ -17,12 +17,12 @@ The members of the team are:
 
 The project is called `Quizmos`. Our system has the following apps:
 
-- user_management
-- poll_management
-- question_management
-- response_management
-- analytics
-- ui_components
+- user_management: manages student and lecturer user types
+- poll_management: manages all poll functionality e.g., creating, updating and deleting polls
+- question_management: manages all question functionality e.g., creating, updating and deleting questions
+- response_management: manages real-time student answers
+- analytics: to create graphs, pie charts and other graphical representations
+- system_components: for the shared features of the website
 
 ## Deployed version of the application
 
