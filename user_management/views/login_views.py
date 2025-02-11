@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ImproperlyConfigured
+from django.db.models.functions import Lower
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
@@ -54,9 +55,9 @@ def dashboard(request):
 
         # Sorting logic based on sort_by parameter
         if sort_by == 'title_asc':
-            poll = poll.order_by('title')
+            poll = poll.order_by(Lower('title'))
         elif sort_by == 'title_desc':
-            poll = poll.order_by('-title')
+            poll = poll.order_by(Lower('title').desc()) #can't use default '-' for sorting because it's case sensitive
         elif sort_by == 'created_at_asc':
             poll = poll.order_by('created_at')
         elif sort_by == 'created_at_desc':
