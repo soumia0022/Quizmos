@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
-from response_management.models.response_model import MatchQuestionResponse, MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse
+from response_management.models.response_model import MatchQuestionResponse, MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse
 import json
 
 def poll_results(request, code):
@@ -56,6 +56,16 @@ def poll_results(request, code):
                     poll=poll,
                     question=question,
                     selected_option=dropdown_response
+                )
+
+            elif question.question_type == 'text_fill':
+                text_fill_response = request.POST.get('text_fill_response', '')
+                
+                TextFillResponse.objects.create(
+                    user=request.user,
+                    poll=poll,
+                    question=question,
+                    answer_text=text_fill_response
                 )
 
         return redirect('poll_management:poll_results', code=poll.number_code)

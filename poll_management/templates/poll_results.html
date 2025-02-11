@@ -20,7 +20,7 @@
       <div class="col-12">
         <h1>Welcome to {{ poll.title }}!</h1>
         <div id="question">Waiting for a question...</div>
-        <input type="text" id="answer" placeholder="Your answer" />
+        <input type="text" id="answer" name= "text_fill_response" placeholder="Your answer" />
         <div id="question_options">Waiting for options...</div>
         <form method="POST">
           {% csrf_token %}
@@ -185,6 +185,16 @@
           DropdownFillInput.value = DropdownFillResponse.value;
         }
         form.appendChild(DropdownFillInput);
+
+        const textFillResponse = document.querySelector('input[name="text_fill_response"]');
+        const textFillInput = document.createElement('input');
+        textFillInput.type = 'hidden';
+        textFillInput.name = 'text_fill_response';
+        if (textFillResponse) {
+          textFillInput.value = textFillResponse.value;
+        }
+        form.appendChild(textFillInput);
+
 
       });
     });
