@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'analytics',
     'poll_management',
     'response_management',
-    'ui_components',
+    'system_components',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
