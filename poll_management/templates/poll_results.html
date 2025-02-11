@@ -153,6 +153,20 @@
         if (matchResponsesInput) {
           matchResponsesInput.value = JSON.stringify(matchResponses);
         }
+   
+        const multipleChoiceResponses = [];
+        const checkboxes = document.querySelectorAll('input[name="multiple_choice_answers[]"]:checked');
+        checkboxes.forEach((checkbox) => {
+          multipleChoiceResponses.push(checkbox.value);
+        });
+
+       
+        const multipleChoiceInput = document.createElement('input');
+        multipleChoiceInput.type = 'hidden';
+        multipleChoiceInput.name = 'multiple_choice_responses';
+        multipleChoiceInput.value = JSON.stringify(multipleChoiceResponses);
+        form.appendChild(multipleChoiceInput);
+
       });
     });
   </script>
