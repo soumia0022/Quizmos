@@ -110,14 +110,27 @@ function resetButtonChanged(dropdownInput, textPreview, originalText, dropdownCo
 }
 
 function clickTextPreview(dropdownCorrectAnswerField, dropdownInput, textPreview){
-    const word = event.target.textContent; // Gets the word
+    const clickedElement = event.target;
+    const word = clickedElement.textContent;
     dropdownCorrectAnswerField.value = word;
 
-    // Replace the word with a blank (this becomes the question)
-    const updatedText = dropdownInput.value.replace(word, '_____');
+    // Get all the words in the input question
+    const words = dropdownInput.value.split(' ');
+
+    // Find the index of the clicked word by counting previous siblings
+    let clickedWordIndex = 0;
+    let current = clickedElement;
+    while (current.previousElementSibling) {
+        clickedWordIndex++;
+        current = current.previousElementSibling;
+    }
+
+    // Replace only the word at the current index
+    words[clickedWordIndex] = '_____';
+    const updatedText = words.join(' ');
     dropdownInput.value = updatedText;
 
-    // Update the preview with the new text which contains the blank
+    // Update the preview (with a blank)
     textPreview.innerHTML = updatedText
         .split(' ')
         .map(w => (w === '_____' ? `<span class="blank">_____</span>` : `<span class="word">${w}</span>`))
