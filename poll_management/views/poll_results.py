@@ -26,47 +26,48 @@ def poll_results(request, code):
 
             elif question.question_type == 'multiple_choice':
                 multiple_choice_responses = request.POST.get('multiple_choice_responses', '[]')
-                try:
-                    multiple_choice_responses_json = json.loads(multiple_choice_responses)
-                except json.JSONDecodeError:
-                    return JsonResponse({'error': 'Invalid JSON data for multiple-choice responses'}, status=400)
-                
-                MultipleChoiceResponse.objects.create(
-                    user=request.user,
-                    poll=poll,
-                    question=question,
-                    selected_options=multiple_choice_responses_json
-                )
+                if multiple_choice_responses and multiple_choice_responses != '[]':
+                    try:
+                        multiple_choice_responses_json = json.loads(multiple_choice_responses)
+                    except json.JSONDecodeError:
+                        return JsonResponse({'error': 'Invalid JSON data for multiple-choice responses'}, status=400)
+                        
+                    MultipleChoiceResponse.objects.create(
+                        user=request.user,
+                        poll=poll,
+                        question=question,
+                        selected_options=multiple_choice_responses_json
+                    )
 
             elif question.question_type == 'single_choice':
                 single_choice_response = request.POST.get('single_choice_response', '')
-
-                SingleChoiceResponse.objects.create(
-                    user=request.user,
-                    poll=poll,
-                    question=question,
-                    selected_option=single_choice_response
-                )
+                if single_choice_response:
+                    SingleChoiceResponse.objects.create(
+                        user=request.user,
+                        poll=poll,
+                        question=question,
+                        selected_option=single_choice_response
+                    )
 
             elif question.question_type == 'dropdown_fill':
                 dropdown_response = request.POST.get('dropdown_response', '')
-                
-                DropdownFillResponse.objects.create(
-                    user=request.user,
-                    poll=poll,
-                    question=question,
-                    selected_option=dropdown_response
-                )
+                if dropdown_response:
+                    DropdownFillResponse.objects.create(
+                        user=request.user,
+                        poll=poll,
+                        question=question,
+                        selected_option=dropdown_response
+                    )
 
             elif question.question_type == 'text_fill':
                 text_fill_response = request.POST.get('text_fill_response', '')
-                
-                TextFillResponse.objects.create(
-                    user=request.user,
-                    poll=poll,
-                    question=question,
-                    answer_text=text_fill_response
-                )
+                if text_fill_response:
+                    TextFillResponse.objects.create(
+                        user=request.user,
+                        poll=poll,
+                        question=question,
+                        answer_text=text_fill_response
+                    )
 
         return redirect('poll_management:poll_results', code=poll.number_code)
 
