@@ -22,10 +22,11 @@ The project is called `Quizmos`. Our system has the following apps:
 - question_management
 - response_management
 - analytics
+- ui_components
 
 ## Deployed version of the application
 
-The deployed version of the application can be found at ___
+The deployed version of the application can be found at http://ec2-13-48-203-183.eu-north-1.compute.amazonaws.com/
 
 ## Installation instructions
 
@@ -70,7 +71,10 @@ $ coverage html
 ```
 You can open this file in your web browser.
 
+
 Run the server with:
 ```
 $ python3 manage.py runserver
 ```
+
+To use the real-time functionality, you will need to run redis.
