@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
-from response_management.models.response_model import MatchQuestionResponse, MultipleChoiceResponse
+from response_management.models.response_model import MatchQuestionResponse, MultipleChoiceResponse, SingleChoiceResponse
 import json
 
 def poll_results(request, code):
@@ -36,6 +36,16 @@ def poll_results(request, code):
                     poll=poll,
                     question=question,
                     selected_options=multiple_choice_responses_json
+                )
+
+            elif question.question_type == 'single_choice':
+                single_choice_response = request.POST.get('single_choice_response', '')
+
+                SingleChoiceResponse.objects.create(
+                    user=request.user,
+                    poll=poll,
+                    question=question,
+                    selected_option=single_choice_response
                 )
 
         return redirect('poll_management:poll_results', code=poll.number_code)

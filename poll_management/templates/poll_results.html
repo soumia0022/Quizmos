@@ -167,6 +167,16 @@
         multipleChoiceInput.value = JSON.stringify(multipleChoiceResponses);
         form.appendChild(multipleChoiceInput);
 
+     
+        const singleChoiceResponse = document.querySelector('input[name="single_choice_answer"]:checked');
+        const singleChoiceInput = document.createElement('input');
+        singleChoiceInput.type = 'hidden';
+        singleChoiceInput.name = 'single_choice_response';
+        if (singleChoiceResponse) {
+          singleChoiceInput.value = singleChoiceResponse.value;
+        }
+        form.appendChild(singleChoiceInput);
+
       });
     });
   </script>
