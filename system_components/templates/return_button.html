@@ -1,0 +1,4 @@
+<form action="{% url 'return_to_dashboard' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Return to Dashboard</button>
+</form>

@@ -1,4 +1,4 @@
-{% load info_tags %}
+{% load system_extras %} <!-- This contains the info buttons and the return to dashboard button -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +13,7 @@
 
 </head>
 <body>
+    {% return_button %}
 
     {% include 'partials/background_stars.html' %}
 
