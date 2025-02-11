@@ -11,3 +11,8 @@ def info_button(info_text):
 @register.inclusion_tag('return_button.html')
 def return_button():
     return {}
+
+#  For the return to the previous page button
+@register.inclusion_tag('go_back_button.html')
+def go_back_button():
+    return {}
