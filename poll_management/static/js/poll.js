@@ -4,6 +4,23 @@ function shuffleArray(array) {
 function createQuestionHTML(question) {
   let html = '<div class="question-title">';//this will store the final html content needed to display the question
 
+
+  if (question.video_file != null) {
+    html += `
+      <div class="video-container mb-3">
+        <video 
+          controls
+          width="100%" 
+          style="max-width: 640px;"
+          class="rounded"
+        >
+          <source src="${question.video_file}" type="video/mp4">
+          Your browser does not support the video element.
+        </video>
+      </div>
+    `;
+  }
+
   switch(question.type) {
      case 'dropdown_fill':
       const parts = question.text.split('___'); // split the text where there are blank spaces (3 underscores ___)
