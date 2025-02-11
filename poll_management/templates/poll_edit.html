@@ -4,7 +4,7 @@
     <title>Edit Poll</title>
 </head>
 <body>
-    {% load system_extras %}
+    {% load system_extras %} <!-- When refactored, this can go under the extend base content line -->
     {% return_button %}
     <h1>Edit Poll: {{ poll.title }}</h1>
     <form method="POST">
