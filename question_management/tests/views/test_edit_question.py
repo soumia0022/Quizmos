@@ -95,3 +95,47 @@ class EditQuestionTestCase(TestCase):
         self.assertEqual(self.question.timer, 60)
         self.assertEqual(self.question.single_choice_option, ['OptionA', 'OptionB'])
         self.assertEqual(self.question.single_choice_answers, ['OptionA'])
+
+    def test_edit_question_view_success(self):
+        """
+        Test if the edit question page loads successfully with a valid poll and question.
+        """
+        url = self.edit_question_url + f'?question_id={self.question.id}'
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit_question.html')
+        self.assertIn('question', response.context)
+        self.assertEqual(response.context['question'].question_text, "Original Question")
+
+    def test_edit_question_view_404_invalid_poll(self):
+        """
+        Test if the view returns 404 when the poll does not exist.
+        """
+        url = reverse('question_management:edit_question', kwargs={'poll_id': 999}) + f'?question_id={self.question.id}'
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_edit_question_view_404_invalid_question(self):
+        """
+        Test if the view returns 404 when the question does not exist.
+        """
+        url = self.edit_question_url + '?question_id=999'  # Invalid question ID
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_edit_question_view_match_pairs(self):
+        """
+        Test if the match pairs are zipped correctly in the context.
+        """
+        self.question.match_options = ['A', 'B', 'C']
+        self.question.match_answers = ['1', '2', '3']
+        self.question.save()
+
+        url = self.edit_question_url + f'?question_id={self.question.id}'
+        response = self.client.get(url)
+
+        expected_match_pairs = list(zip(["A", "B", "C"], ["1", "2", "3"]))
+        self.assertEqual(list(response.context['match_pairs']), expected_match_pairs)
