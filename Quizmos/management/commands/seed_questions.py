@@ -172,13 +172,13 @@ class Command(BaseCommand):
             })
 
         elif question_type == 'single_choice':
-            options = self.faker.words(4)
-            question_text = self.faker.sentence()
+            scq = self.faker.scq_question()  # Get a computing question
+
             question_data.update({
-                'question_text': question_text,
-                'single_choice_question': question_text,
-                'single_choice_option': options,
-                'single_choice_answers': [random.choice(options)],
+                'question_text': scq['question'],
+                'single_choice_question': scq['question'],
+                'single_choice_option': scq['options'],
+                'single_choice_answers': [scq['correct_answer']],  # The correct answer
             })
 
         elif question_type == 'wordcloud':
