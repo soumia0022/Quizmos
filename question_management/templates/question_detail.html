@@ -23,12 +23,12 @@
             </div>
             {% endfor %}
     {% elif question.question_type == 'single_choice' %}
-        <h2>Options:</h2>
-        <ul>
             {% for option in question.single_choice_option %}
-                <li>{{ option }}</li>
+            <div>
+                <input type="radio" name="single_choice_answer" value="{{ option }}">
+                <label>{{ option }}</label>
+            </div>
             {% endfor %}
-        </ul>
     {% elif question.question_type == 'dropdown_fill' %}
         <h2>Dropdown Options:</h2>
         <ul>
