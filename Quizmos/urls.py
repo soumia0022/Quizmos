@@ -27,6 +27,7 @@ urlpatterns = [
     path('responses/', include('response_management.urls')),
     path('analytics/', include('analytics.urls')),
     path('', include('user_management.urls')),
+    path('system/', include('system_components.urls')),
 
     
 ]
