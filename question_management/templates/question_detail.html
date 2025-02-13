@@ -1,9 +1,12 @@
+{% load system_extras %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>{{ question.question_text }}</title>
 </head>
 <body>
+    {% return_button %}
+    {% go_back_button %}
     <h1>{{ question.question_text }}</h1>
     <p>Type: {{ question.get_question_type_display }}</p>
     <p>Timer: {{ question.timer }}</p>
