@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
+import random
 
 from faker import Faker
 from faker.providers import BaseProvider
@@ -76,8 +77,10 @@ class ComputingQuestionProvider(BaseProvider):
             "correct_answer": answer
         }
 
+fake = Faker()
+fake.add_provider(ComputingQuestionProvider)
 
-import random
+
 class Command(BaseCommand):
     """Build automation command to seed questions in the database"""
 
@@ -87,6 +90,7 @@ class Command(BaseCommand):
     def __init__(self):
         super().__init__()
         self.faker = Faker('en_GB')
+        self.faker.add_provider(ComputingQuestionProvider)
 
     def handle(self, *args, **options):
         self.create_questions()
