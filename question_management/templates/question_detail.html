@@ -29,13 +29,15 @@
                 <label>{{ option }}</label>
             </div>
             {% endfor %}
-    {% elif question.question_type == 'dropdown_fill' %}
-        <h2>Dropdown Options:</h2>
-        <ul>
-            {% for option in question.get_dropdown_options %}
-                <li>{{ option }}</li>
-            {% endfor %}
-        </ul>
+            
+            {% elif question.question_type == 'dropdown_fill' %}
+            <select name="dropdown_answer">
+                <option value="" disabled selected>Select an option</option>
+                {% for option in question.get_dropdown_options %}
+                    <option value="{{ option }}">{{ option }}</option>
+                {% endfor %}
+            </select>
+
     {% elif question.question_type == 'match_question' %}
         <h2>Match Options:</h2>
         <ul>
