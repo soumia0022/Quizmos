@@ -9,7 +9,11 @@ def poll_results(request, code):
     poll = get_object_or_404(Poll, number_code=code)
     
     if request.method == 'POST':
+        question_processed = set()
         for question in poll.questions.all():
+            if question.question_type in question_processed:
+                continue
+
             if question.question_type == 'match_question':
                 match_responses = request.POST.get('match_responses', '{}')
                 try:
@@ -17,12 +21,14 @@ def poll_results(request, code):
                 except json.JSONDecodeError:
                     return JsonResponse({'error': 'Invalid JSON data for match responses'}, status=400)
                 
-                MatchQuestionResponse.objects.create(
-                    user=request.user,
-                    poll=poll,
-                    question=question,
-                    match_responses=match_responses_json
-                )
+                if match_responses_json:
+                    MatchQuestionResponse.objects.create(
+                        user=request.user,
+                        poll=poll,
+                        question=question,
+                        match_responses=match_responses_json
+                    )
+                question_processed.add(question.question_type)
 
             elif question.question_type == 'multiple_choice':
                 multiple_choice_responses = request.POST.get('multiple_choice_responses', '[]')
@@ -32,12 +38,14 @@ def poll_results(request, code):
                     except json.JSONDecodeError:
                         return JsonResponse({'error': 'Invalid JSON data for multiple-choice responses'}, status=400)
                         
-                    MultipleChoiceResponse.objects.create(
-                        user=request.user,
-                        poll=poll,
-                        question=question,
-                        selected_options=multiple_choice_responses_json
-                    )
+                    if multiple_choice_responses_json:
+                        MultipleChoiceResponse.objects.create(
+                            user=request.user,
+                            poll=poll,
+                            question=question,
+                            selected_options=multiple_choice_responses_json
+                        )
+                question_processed.add(question.question_type)
 
             elif question.question_type == 'single_choice':
                 single_choice_response = request.POST.get('single_choice_response', '')
@@ -48,6 +56,7 @@ def poll_results(request, code):
                         question=question,
                         selected_option=single_choice_response
                     )
+                question_processed.add(question.question_type)
 
             elif question.question_type == 'dropdown_fill':
                 dropdown_response = request.POST.get('dropdown_response', '')
@@ -58,6 +67,7 @@ def poll_results(request, code):
                         question=question,
                         selected_option=dropdown_response
                     )
+                question_processed.add(question.question_type)
 
             elif question.question_type == 'text_fill':
                 text_fill_response = request.POST.get('text_fill_response', '')
@@ -68,6 +78,7 @@ def poll_results(request, code):
                         question=question,
                         answer_text=text_fill_response
                     )
+                question_processed.add(question.question_type)
 
         return redirect('poll_management:poll_results', code=poll.number_code)
 
