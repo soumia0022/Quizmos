@@ -32,6 +32,8 @@ ALLOWED_HOSTS = [
     '13.48.203.183',
     'localhost',
     '127.0.0.1',
+    'quizmos.me', 
+    'www.quizmos.me',
     '[::1]'
 ]
 
