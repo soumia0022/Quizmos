@@ -3,7 +3,7 @@ from response_management.models.response_model import MultipleChoiceResponse, Si
 
 @admin.register(MultipleChoiceResponse)
 class MultipleChoiceResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_options')
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_options', 'question')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
