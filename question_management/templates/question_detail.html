@@ -45,12 +45,11 @@
                 <li>{{ option }} - {{ answer }}</li>
             {% endfor %}
         </ul>
-    {% elif question.question_type == 'text' %}
-        <h2>Answer:</h2>
-        <p>{{ question.text_fill_answer }}</p>
+    {% elif question.question_type == 'text_fill' %}
+    <input type="text" name="text_fill_answer" placeholder="Your answer">
+
     {% elif question.question_type == 'wordcloud' %}
-        <h2>Word Cloud Prompt:</h2>
-        <p>{{ question.wordcloud_question }}</p>
+<input type="text" name="text_fill_answer" placeholder="Your answer">
     {% endif %}
 
    <br> <button type="button" class="submit-button">Submit</button> </br>
