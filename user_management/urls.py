@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from user_management.views import home_views, guest_logout
+from user_management.views import guest_logout
 from user_management.views import *
 from django.urls import path ,include, reverse_lazy
 from user_management.forms.forgot_password_forms import CustomPasswordResetForm 
