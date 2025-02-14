@@ -27,8 +27,6 @@ urlpatterns = [
     path('profile/', profile_update_views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', signup_views.SignUpView.as_view(), name='sign_up'),
     path('accounts/password/', include(reset_password_patterns)),
-    #path('about/', home_views.AboutView.as_view(), name='about'),
-    #path('faq/', home_views.FaqView.as_view(), name='faq'),
     path('guest_logout/', guest_logout.logout_and_login, name='guest_logout'),
     path('about/', AboutView.as_view(), name='about'),
     path("faq/", FaqView.as_view(), name="faq"),
