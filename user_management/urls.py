@@ -1,12 +1,17 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from user_management.views import guest_logout
-from user_management.views import *
-from django.urls import path ,include, reverse_lazy
-from user_management.forms.forgot_password_forms import CustomPasswordResetForm 
+from django.urls import path, include, reverse_lazy
 from django.contrib.auth import views as auth_views
 from user_management.views.about_view import AboutView
 from user_management.views.faq_view import FaqView
+from user_management.forms.forgot_password_forms import CustomPasswordResetForm
+from user_management.views import (
+    guest_logout,
+    login_views,
+    profile_update_views,
+    signup_views,
+    forgot_password_views,
+)
 
 app_name = 'user_management'
 
