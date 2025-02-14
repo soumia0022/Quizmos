@@ -17,7 +17,7 @@
     {% go_back_button %}
     <h2>Edit Question {{ question.id }}</h2>
 
-    <form id="question-form" method="POST">
+    <form method="POST">
         {% csrf_token %}
 
         <!-- Display Question Type (Not Editable) -->
