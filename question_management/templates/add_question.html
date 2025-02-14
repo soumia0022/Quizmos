@@ -9,8 +9,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <script src="{% static 'js/question_buttons.js' %}"></script>
     <script src="{% static 'js/question_constraints.js' %}"></script>
-    <script type="module" src="{% static 'js/add_question.js' %}"></script>
-
+{#    <script type="module" src="{% static 'js/add_question.js' %}"></script>#}
+        <script src="{% static 'js/add_question.js' %}"></script>
 </head>
 <body>
     {% return_button %}
@@ -35,7 +35,7 @@
                 <!-- Form to Add Question (hidden initially) -->
                 <div class="card" id="question-form" style="display: none;">
                     <div class="card-body">
-                        <form method="POST" enctype="multipart/form-data">
+                        <form id="form" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <!-- Dropdown for selecting question type -->
                             <div class="mb-3">
