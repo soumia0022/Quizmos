@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-     document.querySelector('form').addEventListener('submit', function (event) {
+     document.getElementById('question-form').addEventListener('submit', function (event) {
         if (questionType === 'multiple_choice'){
             const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
             const answers = document.querySelectorAll('[name="multiple_choice_answers[]"]:checked'); //only the checked ones count as answers
