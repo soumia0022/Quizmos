@@ -225,8 +225,116 @@ class ComputingQuestionProvider(BaseProvider):
             "question": self.random_element(questions)
         }
 
-# fake = Faker()
-# fake.add_provider(ComputingQuestionProvider)
+    def match_question(self):
+        match_questions = [
+            {
+                "prompt": "Match the definitions",
+                "options": ['Network', 'Node', 'Router', 'Packet'],
+                "answers": ['A system of interconnected computers', 'A device that connects devices', 'A device used to forward data between devices', 'A unit of data transmitted over a network']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['RAM', 'CPU', 'Motherboard', 'Hard Drive'],
+                "answers": ['Temporary data storage', 'Central processing unit', 'Main circuit board of a computer', 'Permanent data storage']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['DNS', 'IP Address', 'URL', 'HTTPS'],
+                "answers": ['System to translate domain names into IP addresses', 'Unique identifier for a device on the network', 'Uniform Resource Locator, address of a web page', 'Secure version of HTTP']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Algorithm', 'Binary', 'Compiler', 'Encryption'],
+                "answers": ['Step-by-step procedure to solve a problem', 'Number system with base 2', 'Converts source code into machine code', 'Process of securing data using a code']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Cloud Computing', 'Firewall', 'VPN', 'Malware'],
+                "answers": ['Computing services provided over the internet', 'Network security system that monitors and controls incoming and outgoing traffic', 'Virtual private network that ensures private internet browsing', 'Software designed to harm or exploit computer systems']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Frontend', 'Backend', 'API', 'Database'],
+                "answers": ['User-facing part of an application', 'Server-side processing and logic of an application', 'Interface for interaction between software applications', 'Collection of organized data for easy access, management, and updating']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Operating System', 'JavaScript', 'CSS', 'HTML'],
+                "answers": ['Software that manages hardware and software resources', 'Scripting language for web development', 'Language for styling web pages', 'Markup language used to structure web pages']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Big Data', 'Machine Learning', 'Data Mining', 'AI'],
+                "answers": ['Handling and analyzing large datasets', 'Subset of AI focused on learning from data', 'The process of discovering patterns in large datasets', 'Simulating human intelligence in machines']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Data Structure', 'Stack', 'Queue', 'Linked List'],
+                "answers": ['A way to organize and store data for efficient access', 'A collection of elements with Last In First Out order', 'A collection of elements with First In First Out order', 'A linear data structure where elements are connected using pointers']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['IP Address', 'Packet Switching', 'Router', 'Bandwidth'],
+                "answers": ['Unique identifier for a device on a network', 'Method of data transmission in which data is broken into small packets', 'A device that routes data between networks', 'The amount of data transferred over a network in a given time']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['HTTPS', 'URL', 'Web Browser', 'Web Server'],
+                "answers": ['Secure version of HTTP for safe communication', 'Address used to access a resource on the web', 'Software application to browse the web', 'Software that hosts websites and services on the internet']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['JSON', 'SQL', 'XML', 'NoSQL'],
+                "answers": ['A lightweight data interchange format', 'Structured Query Language for managing relational databases', 'Markup language for representing structured data', 'A non-relational database type for handling unstructured data']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Data Mining', 'IoT', 'Cloud Storage', 'Blockchain'],
+                "answers": ['Process of analyzing large datasets to uncover hidden patterns', 'Interconnected network of devices exchanging data', 'Remote data storage accessible over the internet', 'A decentralized ledger for securely recording transactions']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Version Control', 'Compiler', 'Interpreter', 'Debugger'],
+                "answers": ['Software that manages changes to source code over time', 'Software that translates source code into machine code', 'Software that executes code line by line', 'Software used to identify and fix errors in code']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Algorithm', 'Protocol', 'Cryptography', 'Firewall'],
+                "answers": ['A set of rules for solving a problem or performing a task', 'A set of rules for communication between systems', 'The process of encoding information for secure transmission', 'A system for preventing unauthorized access to or from a network']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Cloud Computing', 'DNS', 'Firewall', 'Router'],
+                "answers": ['Delivery of computing services over the internet', 'System that translates domain names into IP addresses', 'Security system that monitors and controls incoming and outgoing network traffic', 'Device used to forward data between devices on a network']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['HTML', 'CSS', 'JavaScript', 'PHP'],
+                "answers": ['Markup language used to structure web pages', 'Style sheet language used to define the layout of web pages', 'Programming language for creating interactive web elements', 'Server-side scripting language used for web development']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Software', 'Hardware', 'Firmware', 'Middleware'],
+                "answers": ['Programs and applications that run on a computer', 'Physical components of a computer system', 'Specialized software embedded in hardware', 'Software that connects different applications and systems']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Artificial Intelligence', 'Neural Networks', 'Deep Learning', 'Machine Learning'],
+                "answers": ['Field of computer science focused on creating intelligent machines', 'Systems that simulate the human brain’s interconnected neurons', 'Subset of machine learning with multiple layers of abstraction', 'A type of machine learning where systems improve through data']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['JavaScript', 'Python', 'Ruby', 'C++'],
+                "answers": ['A scripting language used for web development', 'A general-purpose programming language known for readability', 'A dynamic programming language used for web applications', 'A high-performance programming language commonly used for game development']
+            },
+            {
+                "prompt": "Match the definitions",
+                "options": ['Cache', 'Cookies', 'Server', 'Client'],
+                "answers": ['Temporary storage used for quick data retrieval', 'Small pieces of data stored in a user’s browser', 'A system that provides resources or services to other computers', 'A device or software that requests resources from a server']
+            }
+        ]
+
+        return self.random_element(match_questions)
 
 
 class Command(BaseCommand):
