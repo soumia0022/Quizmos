@@ -104,6 +104,89 @@ class ComputingQuestionProvider(BaseProvider):
             "correct_answers": correct_answers
         }
 
+    def text_question(self):
+        questions = [
+            ("What does CPU stand for?", "Central Processing Unit"),
+            ("Who developed Python?", "Guido van Rossum"),
+            ("What is the primary function of an operating system?", "Manage hardware and software"),
+            ("What does RAM stand for?", "Random Access Memory"),
+            ("What is the full form of HTML?", "HyperText Markup Language"),
+            ("Which programming language is mainly used for web development?", "JavaScript"),
+            ("What does SQL stand for?", "Structured Query Language"),
+            ("Which company developed the Windows operating system?", "Microsoft"),
+            ("What is the purpose of a compiler?", "Convert high-level code to machine code"),
+            ("What does HTTP stand for?", "HyperText Transfer Protocol"),
+            ("Which data structure follows FIFO (First In, First Out)?", "Queue"),
+            ("What is the function of an IP address?", "Identifying devices on a network"),
+            ("Which company developed macOS?", "Apple"),
+            ("What is the full form of GUI?", "Graphical User Interface"),
+            ("Which protocol is used to send emails?", "SMTP"),
+            ("What is the name of the person who created Linux?", "Linus Torvalds"),
+            ("Which language is primarily used for Android app development?", "Java"),
+            ("What does CSS stand for?", "Cascading Style Sheets"),
+            ("What does DNS stand for?", "Domain Name System"),
+            ("Which cloud storage service is offered by Google?", "Google Drive"),
+            ("What does VPN stand for?", "Virtual Private Network"),
+            ("What does USB stand for?", "Universal Serial Bus"),
+            ("Which network topology uses a central hub?", "Star"),
+            ("What key is commonly used to refresh a webpage?", "F5"),
+            ("Which open-source operating system is widely used?", "Linux"),
+            ("What is the purpose of an SSD?", "Store data"),
+            ("Which software is used for version control?", "Git"),
+            ("What does IoT stand for?", "Internet of Things"),
+            ("Which programming language is mainly used for iOS app development?", "Swift"),
+            ("Which protocol is used for secure web browsing?", "HTTPS"),
+            ("What is the purpose of a firewall?", "Block unauthorized access"),
+            ("What does ASCII stand for?", "American Standard Code for Information Interchange"),
+            ("What programming paradigm is based on objects and classes?", "Object-Oriented Programming"),
+            ("Which programming language is widely used in AI development?", "Python"),
+            ("What is the full form of API?", "Application Programming Interface"),
+            ("Which tool is used for writing and running Python code?", "Interpreter"),
+            ("Which cybersecurity attack involves tricking people into revealing sensitive information?", "Phishing"),
+            ("What is the term for software that manages databases?", "Database Management System"),
+            ("What does LAN stand for?", "Local Area Network"),
+            ("What is the default file extension for Python scripts?", ".py"),
+            ("What is the name of the most widely used version control system?", "Git"),
+            ("What is the primary function of a router?", "Direct network traffic"),
+            ("What does ROM stand for?", "Read-Only Memory"),
+            ("Which symbol is used to denote a comment in Python?", "#"),
+            ("Which database type does MongoDB belong to?", "NoSQL"),
+            ("Which programming language is used for machine learning and data science?", "Python"),
+            ("Which cybersecurity method encrypts data for secure transmission?", "Cryptography"),
+            ("What is the name of the main circuit board in a computer?", "Motherboard"),
+            ("What does IP stand for?", "Internet Protocol"),
+            ("Which unit is used to measure a computer's processing speed?", "Hertz"),
+            ("What does URL stand for?", "Uniform Resource Locator"),
+            ("What does FTP stand for?", "File Transfer Protocol"),
+            ("Which search algorithm is used to find the shortest path in a graph?", "Dijkstra's Algorithm"),
+            ("Which programming language was originally developed for system programming?", "C"),
+            ("What does BIOS stand for?", "Basic Input Output System"),
+            ("Which process converts source code into machine code?", "Compilation"),
+            ("Which protocol is used for remote access to computers?", "SSH"),
+            ("What does JSON stand for?", "JavaScript Object Notation"),
+            ("Which machine learning library is developed by Google?", "TensorFlow"),
+            ("What is the purpose of a cache in computing?", "Store frequently accessed data for faster retrieval"),
+            ("Which Linux command is used to list files in a directory?", "ls"),
+            ("What does RAID stand for?", "Redundant Array of Independent Disks"),
+            ("What is the main purpose of a hash function in cryptography?", "Generate a unique fixed-length output for input data"),
+            ("Which HTTP method is used to submit data to a server?", "POST"),
+            ("What does CLI stand for?", "Command Line Interface"),
+            ("What is the term for unwanted email messages?", "Spam"),
+            ("Which programming language is most commonly used for game development?", "C++"),
+            ("What does the term 'Big Data' refer to?", "Large and complex data sets that require advanced processing techniques"),
+            ("Which component is responsible for executing instructions in a computer?", "Processor"),
+            ("Which AI technique involves training computers to recognize patterns?", "Machine Learning"),
+            ("What is the primary function of a web server?", "Serve web pages"),
+            ("Which programming language is often used for statistical computing?", "R"),
+            ("What is the default port number for HTTP?", "80"),
+        ]
+
+        question, answer = random.choice(questions)  # Select a random question
+        return {
+            "question": question,
+            "correct_answer": answer
+        }
+
 # fake = Faker()
 # fake.add_provider(ComputingQuestionProvider)
 
@@ -185,11 +268,12 @@ class Command(BaseCommand):
             })
 
         elif question_type == 'text_fill':
-            question_text = self.faker.sentence()
+            text = self.faker.text_question()
+
             question_data.update({
-                'question_text': question_text,
-                'text_fill_question': question_text,
-                'text_fill_answer': self.faker.word(),
+                'question_text': text['question'],
+                'text_fill_question': text['question'],
+                'text_fill_answer': text['answer'],
             })
 
         elif question_type == 'multiple_choice':
