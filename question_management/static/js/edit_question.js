@@ -58,27 +58,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Dropdown Fill Preview
-    dropdownInput.addEventListener('input', function() {
-        originalText = dropdownInputChanged(originalText, textPreview, dropdownInput);
-    });
+    if (dropdownInput) {
+        // Dropdown Fill Preview
+        dropdownInput.addEventListener('input', function() {
+            originalText = dropdownInputChanged(originalText, textPreview, dropdownInput);
+        });
 
-        // Reset Button Logic (brings back original text - sentence no longer contains a blank)
-    resetButton.addEventListener('click', function() {
-        resetButtonChanged(dropdownInput, textPreview, originalText, dropdownCorrectAnswerField)
-        blankAdded = false;
-    });
+            // Reset Button Logic (brings back original text - sentence no longer contains a blank)
+        resetButton.addEventListener('click', function() {
+            resetButtonChanged(dropdownInput, textPreview, originalText, dropdownCorrectAnswerField)
+            blankAdded = false;
+        });
 
-        // Handle word selection for the blank
-    textPreview.addEventListener('click', function(event) { // Listener for clicks on textPreview element
-        if (event.target.classList.contains('word') && !blankAdded) { // If the element clicked has class word & blank hasn't been added before
-            clickTextPreview(dropdownCorrectAnswerField,dropdownInput,textPreview);
-            blankAdded = true;
-            dropdownQuestionText.value = dropdownInput.value;
-        }
-    });
+            // Handle word selection for the blank
+        textPreview.addEventListener('click', function(event) { // Listener for clicks on textPreview element
+            if (event.target.classList.contains('word') && !blankAdded) { // If the element clicked has class word & blank hasn't been added before
+                clickTextPreview(dropdownCorrectAnswerField,dropdownInput,textPreview);
+                blankAdded = true;
+                dropdownQuestionText.value = dropdownInput.value;
+            }
+        });
+    }
 
-     document.querySelector('form').addEventListener('submit', function (event) {
+    const form = document.querySelectorAll('form')[1];
+    form.addEventListener('submit', function (event) {
         if (questionType === 'multiple_choice'){
             const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
             const answers = document.querySelectorAll('[name="multiple_choice_answers[]"]:checked'); //only the checked ones count as answers
