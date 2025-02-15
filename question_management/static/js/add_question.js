@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // New Code Question fields
     const codeQuestionFields = document.getElementById('code-question-fields');
 
+    console.log("DOM fully loaded");
 
     /*Event Listeners */
     // Show or hide the question form
@@ -132,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Validation checking below
-    const form = document.querySelector('form');
+    const form = document.getElementById("form");
     form.addEventListener('submit', function (event) {
         const questionType = questionTypeDropdown.value;
 
