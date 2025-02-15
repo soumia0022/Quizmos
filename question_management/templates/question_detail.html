@@ -6,7 +6,8 @@
 <div class="container" >
     {% return_button %}
     {% go_back_button %}
-    <h1>{{ question.question_text }}</h1>
+    <h1>Welcome to {{ poll.title }}!</h1>
+    <p>{{ question.question_text }}</p>
     <p>Type: {{ question.get_question_type_display }}</p>
     <p>Timer: {{ question.timer }}</p>
 
