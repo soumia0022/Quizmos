@@ -273,7 +273,7 @@ class Command(BaseCommand):
             question_data.update({
                 'question_text': text['question'],
                 'text_fill_question': text['question'],
-                'text_fill_answer': text['answer'],
+                'text_fill_answer': text['correct_answer'],
             })
 
         elif question_type == 'multiple_choice':
