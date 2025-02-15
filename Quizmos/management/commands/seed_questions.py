@@ -451,14 +451,13 @@ class Command(BaseCommand):
             })
 
         elif question_type == 'match_question':
-            options = self.faker.words(4)
-            answers = self.faker.words(4)
-            question_text = self.faker.sentence()
+            question = self.faker.match_question()
+
             question_data.update({
-                'question_text': question_text,
-                'match_question': question_text,
-                'match_options': options,
-                'match_answers': answers,
+                'question_text': question['prompt'],
+                'match_question': question['prompt'],
+                'match_options': question['options'],
+                'match_answers': question['answers'],
             })
 
         elif question_type == 'code_question':
