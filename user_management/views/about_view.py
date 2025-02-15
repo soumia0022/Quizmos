@@ -6,6 +6,8 @@ class AboutView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context["summary"] = "Quizmos is an interactive platform designed to transform learning and engagement through dynamic polls and quizzes."
+
         context["mission"] = "Our mission is to facilitate the exchange of ideas and thoughts through engaging polls. We aim to make learning content accessible and fun, helping lecturers spark curiosity and encourage participation in the classroom. We believe in making learning an interactive, collaborative, and enjoyable experience. Quizmos empowers educators and learners to create, share, and participate in engaging poll-based learning activities."
         
         context["journey"] =  " ".join ([
