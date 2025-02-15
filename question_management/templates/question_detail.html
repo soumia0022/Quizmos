@@ -8,15 +8,11 @@
     {% go_back_button %}
     <h1>Welcome to {{ poll.title }}!</h1>
     <p>{{ question.question_text }}</p>
-    <p>Type: {{ question.get_question_type_display }}</p>
-    <p>Timer: {{ question.timer }}</p>
 
     <style>
         .option-item {
-            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 8px;
         }
 
         .box {
@@ -41,6 +37,11 @@
             align-items: center;
             justify-content: space-between;
         }
+        .container > *:not(button) { 
+            margin: 0;
+            padding: 0;
+        }
+        
     </style>
 
     <!-- Display options based on question type -->
