@@ -187,6 +187,44 @@ class ComputingQuestionProvider(BaseProvider):
             "correct_answer": answer
         }
 
+    def wordcloud_question(self):
+        questions = [
+            "List popular programming languages.",
+            "What are key components of a computer system?",
+            "Name different types of data structures.",
+            "What are common operating systems?",
+            "List cybersecurity threats.",
+            "Name major cloud computing platforms.",
+            "What are common software development methodologies?",
+            "List different types of network topologies.",
+            "What are key principles of Object-Oriented Programming (OOP)?",
+            "Name common database management systems.",
+            "What are different types of computer memory?",
+            "List famous computer scientists.",
+            "Name common internet protocols.",
+            "What are common Linux commands?",
+            "List different programming paradigms.",
+            "What are examples of artificial intelligence applications?",
+            "Name popular front-end frameworks.",
+            "List different cyber attack techniques.",
+            "What are common HTTP status codes?",
+            "Name essential software testing techniques.",
+            "What are popular backend development frameworks?",
+            "List key algorithms in computer science.",
+            "What are components of an IP address?",
+            "Name types of encryption algorithms.",
+            "What are common network security tools?",
+            "List different types of machine learning algorithms.",
+            "What are key concepts in cloud computing?",
+            "Name different types of programming errors.",
+            "What are examples of embedded systems?",
+            "List various types of computer peripherals."
+        ]
+
+        return {
+            "question": self.random_element(questions)
+        }
+
 # fake = Faker()
 # fake.add_provider(ComputingQuestionProvider)
 
@@ -297,10 +335,11 @@ class Command(BaseCommand):
             })
 
         elif question_type == 'wordcloud':
-            question_text = self.faker.sentence()
+            question = self.faker.wordcloud_question()
+            text = question['question']
             question_data.update({
-                'question_text': question_text,
-                'wordcloud_question': question_text,
+                'question_text': text,
+                'wordcloud_question': text,
             })
 
         elif question_type == 'match_question':
