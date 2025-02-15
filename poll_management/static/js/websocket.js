@@ -12,12 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const data = JSON.parse(event.data);
 
         if (data.type === 'new_student') {
-            const studentsList = document.getElementById('students-list');
-            const newStudent = document.createElement('li');
-            newStudent.textContent = data.message;
-            newStudent.className = 'list-group-item';
-
-            studentsList.appendChild(newStudent);
+            const studentCount = document.getElementById('students-number');
+            studentCount.textContent= data.message;
         }
     };
 

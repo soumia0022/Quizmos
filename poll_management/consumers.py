@@ -7,7 +7,6 @@ from response_management.models.response_model import (
 )
 from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
-import sys
 #await: is like the waiter saying "I need to wait for the kitchen to finish this order, but I'll serve other tables while waiting"
 #async: is like a waiter saying "I'm going to be serving multiple tables"
 class PollConsumer(AsyncWebsocketConsumer):
@@ -42,19 +41,25 @@ class PollConsumer(AsyncWebsocketConsumer):
         # Send message when a student connects
         if self.scope["user"].role == 'Student':
             self.students_joined[self.poll_code] += 1
-            sys.stderr.write(f"{self.students_joined[self.poll_code]}")
             await self.channel_layer.group_send(
                 self.poll_group_name,
                 {
                     'type': 'new_student',
-                    'message': f'A student joined the poll: {self.scope["user"].username}!'
+                    'message': f'{self.students_joined[self.poll_code]}'
                 })
 
 
 
     async def disconnect(self, close_code):
         # When a client disconnects, remove them from the poll group
-        self.students_joined[self.poll_code] -= 1
+        if self.scope["user"].role == 'Student':
+            self.students_joined[self.poll_code] -= 1
+            await self.channel_layer.group_send(
+                self.poll_group_name,
+                {
+                    'type': 'new_student',
+                    'message': f'{self.students_joined[self.poll_code]}'
+                })
         await self.channel_layer.group_discard(
             self.poll_group_name,
             self.channel_name
