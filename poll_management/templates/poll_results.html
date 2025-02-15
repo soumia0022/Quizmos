@@ -1,204 +1,210 @@
 {% extends 'base_content.html' %}
 {% block content %}
 <head>
-  <title>{{ poll.title }}</title>
-  <style>
-    .container { display: flex; flex-direction: column; }
-    .row { display: flex; align-items: center; }
-    .left { width: 50%; }
-    .box { border: 1px solid #ccc; padding: 10px; margin: 5px; }
-    .dropzone-box { border: 1px dashed #ccc; padding: 10px; margin: 5px; min-height: 50px; display: flex; align-items: center; width: 50%; }
-    .draggable { cursor: pointer; }
-    .dragging { opacity: 0.5; }
-    .flex-container { display: flex; align-items: center; justify-content: space-between; }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <title>{{ poll.title }}</title>
+    <style>
+        .container { display: flex; flex-direction: column; }
+        .row { display: flex; align-items: center; }
+        .left { width: 50%; }
+        .box { border: 1px solid #ccc; padding: 10px; margin: 5px; }
+        .dropzone-box { border: 1px dashed #ccc; padding: 10px; margin: 5px; min-height: 50px; display: flex; align-items: center; width: 50%; }
+        .draggable { cursor: pointer; }
+        .dragging { opacity: 0.5; }
+        .flex-container { display: flex; align-items: center; justify-content: space-between; }
+        .feedback { display: none; margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <h1>Welcome to {{ poll.title }}!</h1>
-        <div id="question">Waiting for a question...</div>
-        <input type="text" id="answer" name= "text_fill_response" placeholder="Your answer" />
-        <div id="question_options">Waiting for options...</div>
-        <form method="POST">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <input type="hidden" name="match_responses" id="match_responses">
-          <button type="submit">Submit</button>
-        </form>
-      </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Welcome to {{ poll.title }}!</h1>
+                <div id="question">Waiting for a question...</div>
+                <input type="text" id="answer" style="display: none;" placeholder="Your answer" />
+                <div id="question_options">Waiting for options...</div>
+                <div id="feedback" class="feedback"></div>
+                <button id="submitResponse" style="display: none;">Submit Response</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    function initializeSortable() {
-      const rightContainer = document.getElementById('right');
-
-      if (rightContainer) {
-        new Sortable(rightContainer, {
-          group: "shared",
-          animation: 150
-        });
-      }
-
-      const dropzones = document.querySelectorAll('.dropzone');
-      dropzones.forEach(dropzone => {
-        if (dropzone) {
-          new Sortable(dropzone, {
-            group: "shared",
-            animation: 150,
-            onAdd: function(evt) {
-              if (dropzone.children.length > 1) {
-                const oldItem = dropzone.children[0];
-                rightContainer.appendChild(oldItem);
-              }
+    <script>
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
-          });
+            return array;
         }
-      });
-    }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const pollCode = "{{ poll.number_code }}";
-      const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
+        function initializeSortable() {
+            const rightContainer = document.getElementById('right');
+            if (rightContainer) {
+                new Sortable(rightContainer, {
+                    group: "shared",
+                    animation: 150
+                });
+            }
 
-      ws.onmessage = function(event) {
-        const data = JSON.parse(event.data);
-
-        document.getElementById('answer').style.display = 'none';
-
-        if (data.type === 'question') {
-          document.getElementById('question').innerText = data.question.text;
-
-          if (data.question.type === 'multiple_choice') {
-            let options = "";
-            data.question.mcq_options.forEach(option => {
-              options += `<input type="checkbox" name="multiple_choice_answers[]" value="${option}"><label>${option}</label><br>`;
+            const dropzones = document.querySelectorAll('.dropzone');
+            dropzones.forEach(dropzone => {
+                if (dropzone) {
+                    new Sortable(dropzone, {
+                        group: "shared",
+                        animation: 150,
+                        onAdd: function(evt) {
+                            if (dropzone.children.length > 1) {
+                                const oldItem = dropzone.children[0];
+                                rightContainer.appendChild(oldItem);
+                            }
+                        }
+                    });
+                }
             });
-            document.getElementById('question_options').innerHTML = options;
-
-          } else if (data.question.type === 'single_choice') {
-            let options = "";
-            data.question.single_option.forEach(option => {
-              options += `<input type="radio" name="single_choice_answer" value="${option}"><label>${option}</label><br>`;
-            });
-            document.getElementById('question_options').innerHTML = options;
-          } else if (data.question.type === 'dropdown_fill') {
-            let options = '<select name="dropdown_answer"><option value="" disabled selected>Select an option</option>';
-            data.question.dropdown_options.forEach(option => {
-              options += `<option value="${option}">${option}</option>`;
-            });
-            options += '</select>';
-            document.getElementById('question_options').innerHTML = options;
-          } else if (data.question.type === 'text_fill') {
-            document.getElementById('question_options').innerHTML = '';
-            document.getElementById('answer').style.display = 'block'; 
-          } else if (data.question.type === 'match_question') {
-            let leftOptions = "";
-            let rightOptions = "";
-
-            data.question.match_options.forEach((option) => {
-                leftOptions += `
-                    <div class="flex-container">
-                        <div class="box left">${option}</div>
-                        <div class="dropzone-box dropzone right"></div>
-                    </div>`;
-            });
-
-            const shuffledAnswers = shuffleArray(data.question.match_answers);
-
-            shuffledAnswers.forEach(answer => {
-                rightOptions += `<div class="box draggable" draggable="true">${answer}</div>`;
-            });
-
-            document.getElementById('question_options').innerHTML = `
-                <div id="options-container" class="flex-container">
-                  <div id="left" class="left">${leftOptions}</div>
-                </div>
-                <div class="row">
-                  <div id="right" class="right">${rightOptions}</div>
-                </div>`;
-
-            initializeSortable();
-          }
         }
-      };
 
-      const form = document.querySelector('form');
-      form.addEventListener('submit', function(event) {
-        const matchResponses = [];
+        function showFeedback(message, isSuccess) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback ${isSuccess ? 'success' : 'error'}`;
+            feedback.style.display = 'block';
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 3000);
+        }
 
-        const dropzones = document.querySelectorAll('.dropzone');
-        dropzones.forEach((dropzone) => {
-          const leftOption = dropzone.parentElement.querySelector('.left .box');
-          const rightOption = dropzone.querySelector('.box');
-          if (leftOption && rightOption) {
-            matchResponses.push({
-              left: leftOption.textContent.trim(),
-              right: rightOption.textContent.trim()
+        let currentQuestionId = null;
+        let currentQuestionType = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const pollCode = "{{ poll.number_code }}";
+            const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
+            const submitButton = document.getElementById('submitResponse');
+
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+
+                if (data.type === 'question') {
+                    currentQuestionId = data.question.id;
+                    currentQuestionType = data.question.type;
+                    document.getElementById('question').innerText = data.question.text;
+                    submitButton.style.display = 'block';
+
+                    if (data.question.type === 'multiple_choice') {
+                        let options = "";
+                        data.question.mcq_options.forEach(option => {
+                            options += `<div><input type="checkbox" value="${option}"><label>${option}</label></div>`;
+                        });
+                        document.getElementById('question_options').innerHTML = options;
+                        document.getElementById('answer').style.display = 'none';
+
+                    } else if (data.question.type === 'single_choice') {
+                        let options = "";
+                        data.question.single_option.forEach(option => {
+                            options += `<div><input type="radio" name="single_choice" value="${option}"><label>${option}</label></div>`;
+                        });
+                        document.getElementById('question_options').innerHTML = options;
+                        document.getElementById('answer').style.display = 'none';
+
+                    } else if (data.question.type === 'dropdown_fill') {
+                        let options = '<select><option value="" disabled selected>Select an option</option>';
+                        data.question.dropdown_options.forEach(option => {
+                            options += `<option value="${option}">${option}</option>`;
+                        });
+                        options += '</select>';
+                        document.getElementById('question_options').innerHTML = options;
+                        document.getElementById('answer').style.display = 'none';
+
+                    } else if (data.question.type === 'text_fill') {
+                        document.getElementById('question_options').innerHTML = '';
+                        document.getElementById('answer').style.display = 'block';
+
+                    } else if (data.question.type === 'match_question') {
+                        let leftOptions = "";
+                        let rightOptions = "";
+
+                        data.question.match_options.forEach((option) => {
+                            leftOptions += `
+                                <div class="flex-container">
+                                    <div class="box left">${option}</div>
+                                    <div class="dropzone-box dropzone right"></div>
+                                </div>`;
+                        });
+
+                        const shuffledAnswers = shuffleArray(data.question.match_answers);
+                        shuffledAnswers.forEach(answer => {
+                            rightOptions += `<div class="box draggable" draggable="true">${answer}</div>`;
+                        });
+
+                        document.getElementById('question_options').innerHTML = `
+                            <div id="options-container" class="flex-container">
+                                <div id="left" class="left">${leftOptions}</div>
+                            </div>
+                            <div class="row">
+                                <div id="right" class="right">${rightOptions}</div>
+                            </div>`;
+
+                        document.getElementById('answer').style.display = 'none';
+                        initializeSortable();
+                    }
+                } else if (data.type === 'response_status') {
+                    showFeedback(
+                        data.success ? 'Response submitted successfully!' : 'Failed to submit response',
+                        data.success
+                    );
+                }
+            };
+
+            submitButton.addEventListener('click', function() {
+                let responseData = null;
+
+                switch (currentQuestionType) {
+                    case 'multiple_choice':
+                        responseData = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                            .map(cb => cb.value);
+                        break;
+
+                    case 'single_choice':
+                        const selectedRadio = document.querySelector('input[name="single_choice"]:checked');
+                        responseData = selectedRadio ? selectedRadio.value : null;
+                        break;
+
+                    case 'dropdown_fill':
+                        const selectedOption = document.querySelector('select').value;
+                        responseData = selectedOption || null;
+                        break;
+
+                    case 'text_fill':
+                        responseData = document.getElementById('answer').value;
+                        break;
+
+                    case 'match_question':
+                        responseData = Array.from(document.querySelectorAll('.dropzone')).map(dropzone => {
+                            const leftOption = dropzone.parentElement.querySelector('.left .box');
+                            const rightOption = dropzone.querySelector('.box');
+                            return {
+                                left: leftOption ? leftOption.textContent.trim() : null,
+                                right: rightOption ? rightOption.textContent.trim() : null
+                            };
+                        }).filter(match => match.left && match.right);
+                        break;
+                }
+
+                if (responseData) {
+                    ws.send(JSON.stringify({
+                        type: 'response',
+                        question_id: currentQuestionId,
+                        response_type: currentQuestionType,
+                        response_data: responseData
+                    }));
+                } else {
+                    showFeedback('Please provide a response', false);
+                }
             });
-          }
         });
-
-        const matchResponsesInput = document.getElementById('match_responses');
-        if (matchResponsesInput) {
-          matchResponsesInput.value = JSON.stringify(matchResponses);
-        }
-   
-        const multipleChoiceResponses = [];
-        const checkboxes = document.querySelectorAll('input[name="multiple_choice_answers[]"]:checked');
-        checkboxes.forEach((checkbox) => {
-          multipleChoiceResponses.push(checkbox.value);
-        });
-
-       
-        const multipleChoiceInput = document.createElement('input');
-        multipleChoiceInput.type = 'hidden';
-        multipleChoiceInput.name = 'multiple_choice_responses';
-        multipleChoiceInput.value = JSON.stringify(multipleChoiceResponses);
-        form.appendChild(multipleChoiceInput);
-
-     
-        const singleChoiceResponse = document.querySelector('input[name="single_choice_answer"]:checked');
-        const singleChoiceInput = document.createElement('input');
-        singleChoiceInput.type = 'hidden';
-        singleChoiceInput.name = 'single_choice_response';
-        if (singleChoiceResponse) {
-          singleChoiceInput.value = singleChoiceResponse.value;
-        }
-        form.appendChild(singleChoiceInput);
-
-        const dropdownFillResponse = document.querySelector('select[name="dropdown_answer"]');
-        const dropdownFillInput = document.createElement('input');
-        dropdownFillInput.type = 'hidden';
-        dropdownFillInput.name = 'dropdown_response';
-        if (dropdownFillResponse && dropdownFillResponse.value) {
-          dropdownFillInput.value = dropdownFillResponse.value;
-        }
-        form.appendChild(dropdownFillInput);
-
-        const textFillResponse = document.querySelector('input[name="text_fill_response"]');
-        const textFillInput = document.createElement('input');
-        textFillInput.type = 'hidden';
-        textFillInput.name = 'text_fill_response';
-        if (textFillResponse) {
-          textFillInput.value = textFillResponse.value;
-        }
-        form.appendChild(textFillInput);
-
-
-      });
-    });
-  </script>
+    </script>
 </body>
 {% endblock %}
