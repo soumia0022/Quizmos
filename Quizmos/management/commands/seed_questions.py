@@ -49,12 +49,59 @@ class ComputingQuestionProvider(BaseProvider):
         ]
 
         question, options, answer = self.random_element(questions)
-        self.random.shuffle(options)  # Shuffle the answer choices
+        random.shuffle(options)  # Shuffle the answer choices
 
         return {
             "question": question,
             "options": options,
             "correct_answer": answer
+        }
+
+    def mcq_question(self):
+        questions = [
+            ("What does CPU stand for?", ["Central Processing Unit", "Computer Personal Unit", "Central Process Utility", "Control Processing Unit"], ["Central Processing Unit"]),
+            ("Which programming language is known for web development?", ["JavaScript", "C++", "Swift", "COBOL"], ["JavaScript"]),
+            ("What is the main function of an operating system?", ["Manage hardware and software", "Browse the internet", "Run antivirus scans", "Edit documents"], ["Manage hardware and software"]),
+            ("Which data structure uses FIFO (First In, First Out)?", ["Queue", "Stack", "Graph", "Tree"], ["Queue"]),
+            ("Who developed Python?", ["Guido van Rossum", "Microsoft", "Google", "IBM"], ["Guido van Rossum"]),
+            ("Which of these are interpreted languages?", ["Python", "C", "JavaScript", "C++"], ["Python", "JavaScript"]),
+            ("What does RAM stand for?", ["Random Access Memory", "Read And Modify", "Rapid Application Manager", "Remote Access Module"], ["Random Access Memory"]),
+            ("Which company developed the Windows operating system?", ["Microsoft", "Apple", "IBM", "Google"], ["Microsoft"]),
+            ("Which of the following are database management systems?", ["MySQL", "Photoshop", "PostgreSQL", "Google Chrome"], ["MySQL", "PostgreSQL"]),
+            ("What does HTML stand for?", ["HyperText Markup Language", "High-Level Text Management Language", "Hyper Transfer Markup Language", "Home Tool Markup Language"], ["HyperText Markup Language"]),
+            ("Which programming languages are primarily used for Android app development?", ["Java", "Swift", "Kotlin", "Python"], ["Java", "Kotlin"]),
+            ("What is an IP address used for?", ["Identifying devices on a network", "Storing files", "Processing graphics", "Running scripts"], ["Identifying devices on a network"]),
+            ("Which company developed the Mac OS?", ["Apple", "Microsoft", "Linux Foundation", "IBM"], ["Apple"]),
+            ("What is the purpose of a compiler?", ["Convert high-level code to machine code", "Execute programs", "Store data", "Debug applications"], ["Convert high-level code to machine code"]),
+            ("Which data structures use LIFO (Last In, First Out)?", ["Stack", "Queue", "Graph", "Linked List"], ["Stack"]),
+            ("What does HTTP stand for?", ["HyperText Transfer Protocol", "Hyperlink Text Processing", "High-Tech Transfer Protocol", "Hyperlink Transfer Process"], ["HyperText Transfer Protocol"]),
+            ("Which of these are open-source operating systems?", ["Linux", "Windows", "MacOS", "Ubuntu"], ["Linux", "Ubuntu"]),
+            ("Which programming paradigms are based on objects and classes?", ["Object-Oriented Programming", "Functional Programming", "Procedural Programming", "Logic Programming"], ["Object-Oriented Programming"]),
+            ("Which of these are cybersecurity threats?", ["Phishing", "Compiling", "Malware", "SQL Injection"], ["Phishing", "Malware", "SQL Injection"]),
+            ("Which of the following are markup languages?", ["HTML", "CSS", "Markdown", "Python"], ["HTML", "Markdown"]),
+            ("Which network topologies are commonly used?", ["Star", "Bus", "Tree", "Pyramid"], ["Star", "Bus", "Tree"]),
+            ("Which of the following are types of databases?", ["Relational", "NoSQL", "Hierarchical", "Blockchain"], ["Relational", "NoSQL", "Hierarchical"]),
+            ("Which of these are cloud computing platforms?", ["AWS", "Google Cloud", "Photoshop", "Microsoft Azure"], ["AWS", "Google Cloud", "Microsoft Azure"]),
+            ("Which programming languages are commonly used for AI development?", ["Python", "R", "Java", "HTML"], ["Python", "R", "Java"]),
+            ("Which of these are valid IP address versions?", ["IPv4", "IPv6", "IPv8", "IPv2"], ["IPv4", "IPv6"]),
+            ("What are common encryption algorithms?", ["AES", "RSA", "SHA-256", "PNG"], ["AES", "RSA", "SHA-256"]),
+            ("Which of these are cybersecurity software?", ["Antivirus", "Firewall", "VPN", "Excel"], ["Antivirus", "Firewall", "VPN"]),
+            ("Which of the following are front-end frameworks?", ["React", "Angular", "Django", "Vue"], ["React", "Angular", "Vue"]),
+            ("Which of these are examples of version control systems?", ["Git", "SVN", "Mercurial", "FTP"], ["Git", "SVN", "Mercurial"]),
+            ("What does CSS stand for?", ["Cascading Style Sheets", "Creative Styling System", "Computer Styling Script", "Coded Style Sheets"], ["Cascading Style Sheets"]),
+            ("Which of these are Linux distributions?", ["Ubuntu", "Fedora", "Windows", "Debian"], ["Ubuntu", "Fedora", "Debian"]),
+            ("Which of these are web browsers?", ["Chrome", "Firefox", "Edge", "Linux"], ["Chrome", "Firefox", "Edge"]),
+            ("Which of the following are text editors?", ["VS Code", "Notepad++", "Photoshop", "Atom"], ["VS Code", "Notepad++", "Atom"]),
+            ("Which of these are commonly used file compression formats?", ["ZIP", "RAR", "GZ", "TXT"], ["ZIP", "RAR", "GZ"])
+        ]
+
+        question, options, correct_answers = random.choice(questions)  # Randomly pick a question
+        random.shuffle(options)  # Shuffle the answer choices
+
+        return {
+            "question": question,
+            "options": options,
+            "correct_answers": correct_answers
         }
 
 fake = Faker()
