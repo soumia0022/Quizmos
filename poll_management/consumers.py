@@ -7,10 +7,12 @@ from response_management.models.response_model import (
 )
 from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
+import sys
 #await: is like the waiter saying "I need to wait for the kitchen to finish this order, but I'll serve other tables while waiting"
 #async: is like a waiter saying "I'm going to be serving multiple tables"
 class PollConsumer(AsyncWebsocketConsumer):
     # This consumer handles WebSocket connections for a polling system
+    students_joined = {}
     async def connect(self):
         try:
             #extract the poll_code from the URL route
@@ -22,6 +24,9 @@ class PollConsumer(AsyncWebsocketConsumer):
             print(f"Error extracting poll code: {e}")
 
         self.poll = await self.get_poll(self.poll_code)
+
+        if self.poll_code not in self.students_joined:
+            self.students_joined[self.poll_code] = 0
         if not self.poll:
             await self.close()
             return
@@ -36,10 +41,12 @@ class PollConsumer(AsyncWebsocketConsumer):
 
         # Send message when a student connects
         if self.scope["user"].role == 'Student':
+            self.students_joined[self.poll_code] += 1
+            sys.stderr.write(f"{self.students_joined[self.poll_code]}")
             await self.channel_layer.group_send(
                 self.poll_group_name,
                 {
-                    'type': 'poll_message',
+                    'type': 'new_student',
                     'message': f'A student joined the poll: {self.scope["user"].username}!'
                 })
 
@@ -47,6 +54,7 @@ class PollConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # When a client disconnects, remove them from the poll group
+        self.students_joined[self.poll_code] -= 1
         await self.channel_layer.group_discard(
             self.poll_group_name,
             self.channel_name
@@ -60,11 +68,11 @@ class PollConsumer(AsyncWebsocketConsumer):
         message_content = text_data_json.get('message')
         question_id = text_data_json.get('question_id')
 
-        if message_type == 'message':
-            # If it's a regular message, broadcast it to everyone in the poll group
+        if message_type == 'new_student':
+
             await self.channel_layer.group_send(
                 self.poll_group_name,
-                {"type": "poll_message", "message": message_content}
+                {"type": "new_student", "message": message_content}
             )
         elif message_type == 'question':
             # If it's a question, fetch it from the database and broadcast it
@@ -98,15 +106,23 @@ class PollConsumer(AsyncWebsocketConsumer):
                     }
                 )
 
-    async def poll_message(self, event):
+    async def new_student(self, event):
         # Handler for sending regular messages back to the WebSocket
         message = event['message']
 
+
+
         await self.send(text_data=json.dumps({
-            'type': 'message',
+            'type': 'new_student',
             'message': message
         }))
 
+    async def poll_message(self, event):
+        # Handles broadcasting messages to WebSocket
+        await self.send(text_data=json.dumps({
+            'type': event['type'],
+            'message': event['message']
+        }))
     async def poll_question(self, event):
         # Handler for sending questions back to the WebSocket
         question = event['question']
