@@ -104,8 +104,8 @@ class ComputingQuestionProvider(BaseProvider):
             "correct_answers": correct_answers
         }
 
-fake = Faker()
-fake.add_provider(ComputingQuestionProvider)
+# fake = Faker()
+# fake.add_provider(ComputingQuestionProvider)
 
 
 class Command(BaseCommand):
@@ -193,13 +193,13 @@ class Command(BaseCommand):
             })
 
         elif question_type == 'multiple_choice':
-            options = self.faker.words(4)
-            question_text = self.faker.sentence()
+            mcq = self.faker.mcq_question()
+
             question_data.update({
-                'question_text': question_text,
-                'multiple_choice_question': question_text,
-                'multiple_choice_options': options,
-                'multiple_choice_answers': random.sample(options, k=random.randint(1, 2)),
+                'question_text': mcq['question'],
+                'multiple_choice_question': mcq['question'],
+                'multiple_choice_options': mcq['options'],
+                'multiple_choice_answers': mcq['correct_answers'],
             })
 
         elif question_type == 'single_choice':
