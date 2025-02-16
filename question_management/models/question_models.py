@@ -64,9 +64,10 @@ class Question(models.Model):
         if not self.dropdown_options:
             options = []
         else:
-            options = [opt.strip() for opt in self.dropdown_options.split(',')]
-        if self.dropdown_correct_answer not in options:
-            options.append(self.dropdown_correct_answer)
+            options = [opt.strip() for opt in self.dropdown_options.split(',') if opt.strip()]
+            
+        if self.dropdown_correct_answer and self.dropdown_correct_answer not in options:
+            options.append(self.dropdown_correct_answer)        
         return options
 
 # When refactoring models, use the below code:
