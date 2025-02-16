@@ -1,5 +1,7 @@
 {% extends 'base_content.html' %}
+{% load system_extras %}
 {% block content %}
+    {% noscript_warning %}
 <head>
   <title>{{ poll.title }}</title>
   <style>
