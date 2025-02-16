@@ -16,3 +16,8 @@ def return_button():
 @register.inclusion_tag('go_back_button.html')
 def go_back_button():
     return {}
+
+# For the JavaScript restriction warning
+@register.inclusion_tag('noscript_warning.html')
+def noscript_warning():
+    return {}
