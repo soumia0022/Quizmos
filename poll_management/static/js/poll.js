@@ -1,3 +1,28 @@
+import {ws} from './websocket.js';
+import {renderMultipleChoice} from "./multiple_choice_display.js";
+
+
+window.startPoll = function() {
+    document.getElementById('start-poll-btn').style.display = 'none';
+    document.getElementById('question-display').style.display = 'block';
+    document.getElementById('unlock').style.display = '';
+    updateQuestionDisplay();
+};
+
+window.previousQuestion = function() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        updateQuestionDisplay();
+    }
+};
+
+window.nextQuestion = function() {
+    if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        updateQuestionDisplay();
+    }
+};
+
 function shuffleArray(array) {
     return array.sort(() => Math.random() - 0.5);
   }
@@ -68,14 +93,7 @@ function createQuestionHTML(question) {
       break;
 
     case 'multiple_choice':
-      html += `<p>${question.text}</p>
-               <div class="options-container">
-                 ${question.options.map(option => `
-                   <div class="card" style = "margin-bottom: 10px; padding: 5px;">
-                     <label >${option}</label>
-                   </div>
-                 `).join('')}
-               </div>`;
+      html += renderMultipleChoice(question);
       break;
 
     case 'single_choice':
@@ -127,8 +145,7 @@ break;
   html += '</div>';
   return html;
 }
-
-  function updateQuestionDisplay() {
+function updateQuestionDisplay() {
     const questionContainer = document.getElementById('question-container');
     const currentQuestion = questions[currentQuestionIndex];
 
@@ -150,25 +167,4 @@ break;
     }
   }
 
-  function previousQuestion() {
-    if (currentQuestionIndex > 0) {
-      currentQuestionIndex--;
-      updateQuestionDisplay();
-    }
-  }
-
-  function nextQuestion() {
-    if (currentQuestionIndex < questions.length - 1) {
-      currentQuestionIndex++;
-      updateQuestionDisplay();
-    }
-  }
-
-  function startPoll() {
-    document.getElementById('start-poll-btn').style.display = 'none';
-    document.getElementById('question-display').style.display = 'block';
-    document.getElementById('unlock').style.display = '';
-
-    updateQuestionDisplay();
-  }
 
