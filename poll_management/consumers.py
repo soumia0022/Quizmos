@@ -99,7 +99,7 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'type': 'response_status',
                 'success': success
             }))
-            # Broadcast the response to all connected clients if needed
+            # Broadcast the response
             if success:
                 await self.channel_layer.group_send(
                     self.poll_group_name,
@@ -114,9 +114,6 @@ class PollConsumer(AsyncWebsocketConsumer):
     async def new_student(self, event):
         # Handler for sending regular messages back to the WebSocket
         message = event['message']
-
-
-
         await self.send(text_data=json.dumps({
             'type': 'new_student',
             'message': message
