@@ -5,6 +5,7 @@
     <title>{{ question.question_text }}</title>
 </head>
 <body>
+    {% noscript_warning %}
     {% return_button %}
     {% go_back_button %}
     <h1>{{ question.question_text }}</h1>
