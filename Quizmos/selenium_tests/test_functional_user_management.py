@@ -31,7 +31,7 @@ class TestFunctionalRegistration(BaseSeleniumTest):
 
         # Get and fill out form fields
         fields = self.get_user_form_fields()
-        self.fill_out_fields(fields)
+        self.populate_sign_up_fields(fields)
 
         # Ensure the page redirects after form submission
         wait(self.driver)
@@ -64,7 +64,7 @@ class TestFunctionalRegistration(BaseSeleniumTest):
         return (username_input, first_name_input, last_name_input, email_input, role_input,
                 password_input, confirm_password_input, submit)
 
-    def fill_out_fields(self, fields: tuple):
+    def populate_sign_up_fields(self, fields: tuple):
         """This method fills in the fields (using select to choose the role from the dropdown), and then
         submits the form."""
         (username_input, first_name_input, last_name_input, email_input,
@@ -121,6 +121,21 @@ class TestFunctionalUserSystem(BaseSeleniumTest):
         self.lecturer.refresh_from_db()
         self.assertTrue(self.lecturer.check_password("NewPassword123"))  # Verify password has been updated
 
+    def test_user_can_edit_their_profile(self):
+        log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
+        self.driver.get(f"{self.live_server_url}{reverse('user_management:profile')}")
+        wait(self.driver)
+        self.populate_edit_profile_fields(self.get_profile_change_fields())
+        wait(self.driver)
+        self.lecturer.refresh_from_db()
+        self.assertTrue(User.objects.filter(username='johndoeupdated').exists())
+        charlie = User.objects.get(username='johndoeupdated')
+        self.assertEqual(charlie.first_name, "JohnUpdated")
+        self.assertEqual(charlie.last_name, "DoeUpdated")
+        self.assertEqual(charlie.username, "johndoeupdated")
+        self.assertEqual(charlie.email, "johndoeupdated@example.com")
+
+
     # Helper methods below
 
     def get_password_change_fields(self) -> tuple:
@@ -135,6 +150,37 @@ class TestFunctionalUserSystem(BaseSeleniumTest):
         new_password_input.send_keys("NewPassword123")
         password_confirmation_input.send_keys("NewPassword123")
         current_password_input.send_keys("Password123")
+
+        # Scroll to submit button to avoid "ElementClickInterceptedException"
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", submit_button)
+        time.sleep(1)  # Ensure page stabilises before clicking
+        try:
+            submit_button.click()
+        except ElementClickInterceptedException:
+            self.driver.execute_script("arguments[0].click();", submit_button)
+
+    def get_profile_change_fields(self) -> tuple:
+        first_name_input = wait_for_element(self.driver, By.ID, "id_first_name")
+        last_name_input = wait_for_element(self.driver, By.ID, "id_last_name")
+        username_input = wait_for_element(self.driver, By.ID, "id_username")
+        email_input = wait_for_element(self.driver, By.ID, "id_email")
+        submit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_update_profile"))
+        return first_name_input, last_name_input, username_input, email_input, submit_button
+
+    def populate_edit_profile_fields(self, fields: tuple):
+        first_name_input, last_name_input, username_input, email_input, submit_button = fields
+
+        from selenium.webdriver.common.keys import Keys
+
+        # Clear text fields otherwise send_keys will just append to any writing in the field already
+        for field in (first_name_input, last_name_input, username_input, email_input):
+            if field.is_enabled() and field.get_attribute("readonly") is None:
+                self.driver.execute_script("arguments[0].value = '';", field)  # Clear using JavaScript
+
+        first_name_input.send_keys("JohnUpdated")
+        last_name_input.send_keys("DoeUpdated")
+        username_input.send_keys("johndoeupdated")
+        email_input.send_keys("johndoeupdated@example.com")
 
         # Scroll to submit button to avoid "ElementClickInterceptedException"
         self.driver.execute_script("arguments[0].scrollIntoView(true);", submit_button)
