@@ -1,10 +1,17 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from user_management.views import home_views, guest_logout
-from user_management.views import *
-from django.urls import path ,include, reverse_lazy
-from user_management.forms.forgot_password_forms import CustomPasswordResetForm 
+from django.urls import path, include, reverse_lazy
 from django.contrib.auth import views as auth_views
+from user_management.views.about_view import AboutView
+from user_management.views.faq_view import FaqView
+from user_management.forms.forgot_password_forms import CustomPasswordResetForm
+from user_management.views import (
+    guest_logout,
+    login_views,
+    profile_update_views,
+    signup_views,
+    forgot_password_views,
+)
 
 app_name = 'user_management'
 
@@ -25,9 +32,10 @@ urlpatterns = [
     path('profile/', profile_update_views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', signup_views.SignUpView.as_view(), name='sign_up'),
     path('accounts/password/', include(reset_password_patterns)),
-    path('about/', home_views.AboutView.as_view(), name='about'),
-    path('faq/', home_views.FaqView.as_view(), name='faq'),
     path('guest_logout/', guest_logout.logout_and_login, name='guest_logout'),
+    path('about/', AboutView.as_view(), name='about'),
+    path("faq/", FaqView.as_view(), name="faq"),
+
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
