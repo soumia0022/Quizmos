@@ -3,6 +3,7 @@
 {% load custom_filters %}
 
 {% block content %}
+{% noscript_warning %}
 <div class="container" >
     {% return_button %}
     {% go_back_button %}
@@ -37,11 +38,11 @@
             align-items: center;
             justify-content: space-between;
         }
-        .container > *:not(button) { 
+        .container > *:not(button) {
             margin: 0;
             padding: 0;
         }
-        
+
     </style>
 
     <!-- Display options based on question type -->
@@ -60,7 +61,7 @@
                 <label>{{ option }}</label>
             </div>
         {% endfor %}
-            
+
     {% elif question.question_type == 'dropdown_fill' %}
         <select name="dropdown_answer">
                 <option value="" disabled selected>Select an option</option>
@@ -79,7 +80,7 @@
             </div>
         {% endfor %}
     </div>
-    
+
     {% elif question.question_type == 'text_fill' %}
         <input type="text" name="text_fill_answer" placeholder="Your answer">
 
