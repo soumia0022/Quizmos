@@ -74,7 +74,12 @@ jobs:
       # Run non-Selenium tests
       - name: Run Non-Selenium Tests
         run: |
-          python manage.py test --exclude-selenium
+          python manage.py test user_management
+          python manage.py test poll_management
+          python manage.py test question_management
+          python manage.py test response_management
+          python manage.py test analytics
+          python manage.py test system_components
         env:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
@@ -82,7 +87,7 @@ jobs:
       # Run Selenium Tests
       - name: Run Selenium Tests
         run: |
-          python manage.py test --selenium
+          python manage.py test Quizmos.selenium_tests
         env:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
