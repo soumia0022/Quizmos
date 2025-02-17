@@ -1,7 +1,6 @@
 {% extends 'base_content.html' %}
 {% load system_extras %}
 {% block content %}
-    {% noscript_warning %}
 <head>
   <title>{{ poll.title }}</title>
   <style>
@@ -17,6 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 </head>
 <body>
+    {% noscript_warning %}
   <div class="container">
     <div class="row">
       <div class="col-12">
