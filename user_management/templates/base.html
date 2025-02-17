@@ -1,6 +1,7 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
+{% load system_extras %}
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +12,7 @@
     <title>Quizmos</title>
   </head>
   <body>
+    {% noscript_warning %}
     {% block body %}
     {% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
