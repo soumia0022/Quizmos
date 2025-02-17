@@ -59,12 +59,6 @@ jobs:
         env:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-      - name: Run Tests
-        run: |
-          python manage.py test
-        env:
-          REDIS_HOST: localhost
-          REDIS_PORT: 6379
 
       # Install Chromium and ChromeDriver
       - name: Install Chromium and ChromeDriver
@@ -73,14 +67,23 @@ jobs:
           sudo apt-get install -y chromium-browser
           CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
           wget https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin
-          
-          # Run Selenium Tests
-          - name: Run Tests
-            run: |
-              python manage.py test
-            env:
-              REDIS_HOST: localhost
-              REDIS_PORT: 6379
-              DISPLAY: :99.0  # For headless mode
+          unzip -q chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/chromedriver
+          sudo chmod +x /usr/local/bin/chromedriver
+
+      # Run non-Selenium tests
+      - name: Run Non-Selenium Tests
+        run: |
+          python manage.py test --exclude-selenium
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+
+      # Run Selenium Tests
+      - name: Run Selenium Tests
+        run: |
+          python manage.py test --selenium
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          DISPLAY: :99.0  # For headless mode
