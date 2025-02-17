@@ -29,6 +29,9 @@ class TestFunctionalRegistration(StaticLiveServerTestCase):
         chrome_options = ChromeOptions()
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--headless")  # Can remove this to see the tests run on the browser
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
 
         self.driver = webdriver.Chrome(service=ChromeService(), options=chrome_options)
 
@@ -109,6 +112,9 @@ class TestFunctionalUserSystem(StaticLiveServerTestCase):
         chrome_options = ChromeOptions()
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--headless")  # Can remove this to see the tests run on the browser
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
 
         self.driver = webdriver.Chrome(service=ChromeService(), options=chrome_options)
 
