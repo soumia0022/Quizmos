@@ -1,7 +1,8 @@
-import os
 import time
 
-from unittest import skipIf  # To skip tests in GitHub Actions (when using headed browser)
+# To skip tests in GitHub Actions (when using headed browser)
+import os
+from unittest import skipIf
 
 import chromedriver_autoinstaller
 from selenium import webdriver
