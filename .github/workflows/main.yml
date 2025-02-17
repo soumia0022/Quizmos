@@ -22,25 +22,37 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v4
+
+      # Set up Python environment
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+
+      # Install Redis CLI for testing with Redis
       - name: Install Redis CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y redis-tools
+
+      # Install dependencies
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      # Set up the database (migrations)
       - name: Set up database (testing)
         run: |
           yes "y" | python manage.py makemigrations --merge
           python manage.py migrate
+
+      # Wait for Redis to be ready
       - name: Wait for Redis to be Ready
         run: |
           for i in {1..10}; do redis-cli ping && break || sleep 5; done
+
+      # Verify the Redis connection
       - name: Verify Redis Connection
         run: |
           python -c "import redis; r = redis.Redis(host='localhost', port=6379); assert r.ping()"
@@ -53,3 +65,22 @@ jobs:
         env:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
+
+      # Install Chromium and ChromeDriver
+      - name: Install Chromium and ChromeDriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+          CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+          wget https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin
+          
+          # Run Selenium Tests
+          - name: Run Tests
+            run: |
+              python manage.py test
+            env:
+              REDIS_HOST: localhost
+              REDIS_PORT: 6379
+              DISPLAY: :99.0  # For headless mode
