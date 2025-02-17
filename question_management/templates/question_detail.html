@@ -1,54 +1,92 @@
+{% extends 'base_content.html' %}
 {% load system_extras %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ question.question_text }}</title>
-</head>
-<body>
+{% load custom_filters %}
+
+{% block content %}
+<div class="container" >
     {% return_button %}
     {% go_back_button %}
-    <h1>{{ question.question_text }}</h1>
-    <p>Type: {{ question.get_question_type_display }}</p>
-    <p>Timer: {{ question.timer }}</p>
+    <h1>Welcome to {{ poll.title }}!</h1>
+    <p>{{ question.question_text }}</p>
 
-    <!-- Load the custom filter -->
-    {% load custom_filters %}
+    <style>
+        .option-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .dropzone-box {
+            border: 1px dashed #ccc;
+            padding: 10px;
+            margin: 5px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .container > *:not(button) { 
+            margin: 0;
+            padding: 0;
+        }
+        
+    </style>
 
     <!-- Display options based on question type -->
     {% if question.question_type == 'multiple_choice' %}
-        <h2>Options:</h2>
-        <ul>
-            {% for option in question.multiple_choice_options %}
-                <li>{{ option }}</li>
-            {% endfor %}
-        </ul>
+        {% for option in question.multiple_choice_options %}
+            <div class="option-item">
+                <input type="checkbox" name="multiple_choice_answers" value="{{ option }}">
+                <label>{{ option }}</label>
+            </div>
+        {% endfor %}
+
     {% elif question.question_type == 'single_choice' %}
-        <h2>Options:</h2>
-        <ul>
-            {% for option in question.single_choice_option %}
-                <li>{{ option }}</li>
-            {% endfor %}
-        </ul>
+        {% for option in question.single_choice_option %}
+            <div class="option-item">
+                <input type="radio" name="single_choice_answer" value="{{ option }}">
+                <label>{{ option }}</label>
+            </div>
+        {% endfor %}
+            
     {% elif question.question_type == 'dropdown_fill' %}
-        <h2>Dropdown Options:</h2>
-        <ul>
-            {% for option in question.get_dropdown_options %}
-                <li>{{ option }}</li>
-            {% endfor %}
-        </ul>
+        <select name="dropdown_answer">
+                <option value="" disabled selected>Select an option</option>
+                {% for option in question.get_dropdown_options %}
+                    <option value="{{ option }}">{{ option }}</option>
+                {% endfor %}
+            </select>
+
     {% elif question.question_type == 'match_question' %}
-        <h2>Match Options:</h2>
-        <ul>
-            {% for option, answer in question.match_options|zip_lists:question.match_answers %}
-                <li>{{ option }} - {{ answer }}</li>
-            {% endfor %}
-        </ul>
-    {% elif question.question_type == 'text' %}
-        <h2>Answer:</h2>
-        <p>{{ question.text_fill_answer }}</p>
+    <h2>Match the following:</h2>
+    <div>
+        {% for option, answer in question.match_options|zip_lists:question.match_answers %}
+            <div class="flex-container">
+                <div class="box">{{ option }}</div>
+                <div class="dropzone-box">{{ answer }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    {% elif question.question_type == 'text_fill' %}
+        <input type="text" name="text_fill_answer" placeholder="Your answer">
+
     {% elif question.question_type == 'wordcloud' %}
-        <h2>Word Cloud Prompt:</h2>
-        <p>{{ question.wordcloud_question }}</p>
+        <input type="text" name="text_fill_answer" placeholder="Your answer">
     {% endif %}
-</body>
-</html>
+
+   <br> <button type="button" class="submit-button">Submit</button> </br>
+</div>
+{% endblock %}
