@@ -3,10 +3,10 @@
 {% load system_extras %}
 
 <head>
-    {% noscript_warning %}
     <title>Create Poll</title>
 </head>
 <body>
+    {% noscript_warning %}
     <h1>Create a New Poll</h1>
     <form method="post">
         {% csrf_token %}
