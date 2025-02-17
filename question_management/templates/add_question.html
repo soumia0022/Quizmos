@@ -150,10 +150,11 @@
                             </div>
 
 
-                           <!-- Add Audio and Video Buttons -->
+                           <!-- Add Audio, Video and Image Buttons -->
                             <div id="media-buttons" class="mb-3" style="display: none;">
                                 <button type="button" id="add-audio-btn" class="btn btn-secondary mb-2">Add Audio</button>
                                 <button type="button" id="add-video-btn" class="btn btn-secondary mb-2">Add Video</button>
+                                <button type="button" id="add-image-btn" class="btn btn-secondary mb-2">Add Image</button>
                                 <button type="button" id="reset-media-btn" class="btn btn-secondary mt-2">Reset Media</button> {% info_button "You can only upload one media type" %}
                             </div>
 
@@ -177,6 +178,11 @@
                             <div id="youtube-url-field" style="display: none;">
                                 <input type="url" name="youtube_link" class="form-control mb-2" placeholder="Enter YouTube video URL">
                             </div>
+
+                            <div id="image-upload-field" style="display: none;">
+                                <input type="file" name="image_file" class="form-control mb-2" accept="image/*">
+                            </div>
+
 
                             <!-- Save Question Button -->
                             <div class="text-center">
