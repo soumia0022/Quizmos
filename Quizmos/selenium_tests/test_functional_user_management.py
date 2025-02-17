@@ -4,39 +4,26 @@ import time
 import os
 from unittest import skipIf
 
-import chromedriver_autoinstaller
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.shortcuts import reverse
 
 from django.conf import settings
 from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element  # From __init__.py
 from user_management.tests.fixtures.create_test_users import create_default_test_user  # In fixtures
 from user_management.models.user_model import User
+from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
 
 # @skipIf(os.environ.get('GITHUB_ACTIONS') == 'true', 'These tests require a visible browser to run.')
-class TestFunctionalRegistration(StaticLiveServerTestCase):
+class TestFunctionalRegistration(BaseSeleniumTest):
     """This class tests user registration functionality."""
     def setUp(self):
-        chromedriver_autoinstaller.install()
+        super().setUp()
 
-        chrome_options = ChromeOptions()
-        chrome_options.add_argument("--start-maximized")
-        chrome_options.add_argument("--headless")  # Can remove this to see the tests run on the browser
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-
-        self.driver = webdriver.Chrome(service=ChromeService(), options=chrome_options)
-
-    def tearDown(self):
-        self.driver.quit()
+        create_default_test_user()  # From fixtures
+        self.lecturer = User.objects.get(role='Lecturer')
 
     def test_user_can_register(self):
         self.driver.get(f"{self.live_server_url}{reverse('user_management:sign_up')}")  # Navigate to signup page
@@ -104,25 +91,13 @@ class TestFunctionalRegistration(StaticLiveServerTestCase):
 
 
 # @skipIf(os.environ.get('GITHUB_ACTIONS') == 'true', 'These tests require a visible browser to run.')
-class TestFunctionalUserSystem(StaticLiveServerTestCase):
+class TestFunctionalUserSystem(BaseSeleniumTest):
     """This class tests user login and password change functionality."""
     def setUp(self):
-        chromedriver_autoinstaller.install()
+        super().setUp()
 
-        chrome_options = ChromeOptions()
-        chrome_options.add_argument("--start-maximized")
-        chrome_options.add_argument("--headless")  # Can remove this to see the tests run on the browser
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-
-        self.driver = webdriver.Chrome(service=ChromeService(), options=chrome_options)
-
-        create_default_test_user()
+        create_default_test_user()  # From fixtures
         self.lecturer = User.objects.get(role='Lecturer')
-
-    def tearDown(self):
-        self.driver.quit()
 
     def test_user_can_log_in(self):
         log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
