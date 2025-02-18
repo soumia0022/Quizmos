@@ -1,5 +1,5 @@
 import {ws} from './websocket.js';
-import {renderMultipleChoice} from "./multiple_choice_display.js";
+import {renderChoice} from "./choice_display.js";
 
 
 window.startPoll = function() {
@@ -93,18 +93,11 @@ function createQuestionHTML(question) {
       break;
 
     case 'multiple_choice':
-      html += renderMultipleChoice(question);
+      html += renderChoice(question);
       break;
 
     case 'single_choice':
-      html += `<p>${question.text}</p>
-               <div class="options-container">
-                 ${question.options.map(option => `
-                   <div class="card" style = "margin-bottom: 10px; padding: 5px;">
-                     <label >${option}</label>
-                   </div>
-                 `).join('')}
-               </div>`;
+      html += renderChoice(question);
       break;
 
     case 'wordcloud':
