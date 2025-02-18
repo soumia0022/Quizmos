@@ -1,24 +1,57 @@
-from django.http import JsonResponse
-from django.db.models import Count
-from django.core.exceptions import ObjectDoesNotExist
-
-from response_management.models.response_model import MultipleChoiceResponse
+from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse
 from question_management.models.question_models import Question
+
+from django.http import JsonResponse
 import json
-
-def get_question_response_counts(request, poll_code, question_id):
-
-
-    question = Question.objects.filter(id=question_id).first()
-    options = list(question.multiple_choice_options)
+from typing import Dict, List, Union
 
 
-    responses = MultipleChoiceResponse.objects.filter(question=question).values_list('selected_options', flat=True)
-    counts_dict = {i:0 for i in range(len(options))}
+class QuestionResponseCounter:
+    def __init__(self, question: Question):
+        self.question = question
+        self.question_type = question.question_type
+        self.response_handlers = {
+            'multiple_choice': self._get_mcq_responses,
+            'single_choice': self._get_scq_responses
+        }
 
-    for selected_values in responses:
+    def get_counts(self) -> JsonResponse:
+        """Get response counts for the question."""
+        try:
+            if self.question_type not in self.response_handlers:
+                return JsonResponse({
+                    'error': f'Unsupported question type: {self.question_type}'
+                }, status=400)
+
+            counts_dict = self.response_handlers[self.question_type]()
+
+            return JsonResponse({
+                'question_id': self.question.id,
+                'question_type': self.question_type,
+                'counts': counts_dict
+            })
+        except Exception as e:
+            return JsonResponse({
+                'error': f'Error processing responses: {str(e)}'
+            }, status=500)
+
+    def _get_mcq_responses(self) -> Dict[int, int]:
+        """Handle multiple choice question responses."""
+        options = list(self.question.multiple_choice_options)
+        counts_dict = {i: 0 for i in range(len(options))}
+        responses = MultipleChoiceResponse.objects.filter(
+            question=self.question
+        ).values_list('selected_options', flat=True)
+
+        for selected_values in responses:
+            self._process_mcq_response(selected_values, options, counts_dict)
+
+        return counts_dict
+
+    def _process_mcq_response(self, selected_values: Union[str, List],
+                              options: List[str], counts_dict: Dict[int, int]) -> None:
+        """Process individual MCQ response."""
         if isinstance(selected_values, str):
-
             selected_values = json.loads(selected_values)
 
         for selected_value in selected_values:
@@ -26,9 +59,34 @@ def get_question_response_counts(request, poll_code, question_id):
                 selected_index = options.index(selected_value)
                 counts_dict[selected_index] += 1
 
+    def _get_scq_responses(self) -> Dict[int, int]:
+        """Handle single choice question responses."""
+        options = list(self.question.single_choice_option)
+        counts_dict = {i: 0 for i in range(len(options))}
+        responses = SingleChoiceResponse.objects.filter(
+            question=self.question
+        ).values_list('selected_option', flat=True)
+
+        for selected_value in responses:
+            self._process_scq_response(selected_value, options, counts_dict)
+
+        return counts_dict
+
+    def _process_scq_response(self, selected_value: str,
+                              options: List[str], counts_dict: Dict[int, int]) -> None:
+        """Process individual SCQ response."""
+        cleaned = str(selected_value).strip()
+        if cleaned in options:
+            selected_index = options.index(cleaned)
+            counts_dict[selected_index] += 1
 
 
-    return JsonResponse({
-        'question_id': question_id,
-        'counts': counts_dict
-    })
+def get_question_response_counts(request, poll_code, question_id):
+    question = Question.objects.filter(id=question_id).first()
+    if not question:
+        return JsonResponse({
+            'error': f'Question {question_id} not found'
+        }, status=404)
+
+    counter = QuestionResponseCounter(question)
+    return counter.get_counts()
