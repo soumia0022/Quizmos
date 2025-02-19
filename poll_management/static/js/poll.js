@@ -1,5 +1,7 @@
 import {ws} from './websocket.js';
 import {renderChoice} from "./choice_display.js";
+import {renderText} from "./text_question_display.js";
+
 
 
 window.startPoll = function() {
@@ -64,16 +66,10 @@ function createQuestionHTML(question) {
   switch(question.type) {
      case 'dropdown_fill':
        html += renderChoice(question);
-      break;
+       break;
 
     case 'text_fill':
-      html += `<p>${question.text}</p>
-               <div class="form-group">
-                <div class="form-control mt-3" style="height: auto; min-height: 50px; border: 1px solid #ced4da; padding: 10px; background-color: #f8f9fa;">
-                  Type your answer here
-                </div>
-              </div>`
-
+      html += renderText(question);
       break;
 
     case 'multiple_choice':
