@@ -63,23 +63,7 @@ function createQuestionHTML(question) {
 
   switch(question.type) {
      case 'dropdown_fill':
-      const parts = question.text.split('___'); // split the text where there are blank spaces (3 underscores ___)
-      html += `<p>`;
-      parts.forEach((part, index) => {
-        html += part; // for each part in the question, add it to the HTML content
-        if (index < parts.length - 1) {
-          // Add some empty spaces (3 spaces per blank)
-          html += '&nbsp;&nbsp;&nbsp;';
-        }
-      });
-       html += `</p>`;
-       html += `<div class="options-container">
-             ${question.options.map(option =>
-               `<div class="card" style="margin-bottom: 10px; padding: 5px;">
-                 <label>${option}</label>
-               </div>`
-             ).join('')}
-           </div>`;
+       html += renderChoice(question);
       break;
 
     case 'text_fill':

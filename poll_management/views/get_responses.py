@@ -1,4 +1,4 @@
-from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse
+from response_management.models.response_model import DropdownFillResponse, MultipleChoiceResponse, SingleChoiceResponse
 from question_management.models.question_models import Question
 
 from django.http import JsonResponse
@@ -12,7 +12,8 @@ class QuestionResponseCounter:
         self.question_type = question.question_type
         self.response_handlers = {
             'multiple_choice': self._get_mcq_responses,
-            'single_choice': self._get_scq_responses
+            'single_choice': self._get_scq_responses,
+            'dropdown_fill': self._get_dropdown_responses
         }
 
     def get_counts(self) -> JsonResponse:
@@ -79,6 +80,20 @@ class QuestionResponseCounter:
         if cleaned in options:
             selected_index = options.index(cleaned)
             counts_dict[selected_index] += 1
+
+    def _get_dropdown_responses(self) -> Dict[int, int]:
+        """Handle dropdown question responses."""
+        options = [opt.strip() for opt in self.question.dropdown_options.split(',')]
+        counts_dict = {i: 0 for i in range(len(options))}
+        responses = DropdownFillResponse.objects.filter(
+            question=self.question
+        ).values_list('selected_option', flat=True)
+
+        for selected_value in responses:
+            self._process_scq_response(selected_value, options, counts_dict)
+
+        return counts_dict
+
 
 
 def get_question_response_counts(request, poll_code, question_id):
