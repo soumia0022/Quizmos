@@ -5,7 +5,7 @@
         "fields": {
             "title": "Sample Poll",
             "status": "active",
-            "user": 1,
+            "user": "johndoe",
             "locked": false,
             "number_code": 12345
         }

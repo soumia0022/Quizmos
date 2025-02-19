@@ -12,14 +12,15 @@ def create_default_test_polls() -> None:
 
         for poll_data in polls:
             poll_fields = poll_data.get('fields', {})
-            user_id = poll_fields.pop('user', None)  # Extract user ID
 
-            if user_id:
+            # Convert user to a User instance (instead of just username in JSON)
+            username = poll_fields.pop('user', None)  # Extract username
+            if username:
                 try:
-                    user = User.objects.get(pk=user_id)
+                    user = User.objects.get(username=username)
                     poll_fields['user'] = user  # Assign the user object
                 except User.DoesNotExist:
-                    print(f"User with ID {user_id} does not exist. Skipping poll creation.")
+                    print(f"User with ID {username} does not exist. Skipping poll creation.")
                     continue
 
             poll, _ = Poll.objects.get_or_create(**poll_fields)
