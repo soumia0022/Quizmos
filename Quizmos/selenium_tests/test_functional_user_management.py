@@ -170,8 +170,6 @@ class TestFunctionalUserSystem(BaseSeleniumTest):
     def populate_edit_profile_fields(self, fields: tuple):
         first_name_input, last_name_input, username_input, email_input, submit_button = fields
 
-        from selenium.webdriver.common.keys import Keys
-
         # Clear text fields otherwise send_keys will just append to any writing in the field already
         for field in (first_name_input, last_name_input, username_input, email_input):
             if field.is_enabled() and field.get_attribute("readonly") is None:
