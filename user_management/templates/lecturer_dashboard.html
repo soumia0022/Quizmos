@@ -52,7 +52,7 @@
                             {% csrf_token %}
                             <button id="id_poll_delete_button" type="button" onclick="confirmDelete({{ poll.id }})" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
                         </form>
-                        <a href="{% url 'poll_management:display_code' poll.id %}" class="btn btn-success btn-sm">Start</a>
+                        <a id="id_poll_start_button" href="{% url 'poll_management:display_code' poll.id %}" class="btn btn-success btn-sm">Start</a>
                         
                     </div>
                 </div>

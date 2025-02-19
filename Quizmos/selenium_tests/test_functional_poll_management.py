@@ -32,6 +32,8 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
         self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
         wait(self.driver)
 
+    def tearDown(self):
+        super().tearDown()
 
     def test_user_can_view_poll(self):
         view_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_view_button"))  # From lecturer_dashboard.html
@@ -53,4 +55,38 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
         expected_title = "Edit Poll: Sample Poll"
         self.assertEqual(expected_title, edit_poll_title_element.text)
 
-    # def test_user_can_delete_poll(self):
+    def test_user_can_delete_poll(self):
+        delete_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_delete_button"))
+        delete_button.click()
+
+        wait_for_element(self.driver, By.ID, "custom-popup")  # In lecturer_dashboard.html
+
+        # Wait for the "Yes" button and click to confirm deletion
+        confirm_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "confirm-delete"))  # Already given ID by another group member
+        confirm_button.click()
+        wait(self.driver)
+
+        self.assertFalse(Poll.objects.filter(pk=self.poll.id).exists(), "Poll was not deleted!")
+
+    def test_user_can_see_poll_start_page_and_start_poll(self):
+        start_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_start_button"))
+        start_button.click()
+        wait(self.driver)
+
+        start_poll_title_element = wait_for_element(self.driver, By.ID, "id_start_poll_title")  # From display_code.html
+        expected_title = "Sample Poll"
+        self.assertEqual(expected_title, start_poll_title_element.text)
+
+        start_poll_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "start-poll-btn"))  # Already given ID by another group member
+        start_poll_button.click()
+        wait(self.driver)
+
+        prev_button = wait_for_element(self.driver, By.ID, "prev-btn")  # ID already given
+        next_button = wait_for_element(self.driver, By.ID, "next-btn")  # ID already given
+        self.assertTrue(prev_button.is_displayed(), "'Prev' button is not visible!")
+        self.assertTrue(next_button.is_displayed(), "'Next' button is not visible!")
+
+
+
+
+
