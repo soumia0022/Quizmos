@@ -15,6 +15,7 @@ from user_management.tests.fixtures.create_test_users import create_default_test
 from user_management.models.user_model import User
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
+# Add tests for password reset (when forgotten) once functionality has been completed
 
 # @skipIf(os.environ.get('GITHUB_ACTIONS') == 'true', 'These tests require a visible browser to run.')
 class TestFunctionalRegistration(BaseSeleniumTest):
