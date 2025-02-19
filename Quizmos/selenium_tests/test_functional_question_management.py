@@ -31,21 +31,6 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         edit_button.click()
         wait(self.driver)
 
-    def tearDown(self):
-        super().tearDown()
-
-    def test_user_can_attempt_to_edit_questions(self):
-        edit_questions_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button"))
-        edit_questions_button.click()
-        wait(self.driver)
-
-        add_question_title_element = wait_for_element(self.driver, By.ID, "id_add_question_title")  # From add_question.html
-        expected_title = "Sample Poll"
-        self.assertEqual(expected_title, add_question_title_element.text)
-        add_question_button = wait_for_element(self.driver, By.ID, "add-question-btn")  # ID already given
-        self.assertTrue(add_question_button.is_displayed(), "'Add Question' button is not visible!")
-
-    def test_user_can_add_multiple_choice_question(self):
         # Navigate to add question page
         edit_questions_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button"))
         edit_questions_button.click()
@@ -54,6 +39,11 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         add_question_button.click()
         wait(self.driver)
 
+    def tearDown(self):
+        super().tearDown()
+
+
+    def test_user_can_add_multiple_choice_question(self):
         # Test if Multiple Choice Option can be selected
         dropdown_question_type_element = wait_for_element(self.driver, By.ID, "question-type-dropdown")
         dropdown = Select(dropdown_question_type_element)
@@ -95,15 +85,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         self.assertIn('Paris', multiple_choice_answers)
 
     def test_user_can_add_single_choice_question(self):
-        # Navigate to add question page
-        edit_questions_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button"))
-        edit_questions_button.click()
-        wait(self.driver)
-        add_question_button = wait_for_element(self.driver, By.ID, "add-question-btn")  # ID already given
-        add_question_button.click()
-        wait(self.driver)
-
-        # Test if Multiple Choice Option can be selected
+        # Test if Single Choice Option can be selected
         dropdown_question_type_element = wait_for_element(self.driver, By.ID, "question-type-dropdown")
         dropdown = Select(dropdown_question_type_element)
         dropdown.select_by_value("single_choice")
@@ -113,7 +95,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         single_choice_fields = wait_for_element(self.driver, By.ID, "single-choice-fields")
         self.assertTrue(single_choice_fields.is_displayed())
 
-        # Test the creation of a Multiple Choice Question
+        # Test the creation of a Single Choice Question
         question_input = self.driver.find_element(By.NAME, "single_choice_question")
         question_input.send_keys("What is the capital of France?")
         add_option_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "single-choice-add-option-btn"))
@@ -135,7 +117,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         paris_checkbox = self.driver.find_element(By.XPATH, "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
         paris_checkbox.click()  # Check the correct option
 
-        # Test the saving of a Multiple Choice Question (verify in database)
+        # Test the saving of a Single Choice Question (verify in database)
         save_button = self.driver.find_element(By.ID, "id_save_question_button")
         save_button.click()
         poll = Poll.objects.get(id=self.poll.id)
@@ -164,3 +146,14 @@ class TestFunctionalEditQuestionManagement(TestCase, BaseSeleniumTest):
 
     def tearDown(self):
         super().tearDown()
+
+    def test_user_can_attempt_to_edit_questions(self):
+        edit_questions_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button"))
+        edit_questions_button.click()
+        wait(self.driver)
+
+        add_question_title_element = wait_for_element(self.driver, By.ID, "id_add_question_title")  # From add_question.html
+        expected_title = "Sample Poll"
+        self.assertEqual(expected_title, add_question_title_element.text)
+        add_question_button = wait_for_element(self.driver, By.ID, "add-question-btn")  # ID already given
+        self.assertTrue(add_question_button.is_displayed(), "'Add Question' button is not visible!")
