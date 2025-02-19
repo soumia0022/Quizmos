@@ -1,5 +1,5 @@
 // websocket.js
-import { updateResponseUI } from './response_ui.js';
+import {updateResponseUI, updateTextResponseUI} from './response_ui.js';
 
 const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${pollCode}/`;
@@ -28,10 +28,17 @@ async function fetchResponseCounts(questionId) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const data = await response.json();
         console.log('Received counts:', data);
-        updateResponseUI(questionId, data.counts);
+
+        if (data.question_type === "text_fill"){
+            updateTextResponseUI(questionId, data.responses);
+        }
+        else{
+            updateResponseUI(questionId, data.counts);
+        }
+
+
     } catch (error) {
         console.error('Error fetching response counts:', error);
     }

@@ -1,4 +1,5 @@
-from response_management.models.response_model import DropdownFillResponse, MultipleChoiceResponse, SingleChoiceResponse
+from response_management.models.response_model import DropdownFillResponse, MultipleChoiceResponse, \
+    SingleChoiceResponse, TextFillResponse
 from question_management.models.question_models import Question
 
 from django.http import JsonResponse
@@ -13,7 +14,8 @@ class QuestionResponseCounter:
         self.response_handlers = {
             'multiple_choice': self._get_mcq_responses,
             'single_choice': self._get_scq_responses,
-            'dropdown_fill': self._get_dropdown_responses
+            'dropdown_fill': self._get_dropdown_responses,
+            'text_fill' : self._get_text_responses
         }
 
     def get_counts(self) -> JsonResponse:
@@ -25,6 +27,9 @@ class QuestionResponseCounter:
                 }, status=400)
 
             counts_dict = self.response_handlers[self.question_type]()
+
+            if self.question_type == 'text_fill':
+                return JsonResponse(counts_dict)
 
             return JsonResponse({
                 'question_id': self.question.id,
@@ -94,6 +99,20 @@ class QuestionResponseCounter:
 
         return counts_dict
 
+    def _get_text_responses(self) -> Dict[str, List[str]]:
+        """Handle text fill responses."""
+        responses = TextFillResponse.objects.filter(
+            question=self.question
+        ).values_list('answer_text', flat=True)
+
+        # Convert QuerySet to list and filter out empty responses
+        response_list = [resp.strip() for resp in responses if resp and resp.strip()]
+
+        return {
+            'question_id': self.question.id,
+            'question_type': 'text_fill',
+            'responses': response_list
+        }
 
 
 def get_question_response_counts(request, poll_code, question_id):
