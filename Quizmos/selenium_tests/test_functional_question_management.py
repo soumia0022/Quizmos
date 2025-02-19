@@ -13,7 +13,7 @@ from poll_management.models.poll_model import Poll
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
 
-class TestFunctionalQuestionManagement(TestCase, BaseSeleniumTest):
+class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
     """This class tests all question functionality to check that users can create questions of varying types."""
     def setUp(self):
         super().setUp()
@@ -94,3 +94,24 @@ class TestFunctionalQuestionManagement(TestCase, BaseSeleniumTest):
         multiple_choice_answers = question.multiple_choice_answers  # List of selected (correct) answers
         self.assertIn('Paris', multiple_choice_answers)
 
+
+class TestFunctionalEditQuestionManagement(TestCase, BaseSeleniumTest):
+    """This class tests all question functionality to check that users can create questions of varying types."""
+    def setUp(self):
+        super().setUp()
+
+        # From fixtures folders in relative apps
+        create_default_test_user()
+        create_default_test_polls()
+        self.lecturer = User.objects.get(role='Lecturer')
+        self.poll = Poll.objects.get(pk=1)
+
+        log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
+        self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
+        wait(self.driver)
+        edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
+        edit_button.click()
+        wait(self.driver)
+
+    def tearDown(self):
+        super().tearDown()
