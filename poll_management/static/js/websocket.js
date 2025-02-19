@@ -31,7 +31,7 @@ async function fetchResponseCounts(questionId) {
         const data = await response.json();
         console.log('Received counts:', data);
 
-        if (data.question_type === "text_fill"){
+        if (data.question_type === "text_fill" || data.question_type === "wordcloud"){//update this later when word cloud responses is done
             updateTextResponseUI(questionId, data.responses);
         }
         else{

@@ -1,6 +1,7 @@
 import {ws} from './websocket.js';
 import {renderChoice} from "./choice_display.js";
 import {renderText} from "./text_question_display.js";
+import {renderWordCloud} from "./word_cloud_display.js";
 
 
 
@@ -81,12 +82,7 @@ function createQuestionHTML(question) {
       break;
 
     case 'wordcloud':
-      html += `<p>${question.text}</p>
-               <div class="form-group">
-                <div class="form-control mt-3" style="height: auto; min-height: 50px; border: 1px solid #ced4da; padding: 10px; background-color: #f8f9fa;">
-                  Type your answer here
-                </div>
-              </div>`;
+      html += renderText(question);//update this later when wordcloud responses are done
       break;
 
     case 'match_question':

@@ -3,10 +3,7 @@ export function updateResponseUI(questionId, optionCounts, questionType) {
     const questionContainer = document.querySelector(`[data-question="${questionId}"]`);
 
     const cards = questionContainer.querySelectorAll('.response-card');
-    if (cards.length === 0) {
-        console.error(`No response cards found for question ${questionId}`);
-        return;
-    }
+
 
     // Calculate total responses based on question type
     const totalResponses = Object.values(optionCounts).reduce((a, b) => a + b, 0);
@@ -39,16 +36,8 @@ export function updateResponseUI(questionId, optionCounts, questionType) {
 
 export function updateTextResponseUI(questionId, responses) {
    const questionContainer = document.querySelector(`[data-question="${questionId}"]`);
-    if (!questionContainer) {
-        console.error(`Container for question ${questionId} not found`);
-        return;
-    }
 
-    const responseList = questionContainer.querySelector(`#responseList-${questionId}`);
-    if (!responseList) {
-        console.error(`Response list for question ${questionId} not found`);
-        return;
-    }
+   const responseList = questionContainer.querySelector(`#responseList-${questionId}`);
 
     // Clear existing responses
     responseList.innerHTML = '';
