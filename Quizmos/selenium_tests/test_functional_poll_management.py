@@ -85,8 +85,3 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
         next_button = wait_for_element(self.driver, By.ID, "next-btn")  # ID already given
         self.assertTrue(prev_button.is_displayed(), "'Prev' button is not visible!")
         self.assertTrue(next_button.is_displayed(), "'Next' button is not visible!")
-
-
-
-
-
