@@ -24,14 +24,13 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         self.lecturer = User.objects.get(role='Lecturer')
         self.poll = Poll.objects.get(pk=1)
 
+        # Navigate to add question page once logging in
         log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
         self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
         wait(self.driver)
         edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
         edit_button.click()
         wait(self.driver)
-
-        # Navigate to add question page
         edit_questions_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button"))
         edit_questions_button.click()
         wait(self.driver)
@@ -45,8 +44,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
 
     def test_user_can_add_multiple_choice_question(self):
         # Test if Multiple Choice Option can be selected
-        dropdown_question_type_element = wait_for_element(self.driver, By.ID, "question-type-dropdown")
-        dropdown = Select(dropdown_question_type_element)
+        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
         dropdown.select_by_value("multiple_choice")
         # time.sleep(2)
         selected_option = dropdown.first_selected_option
@@ -58,27 +56,17 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         question_input = self.driver.find_element(By.NAME, "multiple_choice_question")
         question_input.send_keys("What is the capital of France?")
         add_option_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "multiple-choice-add-option-btn"))
-        add_option_button.click()
-
-        alert = Alert(self.driver)  # Wait for alert popup and enter first option
-        alert.send_keys("Paris")
-        alert.accept()
-        wait(self.driver)
-        add_option_button.click()  # Click "Add Option" again for second choice
-        alert.send_keys("London")
-        alert.accept()
-        wait(self.driver)
+        self.add_two_options_for_choice_questions(add_option_button)
 
         option_inputs = self.driver.find_elements(By.CSS_SELECTOR, "#multiple-choice-options-container input")  # Verify options appear in the form after closing the popup
         unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
-        # print("Unique options:", unique_options)
         self.assertEqual(len(unique_options), 2)  # Should be only "Paris" and "London"
         paris_checkbox = self.driver.find_element(By.XPATH, "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
         paris_checkbox.click()  # Check the correct option
+        wait(self.driver)
 
         # Test the saving of a Multiple Choice Question (verify in database)
-        save_button = self.driver.find_element(By.ID, "id_save_question_button")
-        save_button.click()
+        self.save_question()
         poll = Poll.objects.get(id=self.poll.id)
         question = poll.questions.last()
         multiple_choice_answers = question.multiple_choice_answers  # List of selected (correct) answers
@@ -86,8 +74,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
 
     def test_user_can_add_single_choice_question(self):
         # Test if Single Choice Option can be selected
-        dropdown_question_type_element = wait_for_element(self.driver, By.ID, "question-type-dropdown")
-        dropdown = Select(dropdown_question_type_element)
+        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
         dropdown.select_by_value("single_choice")
         # time.sleep(2)
         selected_option = dropdown.first_selected_option
@@ -99,8 +86,26 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         question_input = self.driver.find_element(By.NAME, "single_choice_question")
         question_input.send_keys("What is the capital of France?")
         add_option_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "single-choice-add-option-btn"))
-        add_option_button.click()
+        self.add_two_options_for_choice_questions(add_option_button)
 
+        option_inputs = self.driver.find_elements(By.CSS_SELECTOR, "#single-choice-options-container input")  # Verify options appear in the form after closing the popup
+        unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
+        self.assertEqual(len(unique_options), 2)  # Should be only "Paris" and "London"
+        paris_checkbox = self.driver.find_element(By.XPATH, "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
+        paris_checkbox.click()  # Check the correct option
+        wait(self.driver)
+
+        # Test the saving of a Single Choice Question (verify in database)
+        self.save_question()
+        poll = Poll.objects.get(id=self.poll.id)
+        question = poll.questions.last()
+        single_choice_answers = question.single_choice_answers  # List of selected (correct) answers
+        self.assertIn('Paris', single_choice_answers)
+
+    # Helper methods below:
+
+    def add_two_options_for_choice_questions(self, add_option_button):
+        add_option_button.click()
         alert = Alert(self.driver)  # Wait for alert popup and enter first option
         alert.send_keys("Paris")
         alert.accept()
@@ -110,21 +115,11 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         alert.accept()
         wait(self.driver)
 
-        option_inputs = self.driver.find_elements(By.CSS_SELECTOR, "#single-choice-options-container input")  # Verify options appear in the form after closing the popup
-        unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
-        # print("Unique options:", unique_options)
-        self.assertEqual(len(unique_options), 2)  # Should be only "Paris" and "London"
-        paris_checkbox = self.driver.find_element(By.XPATH, "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
-        paris_checkbox.click()  # Check the correct option
-
-        # Test the saving of a Single Choice Question (verify in database)
+    def save_question(self):
         save_button = self.driver.find_element(By.ID, "id_save_question_button")
         save_button.click()
-        poll = Poll.objects.get(id=self.poll.id)
-        question = poll.questions.last()
-        single_choice_answers = question.single_choice_answers  # List of selected (correct) answers
-        self.assertIn('Paris', single_choice_answers)
 
+    # End of helper methods
 
 class TestFunctionalEditQuestionManagement(TestCase, BaseSeleniumTest):
     """This class tests all question functionality to check that users can create questions of varying types."""
