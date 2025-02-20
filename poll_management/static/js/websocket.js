@@ -35,7 +35,7 @@ async function fetchResponseCounts(questionId) {
             updateTextResponseUI(questionId, data.responses);
         }
         else if (data.question_type === "match_question") {
-            updateMatchResponseUI(questionId, data.counts);
+            updateMatchResponseUI(questionId, data);
         }
         else{
             updateResponseUI(questionId, data.counts);

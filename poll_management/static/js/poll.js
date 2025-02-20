@@ -2,6 +2,7 @@ import {ws} from './websocket.js';
 import {renderChoice} from "./choice_display.js";
 import {renderText} from "./text_question_display.js";
 import {renderWordCloud} from "./word_cloud_display.js";
+import {renderMatch} from "./match_question_display.js";
 
 
 
@@ -86,28 +87,7 @@ function createQuestionHTML(question) {
       break;
 
     case 'match_question':
-
-      const shuffledAnswers = shuffleArray([...question.answers]);
-
-       html += `<p>${question.text}</p>
-         <div class="matching-container mt-3">
-           ${question.options.map((option, index) => `
-             <div class="matching-item mb-3">
-               <div class="row">
-                 <div class="col-5">
-                   <div class="card p-3 text-center">
-                     <span class="option-text">${option}</span>
-                   </div>
-                 </div>
-                 <div class="col-5">
-                   <div class="card p-3 text-center">
-                     <span class="answer-text">${shuffledAnswers[index]}</span>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           `).join('')}
-         </div>`;
+       html += renderMatch(question);
 break;
   }
 
