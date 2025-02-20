@@ -1,5 +1,5 @@
 from response_management.models.response_model import DropdownFillResponse, MultipleChoiceResponse, \
-    SingleChoiceResponse, TextFillResponse
+    SingleChoiceResponse, TextFillResponse, MatchQuestionResponse
 from question_management.models.question_models import Question
 
 from django.http import JsonResponse
@@ -15,7 +15,8 @@ class QuestionResponseCounter:
             'multiple_choice': self._get_mcq_responses,
             'single_choice': self._get_scq_responses,
             'dropdown_fill': self._get_dropdown_responses,
-            'text_fill' : self._get_text_responses
+            'text_fill' : self._get_text_responses,
+            'match_question' : self._get_match_responses,
         }
 
     def get_counts(self) -> JsonResponse:
@@ -30,6 +31,17 @@ class QuestionResponseCounter:
 
             if self.question_type == 'text_fill':
                 return JsonResponse(counts_dict)
+            if self.question_type == 'match_question':
+                total_responses = MatchQuestionResponse.objects.filter(
+                    question=self.question
+                ).count()
+
+                return JsonResponse({
+                    'question_id': self.question.id,
+                    'question_type': self.question_type,
+                    'counts': counts_dict,
+                    'total_responses': total_responses
+                })
 
             return JsonResponse({
                 'question_id': self.question.id,
@@ -113,6 +125,27 @@ class QuestionResponseCounter:
             'question_type': 'text_fill',
             'responses': response_list
         }
+
+    def _get_match_responses(self) -> Dict:
+        """
+        Handle match question responses.
+        """
+        responses = MatchQuestionResponse.objects.filter( question=self.question).values_list('match_responses', flat=True)
+
+        options = self.question.match_options
+
+        # make an empty dictionary in this format: {option: {possible_match: count}}
+        counts = {option: {ans: 0 for ans in options} for option in options}
+
+
+        for response_set in responses:
+
+            for match in response_set:
+                left_option = match['left']
+                right_match = match['right']
+                counts[left_option][right_match] = counts[left_option][right_match] + 1 #increment the count
+
+        return counts
 
 
 def get_question_response_counts(request, poll_code, question_id):
