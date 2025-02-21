@@ -153,7 +153,7 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'dropdown_options': dropdown_options,
                 'match_options': match_options,
                 'match_answers': match_answers,
-                # 'text_fill_options': question.text_fill_answer,
+
 
             }
         except Question.DoesNotExist:
