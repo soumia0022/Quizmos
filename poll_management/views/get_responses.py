@@ -135,15 +135,16 @@ class QuestionResponseCounter:
         options = self.question.match_options
 
         # make an empty dictionary in this format: {option: {possible_match: count}}
-        counts = {option: {ans: 0 for ans in options} for option in options}
-
+        counts = {option: {ans: 0 for ans in self.question.match_answers} for option in options}
 
         for response_set in responses:
 
             for match in response_set:
-                left_option = match['left']
-                right_match = match['right']
-                counts[left_option][right_match] = counts[left_option][right_match] + 1 #increment the count
+                if isinstance(match, dict) and 'left' in match and 'right' in match:
+                    left_option = match['left']
+                    right_match = match['right']
+                    if left_option in counts and right_match in counts[left_option]:
+                        counts[left_option][right_match] += 1
 
         return counts
 
