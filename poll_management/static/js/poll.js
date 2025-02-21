@@ -34,6 +34,22 @@ function createQuestionHTML(question) {
   let html = '<div class="question-title">';//this will store the final html content needed to display the question
 
 
+  if (question.youtube_link != null) {
+    const embedURL = question.youtube_link.replace("youtu.be/", "www.youtube.com/embed/");
+    html += `
+       <div class="video-container">
+        <iframe 
+            width="560" 
+            height="315" 
+            src="${embedURL}" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+    </div>
+    `;
+    }
+
   if (question.video_file != null) {
     html += `
       <div class="video-container mb-3">

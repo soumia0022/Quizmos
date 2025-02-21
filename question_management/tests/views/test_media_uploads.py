@@ -8,6 +8,7 @@ from user_management.models.user_model import User
 class QuestionFileUploadTestCase(TestCase):
 
     def setUp(self):
+        Question.objects.all().delete()
         self.user = User.objects.create_user(username='testuser', password='password', role='Lecturer')
         self.client.login(username='testuser', password='password')
 
@@ -16,12 +17,13 @@ class QuestionFileUploadTestCase(TestCase):
             user=self.user,
         )
 
-    def test_add_question_with_audio_and_video_files(self):
+    def test_text_answer_with_audio_video_and_image_files(self):
         self.client.login(username='lecturer', password='password')
 
         # Create mock audio and video files
         audio_file = SimpleUploadedFile("test_audio.mp3", b"file_content", content_type="audio/mpeg")
         video_file = SimpleUploadedFile("test_video.mp4", b"file_content", content_type="video/mp4")
+        image_file = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
 
         response = self.client.post(reverse('question_management:add_question', args=[self.poll.id]), {
             'question_type': 'text_fill',
@@ -29,7 +31,8 @@ class QuestionFileUploadTestCase(TestCase):
             'text_fill_answer': 'a fruit',
             'youtube_link': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
             'audio_file': audio_file,
-            'video_file': video_file
+            'video_file': video_file,
+            'image_file': image_file
         })
 
         self.assertEqual(response.status_code, 302)  # Ensure redirect happens
@@ -42,13 +45,15 @@ class QuestionFileUploadTestCase(TestCase):
         self.assertEqual(question.youtube_link, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
         self.assertIsNotNone(question.audio_file)
         self.assertIsNotNone(question.video_file)
+        self.assertIsNotNone(question.image_file)
 
-    def test_add_dropdown_fill_question_with_audio_and_video_files(self):
+    def test_add_dropdown_fill_question_with_audio_video_and_image_files(self):
         self.client.login(username='lecturer', password='password')
 
         # Create mock audio and video files
         audio_file = SimpleUploadedFile("test_audio.mp3", b"file_content", content_type="audio/mpeg")
         video_file = SimpleUploadedFile("test_video.mp4", b"file_content", content_type="video/mp4")
+        image_file = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
 
         response = self.client.post(reverse('question_management:add_question', args=[self.poll.id]), {
             'question_type': 'dropdown_fill',
@@ -56,7 +61,8 @@ class QuestionFileUploadTestCase(TestCase):
             'dropdown_correct_answer': 'a fruit',
             'additional_options': ['a vegetable', 'a snack'],
             'audio_file': audio_file,
-            'video_file': video_file
+            'video_file': video_file,
+            'image_file': image_file
         })
 
         self.assertEqual(response.status_code, 302)  # Ensure redirect happens
@@ -68,13 +74,15 @@ class QuestionFileUploadTestCase(TestCase):
         self.assertEqual(question.dropdown_options, 'a fruit,a vegetable,a snack')
         self.assertIsNotNone(question.audio_file)
         self.assertIsNotNone(question.video_file)
+        self.assertIsNotNone(question.image_file)
 
-    def test_add_multiple_choice_question_with_audio_and_video_files(self):
+    def test_add_multiple_choice_question_with_audio_video_and_image_files(self):
         self.client.login(username='lecturer', password='password')
 
         # Create mock audio and video files
         audio_file = SimpleUploadedFile("test_audio.mp3", b"file_content", content_type="audio/mpeg")
         video_file = SimpleUploadedFile("test_video.mp4", b"file_content", content_type="video/mp4")
+        image_file = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
 
         response = self.client.post(reverse('question_management:add_question', args=[self.poll.id]), {
             'question_type': 'multiple_choice',
@@ -82,7 +90,8 @@ class QuestionFileUploadTestCase(TestCase):
             'multiple_choice_options[]': ['a fruit', 'a vegetable', 'a snack'],
             'multiple_choice_answers[]': ['a fruit'],
             'audio_file': audio_file,
-            'video_file': video_file
+            'video_file': video_file,
+            'image_file': image_file
         })
 
         self.assertEqual(response.status_code, 302)  # Ensure redirect happens
@@ -95,13 +104,15 @@ class QuestionFileUploadTestCase(TestCase):
         self.assertEqual(question.multiple_choice_answers, ['a fruit'])
         self.assertIsNotNone(question.audio_file)
         self.assertIsNotNone(question.video_file)
+        self.assertIsNotNone(question.image_file)
 
-    def test_add_single_choice_question_with_audio_and_video_files(self):
+    def test_add_single_choice_question_with_audio_video_and_image_files(self):
         self.client.login(username='lecturer', password='password')
 
         # Create mock audio and video files
         audio_file = SimpleUploadedFile("test_audio.mp3", b"file_content", content_type="audio/mpeg")
         video_file = SimpleUploadedFile("test_video.mp4", b"file_content", content_type="video/mp4")
+        image_file = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
 
         response = self.client.post(reverse('question_management:add_question', args=[self.poll.id]), {
             'question_type': 'single_choice',
@@ -109,7 +120,8 @@ class QuestionFileUploadTestCase(TestCase):
             'single_choice_options[]': ['a fruit'],
             'single_choice_answers[]': ['a fruit'],
             'audio_file': audio_file,
-            'video_file': video_file
+            'video_file': video_file,
+            'image_file': image_file
         })
 
         self.assertEqual(response.status_code, 302)  # Ensure redirect happens
@@ -122,19 +134,22 @@ class QuestionFileUploadTestCase(TestCase):
         self.assertEqual(question.single_choice_answers, 'a fruit')
         self.assertIsNotNone(question.audio_file)
         self.assertIsNotNone(question.video_file)
+        self.assertIsNotNone(question.image_file)
 
-    def test_add_wordcloud_question_with_audio_and_video_files(self):
+    def test_add_wordcloud_question_with_audio_video_and_image_files(self):
         self.client.login(username='lecturer', password='password')
 
         # Create mock audio and video files
         audio_file = SimpleUploadedFile("test_audio.mp3", b"file_content", content_type="audio/mpeg")
         video_file = SimpleUploadedFile("test_video.mp4", b"file_content", content_type="video/mp4")
+        image_file = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
 
         response = self.client.post(reverse('question_management:add_question', args=[self.poll.id]), {
             'question_type': 'wordcloud',
             'wordcloud_question': 'Describe the features of an apple',
             'audio_file': audio_file,
-            'video_file': video_file
+            'video_file': video_file,
+            'image_file': image_file
         })
 
         questions = Question.objects.filter(poll_id=self.poll.id)
@@ -144,13 +159,15 @@ class QuestionFileUploadTestCase(TestCase):
         self.assertEqual(question.wordcloud_question, 'Describe the features of an apple')
         self.assertIsNotNone(question.audio_file)
         self.assertIsNotNone(question.video_file)
+        self.assertIsNotNone(question.image_file)
 
-    def test_add_match_question_with_audio_and_video_files(self):
+    def test_add_match_question_with_audio_video_and_image_files(self):
         self.client.login(username='lecturer', password='password')
 
         # Create mock audio and video files
         audio_file = SimpleUploadedFile("test_audio.mp3", b"file_content", content_type="audio/mpeg")
         video_file = SimpleUploadedFile("test_video.mp4", b"file_content", content_type="video/mp4")
+        image_file = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
 
         response = self.client.post(reverse('question_management:add_question', args=[self.poll.id]), {
             'question_type': 'match_question',
@@ -158,7 +175,8 @@ class QuestionFileUploadTestCase(TestCase):
             'match_question_options[]': ['Apple', 'Banana', 'Carrot'],
             'match_question_answers[]': ['Fruit', 'Fruit', 'Vegetable'],
             'audio_file': audio_file,
-            'video_file': video_file
+            'video_file': video_file,
+            'image_file': image_file
         })
 
         self.assertEqual(response.status_code, 302)  # Ensure redirect happens
@@ -171,5 +189,6 @@ class QuestionFileUploadTestCase(TestCase):
         self.assertEqual(question.match_answers, ['Fruit', 'Fruit', 'Vegetable'])
         self.assertIsNotNone(question.audio_file)
         self.assertIsNotNone(question.video_file)
+        self.assertIsNotNone(question.image_file)
 
 

@@ -55,6 +55,8 @@ class Question(models.Model):
     audio_file = models.FileField(upload_to='uploads/audio/', null=True, blank=True)
     video_file = models.FileField(upload_to='uploads/video/', null=True, blank=True)
     youtube_link = models.URLField(max_length = 100, null=True, blank=True)
+    image_file = models.ImageField(upload_to='uploads/images/', null=True, blank=True)
+
 
     @property
     def poll_title(self):
@@ -62,11 +64,15 @@ class Question(models.Model):
 
     def get_dropdown_options(self):
         if not self.dropdown_options:
-            return []
-        options = [opt.strip() for opt in self.dropdown_options.split(',')]
+            options = []
+        else:
+            options = [opt.strip() for opt in self.dropdown_options.split(',') if opt.strip()]
+            
+        if self.dropdown_correct_answer and self.dropdown_correct_answer not in options:
+            options.append(self.dropdown_correct_answer)        
         return options
 
-# When refactoring models, use the below code:
+# When refactoring models, can use the below code:
 # from django.db import models
 # from poll_management.models.poll_model import Poll
 #

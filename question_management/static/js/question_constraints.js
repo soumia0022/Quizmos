@@ -1,6 +1,5 @@
 function displayErrorMessage(message, event){
     alert(message);
-    console.log('comign to display message function')
     event.preventDefault(); //don't allow the submission to go through
 }
 
@@ -22,3 +21,9 @@ function choiceQuestionConstraints(options, answers, questionType){
             displayErrorMessage(`Please add at least one right answer for the ${questionType} question.`, event);
     }
 }
+function validateYouTubeLink(youtubeLink) {
+            const regex = /^https:\/\/youtu\.be\/[A-Za-z0-9_-]+$/;
+            if (!regex.test(youtubeLink)){
+                displayErrorMessage('Invalid YouTube link format. It should start with "https://youtu.be/"', event)
+            }
+        }

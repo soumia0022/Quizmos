@@ -10,9 +10,9 @@
     <script src="{% static 'js/question_buttons.js' %}"></script>
     <script src="{% static 'js/question_constraints.js' %}"></script>
     <script type="module" src="{% static 'js/add_question.js' %}"></script>
-
 </head>
 <body>
+    {% noscript_warning %}
     {% return_button %}
     {% go_back_button %}
 
@@ -35,7 +35,7 @@
                 <!-- Form to Add Question (hidden initially) -->
                 <div class="card" id="question-form" style="display: none;">
                     <div class="card-body">
-                        <form method="POST" enctype="multipart/form-data">
+                        <form id="form" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <!-- Dropdown for selecting question type -->
                             <div class="mb-3">
@@ -151,10 +151,11 @@
                             </div>
 
 
-                           <!-- Add Audio and Video Buttons -->
+                           <!-- Add Audio, Video and Image Buttons -->
                             <div id="media-buttons" class="mb-3" style="display: none;">
                                 <button type="button" id="add-audio-btn" class="btn btn-secondary mb-2">Add Audio</button>
                                 <button type="button" id="add-video-btn" class="btn btn-secondary mb-2">Add Video</button>
+                                <button type="button" id="add-image-btn" class="btn btn-secondary mb-2">Add Image</button>
                                 <button type="button" id="reset-media-btn" class="btn btn-secondary mt-2">Reset Media</button> {% info_button "You can only upload one media type" %}
                             </div>
 
@@ -176,8 +177,14 @@
 
                             <!-- YouTube URL Input Field -->
                             <div id="youtube-url-field" style="display: none;">
+                                <p>{% info_button "Right-click on the YouTube video, select Copy video URL, and paste it bellow" %}</p>
                                 <input type="url" name="youtube_link" class="form-control mb-2" placeholder="Enter YouTube video URL">
                             </div>
+
+                            <div id="image-upload-field" style="display: none;">
+                                <input type="file" name="image_file" class="form-control mb-2" accept="image/*">
+                            </div>
+
 
                             <!-- Save Question Button -->
                             <div class="text-center">
