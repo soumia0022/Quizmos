@@ -1,4 +1,5 @@
 {% extends 'base_content.html' %}
+{% load static %}
 {% block content %}
 <div class="container">
   <div class="row">
@@ -6,5 +7,28 @@
       <h1>Welcome to your student dashboard {{ user.username }}</h1>
     </div>
   </div>
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="h4 mb-3">Join Poll</h2>
+          <form id="joinPollForm" onsubmit="handlePollSubmit(event)">
+            {% csrf_token %}
+            <div class="form-group">
+              <input type="text" class="form-control" id="pollCode" placeholder="Enter poll code" required>
+            </div>
+            <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+<script>
+function handlePollSubmit(event) {
+  event.preventDefault();
+  const code = document.getElementById('pollCode').value;
+  window.location.href = "{% url 'poll_management:join_poll' code=0 %}".replace('0', code);
+}
+</script>
 {% endblock %}
