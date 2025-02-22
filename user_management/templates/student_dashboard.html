@@ -7,7 +7,7 @@
             <h1>Welcome to your student dashboard {{ user.username }}</h1>
         </div>
     </div>
-    
+     
     <div class="row mt-4">
         <div class="col-md-6">
             <div class="card">
@@ -24,7 +24,19 @@
             </div>
         </div>
     </div>
-    
+
+    <br/>
+    <form method="GET">
+        <input type="text" name="search" placeholder="Search polls..." value="{{ search_query }}">
+        <select name="sort_by" onchange="this.form.submit()">
+            <option value="created_at_desc" {% if sort_by == "created_at_desc" %}selected{% endif %}>Newest First</option>
+            <option value="created_at_asc" {% if sort_by == "created_at_asc" %}selected{% endif %}>Oldest First</option>
+            <option value="title_asc" {% if sort_by == "title_asc" %}selected{% endif %}>A-Z</option>
+            <option value="title_desc" {% if sort_by == "title_desc" %}selected{% endif %}>Z-A</option>
+        </select>
+        <button type="submit">Apply</button>
+    </form>
+       
     {% if polls %}
     <div class="row mt-4">
         <div class="col-12">
@@ -37,13 +49,9 @@
                             <span class="poll-emoji">🚀</span>
                             <h5 class="card-title">{{ poll.title }}</h5>
                         </div>
-
                         <div class="card-body">
-                            <p><strong>Status:</strong> {{ poll.status }}</p>
                             <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
-                            <p><strong>Responses:</strong> {{ poll.responses_count }}</p>
                         </div>
-
                         <div class="card-footer text-muted">
                             <a href="{% url 'poll_management:view_poll' poll.id %}" class="btn btn-primary btn-sm">View</a>
                             <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
@@ -59,6 +67,8 @@
             </div>
         </div>
     </div>
+    
+    {% include 'partials/pagination.html' %}
     {% endif %}
 </div>
 
