@@ -61,8 +61,8 @@
                             <!-- Text Fill Fields -->
                             <div id="text-fill-fields" class="mb-3" style="display: none;">
                                 <p>{% info_button "Allows students to type a free-form response" %}</p>
-                                <input type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
-                                <input type="text" name="text_fill_answer" class="form-control" placeholder="Enter Text Answer">
+                                <input id="id_text_question" type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
+                                <input id="id_text_answer" type="text" name="text_fill_answer" class="form-control" placeholder="Enter Text Answer">
 
                             </div>
 
@@ -107,7 +107,7 @@
                             <!-- Word Cloud Fields -->
                             <div id="word-cloud-fields" style="display: none;">
                                 <p>{% info_button "Add a prompt for which students will add word responses to live in the lesson" %}</p>
-                                <input type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt" />
+                                <input id="id_word_cloud_question" type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt" />
                                 <div id="actual-wordcloud">
                                 <!-- Display the word cloud image if generated -->
                                 {% if wordcloud_image %}
@@ -135,7 +135,7 @@
                             <div id="code-question-fields" class="mb-3" style="display: none;">
                                 <p>{% info_button "Provide a coding problem with a prompt and test cases" %}</p>
                                 <label for="code_question_text" class="form-label">Coding Question:</label>
-                                <textarea name="code_question_text" class="form-control mb-2" placeholder="Enter coding question prompt"></textarea>
+                                <textarea id="id_code_question" name="code_question_text" class="form-control mb-2" placeholder="Enter coding question prompt"></textarea>
 
                                 <label for="code_language" class="form-label">Select Language:</label>
                                 <select name="code_language" class="form-select mb-2">
@@ -147,7 +147,7 @@
                                 </select>
 
                                 <label for="code_test_cases" class="form-label">Test Cases (JSON Format):</label>
-                                <textarea name="code_test_cases" class="form-control" placeholder='Example: [{"input": "2,3", "output": "5"}]'></textarea>
+                                <textarea id="id_code_answer" name="code_test_cases" class="form-control" placeholder='Example: [{"input": "2,3", "output": "5"}]'></textarea>
                             </div>
 
 
