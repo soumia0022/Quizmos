@@ -1,12 +1,10 @@
-import time
 from django.test import TestCase
-from selenium.common.exceptions import ElementClickInterceptedException
-from selenium.webdriver.common.alert import Alert
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from django.shortcuts import reverse
-import ast  # To safely convert string to list
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
 
 from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element  # From __init__.py
 from poll_management.tests.fixtures.create_test_polls import create_default_test_polls
@@ -75,3 +73,32 @@ class TestOtherSystemComponents(TestCase, BaseSeleniumTest):
     def tearDown(self):
         super().tearDown()
 
+    def test_info_button_tooltip_when_adding_text_fill_question(self):
+        # Navigate to add question page after logging in and choose text question type
+        self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
+        wait_for_element(self.driver, By.ID, "id_poll_edit_button").click()
+        wait_for_element(self.driver, By.ID, "id_edit_questions_button").click()
+        wait_for_element(self.driver, By.ID, "add-question-btn").click()
+        dropdown = wait_for_element(self.driver, By.ID, "question-type-dropdown")
+        dropdown = Select(dropdown)
+        dropdown.select_by_value("text_fill")
+        wait_for_element(self.driver, By.ID, "text-fill-fields")
+
+        # Locate the info button using its Bootstrap class
+        info_button = wait_for_element(self.driver, By.CSS_SELECTOR, ".info-button-wrapper .info-button")
+
+        # Hover over the info button to show the tooltip
+        actions = ActionChains(self.driver)
+        actions.move_to_element(info_button).perform()
+
+        # Wait for the tooltip to appear and check it's displayed
+        info_popup = wait_for_element(self.driver, By.CSS_SELECTOR, ".info-button-wrapper .info-popup")
+        WebDriverWait(self.driver, 10).until(EC.visibility_of(info_popup))
+        self.assertTrue(info_popup.is_displayed())
+
+        # Move the cursor away to hide the tooltip and verify it's hidden
+        actions.move_by_offset(50, 50).perform()
+        wait(self.driver)
+        self.assertFalse(info_popup.is_displayed())
+
+    # Can either use Selenium and test all info buttons or manually test them (whitebox testing) and note in report
