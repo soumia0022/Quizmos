@@ -15,6 +15,7 @@ from user_management.models.user_model import User
 from poll_management.models.poll_model import Poll
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
+# Write tests for create poll once functionality has been changed/fixed
 
 # @skipIf(os.environ.get('GITHUB_ACTIONS') == 'true', 'These tests require a visible browser to run.')
 class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
