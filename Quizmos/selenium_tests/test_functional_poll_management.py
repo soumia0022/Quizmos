@@ -1,9 +1,4 @@
 import time
-
-# To skip tests in GitHub Actions (when using headed browser)
-import os
-from unittest import skipIf
-
 from django.test import TestCase
 from selenium.webdriver.common.by import By
 from django.shortcuts import reverse
@@ -17,7 +12,7 @@ from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
 # Write tests for create poll once functionality has been changed/fixed
 
-# @skipIf(os.environ.get('GITHUB_ACTIONS') == 'true', 'These tests require a visible browser to run.')
+
 class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
     """This class tests all poll functionality (excluding question specific functionality)."""
     def setUp(self):

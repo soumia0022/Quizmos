@@ -1,9 +1,4 @@
 import time
-
-# To skip tests in GitHub Actions (when using headed browser)
-import os
-from unittest import skipIf
-
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -18,7 +13,7 @@ from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 # Add tests for password reset (when forgotten) once functionality has been completed
 # Add tests for pathways that certain users cannot take (e.g., a student cannot access a lecturer dashboard)
 
-# @skipIf(os.environ.get('GITHUB_ACTIONS') == 'true', 'These tests require a visible browser to run.')
+
 class TestFunctionalRegistration(BaseSeleniumTest):
     """This class tests user registration functionality."""
     def setUp(self):
@@ -92,7 +87,6 @@ class TestFunctionalRegistration(BaseSeleniumTest):
     # End of helper methods
 
 
-# @skipIf(os.environ.get('GITHUB_ACTIONS') == 'true', 'These tests require a visible browser to run.')
 class TestFunctionalUserSystem(BaseSeleniumTest):
     """This class tests user login and password change functionality."""
     def setUp(self):
