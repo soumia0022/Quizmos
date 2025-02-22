@@ -34,16 +34,10 @@ def dashboard(request):
     current_user = request.user
     
     if current_user.role == 'Student':
-        joined_polls = current_user.joined_polls.all()
-
-        # Pagination for students
-        paginator = Paginator(joined_polls, 10)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
         # Search and sort for students
         search_query = request.GET.get('search', '')
         sort_by = request.GET.get('sort_by', 'created_at_desc')
+        joined_polls = current_user.joined_polls.all()
 
         if search_query:
             joined_polls = joined_polls.filter(Q(title__icontains=search_query))
