@@ -2,33 +2,73 @@
 {% load static %}
 {% block content %}
 <div class="container">
-  <div class="row">
-    <div class="col-12">
-      <h1>Welcome to your student dashboard {{ user.username }}</h1>
-    </div>
-  </div>
-  <div class="row mt-4">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h2 class="h4 mb-3">Join Poll</h2>
-          <form id="joinPollForm" onsubmit="handlePollSubmit(event)">
-            {% csrf_token %}
-            <div class="form-group">
-              <input type="text" class="form-control" id="pollCode" placeholder="Enter poll code" required>
-            </div>
-            <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
-          </form>
+    <div class="row">
+        <div class="col-12">
+            <h1>Welcome to your student dashboard {{ user.username }}</h1>
         </div>
-      </div>
     </div>
-  </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Join Poll</h2>
+                    <form id="joinPollForm" onsubmit="handlePollSubmit(event)">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="pollCode" placeholder="Enter poll code" required>
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if polls %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <h2>Your Polls</h2>
+            <div class="poll-container row">
+                {% for poll in polls %}
+                <div class="col-md-4 mb-4">
+                    <div class="poll-card card">
+                        <div class="card-header">
+                            <span class="poll-emoji">🚀</span>
+                            <h5 class="card-title">{{ poll.title }}</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <p><strong>Status:</strong> {{ poll.status }}</p>
+                            <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
+                            <p><strong>Responses:</strong> {{ poll.responses_count }}</p>
+                        </div>
+
+                        <div class="card-footer text-muted">
+                            <a href="{% url 'poll_management:view_poll' poll.id %}" class="btn btn-primary btn-sm">View</a>
+                            <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No polls found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+<script src="{% static 'js/confirm_delete.js' %}"></script>
+
 <script>
 function handlePollSubmit(event) {
-  event.preventDefault();
-  const code = document.getElementById('pollCode').value;
-  window.location.href = "{% url 'poll_management:join_poll' code=0 %}".replace('0', code);
+    event.preventDefault();
+    const code = document.getElementById('pollCode').value;
+    window.location.href = "{% url 'poll_management:join_poll' code=0 %}".replace('0', code);
 }
 </script>
 {% endblock %}
