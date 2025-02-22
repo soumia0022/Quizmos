@@ -30,7 +30,7 @@ def log_in(driver: WebDriver, live_server_url: str, username: str, password: str
     wait(driver)
 
 def logout(driver: WebDriver, live_server_url: str):
-    driver.get(f"{live_server_url}{reverse('log_out')}")
+    driver.get(f"{live_server_url}{reverse('user_management:log_out')}")
 
 def wait(driver_client):
     """Ensures page is fully loaded before continuing."""

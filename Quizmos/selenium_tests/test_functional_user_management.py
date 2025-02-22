@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import Select
 from django.shortcuts import reverse
 
 from django.conf import settings
-from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element  # From __init__.py
+from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element, logout  # From __init__.py
 from user_management.tests.fixtures.create_test_users import create_default_test_user  # In fixtures
 from user_management.models.user_model import User
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
@@ -131,6 +131,13 @@ class TestFunctionalUserSystem(BaseSeleniumTest):
         self.assertEqual(charlie.username, "johndoeupdated")
         self.assertEqual(charlie.email, "johndoeupdated@example.com")
 
+    def test_user_can_log_out(self):
+        log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
+        self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
+        wait(self.driver)
+        logout(self.driver, self.live_server_url)
+        login_button = wait_for_element(self.driver, By.ID, "id_login_home_page_button")
+        self.assertTrue(login_button.is_displayed())  # Check if login button exists
 
     # Helper methods below
 
