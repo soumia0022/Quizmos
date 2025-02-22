@@ -34,13 +34,10 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         # Navigate to add question page once logging in
         log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
         self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
-        wait(self.driver)
         edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
         edit_button.click()
-        wait(self.driver)
         edit_questions_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button"))
         edit_questions_button.click()
-        wait(self.driver)
         add_question_button = wait_for_element(self.driver, By.ID, "add-question-btn")  # ID already given
         add_question_button.click()
         wait(self.driver)
@@ -50,13 +47,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
 
     def test_user_can_add_multiple_choice_question(self):
         # Test if Multiple Choice Option can be selected
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("multiple_choice")
-        # time.sleep(2)
-        selected_option = dropdown.first_selected_option
-        self.assertEqual(selected_option.get_dom_attribute("value"), "multiple_choice")
-        multiple_choice_fields = wait_for_element(self.driver, By.ID, "multiple-choice-fields")
-        self.assertTrue(multiple_choice_fields.is_displayed())
+        self.select_question("multiple_choice", "multiple-choice-fields")
 
         # Test the creation of a Multiple Choice Question
         question_input = self.driver.find_element(By.NAME, "multiple_choice_question")
@@ -79,13 +70,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
 
     def test_user_can_add_single_choice_question(self):
         # Test if Single Choice Option can be selected
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("single_choice")
-        # time.sleep(2)
-        selected_option = dropdown.first_selected_option
-        self.assertEqual(selected_option.get_dom_attribute("value"), "single_choice")
-        single_choice_fields = wait_for_element(self.driver, By.ID, "single-choice-fields")
-        self.assertTrue(single_choice_fields.is_displayed())
+        self.select_question("single_choice", "single-choice-fields")
 
         # Test the creation of a Single Choice Question
         question_input = self.driver.find_element(By.NAME, "single_choice_question")
@@ -108,12 +93,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
 
     def test_user_can_add_text_question(self):
         # Test if Text can be selected
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("text_fill")
-        selected_option = dropdown.first_selected_option
-        self.assertEqual(selected_option.get_dom_attribute("value"), "text_fill")
-        text_fill_fields = wait_for_element(self.driver, By.ID, "text-fill-fields")
-        self.assertTrue(text_fill_fields.is_displayed())
+        self.select_question("text_fill", "text-fill-fields")
 
         # Test the creation of a Text Fill question
         text_question_input = wait_for_element(self.driver, By.ID, "id_text_question")
@@ -131,12 +111,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
 
     def test_user_can_add_dropdown_question(self):
         # Test if Text can be selected
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("dropdown_fill")
-        selected_option = dropdown.first_selected_option
-        self.assertEqual(selected_option.get_dom_attribute("value"), "dropdown_fill")
-        dropdown_fill_fields = wait_for_element(self.driver, By.ID, "dropdown-fill-fields")
-        self.assertTrue(dropdown_fill_fields.is_displayed())
+        self.select_question("dropdown_fill", "dropdown-fill-fields")
 
         # Test the creation of a Dropdown Fill question
         dropdown_input = wait_for_element(self.driver, By.ID, "dropdown-fill-input")
@@ -163,15 +138,9 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         self.assertEqual(dropdown_question_text, "The capital of France is _____")
         self.assertEqual(correct_answer, "Paris")
 
-
     def test_user_can_add_word_cloud_question(self):
         # Test if Word Cloud can be selected
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("wordcloud")
-        selected_option = dropdown.first_selected_option
-        self.assertEqual(selected_option.get_dom_attribute("value"), "wordcloud")
-        word_cloud_fields = wait_for_element(self.driver, By.ID, "word-cloud-fields")
-        self.assertTrue(word_cloud_fields.is_displayed())
+        self.select_question("wordcloud", "word-cloud-fields")
 
         # Test the creation of a Word Cloud question
         word_cloud_question_input = wait_for_element(self.driver, By.ID, "id_word_cloud_question")
@@ -187,12 +156,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
 
     def test_user_can_add_match_question(self):
         # Test if Match Question can be selected
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("match_question")
-        selected_option = dropdown.first_selected_option
-        self.assertEqual(selected_option.get_dom_attribute("value"), "match_question")
-        match_fields = wait_for_element(self.driver, By.ID, "match-fields")
-        self.assertTrue(match_fields.is_displayed())
+        self.select_question("match_question", "match-fields")
 
         # Test the creation of a Match question
         match_question_input = wait_for_element(self.driver, By.NAME, "match_question")
@@ -215,12 +179,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
 
     def test_user_can_add_code_question(self):
         # Test if Code Question can be selected
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("code_question")
-        selected_option = dropdown.first_selected_option
-        self.assertEqual(selected_option.get_dom_attribute("value"), "code_question")
-        code_question_fields = wait_for_element(self.driver, By.ID, "code-question-fields")
-        self.assertTrue(code_question_fields.is_displayed())
+        self.select_question("code_question", "code-question-fields")
 
         # Test the creation of a Code question
         code_question_input = wait_for_element(self.driver, By.ID, "id_code_question")
@@ -243,6 +202,15 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
 
     # Helper methods below:
 
+    def select_question(self, question_type, question_fields):
+        """Checks that the question type being tested can be selected from the question dropdown."""
+        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+        dropdown.select_by_value(question_type)
+        selected_option = dropdown.first_selected_option
+        self.assertEqual(selected_option.get_dom_attribute("value"), question_type)
+        question_fields = wait_for_element(self.driver, By.ID, question_fields)
+        self.assertTrue(question_fields.is_displayed())
+
     def add_two_options_for_choice_questions(self, add_option_button):
         add_option_button.click()
         alert = Alert(self.driver)  # Wait for alert popup and enter first option
@@ -258,11 +226,9 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         save_button = wait_for_element(self.driver, By.ID, "id_save_question_button")
         self.driver.execute_script("arguments[0].scrollIntoView(true);", save_button)
         try:
-            # Wait for the button to be clickable, then click
             wait_for_clickable(self.driver, save_button).click()
         except ElementClickInterceptedException:
-            # If the button is still intercepted, click via JavaScript
-            self.driver.execute_script("arguments[0].click();", save_button)
+            self.driver.execute_script("arguments[0].click();", save_button)  # Click via JS
 
     # End of helper methods
 
