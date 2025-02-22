@@ -2,146 +2,47 @@
 {% load static %}
 {% load system_extras %}
 {% block content %}
-  <!-- Styles -->
-  <style>
-      body {
-          background: linear-gradient(135deg, #0c0c2b, #1a1a3a) fixed;
-          color: white;
-          font-family: 'Poppins', sans-serif;
-          margin: 0;
-          overflow-x: hidden;
-          min-height: 100vh;
-      }
 
-      /* Stars Background */
-      .stars {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 0;
-          pointer-events: none;
-      }
+<link rel="stylesheet" href="{% static 'css/poll_edit.css' %}">
 
-      .planet {
-          position: absolute;
-          border-radius: 50%;
-          box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
-      }
+<!-- Background Elements -->
+<div class="stars"></div>
+<div class="planet planet-1"></div> <!-- Cool Orange -->
+<div class="planet planet-2"></div> <!-- Red-Orange -->
+<div class="large-planet-icon">🪐</div>
 
-      /* First Planet (Cool Orange) */
-      .planet-1 {
-          width: 100px;
-          height: 100px;
-          top: 15%; /* Moved down slightly */
-          left: 10%;
-          background: radial-gradient(circle at 30% 30%, #fdd835, #e65100, #bf360c);
-      }
+<!-- Poll Edit Content -->
+<div class="container d-flex align-items-center justify-content-center flex-column" style="height: 100vh;">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6">
+            <div class="card normal-card p-4 shadow-lg">
+                <h3 class="glowy-title text-center">
+                    <span class="poll-emoji">🚀</span> Edit Poll: {{ poll.title }}
+                </h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Poll Title:</label>
+                        <input type="text" id="title" name="title" class="form-control" value="{{ poll.title }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status:</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="active" {% if poll.status == "active" %}selected{% endif %}>Active</option>
+                            <option value="closed" {% if poll.status == "closed" %}selected{% endif %}>Closed</option>
+                        </select>
+                    </div>
+                    <div class="d-flex flex-column gap-3 mt-3">
+                        <button type="submit" class="btn btn-primary-custom btn-block">Save Changes</button>
+                        <a href="{% url 'question_management:add_question' poll.id %}" class="btn btn-outline-light btn-block">Edit Questions</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-      /* Second Planet (Red-Orange) */
-      .planet-2 {
-          width: 150px;
-          height: 150px;
-          bottom: 15%;
-          right: 10%;
-          background: radial-gradient(circle at 30% 30%, #ff7043, #bf360c, #3e2723);
-      }
+    <div class="return-container">
+        <a href="{% url 'user_management:dashboard' %}" class="btn btn-return">Return to Dashboard</a>
+    </div>
 
-      /* Large Planet Icon (Saturn) */
-      .large-planet-icon {
-          font-size: 200px;
-          position: absolute;
-          bottom: 5%;
-          left: 10%;
-      }
-
-      .normal-card, .container form {
-          background: rgba(30, 30, 70, 0.8);
-          border: 2px solid #4a4a8a;
-          border-radius: 15px;
-          padding: 1.5rem;
-          backdrop-filter: blur(10px);
-          box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-          transition: all 0.3s ease;
-      }
-
-      .return-container {
-          text-align: center;
-          margin-top: 10px;
-      }
-
-      .btn-primary-custom, .btn-outline-light {
-          background-color: #6666FF !important;
-          border: none;
-          color: white;
-          padding: 8px 12px;
-          border-radius: 5px;
-          transition: all 0.3s ease;
-          cursor: pointer;
-      }
-
-      .btn-primary-custom:hover, .btn-outline-light:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 0 15px rgba(102, 102, 255, 0.5);
-      }
-
-      .btn-return {
-          background: rgba(102, 102, 255, 0.2);
-          border: 2px solid #6666ff;
-          color: #9999ff;
-          padding: 10px 15px;
-          border-radius: 5px;
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-      }
-
-      .btn-return:hover {
-          background: #6666ff;
-          box-shadow: 0 0 15px rgba(102, 102, 255, 0.5);
-          transform: translateY(-2px);
-      }
-  </style>
-
-  <!-- Background Elements -->
-  <div class="stars"></div>
-  <div class="planet planet-1"></div> <!-- Cool Orange -->
-  <div class="planet planet-2"></div> <!-- Red-Orange -->
-  <div class="large-planet-icon">🪐</div>
-
-  <!-- Poll Edit Content -->
-  <div class="container d-flex align-items-center justify-content-center flex-column" style="height: 100vh;">
-      <div class="row justify-content-center w-100">
-          <div class="col-md-6">
-              <div class="card normal-card p-4 shadow-lg">
-                  <h3 class="glowy-title text-center">
-                      <span class="poll-emoji">🚀</span> Edit Poll: {{ poll.title }}
-                  </h3>
-                  <form method="POST">
-                      {% csrf_token %}
-                      <div class="mb-3">
-                          <label for="title" class="form-label">Poll Title:</label>
-                          <input type="text" id="title" name="title" class="form-control" value="{{ poll.title }}" required>
-                      </div>
-                      <div class="mb-3">
-                          <label for="status" class="form-label">Status:</label>
-                          <select id="status" name="status" class="form-select">
-                              <option value="active" {% if poll.status == "active" %}selected{% endif %}>Active</option>
-                              <option value="closed" {% if poll.status == "closed" %}selected{% endif %}>Closed</option>
-                          </select>
-                      </div>
-                      <div class="d-flex flex-column gap-3 mt-3">
-                          <button type="submit" class="btn btn-primary-custom btn-block">Save Changes</button>
-                          <a href="{% url 'question_management:add_question' poll.id %}" class="btn btn-outline-light btn-block">Edit Questions</a>
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
-      <!-- Return to Dashboard Button (Transparent, Non-Glowy) -->
-      <div class="return-container">
-          <a href="#" class="btn btn-return">Return to Dashboard</a>
-      </div>
-  </div>
 {% endblock %}
