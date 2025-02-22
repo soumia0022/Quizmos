@@ -11,7 +11,8 @@ from poll_management.models.poll_model import Poll
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
 # Write tests for create poll once functionality has been changed/fixed
-
+# Can add test to view the questions list of all questions in the poll tha comes up on the side once it is confirmed
+# that the code for it will not change
 
 class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
     """This class tests all poll functionality (excluding question specific functionality)."""
