@@ -57,7 +57,6 @@ class TestSystemButtons(TestCase, BaseSeleniumTest):
 class TestOtherSystemComponents(TestCase, BaseSeleniumTest):
     """This class tests all other system components functionality that has ot been covered by the other test classes.
     It tests information buttons ... ."""
-
     def setUp(self):
         super().setUp()
 

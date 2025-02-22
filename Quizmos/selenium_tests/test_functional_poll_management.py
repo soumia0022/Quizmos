@@ -1,4 +1,3 @@
-import time
 from django.test import TestCase
 from selenium.webdriver.common.by import By
 from django.shortcuts import reverse
@@ -36,12 +35,9 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
         view_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_view_button"))  # From lecturer_dashboard.html
         view_button.click()
         wait(self.driver)
-        # time.sleep(1)  # To ensure page stabilises + so I can see what is happening
-
         view_poll_title_element = wait_for_element(self.driver, By.ID, "id_view_poll_title")  # From view_poll.html
         expected_title = "Results for Poll: Sample Poll"
         self.assertEqual(expected_title, view_poll_title_element.text)
-
 
     def test_user_can_edit_poll(self):
         edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
