@@ -1,5 +1,6 @@
 import time
 from django.test import TestCase
+from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -17,6 +18,7 @@ from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 # Discuss with team about testing add audio and add video, I think this will be better to test on the lecturer side
 # where the audio/video has actually been embedded, rather than just checking the upload which has already been covered
 # by other non-selenium testing.
+# Can test deletion (deletion of choice and match options & reset dropdown) but this has been covered by non-selenium tests
 
 class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
     """This class tests all question functionality to check that users can create questions of varying types."""
@@ -135,7 +137,32 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         self.assertEqual(selected_option.get_dom_attribute("value"), "dropdown_fill")
         dropdown_fill_fields = wait_for_element(self.driver, By.ID, "dropdown-fill-fields")
         self.assertTrue(dropdown_fill_fields.is_displayed())
-        # Finish this off (will need JS)
+
+        # Test the creation of a Dropdown Fill question
+        dropdown_input = wait_for_element(self.driver, By.ID, "dropdown-fill-input")
+        dropdown_input.send_keys("The capital of France is Paris")
+        text_preview = wait_for_element(self.driver, By.ID, "text-preview")
+        self.assertIn("The capital of France is Paris", text_preview.text)  # Verify preview updates
+        word_to_click = text_preview.find_element(By.XPATH, ".//span[contains(text(),'Paris')]")
+        word_to_click.click()
+        correct_answer_field = wait_for_element(self.driver, By.ID, "dropdown-correct-answer")
+        self.assertEqual(correct_answer_field.get_attribute("value"), "Paris")
+        self.assertEqual(dropdown_input.get_attribute("value"), "The capital of France is _____")  # Verify blank space
+        additional_options = self.driver.find_elements(By.NAME, "additional_options")
+        incorrect_answers = ["London", "Berlin", "Madrid"]
+        for input_box, incorrect_answer in zip(additional_options, incorrect_answers):
+            input_box.send_keys(incorrect_answer)
+            self.assertEqual(input_box.get_attribute("value"), incorrect_answer)
+
+        # Test the saving of a Dropdown Question (verify in database)
+        self.save_question()
+        poll = Poll.objects.get(id=self.poll.id)
+        question = poll.questions.last()
+        dropdown_question_text = question.dropdown_fill_question
+        correct_answer = question.dropdown_answer
+        self.assertEqual(dropdown_question_text, "The capital of France is _____")
+        self.assertEqual(correct_answer, "Paris")
+
 
     def test_user_can_add_word_cloud_question(self):
         # Test if Word Cloud can be selected
@@ -166,7 +193,25 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         self.assertEqual(selected_option.get_dom_attribute("value"), "match_question")
         match_fields = wait_for_element(self.driver, By.ID, "match-fields")
         self.assertTrue(match_fields.is_displayed())
-        # Finish this off (will need to see JS)
+
+        # Test the creation of a Match question
+        match_question_input = wait_for_element(self.driver, By.NAME, "match_question")
+        match_question_input.send_keys("Match the following items.")
+        add_option_btn = wait_for_element(self.driver, By.ID, "match-add-option-btn")
+        wait_for_clickable(self.driver, add_option_btn).click()
+        match_option = wait_for_element(self.driver, By.NAME, "match_question_options[]")
+        match_answer = wait_for_element(self.driver, By.NAME, "match_question_answers[]")
+        match_option.send_keys("Apple")
+        match_answer.send_keys("Fruit")
+        self.assertEqual(match_option.get_attribute("value"), "Apple")
+        self.assertEqual(match_answer.get_attribute("value"), "Fruit")
+
+        # Test the saving of a Match question (verify in database)
+        self.save_question()
+        poll = Poll.objects.get(id=self.poll.id)
+        question = poll.questions.last()
+        match_question_text = question.match_question
+        self.assertEqual(match_question_text, "Match the following items.")
 
     def test_user_can_add_code_question(self):
         # Test if Code Question can be selected
@@ -185,7 +230,6 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         code_answer_input = wait_for_element(self.driver, By.ID, "id_code_answer")
         code_answer_input.send_keys('[{"input": "Paris", "output": "Paris!"}]')
         wait(self.driver)
-        time.sleep(1)
 
         # Test the saving of a Code question (verify in database)
         self.save_question()
@@ -195,6 +239,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         expected_test_case = "[{'input': 'Paris', 'output': 'Paris!'}]"
         expected_test_case = ast.literal_eval(expected_test_case)  # Convert to a list
         self.assertIn(expected_test_case[0], code_test_cases)
+
 
     # Helper methods below:
 
@@ -210,8 +255,14 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         wait(self.driver)
 
     def save_question(self):
-        save_button = self.driver.find_element(By.ID, "id_save_question_button")
-        save_button.click()
+        save_button = wait_for_element(self.driver, By.ID, "id_save_question_button")
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", save_button)
+        try:
+            # Wait for the button to be clickable, then click
+            wait_for_clickable(self.driver, save_button).click()
+        except ElementClickInterceptedException:
+            # If the button is still intercepted, click via JavaScript
+            self.driver.execute_script("arguments[0].click();", save_button)
 
     # End of helper methods
 
