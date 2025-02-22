@@ -34,7 +34,8 @@ def dashboard(request):
     current_user = request.user
     
     if current_user.role == 'Student':
-        return render(request, 'student_dashboard.html', {'user': current_user})
+        joined_polls = current_user.joined_polls.all()
+        return render(request, 'student_dashboard.html', {'user': current_user, 'polls': joined_polls})
     else:
         create_poll(request)
         
