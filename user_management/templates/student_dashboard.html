@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="h4 mb-3">Join Poll</h2>
-                    <form id="joinPollForm" onsubmit="handlePollSubmit(event)">
+                    <form id="joinPollForm" method="post" action="{% url 'user_management:home' %}">
                         {% csrf_token %}
                         <div class="form-group">
                             <input type="text" class="form-control" id="pollCode" placeholder="Enter poll code" required>
@@ -65,6 +65,7 @@
 
 {% include 'partials/confirm_delete.html' %}
 <script src="{% static 'js/confirm_delete.js' %}"></script>
+<script src="{% static 'js/poll_code_validation.js' %}"></script>
 
 <script>
 function handlePollSubmit(event) {
