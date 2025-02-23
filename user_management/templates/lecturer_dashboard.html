@@ -1,164 +1,124 @@
 {% extends 'base_content.html' %}
 {% load static %}
 {% block content %}
-    <link rel="stylesheet" href="{% static 'css/lecturer_dashboard.css' %}">
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-      <h1>Welcome to your lecturer dashboard, {{ user.username }}</h1>
-    </div>
-  </div>
+    <div class="stars"></div>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lecturer.css' %}">
 
-<!-- Search and Sort Form -->
-<form method="GET" >
-    <input type="text" name="search" placeholder="Search polls..." value="{{ search_query }}">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Welcome to your lecturer dashboard, {{ user.username }}</h1>
+            </div>
+        </div>
 
-    <select name="sort_by" onchange="this.form.submit()">
-        <option value="created_at_desc" {% if sort_by == "created_at_desc" %}selected{% endif %}>Newest First</option>
-        <option value="created_at_asc" {% if sort_by == "created_at_asc" %}selected{% endif %}>Oldest First</option>
-        <option value="title_asc" {% if sort_by == "title_asc" %}selected{% endif %}>A-Z</option>
-        <option value="title_desc" {% if sort_by == "title_desc" %}selected{% endif %}>Z-A</option>
-    </select>
+        <!-- Search and Sort Form -->
+        <form method="GET">
+            <input type="text" name="search" placeholder="Search polls..." value="{{ search_query }}">
+            <select name="sort_by" onchange="this.form.submit()">
+                <option value="created_at_desc" {% if sort_by == "created_at_desc" %}selected{% endif %}>Newest First</option>
+                <option value="created_at_asc" {% if sort_by == "created_at_asc" %}selected{% endif %}>Oldest First</option>
+                <option value="title_asc" {% if sort_by == "title_asc" %}selected{% endif %}>A-Z</option>
+                <option value="title_desc" {% if sort_by == "title_desc" %}selected{% endif %}>Z-A</option>
+            </select>
+            <button type="submit">Apply</button>
+        </form>
 
-    <button type="submit">Apply</button>
-</form>
+        <!-- Section for creating a poll -->
+        {% include 'create_poll.html' %}
 
-<!-- Section for creating a poll -->
-{% include 'create_poll.html' %}
+        <!-- Section for listing polls -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <h2>Your Polls</h2>
+                <div class="poll-container row">
+                    {% for poll in polls %}
+                    <div class="col-md-4 mb-4">
+                        <div class="poll-card card">
+                            <!-- Poll Header -->
+                            <div class="card-header">
+                                <span class="poll-emoji">🚀</span>
+                                <h5 class="card-title">{{ poll.title }}</h5>
+                            </div>
 
-<!-- Section for listing polls -->
-<div class="row mt-4">
-    <div class="col-12">
-        <h2>Your Polls</h2>
-        <div class="poll-container row">
-            {% for poll in polls %}
-            <div class="col-md-4 mb-4">
-                <div class="poll-card card">
-                    <!-- Poll Header -->
-                    <div class="card-header">
-                        <span class="poll-emoji">🚀</span>
-                        <h5 class="card-title">{{ poll.title }}</h5>
+                            <!-- Poll Body -->
+                            <div class="card-body">
+                                <p><strong>Status:</strong> {{ poll.status }}</p>
+                                <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
+                                <p><strong>Responses:</strong> {{ poll.responses_count }}</p>
+                            </div>
+
+                            <div class="card-footer text-muted">
+                                <a href="{% url 'poll_management:view_poll' poll.id %}" class="btn btn-primary btn-sm">View</a>
+                                <a href="{% url 'poll_management:poll_edit' poll.id %}" class="btn btn-secondary btn-sm">Edit</a>
+
+                                <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="button" onclick="confirmDelete({{ poll.id }})" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+
+                                <a href="{% url 'poll_management:display_code' poll.id %}" class="btn btn-success btn-sm">Start</a>
+                            </div>
+                        </div>
                     </div>
-
-                    <!-- Poll Body -->
-                    <div class="card-body">
-                        <p><strong>Status:</strong> {{ poll.status }}</p>
-                        <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
-                        <p><strong>Responses:</strong> {{ poll.responses_count }}</p>
-                    </div>
-
-                    <!-- Poll Footer (Actions) -->
-                    <div class="card-footer text-muted">
-                        <a href="{% url 'poll_management:view_poll' poll.id %}" class="btn btn-primary btn-sm">View</a>
-                        <a href="{% url 'poll_management:poll_edit' poll.id %}" class="btn btn-secondary btn-sm">Edit</a>
-                        <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="button" onclick="confirmDelete({{ poll.id }})" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                        <a href="{% url 'poll_management:display_code' poll.id %}" class="btn btn-success btn-sm">Start</a>
-                    </div>
+                    {% empty %}
+                    <p>No polls found.</p>
+                    {% endfor %}
                 </div>
             </div>
-            {% empty %}
-            <p>No polls found.</p>
-            {% endfor %}
+        </div>
+
+        <!-- Pagination Links -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if polls.has_previous %}
+                    <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">&laquo; first</a>
+                    <a href="?page={{ polls.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ polls.number }} of {{ polls.paginator.num_pages }}.
+                </span>
+
+                {% if polls.has_next %}
+                    <a href="?page={{ polls.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">next</a>
+                    <a href="?page={{ polls.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">last &raquo;</a>
+                {% endif %}
+            </span>
         </div>
     </div>
-</div>
 
-<!-- Pagination Links -->
-<div class="pagination">
-    <span class="step-links">
-        {% if polls.has_previous %}
-            <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">&laquo; first</a>
-            <a href="?page={{ polls.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ polls.number }} of {{ polls.paginator.num_pages }}.
-        </span>
-
-        {% if polls.has_next %}
-            <a href="?page={{ polls.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">next</a>
-            <a href="?page={{ polls.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
-
-<!-- Confirm Deletion Popup -->
-<div id="custom-popup" class="popup-overlay" style="display: none;">
-    <div class="popup-content">
-        <p>Are you sure you want to delete this poll?</p>
-        <button id="confirm-delete" class="popup-button">Yes</button>
-        <button id="cancel-delete" class="popup-button">No</button>
+    <div id="custom-popup" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <p>Are you sure you want to delete this poll?</p>
+            <button id="confirm-delete" class="popup-button">Yes</button>
+            <button id="cancel-delete" class="popup-button">No</button>
+        </div>
     </div>
-</div>
 
-<script src="{% static 'js/confirm_delete.js' %}"></script>
+    <script src="{% static 'js/confirm_delete.js' %}"></script>
 
-<!-- Embedded CSS for Styling -->
-<style>
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
+    <script>
 
-.popup-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    width: 300px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
+        function createStars() {
+            const starsContainer = document.createElement('div');
+            starsContainer.className = 'stars';
+            document.body.prepend(starsContainer);
 
-.popup-button {
-    margin: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                starsContainer.appendChild(star);
+            }
+        }
 
-.popup-button:hover {
-    background-color: #ddd;
-}
 
-.card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+        });
+    </script>
 
-.card-header {
-    background-color: #f7f7f7;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.card-body {
-    padding: 15px;
-}
-
-.card-footer {
-    padding: 10px;
-    background-color: #f9f9f9;
-    text-align: center;
-}
-</style>
-
-<script>
-document.querySelector('#room-name-submit').onclick = function(e) {
-    var roomName = document.querySelector('#room-name-input').value;
-    window.location.pathname = '/poll/' + roomName + '/';
-};
-</script>
 {% endblock %}

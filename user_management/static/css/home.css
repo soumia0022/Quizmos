@@ -18,21 +18,13 @@
   animation: twinkle 2s infinite alternate;
 }
 
-#meteors-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
-}
+
 
 .meteor {
   position: absolute;
   width: 3px;
   height: 100px;
-  background: linear-gradient(to bottom right, 
+  background: linear-gradient(to bottom right,
     rgba(255,255,255,0) 0%,
     rgba(255,255,255,0.8) 50%,
     rgba(255,255,255,0) 100%);
@@ -47,11 +39,11 @@
 }
 
 @keyframes meteorFall {
-  0% { 
+  0% {
       transform: rotate(-45deg) translateY(-100vh);
       opacity: 0.7;
   }
-  100% { 
+  100% {
       transform: rotate(-45deg) translateY(100vh);
       opacity: 0;
   }
@@ -98,5 +90,160 @@
   width: 400px;
 }
 
+body {
+    background: #0a0422;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
 
+
+
+/* Poll Card Styles */
+.poll-card {
+    background: rgba(20, 20, 50, 0.85);
+    border: 3px solid #5a5aae;
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1.8rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.poll-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 35px rgba(90, 90, 174, 0.6);
+}
+
+.card-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-footer {
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Buttons */
+.btn, button[type="submit"] {
+    background-color: #6666FF ;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+button[type="button"].btn-danger {
+    z-index: 10000;
+}
+
+
+.btn:hover, button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(102, 102, 255, 0.5);
+}
+
+
+form input[type="text"], form select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+
+form input[type="text"]:focus, form select:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(102, 102, 255, 0.8);
+    box-shadow: 0 0 5px rgba(102, 102, 255, 0.5);
+}
+
+
+
+
+
+form button[type="submit"] {
+    background-color: #6666FF;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+    background-color: #9900ff;  /* Slightly darker color on hover */
+}
+
+
+/* Pagination */
+.pagination {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.pagination a {
+    color: #9900ff;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.pagination a:hover {
+    background: rgba(153, 0, 255, 0.2);
+    border-radius: 5px;
+}
+
+.popup-overlay {
+    position: fixed;  /* Fixed position on the screen */
+    top: 0;  /* Align to the top */
+    left: 0;  /* Align to the left */
+    width: 100%;  /* Full width */
+    height: 100%;  /* Full height */
+    background: rgba(10, 4, 34, 0.9);  /* Dark semi-transparent background */
+    backdrop-filter: blur(5px);  /* Apply blur effect to background */
+    display: none;  /* Initially hidden */
+    align-items: center;  /* Center content horizontally */
+    justify-content: center;  /* Center content vertically */
+    z-index: 9999;  /* Ensure it is on top of all other content */
+}
+
+.popup-content {
+    background: rgba(30, 30, 70, 0.9);  /* Slightly lighter background for content */
+    border: 2px solid #4a4a8a;  /* Border to define the popup */
+    border-radius: 15px;  /* Rounded corners */
+    padding: 2rem;  /* Padding for content */
+    max-width: 400px;  /* Limit the width of the popup */
+    width: 100%;  /* Full width inside the limit */
+    text-align: center;  /* Center text */
+}
+
+.popup-button {
+    background: linear-gradient(135deg, #6600cc, #9900ff);  /* Gradient button background */
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    margin: 0 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.popup-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(153, 0, 255, 0.5);
+}
 

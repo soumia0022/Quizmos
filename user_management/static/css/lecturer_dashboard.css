@@ -1,149 +1,40 @@
-/* Global Styles */
-body {
-    background-color: #0d0d1a;
-    color: #ffffff;
-    font-family: 'Arial', sans-serif;
+
+.poll-card {
+    background: rgba(30, 30, 70, 0.8);
+    border: 2px solid #4a4a8a;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
 
-/* Navbar */
-.navbar {
-    background-color: #1a1a2e !important;
-    border-bottom: 2px solid #ffffff;
+.poll-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 30px rgba(74, 74, 138, 0.5);
 }
 
-.navbar a {
-    color: #ffffff !important;
-}
-
-/* Dashboard Container */
-.container {
-    background-color: #0d0d1a;
-    padding: 20px;
-}
-
-/* Poll Cards */
-.poll-card {
-    background-color: #1a1a2e !important;
-    border: 1px solid #4a4a6a;
-    border-radius: 10px;
-    padding: 15px;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-.poll-card .card-header, .poll-card .card-footer {
-    background-color: #161629;
-    border-bottom: 1px solid #4a4a6a;
-    padding: 10px;
-    font-weight: bold;
-}
-
-/* Buttons */
-.btn-primary, .btn-secondary, .btn-danger, .btn-success {
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-.btn-primary { background-color: #4a4a6a; }
-.btn-secondary { background-color: #6c6c8f; }
-.btn-danger { background-color: #d9534f; }
-.btn-success { background-color: #5cb85c; }
-
-button:hover { background-color: #6c6c8f; }
-
-/* Search and Sort Form */
-input[type="text"], select, button {
-    background-color: #161629;
-    color: white;
-    border: 1px solid #4a4a6a;
-}
-
-input[type="text"]::placeholder {
-    color: #b0b0c3;
-}
-
-/* Popup Overlay */
-.popup-overlay {
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
-.popup-content {
-    background-color: #1a1a2e;
-    color: white;
-    border-radius: 8px;
-}
-
-.popup-button {
-    background-color: #4a4a6a;
-    color: white;
-    border: none;
-}
-
-.popup-button:hover {
-    background-color: #6c6c8f;
-}
-
-/* Starry Background */
-.stars, #meteors-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-}
-
-.star {
-    position: absolute;
-    background-color: white;
-    border-radius: 50%;
-    width: 2px;
-    height: 2px;
-    animation: twinkle 2s infinite alternate;
-}
-
-.meteor {
-    position: absolute;
-    width: 3px;
-    height: 100px;
-    background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%);
-    transform: rotate(-45deg);
-    opacity: 0.7;
-    animation: meteorFall 3s linear infinite;
-}
-
+/* Animations */
 @keyframes twinkle {
-    0% { opacity: 0.3; }
-    100% { opacity: 1; }
+    0% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.2); }
+    100% { opacity: 0.3; transform: scale(1); }
 }
 
 @keyframes meteorFall {
     0% {
-        transform: rotate(-45deg) translateY(-100vh);
-        opacity: 0.7;
+        transform: translate(-100%, -100%) rotate(-45deg);
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
     }
     100% {
-        transform: rotate(-45deg) translateY(100vh);
+        transform: translate(100%, 100%) rotate(-45deg);
         opacity: 0;
     }
-}
-
-/* Dropdown Menu Fix */
-.profile-menu {
-    position: absolute;
-    background-color: #1a1a2e;
-    border: 1px solid #4a4a6a;
-    border-radius: 5px;
-    display: none;
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-    z-index: 1000;
-}
-
-.profile-menu.show {
-    display: block;
 }
