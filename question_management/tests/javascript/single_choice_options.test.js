@@ -85,4 +85,22 @@ describe('single_choice_options.js', () => {
 
         global.prompt.mockRestore();
     });
+
+    test('should remove an option when the delete button is clicked', () => {
+        jest.spyOn(global, 'prompt').mockReturnValue('Mocked Option');
+        let count = 1;
+        count = addSingleChoiceOption(count, singleChoiceOptionsSection);
+
+        const optionContainer = singleChoiceOptionsSection.children[0];
+
+        expect(singleChoiceOptionsSection.children.length).toBe(1);
+
+        // Simulate clicking the delete button
+        const deleteButton = optionContainer.querySelector('button.delete-option-btn');
+        deleteButton.click();
+
+        expect(singleChoiceOptionsSection.children.length).toBe(0); // Option should be removed
+
+        global.prompt.mockRestore();
+    });
 });
