@@ -1,11 +1,19 @@
 function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
-    multipleChoiceOptionsSection.appendChild(addChoiceOptionComponents('multiple_choice', McOptionCount));
-    return McOptionCount + 1;
+    const optionElement = addChoiceOptionComponents('multiple_choice', McOptionCount);
+    if (optionElement) { // Only append if the element is not null
+        multipleChoiceOptionsSection.appendChild(optionElement);
+        return McOptionCount + 1;
+    }
+    return McOptionCount;
 }
 
 function addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection) {
-    singleChoiceOptionsSection.appendChild(addChoiceOptionComponents('single_choice', ScOptionCount));
-    return ScOptionCount + 1; // Increment and return the updated count
+    const optionElement = addChoiceOptionComponents('single_choice', ScOptionCount);
+    if (optionElement) { // Only append if the element is not null
+        singleChoiceOptionsSection.appendChild(optionElement);
+        return ScOptionCount + 1;
+    }
+    return ScOptionCount;
 }
 
 function addChoiceOptionComponents(question_type, optionCount){
@@ -136,3 +144,5 @@ function clickTextPreview(dropdownCorrectAnswerField, dropdownInput, textPreview
         .map(w => (w === '_____' ? `<span class="blank">_____</span>` : `<span class="word">${w}</span>`))
         .join(' ');
 }
+
+module.exports = { addMultipleChoiceOption, addSingleChoiceOption };
