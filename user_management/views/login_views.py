@@ -34,7 +34,28 @@ def dashboard(request):
     current_user = request.user
     
     if current_user.role == 'Student':
-        return render(request, 'student_dashboard.html', {'user': current_user})
+        # Search and sort for students
+        search_query = request.GET.get('search', '')
+        sort_by = request.GET.get('sort_by', 'created_at_desc')
+        joined_polls = current_user.joined_polls.all()
+
+        if search_query:
+            joined_polls = joined_polls.filter(Q(title__icontains=search_query))
+        if sort_by == 'title_asc':
+            joined_polls = joined_polls.order_by(Lower('title'))
+        elif sort_by == 'title_desc':
+            joined_polls = joined_polls.order_by(Lower('title').desc())
+        elif sort_by == 'created_at_asc':
+            joined_polls = joined_polls.order_by('created_at')
+        elif sort_by == 'created_at_desc':
+            joined_polls = joined_polls.order_by('-created_at')
+
+        # Paginate after sorting and searching
+        paginator = Paginator(joined_polls, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'student_dashboard.html', {'user': current_user, 'polls': page_obj, 'search_query': search_query, 'sort_by': sort_by})
     else:
         create_poll(request)
         
