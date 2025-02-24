@@ -11,6 +11,7 @@ def join_poll(request, code):
     poll = get_object_or_404(Poll, number_code=code)
 
     if request.method == 'POST':
+        request.user.joined_polls.add(poll)
         return redirect('poll_management:poll_results', code=poll.number_code)
 
     #check guest user
