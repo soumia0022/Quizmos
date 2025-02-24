@@ -8,6 +8,10 @@ html, body {
     min-height: 100vh ;
 }
 
+#id_edit_poll_title::before {
+    content: "🚀 ";
+}
+
 /* Background Elements */
 .stars {
     position: fixed;
