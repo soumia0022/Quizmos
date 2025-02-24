@@ -105,13 +105,12 @@ function createQuestionHTML(question) {
                </div>`;
       break;
 
-    case 'wordcloud':
-      html += `<p>${question.text}</p>
-               <div class="form-group">
-                <div class="form-control mt-3" style="height: auto; min-height: 50px; border: 1px solid #ced4da; padding: 10px; background-color: #f8f9fa;">
-                  Type your answer here
-                </div>
-              </div>`;
+      case 'wordcloud':
+        html += `<p>${question.text}</p>
+          <div class="form-group">
+            <input type="text" id="answer1" name="word_cloud_response1" class="form-control mt-3" placeholder="Your first answer" />
+            <input type="text" id="answer2" name="word_cloud_response2" class="form-control mt-3" placeholder="Your second answer (optional)" />
+          </div>`;
       break;
 
     case 'match_question':
