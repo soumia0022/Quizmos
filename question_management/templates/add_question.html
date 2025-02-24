@@ -4,6 +4,12 @@
 
 {% block content %}
 
+<div class="button-container">
+    <a href="javascript:history.back()" class="btn btn-return">Go Back</a>
+    <a href="{% url 'user_management:dashboard' %}" class="btn btn-return">Return to Dashboard</a>
+</div>
+
+
 <head>
     <title>Add Question</title>
     {% load static %}
@@ -16,8 +22,6 @@
 </head>
 
     {% noscript_warning %}
-    {% return_button %}
-    {% go_back_button %}
 
     {% include 'partials/background_stars.html' %}
 
