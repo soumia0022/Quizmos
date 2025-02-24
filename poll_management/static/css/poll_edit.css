@@ -75,34 +75,6 @@ html, body {
     box-shadow: 0 0 15px rgba(102, 102, 255, 0.5) ;
 }
 
-/* Return Button */
-.return-container {
-    text-align: center;
-    margin-top: 40px; /* Increased margin to move the button lower */
-}
-
-.return-container a {
-    display: inline-block;
-    text-decoration: none;
-    background: rgba(102, 102, 255, 0.2);
-    border: 2px solid #6666ff;
-    color: #9999ff;
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.return-container a:hover {
-    background: #6666ff;
-    color: white;
-    box-shadow: 0 0 15px rgba(102, 102, 255, 0.5);
-    transform: translateY(-2px);
-}
-
 /* Poll Title */
 .glowy-title {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);

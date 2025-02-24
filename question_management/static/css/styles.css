@@ -8,38 +8,6 @@ html, body {
     min-height: 100vh !important;
 }
 
-.fixed-top-left {
-    position: fixed;
-    top: 20px; /* Distance from top */
-    left: 20px; /* Distance from left */
-    z-index: 1000; /* Ensures it stays on top */
-    display: flex;
-    gap: 10px; /* Adds spacing between buttons */
-}
-
-.btn-return {
-    padding: 10px 15px;
-    font-size: 16px;
-    border-radius: 5px;
-    text-decoration: none;
-    background-color: #007bff; /* Adjust to match existing styles */
-    color: white;
-    border: none;
-    transition: background-color 0.3s ease;
-}
-
-.button-container {
-    margin-left: 20px; /* Adjust this value to move the buttons to the right */
-}
-
-.btn-return {
-    margin-right: 10px; /* Adds space between the two buttons */
-}
-
-.btn-return:hover {
-    background-color: #0056b3; /* Darker shade for hover effect */
-}
-
 /* Moving Background Animation */
 @keyframes move-gradient {
     0% { background-position: 0% 0%; }

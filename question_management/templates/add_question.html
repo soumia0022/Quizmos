@@ -3,12 +3,8 @@
 {% load system_extras %} <!-- This contains the info buttons, the go back and return to dashboard button -->
 
 {% block content %}
-
-<div class="button-container">
-    <a href="javascript:history.back()" class="btn btn-return">Go Back</a>
-    <a href="{% url 'user_management:dashboard' %}" class="btn btn-return">Return to Dashboard</a>
-</div>
-
+{% return_button %}
+{% go_back_button %}
 
 <head>
     <title>Add Question</title>
