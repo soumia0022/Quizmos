@@ -16,9 +16,9 @@
     <div class="row justify-content-center w-100">
         <div class="col-md-6">
             <div class="card normal-card p-4 shadow-lg">
-                <h3 class="glowy-title text-center">
+                <h3 id="id_edit_poll_title" class="glowy-title text-center">
                     <span class="poll-emoji">🚀</span> Edit Poll: {{ poll.title }}
-                </h3>
+                </h3>                
                 <form method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
@@ -42,7 +42,7 @@
     </div>
 
     <div class="return-container">
-        <a href="{% url 'user_management:dashboard' %}" class="btn btn-return">Return to Dashboard</a>
+        <a id="id_edit_questions_button" href="{% url 'question_management:add_question' poll.id %}" class="btn btn-outline-light btn-block">Edit Questions</a>
     </div>
 
 {% endblock %}
