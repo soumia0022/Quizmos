@@ -9,7 +9,7 @@
     <div class="col-6">
       <!-- Left Column -->
       <div class="left-column">
-        <h1>{{ poll.title }}</h1>
+        <h1 id="id_start_poll_title">{{ poll.title }}</h1>
         {% include 'poll_components/lock.html' %}
         <div id="poll-controls">
           <button id="start-poll-btn" onclick="startPoll()" class="btn btn-primary mb-3">Start Poll</button>
