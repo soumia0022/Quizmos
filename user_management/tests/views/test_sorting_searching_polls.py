@@ -14,36 +14,36 @@ class DashboardSortingSearchingTests(TestCase):
         # Creating testing polls
         self.poll1 = Poll.objects.create(user=self.user, title="Space", created_at=now() - timedelta(days=5))
         self.poll2 = Poll.objects.create(user=self.user, title="Rocket", created_at=now() - timedelta(days=3))
-        self.poll3 = Poll.objects.create(user=self.user, title="Stars", created_at=now() - timedelta(days=1))
+        self.poll3 = Poll.objects.create(user=self.user, title="stairs", created_at=now() - timedelta(days=1))
 
     def test_search_polls(self):
         """Test that search returns correct results"""
         response = self.client.get('/dashboard/', {'search': 'Space'})
         self.assertContains(response, "Space")  # Should find Space
         self.assertNotContains(response, "Rocket")  # Should not find Rocket
-        self.assertNotContains(response, "Stars")  # Should not find Stars
+        self.assertNotContains(response, "Stairs")  # Should not find stairs
 
     def test_sort_title_ascending(self):
         """Test sorting A-Z"""
         response = self.client.get('/dashboard/', {'sort_by': 'title_asc'})
         polls = list(response.context['polls'])
-        self.assertEqual([poll.title for poll in polls], ["Rocket", "Space", "Stars"])  # Sorting from A-Z
+        self.assertEqual([poll.title for poll in polls], ["Rocket", "Space", "stairs"])  # Sorting from A-Z
 
     def test_sort_title_descending(self):
         """Test sorting Z-A"""
         response = self.client.get('/dashboard/', {'sort_by': 'title_desc'})
         polls = list(response.context['polls'])
-        self.assertEqual([poll.title for poll in polls], ["Stars", "Space", "Rocket"])  # Sorting from Z-A
+        self.assertEqual([poll.title for poll in polls], ["stairs", "Space", "Rocket"])  # Sorting from Z-A
 
     def test_sort_created_at_ascending(self):
         """Test sorting from oldest to newest"""
         response = self.client.get('/dashboard/', {'sort_by': 'created_at_asc'})
         polls = list(response.context['polls'])
-        self.assertEqual([poll.title for poll in polls], ["Space", "Rocket", "Stars"])  # Oldest first
+        self.assertEqual([poll.title for poll in polls], ["Space", "Rocket", "stairs"])  # Oldest first
 
     def test_sort_created_at_descending(self):
         """Test sorting from newest to oldest"""
         response = self.client.get('/dashboard/', {'sort_by': 'created_at_desc'})
         polls = list(response.context['polls'])
-        self.assertEqual([poll.title for poll in polls], ["Stars", "Rocket", "Space"])  # Newest first
+        self.assertEqual([poll.title for poll in polls], ["stairs", "Rocket", "Space"])  # Newest first
 

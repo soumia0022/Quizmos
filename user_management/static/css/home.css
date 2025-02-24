@@ -257,3 +257,6 @@ form button[type="submit"]:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 15px rgba(153, 0, 255, 0.5);
 }
+.dr{
+    background-color: #6666FF;
+}
