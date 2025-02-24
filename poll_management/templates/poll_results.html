@@ -1,4 +1,5 @@
 {% extends 'base_content.html' %}
+{% load system_extras %}
 {% block content %}
 <head>
   <title>{{ poll.title }}</title>
@@ -15,12 +16,13 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 </head>
 <body>
+    {% noscript_warning %}
   <div class="container">
     <div class="row">
       <div class="col-12">
         <h1>Welcome to {{ poll.title }}!</h1>
         <div id="question">Waiting for a question...</div>
-        <input type="text" id="answer" placeholder="Your answer" />
+        <input type="text" id="answer" name= "text_fill_response" placeholder="Your answer" />
         <div id="question_options">Waiting for options...</div>
         <form method="POST">
           {% csrf_token %}
@@ -94,10 +96,14 @@
             });
             document.getElementById('question_options').innerHTML = options;
           } else if (data.question.type === 'dropdown_fill') {
-            let options = "";
+            let options = '<select name="dropdown_answer"><option value="" disabled selected>Select an option</option>';
             data.question.dropdown_options.forEach(option => {
-              options += `<input type="radio" name="dropdown_answer" value="${option}"><label>${option}</label><br>`;
+              options += `<option value="${option}">${option}</option>`;
             });
+            if (!data.question.dropdown_options.includes(data.question.dropdown_correct_answer)) {
+              options += `<option value="${data.question.dropdown_correct_answer}">${data.question.dropdown_correct_answer}</option>`;
+            }
+            options += '</select>';
             document.getElementById('question_options').innerHTML = options;
           } else if (data.question.type === 'text_fill') {
             document.getElementById('question_options').innerHTML = '';
@@ -153,6 +159,49 @@
         if (matchResponsesInput) {
           matchResponsesInput.value = JSON.stringify(matchResponses);
         }
+   
+        const multipleChoiceResponses = [];
+        const checkboxes = document.querySelectorAll('input[name="multiple_choice_answers[]"]:checked');
+        checkboxes.forEach((checkbox) => {
+          multipleChoiceResponses.push(checkbox.value);
+        });
+
+       
+        const multipleChoiceInput = document.createElement('input');
+        multipleChoiceInput.type = 'hidden';
+        multipleChoiceInput.name = 'multiple_choice_responses';
+        multipleChoiceInput.value = JSON.stringify(multipleChoiceResponses);
+        form.appendChild(multipleChoiceInput);
+
+     
+        const singleChoiceResponse = document.querySelector('input[name="single_choice_answer"]:checked');
+        const singleChoiceInput = document.createElement('input');
+        singleChoiceInput.type = 'hidden';
+        singleChoiceInput.name = 'single_choice_response';
+        if (singleChoiceResponse) {
+          singleChoiceInput.value = singleChoiceResponse.value;
+        }
+        form.appendChild(singleChoiceInput);
+
+        const dropdownFillResponse = document.querySelector('select[name="dropdown_answer"]');
+        const dropdownFillInput = document.createElement('input');
+        dropdownFillInput.type = 'hidden';
+        dropdownFillInput.name = 'dropdown_response';
+        if (dropdownFillResponse && dropdownFillResponse.value) {
+          dropdownFillInput.value = dropdownFillResponse.value;
+        }
+        form.appendChild(dropdownFillInput);
+
+        const textFillResponse = document.querySelector('input[name="text_fill_response"]');
+        const textFillInput = document.createElement('input');
+        textFillInput.type = 'hidden';
+        textFillInput.name = 'text_fill_response';
+        if (textFillResponse) {
+          textFillInput.value = textFillResponse.value;
+        }
+        form.appendChild(textFillInput);
+
+
       });
     });
   </script>

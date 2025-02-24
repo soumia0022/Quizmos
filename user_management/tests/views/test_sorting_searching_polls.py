@@ -5,13 +5,19 @@ from datetime import timedelta
 from poll_management.models.poll_model import Poll
 
 class DashboardSortingSearchingTests(TestCase):
+
     def setUp(self):
-        """Set up test user and some test polls"""
+        """Set up test user and test polls before each test"""
         self.client = Client()
-        self.user = get_user_model().objects.create_user(username='testuser', password='password123', role='Lecturer')
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            email='testuser@example.com',
+            password='password123',
+            role='Lecturer'
+        )
         self.client.login(username='testuser', password='password123')
 
-        # Creating testing polls
+        # Creating test polls
         self.poll1 = Poll.objects.create(user=self.user, title="Space", created_at=now() - timedelta(days=5))
         self.poll2 = Poll.objects.create(user=self.user, title="Rocket", created_at=now() - timedelta(days=3))
         self.poll3 = Poll.objects.create(user=self.user, title="stairs", created_at=now() - timedelta(days=1))
@@ -47,3 +53,52 @@ class DashboardSortingSearchingTests(TestCase):
         polls = list(response.context['polls'])
         self.assertEqual([poll.title for poll in polls], ["stairs", "Rocket", "Space"])  # Newest first
 
+
+    def create_student_user(self):
+        """Helper function to create a student user with a unique email"""
+        student_user = get_user_model().objects.create_user(
+            username='student',
+            email='student@example.com',
+            password='password123',
+            role='Student'
+        )
+
+        student_user.joined_polls.set([self.poll1, self.poll2, self.poll3])
+        return student_user
+
+    def test_student_search_polls(self):
+        """Test that search returns correct results for student dashboard"""
+        student_user = self.create_student_user()
+        self.client.login(username='student', password='password123')
+
+        response = self.client.get('/dashboard/', {'search': 'Space'})
+        self.assertContains(response, "Space")
+        self.assertNotContains(response, "Rocket")
+        self.assertNotContains(response, "Stars")
+
+    def test_student_sort_title_ascending(self):
+        """Test sorting A-Z for student dashboard"""
+        student_user = self.create_student_user()
+        self.client.login(username='student', password='password123')
+
+        response = self.client.get('/dashboard/', {'sort_by': 'title_asc'})
+        polls = list(response.context['polls'])
+        self.assertEqual([poll.title for poll in polls], ["Rocket", "Space", "Stars"])
+
+    def test_student_sort_title_descending(self):
+        """Test sorting Z-A for student dashboard"""
+        student_user = self.create_student_user()
+        self.client.login(username='student', password='password123')
+
+        response = self.client.get('/dashboard/', {'sort_by': 'title_desc'})
+        polls = list(response.context['polls'])
+        self.assertEqual([poll.title for poll in polls], ["Stars", "Space", "Rocket"])
+
+    def test_student_sort_created_at_ascending(self):
+        """Test sorting from oldest to newest for student dashboard"""
+        student_user = self.create_student_user()
+        self.client.login(username='student', password='password123')
+
+        response = self.client.get('/dashboard/', {'sort_by': 'created_at_asc'})
+        polls = list(response.context['polls'])
+        self.assertEqual([poll.title for poll in polls], ["Space", "Rocket", "Stars"])

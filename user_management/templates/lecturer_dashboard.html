@@ -13,34 +13,24 @@
             </div>
         </div>
 
-        <!-- Search and Sort Form -->
-        <form method="GET">
-            <input type="text" name="search" placeholder="Search polls..." value="{{ search_query }}">
-            <select name="sort_by" onchange="this.form.submit()">
-                <option class = "dr" value="created_at_desc" {% if sort_by == "created_at_desc" %}selected{% endif %}>Newest First</option>
-                <option class = "dr" value= "created_at_asc" {% if sort_by == "created_at_asc" %}selected{% endif %}>Oldest First</option>
-                <option class = "dr" value= "title_asc" {% if sort_by == "title_asc" %}selected{% endif %}>A-Z</option>
-                <option class = "dr" value= "title_desc" {% if sort_by == "title_desc" %}selected{% endif %}>Z-A</option>
-            </select>
-            <button type="submit">Apply</button>
-        </form>
 
-        <!--  creating a poll -->
-        {% include 'create_poll.html' %}
-
-        <!-- listing polls -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <h2>Your Polls</h2>
-                <div class="poll-container row">
-                    {% for poll in polls %}
-                    <div class="col-md-4 mb-4">
-                        <div class="poll-card card">
-                            <!-- Poll Header -->
-                            <div class="card-header">
-                                <span class="poll-emoji">🚀</span>
-                                <h5 class="card-title">{{ poll.title }}</h5>
-                            </div>
+  <!-- Section for creating a poll -->
+  {% include 'create_poll.html' %}
+  <br/>
+  {% include 'partials/search_sort_form.html' %}
+ <!-- Section for listing polls -->
+  <div class="row mt-4">
+    <div class="col-12">
+        <h2>Your Polls</h2>
+        <div class="poll-container row">
+            {% for poll in polls %}
+            <div class="col-md-4 mb-4">
+                <div class="poll-card card">
+                    <!-- Poll Header -->
+                    <div class="card-header">
+                        <span class="poll-emoji">🚀</span>
+                        <h5 class="card-title">{{ poll.title }}</h5>
+                    </div>
 
                             <!-- Poll Body -->
                             <div class="card-body">
@@ -69,33 +59,10 @@
             </div>
         </div>
 
-        <!-- Pagination Links -->
-        <div class="pagination">
-            <span class="step-links">
-                {% if polls.has_previous %}
-                    <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">&laquo; first</a>
-                    <a href="?page={{ polls.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">previous</a>
-                {% endif %}
 
-                <span class="current">
-                    Page {{ polls.number }} of {{ polls.paginator.num_pages }}.
-                </span>
+  {% include 'partials/pagination.html' %}
 
-                {% if polls.has_next %}
-                    <a href="?page={{ polls.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">next</a>
-                    <a href="?page={{ polls.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">last &raquo;</a>
-                {% endif %}
-            </span>
-        </div>
-    </div>
-
-    <div id="custom-popup" class="popup-overlay" style="display: none;">
-        <div class="popup-content">
-            <p>Are you sure you want to delete this poll?</p>
-            <button id="confirm-delete" class="popup-button">Yes</button>
-            <button id="cancel-delete" class="popup-button">No</button>
-        </div>
-    </div>
+  {% include 'partials/confirm_delete.html' %}
 
     <script src="{% static 'js/confirm_delete.js' %}"></script>
 
@@ -120,6 +87,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             createStars();
         });
+    document.querySelector('#room-name-submit').onclick = function(e) {
+    var roomName = document.querySelector('#room-name-input').value;
+    window.location.pathname = '/poll/' + roomName + '/';
+  };
     </script>
 
 {% endblock %}

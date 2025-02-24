@@ -90,6 +90,17 @@ class QuestionModelTests(TestCase):
         )
         self.assertEqual(question.get_dropdown_options(), [])
 
+    def test_get_dropdown_options_with_correct_answer(self):
+        question = Question.objects.create(
+            poll=self.poll,
+            question_text="Select a fruit",
+            question_type="dropdown_fill",
+            dropdown_options="Apple,Banana,Cherry",
+            dropdown_correct_answer="Orange"
+        )
+        expected_options = ["Apple", "Banana", "Cherry", "Orange"]
+        self.assertEqual(question.get_dropdown_options(), expected_options)
+
     #1. test MCQ , matching , wordcloud +++ (all question types ) with timer and
     # create questions with fields that are needed
     #asert that the timer saved
