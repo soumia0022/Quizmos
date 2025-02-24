@@ -4,7 +4,7 @@ from poll_management.models.poll_model import Poll
 from user_management.models.user_model import User
 from question_management.models.question_models import Question
 from response_management.models.response_model import (
-    MatchQuestionResponse, MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    MatchQuestionResponse, MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse
 )
 import json
 
@@ -23,7 +23,7 @@ class PollResultsViewTest(TestCase):
         self.question_single = Question.objects.create(question_text='Single Choice', poll=self.poll, question_type='single_choice')
         self.question_dropdown = Question.objects.create(question_text='Dropdown', poll=self.poll, question_type='dropdown_fill')
         self.question_text = Question.objects.create(question_text='Text Fill', poll=self.poll, question_type='text_fill')
-
+        self.question_wordcloud = Question.objects.create(question_text='Enter your word(s)', poll=self.poll, question_type='wordcloud')
         
         self.poll_results_url = reverse('poll_management:poll_results', kwargs={'code': self.poll.number_code})
 
@@ -36,7 +36,7 @@ class PollResultsViewTest(TestCase):
 
     def test_poll_not_found(self):
         self.client.force_login(self.user)
-        url = reverse('poll_management:view_poll', kwargs={'poll_id': 999999})
+        url = reverse('poll_management:poll_results', kwargs={'code': 999999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
@@ -86,5 +86,38 @@ class PollResultsViewTest(TestCase):
         })
         self.assertEqual(response.status_code, 302)
         self.assertTrue(TextFillResponse.objects.filter(user=self.user, poll=self.poll, question=self.question_text).exists())
+    
+    def test_submit_wordcloud_response(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.poll_results_url, {
+            'word_cloud_responses': json.dumps(['word1', 'word2'])
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(WordCloudResponse.objects.filter(user=self.user, poll=self.poll, question=self.question_wordcloud).exists())
 
+    def test_submit_empty_wordcloud_response(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.poll_results_url, {
+            'word_cloud_responses': json.dumps([])
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(WordCloudResponse.objects.filter(user=self.user, poll=self.poll, question=self.question_wordcloud).exists())
+
+    def test_submit_invalid_json_response(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.poll_results_url, {
+            'match_responses': 'invalid json'
+        })
+        self.assertEqual(response.status_code, 400)
+
+    def test_submit_no_data_response(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.poll_results_url, {})
+        self.assertEqual(response.status_code, 302)  # Assuming redirect to the results page
+        self.assertFalse(MatchQuestionResponse.objects.filter(user=self.user, poll=self.poll, question=self.question_match).exists())
+        self.assertFalse(MultipleChoiceResponse.objects.filter(user=self.user, poll=self.poll, question=self.question_multiple).exists())
+        self.assertFalse(SingleChoiceResponse.objects.filter(user=self.user, poll=self.poll, question=self.question_single).exists())
+        self.assertFalse(DropdownFillResponse.objects.filter(user=self.user, poll=self.poll, question=self.question_dropdown).exists())
+        self.assertFalse(TextFillResponse.objects.filter(user=self.user, poll=self.poll, question=self.question_text).exists())
+        self.assertFalse(WordCloudResponse.objects.filter(user=self.user, poll=self.poll, question=self.question_wordcloud).exists())
 
