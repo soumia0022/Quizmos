@@ -46,3 +46,4 @@ class DashboardSortingSearchingTests(TestCase):
         response = self.client.get('/dashboard/', {'sort_by': 'created_at_desc'})
         polls = list(response.context['polls'])
         self.assertEqual([poll.title for poll in polls], ["Stars", "Rocket", "Space"])  # Newest first
+

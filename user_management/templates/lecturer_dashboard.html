@@ -3,7 +3,8 @@
 {% block content %}
     <div class="stars"></div>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <link rel="stylesheet" href="{% static 'css/lecturer.css' %}">
+
+
 
     <div class="container">
         <div class="row">
@@ -24,10 +25,10 @@
             <button type="submit">Apply</button>
         </form>
 
-        <!-- Section for creating a poll -->
+        <!--  creating a poll -->
         {% include 'create_poll.html' %}
 
-        <!-- Section for listing polls -->
+        <!-- listing polls -->
         <div class="row mt-4">
             <div class="col-12">
                 <h2>Your Polls</h2>
