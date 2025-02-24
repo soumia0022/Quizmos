@@ -74,7 +74,7 @@ class DashboardSortingSearchingTests(TestCase):
         response = self.client.get('/dashboard/', {'search': 'Space'})
         self.assertContains(response, "Space")
         self.assertNotContains(response, "Rocket")
-        self.assertNotContains(response, "Stars")
+        self.assertNotContains(response, "stairs")
 
     def test_student_sort_title_ascending(self):
         """Test sorting A-Z for student dashboard"""
@@ -83,7 +83,7 @@ class DashboardSortingSearchingTests(TestCase):
 
         response = self.client.get('/dashboard/', {'sort_by': 'title_asc'})
         polls = list(response.context['polls'])
-        self.assertEqual([poll.title for poll in polls], ["Rocket", "Space", "Stars"])
+        self.assertEqual([poll.title for poll in polls], ["Rocket", "Space", "stairs"])
 
     def test_student_sort_title_descending(self):
         """Test sorting Z-A for student dashboard"""
@@ -92,7 +92,7 @@ class DashboardSortingSearchingTests(TestCase):
 
         response = self.client.get('/dashboard/', {'sort_by': 'title_desc'})
         polls = list(response.context['polls'])
-        self.assertEqual([poll.title for poll in polls], ["Stars", "Space", "Rocket"])
+        self.assertEqual([poll.title for poll in polls], ["stairs", "Space", "Rocket"])
 
     def test_student_sort_created_at_ascending(self):
         """Test sorting from oldest to newest for student dashboard"""
@@ -101,4 +101,4 @@ class DashboardSortingSearchingTests(TestCase):
 
         response = self.client.get('/dashboard/', {'sort_by': 'created_at_asc'})
         polls = list(response.context['polls'])
-        self.assertEqual([poll.title for poll in polls], ["Space", "Rocket", "Stars"])
+        self.assertEqual([poll.title for poll in polls], ["Space", "Rocket", "stairs"])

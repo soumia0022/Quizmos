@@ -1,4 +1,3 @@
-/* Stars and meteors */
 .stars {
   position: fixed;
   top: 0;
@@ -17,8 +16,6 @@
   height: 2px;
   animation: twinkle 2s infinite alternate;
 }
-
-
 
 .meteor {
   position: absolute;
@@ -49,7 +46,6 @@
   }
 }
 
-/* Cover card styles */
 .cover-card {
   background-color: rgba(30, 30, 70, 0.8);
   border: 2px solid #4a4a8a;
@@ -79,7 +75,6 @@
   transition: all 0.3s ease;
 }
 
-/* Poll code section */
 .poll-code {
   background-color: rgba(50, 50, 100, 0.7);
   border: 1px solid #6666ff;
@@ -99,10 +94,6 @@ body {
     min-height: 100vh;
 }
 
-
-
-
-/* Poll Card Styles */
 .poll-card {
     background: rgba(20, 20, 50, 0.85);
     border: 3px solid #5a5aae;
@@ -114,18 +105,19 @@ body {
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease-in-out;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
-    max-width: 600px;
-    height: 450px;
+    max-width: 800px;
+    height: auto;
+    min-height: 450px;
+    display: flex;
+    flex-direction: column;
 }
-
 
 .poll-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 0 35px rgba(90, 90, 174, 0.6);
 }
-
 
 .card-header {
     background: transparent;
@@ -137,16 +129,12 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-
 .card-body {
-    flex-grow: 1;
+    flex: 1;
     overflow-y: auto;
-    max-height: calc(100% - 150px);
+    min-height: 200px;
 }
 
-
-
-/* Buttons */
 .btn, button[type="submit"] {
     background-color: #6666FF ;
     border: none;
@@ -161,17 +149,15 @@ button[type="button"].btn-danger {
     z-index: 10000;
 }
 
-
 .btn:hover, button[type="submit"]:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 15px rgba(102, 102, 255, 0.5);
 }
 
-
 form input[type="text"], form select {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
+    color: black;
     padding: 8px 12px;
     border-radius: 5px;
     margin-right: 10px;
@@ -179,13 +165,11 @@ form input[type="text"], form select {
     transition: all 0.3s ease;
 }
 
-
 form input[type="text"]:focus, form select:focus {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(102, 102, 255, 0.8);
     box-shadow: 0 0 5px rgba(102, 102, 255, 0.5);
 }
-
 
 form button[type="submit"] {
     background-color: #6666FF;
@@ -201,7 +185,6 @@ form button[type="submit"]:hover {
     background-color: #9900ff;
 }
 
-/* Pagination */
 .pagination {
     margin-top: 2rem;
     text-align: center;
@@ -227,10 +210,10 @@ form button[type="submit"]:hover {
     height: 100%;
     background: rgba(10, 4, 34, 0.9);
     backdrop-filter: blur(5px);
+    z-index: 9999;
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
 }
 
 .popup-content {
@@ -241,22 +224,109 @@ form button[type="submit"]:hover {
     max-width: 400px;
     width: 100%;
     text-align: center;
+    z-index: 10000;
+    color: black;
 }
 
-.popup-button {
-    background: linear-gradient(135deg, #6600cc, #9900ff);
-    border: none;
+.popup-overlay.active {
+    display: flex !important;
+}
+
+.popup-button,
+.popup-content button {
+    background: #6666FF;
+    border: 2px solid #5555dd;
     color: white;
-    padding: 8px 16px;
+    padding: 10px 18px;
     margin: 0 10px;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-weight: bold;
     transition: all 0.3s ease;
+    z-index: 10001;
 }
 
 .popup-button:hover {
+    background: #9900ff;
     transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(153, 0, 255, 0.5);
+    box-shadow: 0 0 15px rgba(153, 0, 255, 0.7);
 }
-.dr{
-    background-color: #6666FF;
+
+.popup-content button {
+    background: #8000ff;
+    border: 2px solid #5a00cc;
+    color: blue;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: all 0.3s ease;
 }
+
+.popup-content button:hover {
+    background: #9900ff;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(153, 0, 255, 0.7);
+}
+
+.btn-danger {
+    background-color: #ff4d4d !important;
+    border-color: #cc0000 !important;
+    color: white !important;
+}
+
+.btn-danger:hover {
+    background-color: #cc0000 !important;
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.8);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.button-container .btn {
+    flex: 0 0 auto;
+    margin: 0 8px;
+    min-width: 80px;
+    padding: 8px 15px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+}
+
+.card-footer .btn {
+    flex: 0 1 22%;
+    margin: 0;
+}
+
+.btn-danger,
+button.btn-danger,
+.button-container .btn-danger {
+    background-color: #6666FF !important;
+    border-color: #4444cc !important;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+.btn-danger:hover,
+button.btn-danger:hover,
+.button-container .btn-danger:hover {
+    background-color: #7777FF !important;
+    border-color: #5555dd !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(102, 102, 255, 0.5) !important;
+}
+
+.poll-container {
+    background: #0a0422 !important;
+    min-height: 300px;
+    padding: 20px;
+}
+
