@@ -2,6 +2,7 @@ from django.core.validators import RegexValidator, MinLengthValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+from poll_management.models.poll_model import Poll
 
 
 class User(AbstractUser):
@@ -24,7 +25,7 @@ class User(AbstractUser):
     ROLES = [('Student', 'Student'), ('Lecturer', 'Lecturer'),]
     role = models.CharField(max_length=10, choices=ROLES, default='Student', blank=False)
     profile_picture = models.CharField(max_length=100, blank=True, null=True, default='default.jpeg')
-
+    joined_polls = models.ManyToManyField(Poll, related_name='joined_users', blank=True)
     class Meta:
         """Model options."""
 
