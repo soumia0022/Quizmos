@@ -12,7 +12,7 @@
       <form action="{% url 'user_management:sign_up' %}" method="post">
         {% csrf_token %}
         {% include 'partials/bootstrap_form.html' with form=form %}
-        <input type="submit" value="Sign up" class="btn btn-primary">
+        <input id="id_sign_up_button" type="submit" value="Sign up" class="btn btn-primary">
       </form>
 
       <div class="prompt">
