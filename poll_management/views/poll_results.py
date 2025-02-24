@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
-from response_management.models.response_model import MatchQuestionResponse, MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+from response_management.models.response_model import MatchQuestionResponse, MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse
 import json
 
 def poll_results(request, code):
@@ -78,6 +78,23 @@ def poll_results(request, code):
                         question=question,
                         answer_text=text_fill_response
                     )
+                question_processed.add(question.question_type)
+
+            elif question.question_type == 'wordcloud':
+                word_cloud_responses = request.POST.get('word_cloud_responses', '[]')
+                if word_cloud_responses:
+                    try:
+                        word_cloud_responses_json = json.loads(word_cloud_responses)
+                    except json.JSONDecodeError:
+                        return JsonResponse({'error': 'Invalid JSON data for word cloud responses'}, status=400)
+                    
+                    if word_cloud_responses_json:
+                        WordCloudResponse.objects.create(
+                            user=request.user,
+                            poll=poll,
+                            question=question,
+                            word_cloud_response={"words": word_cloud_responses_json}
+                        )
                 question_processed.add(question.question_type)
 
         return redirect('poll_management:poll_results', code=poll.number_code)

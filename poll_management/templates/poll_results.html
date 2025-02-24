@@ -108,6 +108,12 @@
           } else if (data.question.type === 'text_fill') {
             document.getElementById('question_options').innerHTML = '';
             document.getElementById('answer').style.display = 'block'; 
+          } else if (data.question.type === 'wordcloud') {
+            document.getElementById('question_options').innerHTML = `
+                <input type="text" id="answer1" name="word_cloud_response1" placeholder="Your first answer" />
+                <input type="text" id="answer2" name="word_cloud_response2" placeholder="Your second answer (optional)" />
+            `;
+            document.getElementById('answer').style.display = 'none';
           } else if (data.question.type === 'match_question') {
             let leftOptions = "";
             let rightOptions = "";
@@ -135,7 +141,7 @@
                 </div>`;
 
             initializeSortable();
-          }
+          } 
         }
       };
 
@@ -201,7 +207,13 @@
         }
         form.appendChild(textFillInput);
 
-
+        const wordCloudResponse1 = document.querySelector('input[name="word_cloud_response1"]').value;  
+        const wordCloudResponse2 = document.querySelector('input[name="word_cloud_response2"]').value;
+        const wordCloudInput = document.createElement('input');
+        wordCloudInput.type = 'hidden';
+        wordCloudInput.name = 'word_cloud_responses';
+        wordCloudInput.value = JSON.stringify([wordCloudResponse1, wordCloudResponse2].filter(Boolean));  
+        form.appendChild(wordCloudInput);
       });
     });
   </script>
