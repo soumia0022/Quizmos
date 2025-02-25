@@ -24,6 +24,13 @@
         <div class="row">
             <div class="col-12">
                 <h1>Welcome to {{ poll.title }}!</h1>
+                
+                <!-- progress bar  -->
+                <div id="progress-container" style="width: 100%; height: 30px; background-color: #f3f3f3;">
+                    <div id="question-progress-bar" style="height: 100%; width: 0%; background-color: #4caf50;"></div>
+                </div>
+                <p id="question-progress-text">0 / 0</p> 
+                
                 <div id="question">Waiting for a question...</div>
                 <input type="text" id="answer" style="display: none;" placeholder="Your answer" />
                 <div id="question_options">Waiting for options...</div>
