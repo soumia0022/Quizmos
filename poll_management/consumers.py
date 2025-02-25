@@ -96,7 +96,12 @@ class PollConsumer(AsyncWebsocketConsumer):
             if question:
                 await self.channel_layer.group_send(
                     self.poll_group_name,
-                    {"type": "poll_question", "question": question}
+                    {
+                        "type": "poll_question",
+                        "question": question,
+                        "question_number": question_number,  
+                        "total_questions": total_questions 
+                    }
                 )
         elif message_type == 'response':
             # Handle different types of responses
@@ -139,12 +144,15 @@ class PollConsumer(AsyncWebsocketConsumer):
     async def poll_question(self, event):
         # Handler for sending questions back to the WebSocket
         question = event['question']
-
-        # Send question to WebSocket
+        question_number = event.get('question_number', None)  
+        total_questions = event.get('total_questions', None)  
+        
         await self.send(text_data=json.dumps({
-            'type': 'question',
-            'question': question
-        }))
+        'type': 'question',
+        'question': question,
+        'question_number': question_number,  
+        'total_questions': total_questions  
+    }))
 
     @database_sync_to_async
     def get_question(self, question_id):
