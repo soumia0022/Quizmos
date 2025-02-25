@@ -81,7 +81,18 @@ class PollConsumer(AsyncWebsocketConsumer):
             )
         elif message_type == 'question':
             # If it's a question, fetch it from the database and broadcast it
+            questions = await self.get_all_questions()
+            total_questions = len(questions)
+            # Find the index of the requested question
             question = await self.get_question(question_id)
+            # Calculating question_number with type conversion
+            question_number = None
+            for i, q in enumerate(questions):
+                # Convert question_id to integer to match q.id's type
+                if int(q.id) == int(question_id): 
+                    question_number = i + 1
+                    break
+
             if question:
                 await self.channel_layer.group_send(
                     self.poll_group_name,
