@@ -161,3 +161,21 @@ body #questions-sidebar {
     width: 250px;
     color: #ffffff; /* Match text color */
 }
+
+#question-form .text-center {
+    position: sticky;
+    bottom: 0;
+    background: rgba(30, 30, 70, 0.8); /* Match card-body background */
+    padding: 10px;
+    text-align: center;
+    z-index: 10;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure the form takes up available space without extra scrolling */
+#question-form {
+    display: none;
+    max-height: 75vh; /* Prevents it from being too tall */
+    overflow-y: auto;
+    padding-bottom: 0; /* Ensures no unnecessary space */
+    background-color: rgba(30, 30, 70, 0.8); /* Matches the card-body */
