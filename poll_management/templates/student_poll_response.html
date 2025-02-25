@@ -1,0 +1,52 @@
+{% extends 'base_content.html' %}
+{% load system_extras %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>{{ poll.title }}</h2>
+
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            Your Responses
+        </div>
+        <div class="card-body">
+            {% if responses_by_question %}
+                <div class="list-group">
+                {% for question_id, response in responses_by_question.items %}
+                    <div class="list-group-item">
+                        <h5 class="mb-1">{{ response.question.question_text }}</h5>
+
+                        {% if response.type == 'multiple_choice' %}
+                            <p><strong>Your answer:</strong></p>
+                            <ul>
+                                {% for option in response.selected_options %}
+                                    <li>{{ option }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% elif response.type == 'single_choice' %}
+                            <p><strong>Your answer:</strong> {{ response.selected_option }}</p>
+                        {% elif response.type == 'text_fill' %}
+                            <p><strong>Your answer:</strong> {{ response.answer_text }}</p>
+                        {% elif response.type == 'dropdown' %}
+                            <p><strong>Your answer:</strong> {{ response.selected_option }}</p>
+                        {% elif response.type == 'match' %}
+                            <p><strong>Your match responses:</strong></p>
+                            <ul>
+                                {% for match_item, match_response in response.match_responses.items %}
+                                    <li>{{ match_item }} → {{ match_response }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p>You haven't responded to this poll yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
