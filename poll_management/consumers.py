@@ -222,3 +222,7 @@ class PollConsumer(AsyncWebsocketConsumer):
             'response_type': event['response_type'],
             'user': event['user']
         }))
+
+    @database_sync_to_async
+    def get_all_questions(self):
+        return list(Question.objects.filter(poll=self.poll))
