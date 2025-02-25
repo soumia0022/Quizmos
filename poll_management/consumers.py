@@ -1,11 +1,17 @@
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+from response_management.models.response_model import (
+    MatchQuestionResponse, MultipleChoiceResponse,
+    SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+)
+from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
 #await: is like the waiter saying "I need to wait for the kitchen to finish this order, but I'll serve other tables while waiting"
 #async: is like a waiter saying "I'm going to be serving multiple tables"
 class PollConsumer(AsyncWebsocketConsumer):
     # This consumer handles WebSocket connections for a polling system
+    students_joined = {}
     async def connect(self):
         try:
             #extract the poll_code from the URL route
@@ -16,6 +22,13 @@ class PollConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             print(f"Error extracting poll code: {e}")
 
+        self.poll = await self.get_poll(self.poll_code)
+
+        if self.poll_code not in self.students_joined:
+            self.students_joined[self.poll_code] = 0
+        if not self.poll:
+            await self.close()
+            return
         # Add this connection to the poll group - this allows broadcasting to all connected users
         await self.channel_layer.group_add(
             self.poll_group_name,
@@ -27,17 +40,26 @@ class PollConsumer(AsyncWebsocketConsumer):
 
         # Send message when a student connects
         if self.scope["user"].role == 'Student':
+            self.students_joined[self.poll_code] += 1
             await self.channel_layer.group_send(
                 self.poll_group_name,
                 {
-                    'type': 'poll_message',
-                    'message': f'A student joined the poll: {self.scope["user"].username}!'
+                    'type': 'new_student',
+                    'message': f'{self.students_joined[self.poll_code]}'
                 })
 
 
 
     async def disconnect(self, close_code):
         # When a client disconnects, remove them from the poll group
+        if self.scope["user"].role == 'Student':
+            self.students_joined[self.poll_code] -= 1
+            await self.channel_layer.group_send(
+                self.poll_group_name,
+                {
+                    'type': 'new_student',
+                    'message': f'{self.students_joined[self.poll_code]}'
+                })
         await self.channel_layer.group_discard(
             self.poll_group_name,
             self.channel_name
@@ -51,11 +73,11 @@ class PollConsumer(AsyncWebsocketConsumer):
         message_content = text_data_json.get('message')
         question_id = text_data_json.get('question_id')
 
-        if message_type == 'message':
-            # If it's a regular message, broadcast it to everyone in the poll group
+        if message_type == 'new_student':
+
             await self.channel_layer.group_send(
                 self.poll_group_name,
-                {"type": "poll_message", "message": message_content}
+                {"type": "new_student", "message": message_content}
             )
         elif message_type == 'question':
             # If it's a question, fetch it from the database and broadcast it
@@ -65,16 +87,44 @@ class PollConsumer(AsyncWebsocketConsumer):
                     self.poll_group_name,
                     {"type": "poll_question", "question": question}
                 )
+        elif message_type == 'response':
+            # Handle different types of responses
+            success = await self.save_response(
+                text_data_json.get('question_id'),
+                text_data_json.get('response_type'),
+                text_data_json.get('response_data')
+            )
+            # Notify the sender about the response status
+            await self.send(text_data=json.dumps({
+                'type': 'response_status',
+                'success': success
+            }))
+            # Broadcast the response
+            if success:
+                await self.channel_layer.group_send(
+                    self.poll_group_name,
+                    {
+                        'type': 'response_update',
+                        'question_id': text_data_json.get('question_id'),
+                        'response_type': text_data_json.get('response_type'),
+                        'user': self.scope["user"].username
+                    }
+                )
 
-    async def poll_message(self, event):
+    async def new_student(self, event):
         # Handler for sending regular messages back to the WebSocket
         message = event['message']
-
         await self.send(text_data=json.dumps({
-            'type': 'message',
+            'type': 'new_student',
             'message': message
         }))
 
+    async def poll_message(self, event):
+        # Handles broadcasting messages to WebSocket
+        await self.send(text_data=json.dumps({
+            'type': event['type'],
+            'message': event['message']
+        }))
     async def poll_question(self, event):
         # Handler for sending questions back to the WebSocket
         question = event['question']
@@ -103,8 +153,72 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'dropdown_options': dropdown_options,
                 'match_options': match_options,
                 'match_answers': match_answers,
+
                 'dropdown_correct_answer': question.dropdown_correct_answer,
+
 
             }
         except Question.DoesNotExist:
             return None
+
+    @database_sync_to_async
+    def get_poll(self, poll_code):
+        try:
+            return Poll.objects.get(number_code=poll_code)
+        except Poll.DoesNotExist:
+            return None
+
+    @database_sync_to_async
+    def save_response(self, question_id, response_type, response_data):
+        try:
+            question = Question.objects.get(id=question_id)
+
+            response_models = {
+                'match_question': (MatchQuestionResponse, 'match_responses'),
+                'multiple_choice': (MultipleChoiceResponse, 'selected_options'),
+                'single_choice': (SingleChoiceResponse, 'selected_option'),
+                'dropdown_fill': (DropdownFillResponse, 'selected_option'),
+                'text_fill': (TextFillResponse, 'answer_text')
+            }
+
+            if response_type not in response_models:
+                return False
+
+            ResponseModel, field_name = response_models[response_type]
+
+            # Create response object
+            response_data = {
+                'user': self.scope['user'],
+                'poll': self.poll,
+                'question': question,
+                field_name: response_data
+            }
+
+            # check if response already exists
+            existing_response = ResponseModel.objects.filter(
+                user=self.scope['user'],
+                poll=self.poll,
+                question=question
+            ).first()
+
+            if existing_response:
+                # update existing response
+                setattr(existing_response, field_name, response_data[field_name])
+                existing_response.save()
+            else:
+                # create new response
+                ResponseModel.objects.create(**response_data)
+
+            return True
+
+        except Exception as e:
+            print(f"Error saving response: {e}")
+            return False
+
+    async def response_update(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'response_update',
+            'question_id': event['question_id'],
+            'response_type': event['response_type'],
+            'user': event['user']
+        }))

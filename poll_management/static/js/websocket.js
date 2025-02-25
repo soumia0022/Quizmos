@@ -1,15 +1,48 @@
-  const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-  const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${pollCode}/`;
+// websocket.js
+import {updateMatchResponseUI, updateResponseUI, updateTextResponseUI} from './response_ui.js';
 
-  const ws = new WebSocket(wsUrl);
+const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${pollCode}/`;
+export const ws = new WebSocket(wsUrl);
 
-  ws.onmessage = function(event) {// maybe change this later to have number of students joined instead of showing a list of students
-    console.log("Received message:", event.data);
+ws.onmessage = function(event) {
     const data = JSON.parse(event.data);
-    if (data.type === 'message') {
-      const studentsList = document.getElementById('students-list');
-      const newStudent = document.createElement('li');
-      newStudent.textContent = data.message;
-      studentsList.appendChild(newStudent);
+
+    if (data.type === 'new_student') {
+        const studentCount = document.getElementById('students-number');
+        if (studentCount) {
+            studentCount.textContent = data.message;
+        }
     }
-  };
+
+    if (data.type === 'response_update') {
+        // When we receive a response update, fetch the latest counts
+        fetchResponseCounts(data.question_id);
+    }
+};
+
+// Function to fetch response counts for a specific question
+async function fetchResponseCounts(questionId) {
+    try {
+        const response = await fetch(`${window.pollManagementBaseUrl}${pollCode}/question/${questionId}/counts/`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Received counts:', data);
+
+        if (data.question_type === "text_fill" || data.question_type === "wordcloud"){//update this later when word cloud responses is done
+            updateTextResponseUI(questionId, data.responses);
+        }
+        else if (data.question_type === "match_question") {
+            updateMatchResponseUI(questionId, data);
+        }
+        else{
+            updateResponseUI(questionId, data.counts);
+        }
+
+
+    } catch (error) {
+        console.error('Error fetching response counts:', error);
+    }
+}
