@@ -29,10 +29,9 @@ html, body {
     max-height: 500px;
     overflow-y: auto;
     padding: 10px;
-    position: fixed;
+    position: sticky; /* Change from fixed to sticky */
     top: 100px;
-    right: 0;
-    z-index: 900; /* Ensure it stays on top */
+    z-index: 900;
 }
 
 /* Sidebar Background */
@@ -56,9 +55,15 @@ body #questions-sidebar {
     border-radius: 5px;
 }
 
+.question-item, .form-control, .btn {
+    position: relative;
+    z-index: 5;
+}
+
 /* Main Content */
 #main-content {
-    margin-right: 260px; /* Add a margin equal to the sidebar's width plus spacing */
+    margin-right: 0; /* Remove the fixed margin */
+    padding-right: 15px;
 }
 
 /* Responsive Adjustments */
@@ -179,3 +184,4 @@ body #questions-sidebar {
     overflow-y: auto;
     padding-bottom: 0; /* Ensures no unnecessary space */
     background-color: rgba(30, 30, 70, 0.8); /* Matches the card-body */
+}
