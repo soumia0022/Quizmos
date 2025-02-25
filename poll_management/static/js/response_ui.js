@@ -76,7 +76,9 @@ export function updateMatchResponseUI(questionId, matchData) {
 
         Object.keys(optionData).forEach(rightOption => {
             const count = optionData[rightOption] || 0;
-            const matchRow = questionContainer.querySelector(`#match-${leftOption}-${rightOption}`);
+            const safeLeftOption = leftOption.replace(/\s+/g, '_');
+            const safeRightOption = rightOption.replace(/\s+/g, '_');
+            const matchRow = questionContainer.querySelector(`#match-${safeLeftOption}-${safeRightOption}`);
 
             if (matchRow) {
                 updateProgressElements(matchRow, count, totalOptionResponses);
