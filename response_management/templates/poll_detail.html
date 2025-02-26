@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
+    <style>
+        #chart-container {
+            width: 20%;
+            height: 400px; /* You can adjust the height as needed */
+            margin: 0 auto;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Button styles */
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="poll-details">
+        <h1>Poll Results for Poll #{{ poll.id }}</h1>
+
+        <!-- Buttons to switch between charts -->
+        <div class="button-container">
+            <button id="viewPieChart">View Pie Chart</button>
+            <button id="viewBarGraph">View Bar Graph</button>
+            <button id="viewLineGraph">View Line Graph</button>
+        </div>
+
+        <!-- Chart container -->
+        <div id="chart-container">
+            <canvas id="chart"></canvas> <!-- The canvas where the chart will be rendered -->
+        </div>
+
+        <!-- Download CSV link -->
+        <div class="download-button">
+            <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
+        </div>
+    </div>
+
+    <script>
+        // Get the canvas element and its context
+        var ctx = document.getElementById('chart').getContext('2d');
+        var chartInstance = null;
+
+        // Function to clear the existing chart and create a new one
+        function clearChart() {
+            if (chartInstance) {
+                chartInstance.destroy();  // Destroy the existing chart before creating a new one
+            }
+        }
+
+         // Function to generate a random color for each question
+        function generateRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Function to display Pie Chart
+        function showPieChart() {
+            clearChart();  // Clear the previous chart
+
+            // Fetch the pie chart data
+            fetch('/responses/polls/{{ poll.id }}/piechart_data/')
+                .then(response => response.json())
+                .then(data => {
+                    chartInstance = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                data: data.data,
+                                 backgroundColor: data.labels.map(() => generateRandomColor()), // Assign unique colors
+                            }]
+                        }
+                    });
+                });
+        }
+
+        // Function to display Bar Graph
+        function showBarGraph() {
+            clearChart();
+            fetch('/responses/polls/{{ poll.id }}/bargraph_data/')
+                .then(response => response.json())
+                .then(data => {
+                    chartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Responses',
+                                data: data.data,
+                                backgroundColor: '#5e4caf',
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Number of responses per question (Bar Chart)',
+                                    font: { size: 18 }
+                                }
+                            }
+                        }
+                    });
+                });
+        }
+
+        // Function to display Line Graph
+        function showLineGraph() {
+            clearChart();  // Clear the previous chart
+
+            // Fetch the line graph data
+            fetch('/responses/polls/{{ poll.id }}/linegraph_data/')
+                .then(response => response.json())
+                .then(data => {
+                    chartInstance = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Responses',
+                                data: data.data,
+                                borderColor: '#3d073e',  // Line color
+                                fill: false,
+                            }]
+                        }
+                    });
+                });
+        }
+
+        // Add event listeners to buttons
+        document.getElementById('viewPieChart').addEventListener('click', showPieChart);
+        document.getElementById('viewBarGraph').addEventListener('click', showBarGraph);
+        document.getElementById('viewLineGraph').addEventListener('click', showLineGraph);
+
+        // Load the pie chart by default on page load
+        showPieChart();
+    </script>
+</body>
+</html>
