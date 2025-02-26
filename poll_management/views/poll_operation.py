@@ -26,6 +26,11 @@ def student_view_poll(request, poll_id):
 
     responses_by_question = {}
 
+    for question_id, response in responses_by_question.items():
+        if response.question.youtube_link:
+            response.question.youtube_link = response.question.youtube_link.replace("youtu.be/",
+                                                                                    "www.youtube.com/embed/")
+
     for response in multiple_choice_responses:
         question = response.question
         responses_by_question[question.id] = {
