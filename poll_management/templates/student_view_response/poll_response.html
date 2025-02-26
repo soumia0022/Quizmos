@@ -9,7 +9,7 @@
 
     {% if responses_by_question %}
         <div id="pollResponsesSlideshow" class="carousel slide mt-4" data-bs-interval="false" data-bs-ride="false" aria-roledescription="carousel" aria-label="Poll responses slideshow">
-            {% include 'indicators.html' with responses=responses_by_question %}
+            {% include 'student_view_response/indicators.html' with responses=responses_by_question %}
 
             <div class="carousel-inner">
                 {% for question_id, response in responses_by_question.items %}
@@ -23,9 +23,9 @@
                             
                             <!-- Card Body -->
                             <div class="card-body">
-                                {% include 'question_section.html' with response=response %}
-                                {% include 'answer_section.html' with response=response %}
-                                {% include 'media_section.html' with question=response.question %}
+                                {% include 'student_view_response/question_section.html' with response=response %}
+                                {% include 'student_view_response/answer_section.html' with response=response %}
+                                {% include 'student_view_response/media_section.html' with question=response.question %}
                                 
                                 <!-- Timer Info -->
                                 {% if response.question.timer %}
@@ -39,7 +39,7 @@
                 {% endfor %}
             </div>
 
-            {% include 'controls.html' %}
+            {% include 'student_view_response/controls.html' %}
         </div>
     {% else %}
         <div class="alert alert-info mt-4">
