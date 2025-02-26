@@ -94,6 +94,24 @@
             const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
             const submitButton = document.getElementById('submitResponse');
 
+            // Function to update the progress bar
+            let totalQuestions = 0;
+            let currentQuestionNumber = 0;
+
+            function updateProgressBar(currentNum, total) {
+                const progressBar = document.getElementById('question-progress-bar');
+                const progressText = document.getElementById('question-progress-text');
+
+                if (!progressBar || !progressText) return;  
+
+                const percentage = total > 0 ? (currentNum / total) * 100 : 0;
+                
+                progressBar.style.width = `${percentage}%`;
+                progressBar.setAttribute('aria-valuenow', percentage);
+                progressText.textContent = `Question ${currentNum} of ${total}`;
+            }
+
+            
             ws.onmessage = function(event) {
                 const data = JSON.parse(event.data);
 
@@ -102,7 +120,18 @@
                     currentQuestionType = data.question.type;
                     document.getElementById('question').innerText = data.question.text;
                     submitButton.style.display = 'block';
-
+                   
+                    // Update question progress information
+                    if (data.total_questions) {
+                        totalQuestions = data.total_questions;
+                    }
+                    if (data.question_number) {
+                        currentQuestionNumber = data.question_number;
+                    }
+                    
+                    // Update the progress bar
+                    updateProgressBar(currentQuestionNumber, totalQuestions);
+                    
                     if (data.question.type === 'multiple_choice') {
                         let options = "";
                         data.question.mcq_options.forEach(option => {
