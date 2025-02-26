@@ -132,9 +132,7 @@
 
         // Function to display Line Graph
         function showLineGraph() {
-            clearChart();  // Clear the previous chart
-
-            // Fetch the line graph data
+            clearChart();
             fetch('/responses/polls/{{ poll.id }}/linegraph_data/')
                 .then(response => response.json())
                 .then(data => {
@@ -145,9 +143,23 @@
                             datasets: [{
                                 label: 'Responses',
                                 data: data.data,
-                                borderColor: '#3d073e',  // Line color
+                                borderColor: '#3d073e',
                                 fill: false,
                             }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Number of responses per question (Line Graph)',
+                                    font: { size: 18 }
+                                }
+                            }
                         }
                     });
                 });
