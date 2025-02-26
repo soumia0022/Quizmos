@@ -76,7 +76,7 @@ def student_view_poll(request, poll_id):
             'submitted_on': response.submitted_on
         }
 
-    return render(request, 'student_poll_response.html', {
+    return render(request, 'student_view_response/poll_response.html', {
         'poll': poll,
         'responses_by_question': responses_by_question
     })
