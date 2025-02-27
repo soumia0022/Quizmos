@@ -1,6 +1,11 @@
+{% extends 'base_content.html' %}
+{% load static %}
 {% load system_extras %} <!-- This contains the info buttons, the go back and return to dashboard button -->
-<!DOCTYPE html>
-<html lang="en">
+
+{% block content %}
+{% return_button %}
+{% go_back_button %}
+
 <head>
     <title>Add Question</title>
     {% load static %}
@@ -11,10 +16,8 @@
     <script src="{% static 'js/question_constraints.js' %}"></script>
     <script type="module" src="{% static 'js/add_question.js' %}"></script>
 </head>
-<body>
+
     {% noscript_warning %}
-    {% return_button %}
-    {% go_back_button %}
 
     {% include 'partials/background_stars.html' %}
 
@@ -246,5 +249,4 @@
     <script src="{% static 'js/hover_script.js' %}"></script>
     <script src="{% static 'js/media_options.js' %}" ></script>
 
-</body>
-</html>
+{% endblock %}
