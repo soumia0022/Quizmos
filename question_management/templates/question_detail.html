@@ -1,10 +1,11 @@
 {% extends 'base_content.html' %}
 {% load system_extras %}
 {% load custom_filters %}
+{% load static %}
 
 {% block content %}
 {% noscript_warning %}
-<div class="container" >
+<div class="container">
     {% return_button %}
     {% go_back_button %}
     <h1>Welcome to {{ poll.title }}!</h1>
@@ -42,11 +43,24 @@
             margin: 0;
             padding: 0;
         }
-
     </style>
 
-    <!-- Display options based on question type -->
-    {% if question.question_type == 'multiple_choice' %}
+    <input type="hidden" id="question_type" value="{{ question.question_type }}">
+
+    {% if question.question_type == 'match_question' %}
+        <h2>Match the following:</h2>
+        <div id="question_options"></div>
+
+        <script type="application/json" id="question_data">
+            {
+                "question": {
+                    "text": "{{ question.question_text|escapejs }}",
+                    "match_options": {{ question.match_options|safe }},
+                    "match_answers": {{ question.match_answers|safe }}
+                }
+            }
+        </script>
+    {% elif question.question_type == 'multiple_choice' %}
         {% for option in question.multiple_choice_options %}
             <div class="option-item">
                 <input type="checkbox" name="multiple_choice_answers" value="{{ option }}">
@@ -64,22 +78,11 @@
 
     {% elif question.question_type == 'dropdown_fill' %}
         <select name="dropdown_answer">
-                <option value="" disabled selected>Select an option</option>
-                {% for option in question.get_dropdown_options %}
-                    <option value="{{ option }}">{{ option }}</option>
-                {% endfor %}
-            </select>
-
-    {% elif question.question_type == 'match_question' %}
-    <h2>Match the following:</h2>
-    <div>
-        {% for option, answer in question.match_options|zip_lists:question.match_answers %}
-            <div class="flex-container">
-                <div class="box">{{ option }}</div>
-                <div class="dropzone-box">{{ answer }}</div>
-            </div>
-        {% endfor %}
-    </div>
+            <option value="" disabled selected>Select an option</option>
+            {% for option in question.get_dropdown_options %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
 
     {% elif question.question_type == 'text_fill' %}
         <input type="text" name="text_fill_answer" placeholder="Your answer">
@@ -87,7 +90,8 @@
     {% elif question.question_type == 'wordcloud' %}
         <input type="text" name="text_fill_answer" placeholder="Your answer">
     {% endif %}
-
-   <br> <button type="button" class="submit-button">Submit</button> </br>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+<script src="{% static 'js/question_interactions.js' %}"></script>
 {% endblock %}
