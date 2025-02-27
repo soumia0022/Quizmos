@@ -373,6 +373,63 @@ class ComputingQuestionProvider(BaseProvider):
             "correct_answer": correct_answer
         }
 
+    def coding_question(self):
+        questions = [
+            "Write a Python function to check if a number is prime.",
+            "Implement a program that reverses a string without using built-in functions.",
+            "Create a function that finds the factorial of a number using recursion.",
+            "Write a program to find the largest element in a list.",
+            "Implement a sorting algorithm (e.g., Bubble Sort, Merge Sort, or Quick Sort).",
+            "Create a simple calculator that performs basic arithmetic operations.",
+            "Write a Python script to find the Fibonacci sequence up to N terms.",
+            "Implement a function to check if a string is a palindrome.",
+            "Write a function that counts the number of vowels in a given string.",
+            "Create a program that simulates a basic banking system with deposit and withdrawal functions.",
+            "Write a script to generate a random password with a mix of letters, numbers, and symbols.",
+            "Implement a binary search algorithm.",
+            "Write a program to find the GCD (Greatest Common Divisor) of two numbers.",
+            "Create a function that removes duplicate elements from a list.",
+            "Implement a program that checks if two strings are anagrams.",
+            "Write a function to convert a decimal number to binary.",
+            "Create a simple to-do list application using Python.",
+            "Implement a function that finds the intersection of two lists.",
+            "Write a Python script to scrape data from a website using BeautifulSoup.",
+            "Create a program that simulates a dice roll.",
+            "Write a function to find the second largest number in a list.",
+            "Implement a basic chatbot using Python.",
+            "Create a program that generates a multiplication table for a given number.",
+            "Write a function that checks if a year is a leap year.",
+            "Implement a simple login authentication system.",
+            "Create a rock-paper-scissors game in Python.",
+            "Write a function that returns the most common element in a list.",
+            "Implement a basic text-based adventure game.",
+            "Create a program that finds the longest common prefix in a list of strings.",
+            "Write a function that generates a random sentence using a predefined word list.",
+            "Implement a queue using stacks in Python.",
+            "Create a function that finds the missing number in a list of consecutive numbers.",
+            "Write a program that reads a file and counts the number of words.",
+            "Implement a simple URL shortener.",
+            "Create a Python program that fetches real-time weather data using an API.",
+            "Write a function that finds all prime numbers up to a given number.",
+            "Implement a basic file encryption and decryption script.",
+            "Create a program that solves the Tower of Hanoi problem.",
+            "Write a function that generates a random maze using recursion.",
+            "Implement a simple markdown to HTML converter in Python.",
+            "Create a Python program that sends an email using SMTP.",
+            "Write a function that compresses a string using Run-Length Encoding (RLE).",
+            "Implement a simple chatbot with predefined responses.",
+            "Create a function that finds the longest palindrome in a given string.",
+            "Write a Python program to simulate a traffic light system.",
+            "Implement a function that finds the shortest path in a maze using BFS.",
+            "Create a Python program that converts Roman numerals to integers.",
+            "Write a function that validates an email address using regex.",
+            "Implement a program that extracts metadata from an image file.",
+            "Create a Python script that fetches the latest news headlines from an API.",
+            "Write a program that generates a QR code for a given URL."
+        ]
+
+        question = self.random_element(questions)
+        return question
 
 class Command(BaseCommand):
     """Build automation command to seed questions in the database"""
@@ -485,7 +542,7 @@ class Command(BaseCommand):
             })
 
         elif question_type == 'code_question':
-            question_text = self.faker.sentence()
+            question_text = self.faker.coding_question()
             question_data.update({
                 'question_text': question_text,
                 'code_question_text':question_text,
