@@ -24,6 +24,16 @@
         <div class="row">
             <div class="col-12">
                 <h1>Welcome to {{ poll.title }}!</h1>
+                
+                <!-- progress bar  -->           
+        <div class="progress rounded-pill" style="height: 30px;">
+            <div id="question-progress-bar" class="progress-bar bg-success rounded-pill" role="progressbar" 
+                style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <span id="question-progress-text">0 / 0</span>
+            </div>
+        </div>
+              <br/>
+                        
                 <div id="question">Waiting for a question...</div>
                 <input type="text" id="answer" style="display: none;" placeholder="Your answer" />
                 <div id="question_options">Waiting for options...</div>
@@ -87,6 +97,36 @@
             const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
             const submitButton = document.getElementById('submitResponse');
 
+            // Function to update the progress bar
+            let totalQuestions = 0;
+            let currentQuestionNumber = 0;
+
+            function updateProgressBar(currentNum, total) {
+                const progressBar = document.getElementById('question-progress-bar');
+                const progressText = document.getElementById('question-progress-text');
+
+                if (!progressBar || !progressText) return;  
+
+                const percentage = total > 0 ? (currentNum / total) * 100 : 0;
+                
+                progressBar.style.width = `${percentage}%`;
+                progressBar.setAttribute('aria-valuenow', percentage);
+                progressText.textContent = `Question ${currentNum} of ${total}`;
+
+                 // the colour will changes based on question progression
+                if (percentage <= 25) {
+                    progressBar.classList.remove('bg-warning', 'bg-success');
+                    progressBar.classList.add('bg-danger'); 
+                } else if (percentage > 25 && percentage < 75) {
+                    progressBar.classList.remove('bg-danger', 'bg-success');
+                    progressBar.classList.add('bg-warning'); 
+                } else {
+                    progressBar.classList.remove('bg-danger', 'bg-warning');
+                    progressBar.classList.add('bg-success'); 
+                }
+            }
+
+            
             ws.onmessage = function(event) {
                 const data = JSON.parse(event.data);
 
@@ -95,7 +135,18 @@
                     currentQuestionType = data.question.type;
                     document.getElementById('question').innerText = data.question.text;
                     submitButton.style.display = 'block';
-
+                   
+                    // Update question progress information
+                    if (data.total_questions) {
+                        totalQuestions = data.total_questions;
+                    }
+                    if (data.question_number) {
+                        currentQuestionNumber = data.question_number;
+                    }
+                    
+                    // Update the progress bar
+                    updateProgressBar(currentQuestionNumber, totalQuestions);
+                    
                     if (data.question.type === 'multiple_choice') {
                         let options = "";
                         data.question.mcq_options.forEach(option => {
