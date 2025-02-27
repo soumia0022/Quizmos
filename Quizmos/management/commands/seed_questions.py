@@ -338,30 +338,30 @@ class ComputingQuestionProvider(BaseProvider):
 
     def dropdown_fill_in_the_blank(self):
         questions = [
-            ("The brain of the computer is the _.", ["CPU", "RAM", "Hard Drive", "Monitor"], ["CPU"]),
-            ("_ is a programming language known for its simplicity and readability.", ["Python", "C++", "Java", "Assembly"], ["Python"]),
-            ("The primary protocol used to transfer web pages is _.", ["HTTP", "FTP", "SMTP", "SSH"], ["HTTP"]),
-            ("A _ is a collection of interrelated data.", ["Database", "Compiler", "Algorithm", "Cache"], ["Database"]),
-            ("The OSI model has _ layers.", ["7", "5", "3", "9"], ["7"]),
-            ("The process of finding and fixing errors in code is called _.", ["Debugging", "Compiling", "Testing", "Encrypting"], ["Debugging"]),
-            ("In networking, _ assigns IP addresses to devices dynamically.", ["DHCP", "DNS", "TCP", "SMTP"], ["DHCP"]),
-            ("_ is the process of converting source code into machine code.", ["Compilation", "Interpretation", "Execution", "Encryption"], ["Compilation"]),
-            ("A _ is a type of malware that replicates itself and spreads.", ["Worm", "Firewall", "Trojan", "Antivirus"], ["Worm"]),
-            ("The fastest type of memory in a computer is _.", ["Cache", "RAM", "Hard Drive", "SSD"], ["Cache"]),
-            ("A _ is a set of rules for data communication.", ["Protocol", "Algorithm", "Function", "Database"], ["Protocol"]),
-            ("The _ controls how memory and processes are managed in a computer.", ["Operating System", "Router", "Compiler", "Cloud"], ["Operating System"]),
-            ("The binary number system uses only _ and _.", ["0, 1", "1, 2", "0, 9", "A, B"], ["0, 1"]),
-            ("An _ converts human-readable code into machine code.", ["Compiler", "Debugger", "Firewall", "Cache"], ["Compiler"]),
-            ("The programming language primarily used for web development is _.", ["JavaScript", "C", "Python", "Swift"], ["JavaScript"]),
-            ("A _ is a placeholder for storing values in programming.", ["Variable", "Function", "Loop", "Class"], ["Variable"]),
-            ("_ is used to uniquely identify devices on a network.", ["IP Address", "URL", "DNS", "MAC Address"], ["IP Address"]),
-            ("The _ tag is used to define a hyperlink in HTML.", ["<a>", "<p>", "<div>", "<h1>"], ["<a>"]),
-            ("The _ operator is used for logical AND in Python.", ["and", "&&", "||", "=="], ["and"]),
-            ("A _ is a sequence of characters in programming.", ["String", "Integer", "Boolean", "Float"], ["String"]),
-            ("The term _ refers to hiding implementation details in OOP.", ["Encapsulation", "Abstraction", "Inheritance", "Polymorphism"], ["Encapsulation"]),
-            ("The main function in a C program is called _.", ["main", "start", "execute", "run"], ["main"]),
-            ("_ is a type of attack where data is intercepted during transmission.", ["Man-in-the-Middle", "Phishing", "DDoS", "Trojan"], ["Man-in-the-Middle"]),
-            ("_ is used to prevent unauthorized access to or from a private network.", ["Firewall", "Malware", "Compiler", "Cache"], ["Firewall"])
+            ("The brain of the computer is the ____.", ["CPU", "RAM", "Hard Drive", "Monitor"], "CPU"),
+            ("____ is a programming language known for its simplicity and readability.", ["Python", "C++", "Java", "Assembly"], "Python"),
+            ("The primary protocol used to transfer web pages is ____.", ["HTTP", "FTP", "SMTP", "SSH"], "HTTP"),
+            ("A ____ is a collection of interrelated data.", ["Database", "Compiler", "Algorithm", "Cache"], "Database"),
+            ("The OSI model has ____ layers.", ["7", "5", "3", "9"], "7"),
+            ("The process of finding and fixing errors in code is called ____.", ["Debugging", "Compiling", "Testing", "Encrypting"], "Debugging"),
+            ("In networking, ____ assigns IP addresses to devices dynamically.", ["DHCP", "DNS", "TCP", "SMTP"], "DHCP"),
+            ("____ is the process of converting source code into machine code.", ["Compilation", "Interpretation", "Execution", "Encryption"], "Compilation"),
+            ("A ____ is a type of malware that replicates itself and spreads.", ["Worm", "Firewall", "Trojan", "Antivirus"], "Worm"),
+            ("The fastest type of memory in a computer is ____.", ["Cache", "RAM", "Hard Drive", "SSD"], "Cache"),
+            ("A ____ is a set of rules for data communication.", ["Protocol", "Algorithm", "Function", "Database"], "Protocol"),
+            ("The ____ controls how memory and processes are managed in a computer.", ["Operating System", "Router", "Compiler", "Cloud"], "Operating System"),
+            ("The binary number system uses only ____ and ____.", ["0, 1", "1, 2", "0, 9", "A, B"], "0, 1"),
+            ("An ____ converts human-readable code into machine code.", ["Compiler", "Debugger", "Firewall", "Cache"], "Compiler"),
+            ("The programming language primarily used for web development is ____.", ["JavaScript", "C", "Python", "Swift"], "JavaScript"),
+            ("A ____ is a placeholder for storing values in programming.", ["Variable", "Function", "Loop", "Class"], "Variable"),
+            ("____ is used to uniquely identify devices on a network.", ["IP Address", "URL", "DNS", "MAC Address"], "IP Address"),
+            ("The ____ tag is used to define a hyperlink in HTML.", ["<a>", "<p>", "<div>", "<h1>"], "<a>"),
+            ("The ____ operator is used for logical AND in Python.", ["and", "&&", "||", "=="], "and"),
+            ("A ____ is a sequence of characters in programming.", ["String", "Integer", "Boolean", "Float"], "String"),
+            ("The term ____ refers to hiding implementation details in OOP.", ["Encapsulation", "Abstraction", "Inheritance", "Polymorphism"], "Encapsulation"),
+            ("The main function in a C program is called ____.", ["main", "start", "execute", "run"], "main"),
+            ("____ is a type of attack where data is intercepted during transmission.", ["Man-in-the-Middle", "Phishing", "DDoS", "Trojan"], "Man-in-the-Middle"),
+            ("____ is used to prevent unauthorized access to or from a private network.", ["Firewall", "Malware", "Compiler", "Cache"], "Firewall")
         ]
 
         sentence, options, correct_answer = self.random_element(questions)  # Pick a random question
@@ -369,7 +369,7 @@ class ComputingQuestionProvider(BaseProvider):
 
         return {
             "sentence": sentence,
-            "options": options,
+            "options": ", ".join(options),
             "correct_answer": correct_answer
         }
 
