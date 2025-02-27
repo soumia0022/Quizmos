@@ -37,7 +37,7 @@ class QuestionManager:
 
     def save_files(self):
         """Save uploaded audio and video files."""
-        for file_type in ['audio_file', 'video_file']:
+        for file_type in ['audio_file', 'video_file', 'image_file']:
             if file_type in self.request.FILES:
                 setattr(self.question, file_type, self.request.FILES[file_type])
                 self.question.save()

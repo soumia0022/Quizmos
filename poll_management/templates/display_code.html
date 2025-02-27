@@ -2,13 +2,14 @@
 {% load system_extras %}
 
 {% block content %}
+    {% noscript_warning %}
     {% return_button %}
 <div class="container">
   <div class="row">
     <div class="col-6">
       <!-- Left Column -->
       <div class="left-column">
-        <h1>{{ poll.title }}</h1>
+        <h1 id="id_start_poll_title">{{ poll.title }}</h1>
         {% include 'poll_components/lock.html' %}
         <div id="poll-controls">
           <button id="start-poll-btn" onclick="startPoll()" class="btn btn-primary mb-3">Start Poll</button>
@@ -42,6 +43,7 @@
         type: "{{ question.question_type }}",
         video_file: {% if question.video_file %}"{{ question.video_file.url }}"{% else %}null{% endif %},
         audio_file: {% if question.audio_file %}"{{ question.audio_file.url }}"{% else %}null{% endif %},
+        youtube_link: {% if question.youtube_link %}"{{ question.youtube_link }}"{% else %}null{% endif %},
         {% if question.question_type == 'dropdown_fill' %}
           text: "{{ question.dropdown_fill_question|default:'' }}",
           options: {{ question.get_dropdown_options|safe|default:"[]" }},

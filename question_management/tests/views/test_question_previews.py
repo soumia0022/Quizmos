@@ -41,6 +41,6 @@ class QuestionDetailViewTest(TestCase):
         response = self.client.get(reverse('question_management:question_detail', args=[self.question.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'question_detail.html')
-        self.assertContains(response, "What is your favorite color?")
-        self.assertContains(response, self.question.timer)
-
+        self.assertContains(response, self.question.question_text)
+        context_timer = response.context['question'].timer
+        self.assertEqual(context_timer, 30)

@@ -1,4 +1,5 @@
 {% extends 'base_content.html' %}
+{% load system_extras %}
 {% block content %}
 <head>
   <title>{{ poll.title }}</title>
@@ -15,6 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 </head>
 <body>
+    {% noscript_warning %}
   <div class="container">
     <div class="row">
       <div class="col-12">
@@ -98,6 +100,9 @@
             data.question.dropdown_options.forEach(option => {
               options += `<option value="${option}">${option}</option>`;
             });
+            if (!data.question.dropdown_options.includes(data.question.dropdown_correct_answer)) {
+              options += `<option value="${data.question.dropdown_correct_answer}">${data.question.dropdown_correct_answer}</option>`;
+            }
             options += '</select>';
             document.getElementById('question_options').innerHTML = options;
           } else if (data.question.type === 'text_fill') {

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load system_extras %}
 <head>
     <title>Delete Poll</title>
 </head>
 <body>
+    {% noscript_warning %}
     <h1>Delete Poll</h1>
     <p>Are you sure you want to delete the poll "{{ poll.title }}"?</p>
     <form method="POST">

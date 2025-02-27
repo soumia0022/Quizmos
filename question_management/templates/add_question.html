@@ -10,9 +10,9 @@
     <script src="{% static 'js/question_buttons.js' %}"></script>
     <script src="{% static 'js/question_constraints.js' %}"></script>
     <script type="module" src="{% static 'js/add_question.js' %}"></script>
-
 </head>
 <body>
+    {% noscript_warning %}
     {% return_button %}
     {% go_back_button %}
 
@@ -21,7 +21,7 @@
     <div class="container-fluid mt-2 text-center">
         <div class="row justify-content-center align-items-center mb-3">
             <div class="col-auto">
-                <h1 class="mb-3">{{ poll.title }}</h1>
+                <h1 id="id_add_question_title" class="mb-3">{{ poll.title }}</h1>
             </div>
             <div class="col-auto">
                 <button id="add-question-btn" class="btn btn-primary">Add Question</button>
@@ -35,7 +35,7 @@
                 <!-- Form to Add Question (hidden initially) -->
                 <div class="card" id="question-form" style="display: none;">
                     <div class="card-body">
-                        <form method="POST" enctype="multipart/form-data">
+                        <form id="form" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <!-- Dropdown for selecting question type -->
                             <div class="mb-3">
@@ -61,8 +61,8 @@
                             <!-- Text Fill Fields -->
                             <div id="text-fill-fields" class="mb-3" style="display: none;">
                                 <p>{% info_button "Allows students to type a free-form response" %}</p>
-                                <input type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
-                                <input type="text" name="text_fill_answer" class="form-control" placeholder="Enter Text Answer">
+                                <input id="id_text_question" type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
+                                <input id="id_text_answer" type="text" name="text_fill_answer" class="form-control" placeholder="Enter Text Answer">
 
                             </div>
 
@@ -107,7 +107,7 @@
                             <!-- Word Cloud Fields -->
                             <div id="word-cloud-fields" style="display: none;">
                                 <p>{% info_button "Add a prompt for which students will add word responses to live in the lesson" %}</p>
-                                <input type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt" />
+                                <input id="id_word_cloud_question" type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt" />
                                 <div id="actual-wordcloud">
                                 <!-- Display the word cloud image if generated -->
                                 {% if wordcloud_image %}
@@ -135,7 +135,7 @@
                             <div id="code-question-fields" class="mb-3" style="display: none;">
                                 <p>{% info_button "Provide a coding problem with a prompt and test cases" %}</p>
                                 <label for="code_question_text" class="form-label">Coding Question:</label>
-                                <textarea name="code_question_text" class="form-control mb-2" placeholder="Enter coding question prompt"></textarea>
+                                <textarea id="id_code_question" name="code_question_text" class="form-control mb-2" placeholder="Enter coding question prompt"></textarea>
 
                                 <label for="code_language" class="form-label">Select Language:</label>
                                 <select name="code_language" class="form-select mb-2">
@@ -147,14 +147,15 @@
                                 </select>
 
                                 <label for="code_test_cases" class="form-label">Test Cases (JSON Format):</label>
-                                <textarea name="code_test_cases" class="form-control" placeholder='Example: [{"input": "2,3", "output": "5"}]'></textarea>
+                                <textarea id="id_code_answer" name="code_test_cases" class="form-control" placeholder='Example: [{"input": "2,3", "output": "5"}]'></textarea>
                             </div>
 
 
-                           <!-- Add Audio and Video Buttons -->
+                           <!-- Add Audio, Video and Image Buttons -->
                             <div id="media-buttons" class="mb-3" style="display: none;">
                                 <button type="button" id="add-audio-btn" class="btn btn-secondary mb-2">Add Audio</button>
                                 <button type="button" id="add-video-btn" class="btn btn-secondary mb-2">Add Video</button>
+                                <button type="button" id="add-image-btn" class="btn btn-secondary mb-2">Add Image</button>
                                 <button type="button" id="reset-media-btn" class="btn btn-secondary mt-2">Reset Media</button> {% info_button "You can only upload one media type" %}
                             </div>
 
@@ -176,12 +177,18 @@
 
                             <!-- YouTube URL Input Field -->
                             <div id="youtube-url-field" style="display: none;">
+                                <p>{% info_button "Right-click on the YouTube video, select Copy video URL, and paste it bellow" %}</p>
                                 <input type="url" name="youtube_link" class="form-control mb-2" placeholder="Enter YouTube video URL">
                             </div>
 
+                            <div id="image-upload-field" style="display: none;">
+                                <input type="file" name="image_file" class="form-control mb-2" accept="image/*">
+                            </div>
+
+
                             <!-- Save Question Button -->
                             <div class="text-center">
-                                <button type="submit" class="btn btn-success">Save Question</button>
+                                <button id="id_save_question_button" type="submit" class="btn btn-success">Save Question</button>
                             </div>
                         </form>
                     </div>

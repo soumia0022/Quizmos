@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <title>Edit Poll</title>
 </head>
 <body>
     {% load system_extras %} <!-- When refactored, this can go under the extend base content line -->
+    {% noscript_warning %}
     {% return_button %}
-    <h1>Edit Poll: {{ poll.title }}</h1>
+    <h1 id="id_edit_poll_title">Edit Poll: {{ poll.title }}</h1>
     <form method="POST">
         {% csrf_token %}
         <label for="title">Poll Title:</label>
@@ -22,7 +24,7 @@
     </form>
     <br>
     <a href="{% url 'question_management:add_question' poll.id %}">
-        <button type="button" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; cursor: pointer;">
+        <button id="id_edit_questions_button" type="button" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; cursor: pointer;">
             Edit Questions
         </button>
     </a>

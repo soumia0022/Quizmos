@@ -1,0 +1,21 @@
+<noscript>
+    <style>
+        /* Hide everything except the warning message */
+        body * {
+            display: none !important;
+        }
+
+        body::before {
+            content:  "JavaScript is required for this website to function properly. Please enable JavaScript in your browser settings.";
+            display: block;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            text-align: center;
+        }
+    </style>
+</noscript>
