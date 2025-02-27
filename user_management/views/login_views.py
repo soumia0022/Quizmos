@@ -13,7 +13,7 @@ from poll_management.models.poll_model import Poll
 from django.db.models import Count, Q
 from poll_management.views.create_poll import create_poll
 from django.core.paginator import Paginator
-
+import re
 @login_prohibited
 def home(request):
     if request.method == 'POST':
@@ -32,80 +32,98 @@ def home(request):
 def dashboard(request):
     """Display the current user's dashboard."""
     current_user = request.user
-    
-    if current_user.role == 'Student':
-        # Search and sort for students
-        search_query = request.GET.get('search', '')
-        sort_by = request.GET.get('sort_by', 'created_at_desc')
-        joined_polls = current_user.joined_polls.all()
 
-        if search_query:
-            joined_polls = joined_polls.filter(Q(title__icontains=search_query))
-        if sort_by == 'title_asc':
-            joined_polls = joined_polls.order_by(Lower('title'))
-        elif sort_by == 'title_desc':
-            joined_polls = joined_polls.order_by(Lower('title').desc())
-        elif sort_by == 'created_at_asc':
-            joined_polls = joined_polls.order_by('created_at')
-        elif sort_by == 'created_at_desc':
-            joined_polls = joined_polls.order_by('-created_at')
+    if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+        confirmed = request.POST.get("confirmed", "false") == "true"
 
-        # Paginate after sorting and searching
-        paginator = Paginator(joined_polls, 10)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
 
-        return render(request, 'student_dashboard.html', {'user': current_user, 'polls': page_obj, 'search_query': search_query, 'sort_by': sort_by})
-    else:
-        create_poll(request)
-        
-        sort_by = request.GET.get('sort_by', 'created_at_desc')  # Default sorting
-        search_query = request.GET.get('search', '')  # Get the search query
+        pattern = re.compile(r'^(.*?)(?:\s*\((\d+)\))?\s*$')
+        match = pattern.match(title)
 
-        poll = Poll.objects.filter(user=request.user).annotate(
-            multiple_choice_responses_count=Count('multiplechoiceresponse'),
-            single_choice_responses_count=Count('singlechoiceresponse'),
-            dropdown_fill_responses_count=Count('dropdownfillresponse'),
-            text_fill_responses_count=Count('textfillresponse'),
-            match_question_responses_count=Count('matchquestionresponse')
+        if match:
+            base_title = match.group(1).strip()
+            existing_number = int(match.group(2)) if match.group(2) else None
+        else:
+            base_title = title
+            existing_number = None
+
+
+        existing_polls = Poll.objects.filter(user=request.user)
+        existing_titles = {poll.title for poll in existing_polls}
+
+
+        if title in existing_titles and not confirmed:
+            suggested_title = f"{title} (1)"
+            return render(request, 'lecturer_dashboard.html', {
+                'user': current_user,
+                'polls': existing_polls,
+                'show_confirmation_popup': True,
+                'original_title': title,
+                'suggested_title': suggested_title,
+            })
+
+
+        existing_numbers = []
+        for poll_title in existing_titles:
+            poll_match = pattern.match(poll_title)
+            if poll_match and poll_match.group(1).strip() == base_title:
+                if poll_match.group(2):  # If there's a number
+                    existing_numbers.append(int(poll_match.group(2)))
+
+
+        next_number = max(existing_numbers) + 1 if existing_numbers else 1
+
+
+        if title in existing_titles or confirmed:
+            title = f"{base_title} ({next_number})"
+
+
+        new_poll = Poll.objects.create(user=request.user, title=title)
+        new_poll.save()
+
+    sort_by = request.GET.get('sort_by', 'created_at_desc')
+    search_query = request.GET.get('search', '')
+
+    polls = Poll.objects.filter(user=request.user).annotate(
+        multiple_choice_responses_count=Count('multiplechoiceresponse'),
+        single_choice_responses_count=Count('singlechoiceresponse'),
+        dropdown_fill_responses_count=Count('dropdownfillresponse'),
+        text_fill_responses_count=Count('textfillresponse'),
+        match_question_responses_count=Count('matchquestionresponse')
+    )
+
+    if search_query:
+        polls = polls.filter(Q(title__icontains=search_query))
+
+    sort_options = {
+        'title_asc': 'title',
+        'title_desc': '-title',
+        'created_at_asc': 'created_at',
+        'created_at_desc': '-created_at'
+    }
+    polls = polls.order_by(sort_options.get(sort_by, '-created_at'))
+
+    for p in polls:
+        p.total_responses_count = (
+            p.multiple_choice_responses_count +
+            p.single_choice_responses_count +
+            p.dropdown_fill_responses_count +
+            p.text_fill_responses_count +
+            p.match_question_responses_count
         )
 
-        # Filtering based on search query
-        if search_query:
-            poll = poll.filter(Q(title__icontains=search_query))
+    # Pagination
+    paginator = Paginator(polls, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-        # Sorting logic based on sort_by parameter
-        if sort_by == 'title_asc':
-            poll = poll.order_by(Lower('title'))
-        elif sort_by == 'title_desc':
-            poll = poll.order_by(Lower('title').desc()) #can't use default '-' for sorting because it's case sensitive
-        elif sort_by == 'created_at_asc':
-            poll = poll.order_by('created_at')
-        elif sort_by == 'created_at_desc':
-            poll = poll.order_by('-created_at')
-
-        # Add up all response counts for each poll
-        for p in poll:
-            p.total_responses_count = (
-                p.multiple_choice_responses_count +
-                p.single_choice_responses_count +
-                p.dropdown_fill_responses_count +
-                p.text_fill_responses_count +
-                p.match_question_responses_count
-            )
-
-         #This where I paginate the polls
-        paginator = Paginator(poll, 10)
-        page_number = request.GET.get('page')  # Getting the page number
-        page_obj = paginator.get_page(page_number)  # Getting the page object
-
-        # Essentially rendering the template
-        return render(request, 'lecturer_dashboard.html', {
-            'user': current_user,
-            'polls': page_obj,
-            'sort_by': sort_by,
-            'search_query': search_query,
-        })
+    return render(request, 'lecturer_dashboard.html', {
+        'user': current_user,
+        'polls': page_obj,
+        'sort_by': sort_by,
+        'search_query': search_query,
+    })
 
 
 class LoginProhibitedMixin:
