@@ -18,11 +18,6 @@ class PollResultsViewTest(TestCase):
         self.client = Client()
         self.user = User.objects.get(username='johndoe')
         self.poll = Poll.objects.create(title='Poll 1', user=self.user, status='active', number_code=111111)
-        self.question_match = Question.objects.create(question_text='Match Question', poll=self.poll, question_type='match_question')
-        self.question_multiple = Question.objects.create(question_text='Multiple Choice', poll=self.poll, question_type='multiple_choice')
-        self.question_single = Question.objects.create(question_text='Single Choice', poll=self.poll, question_type='single_choice')
-        self.question_dropdown = Question.objects.create(question_text='Dropdown', poll=self.poll, question_type='dropdown_fill')
-        self.question_text = Question.objects.create(question_text='Text Fill', poll=self.poll, question_type='text_fill')
         self.question_wordcloud = Question.objects.create(question_text='Enter your word(s)', poll=self.poll, question_type='wordcloud')
         
         self.poll_results_url = reverse('poll_management:poll_results', kwargs={'code': self.poll.number_code})

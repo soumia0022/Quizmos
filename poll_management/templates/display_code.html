@@ -65,11 +65,13 @@
       },
     {% endfor %}
   ];
+  window.pollManagementBaseUrl = "/polls/poll/";
 
 </script>
 {% load static%}
-<script src="{% static 'js/poll.js' %}"></script>
-<script src="{% static 'js/websocket.js' %}"></script>
+<script type="module" src="{% static 'js/websocket.js' %}"></script>
+<script type="module" src="{% static 'js/poll.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/response_styles.css' %}">
 
 
 
