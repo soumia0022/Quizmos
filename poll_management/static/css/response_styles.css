@@ -1,0 +1,48 @@
+.response-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.response-stats {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.progress-bar {
+    left: 0;
+    top: 0;
+    height: 8px;
+    background-color: rgba(0, 123, 255, 0.1);
+    transition: width 0.3s ease;
+    z-index: 0;
+}
+
+.response-percentage,
+.response-count {
+    position: relative;
+    z-index: 1;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.response-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.response-list .list-group-item {
+    border-left: 3px solid #6c757d;
+    margin-bottom: 5px;
+}
+
+.response-list .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.response-number {
+    font-size: 0.8em;
+}
+

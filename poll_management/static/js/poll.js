@@ -1,3 +1,32 @@
+import {ws} from './websocket.js';
+import {renderChoice} from "./choice_display.js";
+import {renderText} from "./text_question_display.js";
+import {renderWordCloud} from "./word_cloud_display.js";
+import {renderMatch} from "./match_question_display.js";
+
+
+
+window.startPoll = function() {
+    document.getElementById('start-poll-btn').style.display = 'none';
+    document.getElementById('question-display').style.display = 'block';
+    document.getElementById('unlock').style.display = '';
+    updateQuestionDisplay();
+};
+
+window.previousQuestion = function() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        updateQuestionDisplay();
+    }
+};
+
+window.nextQuestion = function() {
+    if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        updateQuestionDisplay();
+    }
+};
+
 function shuffleArray(array) {
     return array.sort(() => Math.random() - 0.5);
   }
@@ -54,97 +83,34 @@ function createQuestionHTML(question) {
 
   switch(question.type) {
      case 'dropdown_fill':
-      const parts = question.text.split('___'); // split the text where there are blank spaces (3 underscores ___)
-      html += `<p>`;
-      parts.forEach((part, index) => {
-        html += part; // for each part in the question, add it to the HTML content
-        if (index < parts.length - 1) {
-          // Add some empty spaces (3 spaces per blank)
-          html += '&nbsp;&nbsp;&nbsp;';
-        }
-      });
-       html += `</p>`;
-       html += `<div class="options-container">
-             ${question.options.map(option =>
-               `<div class="card" style="margin-bottom: 10px; padding: 5px;">
-                 <label>${option}</label>
-               </div>`
-             ).join('')}
-           </div>`;
-      break;
+       html += renderChoice(question);
+       break;
 
     case 'text_fill':
-      html += `<p>${question.text}</p>
-               <div class="form-group">
-                <div class="form-control mt-3" style="height: auto; min-height: 50px; border: 1px solid #ced4da; padding: 10px; background-color: #f8f9fa;">
-                  Type your answer here
-                </div>
-              </div>`
-
+      html += renderText(question);
       break;
 
     case 'multiple_choice':
-      html += `<p>${question.text}</p>
-               <div class="options-container">
-                 ${question.options.map(option => `
-                   <div class="card" style = "margin-bottom: 10px; padding: 5px;">
-                     <label >${option}</label>
-                   </div>
-                 `).join('')}
-               </div>`;
+      html += renderChoice(question);
       break;
 
     case 'single_choice':
-      html += `<p>${question.text}</p>
-               <div class="options-container">
-                 ${question.options.map(option => `
-                   <div class="card" style = "margin-bottom: 10px; padding: 5px;">
-                     <label >${option}</label>
-                   </div>
-                 `).join('')}
-               </div>`;
+      html += renderChoice(question);
       break;
 
     case 'wordcloud':
-      html += `<p>${question.text}</p>
-               <div class="form-group">
-                <div class="form-control mt-3" style="height: auto; min-height: 50px; border: 1px solid #ced4da; padding: 10px; background-color: #f8f9fa;">
-                  Type your answer here
-                </div>
-              </div>`;
+      html += renderText(question);//update this later when wordcloud responses are done
       break;
 
     case 'match_question':
-
-      const shuffledAnswers = shuffleArray([...question.answers]);
-
-       html += `<p>${question.text}</p>
-         <div class="matching-container mt-3">
-           ${question.options.map((option, index) => `
-             <div class="matching-item mb-3">
-               <div class="row">
-                 <div class="col-5">
-                   <div class="card p-3 text-center">
-                     <span class="option-text">${option}</span>
-                   </div>
-                 </div>
-                 <div class="col-5">
-                   <div class="card p-3 text-center">
-                     <span class="answer-text">${shuffledAnswers[index]}</span>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           `).join('')}
-         </div>`;
+       html += renderMatch(question);
 break;
   }
 
   html += '</div>';
   return html;
 }
-
-  function updateQuestionDisplay() {
+function updateQuestionDisplay() {
     const questionContainer = document.getElementById('question-container');
     const currentQuestion = questions[currentQuestionIndex];
 
@@ -166,25 +132,4 @@ break;
     }
   }
 
-  function previousQuestion() {
-    if (currentQuestionIndex > 0) {
-      currentQuestionIndex--;
-      updateQuestionDisplay();
-    }
-  }
-
-  function nextQuestion() {
-    if (currentQuestionIndex < questions.length - 1) {
-      currentQuestionIndex++;
-      updateQuestionDisplay();
-    }
-  }
-
-  function startPoll() {
-    document.getElementById('start-poll-btn').style.display = 'none';
-    document.getElementById('question-display').style.display = 'block';
-    document.getElementById('unlock').style.display = '';
-
-    updateQuestionDisplay();
-  }
 
