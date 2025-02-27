@@ -336,6 +336,43 @@ class ComputingQuestionProvider(BaseProvider):
 
         return self.random_element(match_questions)
 
+    def dropdown_fill_in_the_blank(self):
+        questions = [
+            ("The brain of the computer is the _.", ["CPU", "RAM", "Hard Drive", "Monitor"], ["CPU"]),
+            ("_ is a programming language known for its simplicity and readability.", ["Python", "C++", "Java", "Assembly"], ["Python"]),
+            ("The primary protocol used to transfer web pages is _.", ["HTTP", "FTP", "SMTP", "SSH"], ["HTTP"]),
+            ("A _ is a collection of interrelated data.", ["Database", "Compiler", "Algorithm", "Cache"], ["Database"]),
+            ("The OSI model has _ layers.", ["7", "5", "3", "9"], ["7"]),
+            ("The process of finding and fixing errors in code is called _.", ["Debugging", "Compiling", "Testing", "Encrypting"], ["Debugging"]),
+            ("In networking, _ assigns IP addresses to devices dynamically.", ["DHCP", "DNS", "TCP", "SMTP"], ["DHCP"]),
+            ("_ is the process of converting source code into machine code.", ["Compilation", "Interpretation", "Execution", "Encryption"], ["Compilation"]),
+            ("A _ is a type of malware that replicates itself and spreads.", ["Worm", "Firewall", "Trojan", "Antivirus"], ["Worm"]),
+            ("The fastest type of memory in a computer is _.", ["Cache", "RAM", "Hard Drive", "SSD"], ["Cache"]),
+            ("A _ is a set of rules for data communication.", ["Protocol", "Algorithm", "Function", "Database"], ["Protocol"]),
+            ("The _ controls how memory and processes are managed in a computer.", ["Operating System", "Router", "Compiler", "Cloud"], ["Operating System"]),
+            ("The binary number system uses only _ and _.", ["0, 1", "1, 2", "0, 9", "A, B"], ["0, 1"]),
+            ("An _ converts human-readable code into machine code.", ["Compiler", "Debugger", "Firewall", "Cache"], ["Compiler"]),
+            ("The programming language primarily used for web development is _.", ["JavaScript", "C", "Python", "Swift"], ["JavaScript"]),
+            ("A _ is a placeholder for storing values in programming.", ["Variable", "Function", "Loop", "Class"], ["Variable"]),
+            ("_ is used to uniquely identify devices on a network.", ["IP Address", "URL", "DNS", "MAC Address"], ["IP Address"]),
+            ("The _ tag is used to define a hyperlink in HTML.", ["<a>", "<p>", "<div>", "<h1>"], ["<a>"]),
+            ("The _ operator is used for logical AND in Python.", ["and", "&&", "||", "=="], ["and"]),
+            ("A _ is a sequence of characters in programming.", ["String", "Integer", "Boolean", "Float"], ["String"]),
+            ("The term _ refers to hiding implementation details in OOP.", ["Encapsulation", "Abstraction", "Inheritance", "Polymorphism"], ["Encapsulation"]),
+            ("The main function in a C program is called _.", ["main", "start", "execute", "run"], ["main"]),
+            ("_ is a type of attack where data is intercepted during transmission.", ["Man-in-the-Middle", "Phishing", "DDoS", "Trojan"], ["Man-in-the-Middle"]),
+            ("_ is used to prevent unauthorized access to or from a private network.", ["Firewall", "Malware", "Compiler", "Cache"], ["Firewall"])
+        ]
+
+        sentence, options, correct_answer = self.random_element(questions)  # Pick a random question
+        random.shuffle(options)  # Shuffle options
+
+        return {
+            "sentence": sentence,
+            "options": options,
+            "correct_answer": correct_answer
+        }
+
 
 class Command(BaseCommand):
     """Build automation command to seed questions in the database"""
@@ -391,26 +428,13 @@ class Command(BaseCommand):
         }
 
         if question_type == 'dropdown_fill':
-            question_text = self.faker.sentence()
-            words = question_text.split()  # Split sentence into words
-
-            if len(words) > 1:  # Ensure there are enough words to replace one
-                correct_word = random.choice(words)  # Pick a random word from the sentence
-                question_text_with_blank = question_text.replace(correct_word, "____",
-                                                                 1)  # Replace only first occurrence
-            else:
-                correct_word = words[0]  # Fallback in case of a single-word sentence
-                question_text_with_blank = "____"
-
-            # Generate distractor options including the correct answer
-            options = list(set(self.faker.words(3) + [correct_word]))  # Ensure correct word is in options
-            random.shuffle(options)  # Shuffle so correct answer isn't always first
+            dropdown = self.faker.dropdown_fill_in_the_blank()  # Get a computing question
 
             question_data.update({
-                'question_text': question_text_with_blank,
-                'dropdown_fill_question': question_text_with_blank,
-                'dropdown_options': ', '.join(options),
-                'dropdown_correct_answer': correct_word,
+                'question_text': dropdown['sentence'],
+                'dropdown_fill_question':  dropdown['sentence'],
+                'dropdown_options': dropdown['options'],
+                'dropdown_correct_answer': dropdown['correct_answer']
             })
 
         elif question_type == 'text_fill':
