@@ -36,10 +36,9 @@ def piechart_data(request, poll_id):
         labels.append(question.question_text)  # Label is the question text
         data.append(response_count)  # Data is the response count
 
-    # Return the data as JSON
     return JsonResponse({'labels': labels, 'data': data})
 
-# views.py
+
 def bargraph_data(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id)
 

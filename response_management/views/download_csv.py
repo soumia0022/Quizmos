@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from poll_management.models.poll_model import Poll
-from response_management.models.response_model import Response
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
 
 def download_csv(request, poll_id):
@@ -33,7 +32,7 @@ def download_csv(request, poll_id):
             correct_answer = question.text_fill_answer
             responses = TextFillResponse.objects.filter(question=question)
         elif question.question_type == 'dropdown_fill':
-            options = ", ".join(question.dropdown_options.split(','))  # Assuming options stored as a comma-separated string
+            options = ", ".join(question.dropdown_options.split(','))
             correct_answer = question.dropdown_correct_answer
             responses = DropdownFillResponse.objects.filter(question=question)
         elif question.question_type == 'match_question':
