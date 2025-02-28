@@ -3,8 +3,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from response_management.models.response_model import (
     MatchQuestionResponse, MultipleChoiceResponse,
-    SingleChoiceResponse, DropdownFillResponse, TextFillResponse,
-    WordCloudResponse
+    SingleChoiceResponse, DropdownFillResponse, TextFillResponse, 
+    WordCloudResponse 
 )
 from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
@@ -173,6 +173,7 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'dropdown_options': dropdown_options,
                 'match_options': match_options,
                 'match_answers': match_answers,
+                'wordcloud_question': question.wordcloud_question,
 
                 'dropdown_correct_answer': question.dropdown_correct_answer,
 
@@ -199,7 +200,7 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'single_choice': (SingleChoiceResponse, 'selected_option'),
                 'dropdown_fill': (DropdownFillResponse, 'selected_option'),
                 'text_fill': (TextFillResponse, 'answer_text'),
-                'wordcloud': (WordCloudResponse, 'responses')
+                'wordcloud': (WordCloudResponse, 'word_cloud_response') 
             }
 
             if response_type not in response_models:
