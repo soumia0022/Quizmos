@@ -338,5 +338,18 @@ class TestPollConsumer(TransactionTestCase):
 
         await communicator.disconnect()
 
+    async def test_student_join_count(self):
+            """Test that student join counter works correctly"""
 
-    
+            student_communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+
+
+            student_communicator.scope['user'] = self.student  # Student
+
+            # Connect student and check for student count message
+            await student_communicator.connect()
+            response = await student_communicator.receive_json_from()
+
+            self.assertEqual(response['type'], 'new_student')
+            self.assertEqual(response['message'], '1')
+        
