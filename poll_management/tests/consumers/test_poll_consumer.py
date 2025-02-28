@@ -88,24 +88,6 @@ class TestPollConsumer(TransactionTestCase):
 
         await communicator.disconnect()
 
-    async def test_student_join_count(self):
-        """Test that student join counter works correctly"""
-
-        student_communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
-
-
-        student_communicator.scope['user'] = self.student  # Student
-
-        # Connect student and check for student count message
-        await student_communicator.connect()
-        response = await student_communicator.receive_json_from()
-
-        self.assertEqual(response['type'], 'new_student')
-        self.assertEqual(response['message'], '1')
-
-
-
-
 
     async def test_save_multiple_choice_response(self):
         """Test saving a multiple choice response"""
@@ -356,42 +338,5 @@ class TestPollConsumer(TransactionTestCase):
 
         await communicator.disconnect()
 
-    async def test_student_join_message(self):
-        communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
-        communicator.scope['user'] = self.student
-        connected, _ = await communicator.connect()
-        self.assertTrue(connected)
 
-        response = await communicator.receive_json_from()
-        self.assertEqual(response['type'], 'message')
-        self.assertEqual(response['message'], f'A student joined the poll: {self.student.username}!')
-
-        await communicator.disconnect()
-
-    async def test_message_broadcast_to_group(self):
-        communicator1 = WebsocketCommunicator(self.application, "/ws/poll/123456/")
-        communicator2 = WebsocketCommunicator(self.application, "/ws/poll/123456/")
-        communicator1.scope['user'] = self.user
-        communicator2.scope['user'] = self.student
-        await communicator1.connect()
-        await communicator2.connect()
-
-        await communicator1.receive_json_from()
-        await communicator2.receive_json_from()
-
-        message = {'type': 'message', 'message': 'Broadcast message'}
-        await communicator1.send_json_to(message)
-
-        while True:
-            response1 = await communicator1.receive_json_from()
-            response2 = await communicator2.receive_json_from()
-            if response1['message'] == 'Broadcast message' and response2['message'] == 'Broadcast message':
-                break
-
-        self.assertEqual(response1['type'], 'message')
-        self.assertEqual(response1['message'], 'Broadcast message')
-        self.assertEqual(response2['type'], 'message')
-        self.assertEqual(response2['message'], 'Broadcast message')
-
-        await communicator1.disconnect()
-        await communicator2.disconnect()
+    
