@@ -203,6 +203,9 @@
 
                         document.getElementById('answer').style.display = 'none';
                         initializeSortable();
+                    } else if (data.question.type === 'code_question'){
+                        document.getElementById('question_options').innerHTML = 'I NEED TO BE REPLACED WITH AN IDE';
+                        document.getElementById('answer').style.display = 'none';
                     }
                 } else if (data.type === 'response_status') {
                     showFeedback(
