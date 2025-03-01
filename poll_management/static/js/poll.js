@@ -3,6 +3,8 @@ import {renderChoice} from "./choice_display.js";
 import {renderText} from "./text_question_display.js";
 import {renderWordCloud} from "./word_cloud_display.js";
 import {renderMatch} from "./match_question_display.js";
+import { renderCodeQuestion } from "./code_question_display.js";
+// console.log("renderCodeQuestion function:", renderCodeQuestion);
 
 
 
@@ -104,6 +106,12 @@ function createQuestionHTML(question) {
 
     case 'match_question':
        html += renderMatch(question);
+       break;
+
+   case 'code_question':
+       html += renderCodeQuestion(question);
+
+
 break;
   }
 
