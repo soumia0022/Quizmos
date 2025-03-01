@@ -27,3 +27,9 @@ class DropdownFillResponse(Response):
 
 class MatchQuestionResponse(Response):
     match_responses = models.JSONField()  
+
+class CodeQuestionResponse(Response):
+    submitted_code = models.TextField()  # Stores the student's code
+    language = models.CharField(max_length=20, default="python")  # Language used
+    test_results = models.JSONField(default=dict, blank=True)  # Stores test case results
+    execution_status = models.CharField(max_length=20, default="pending")  # Status: pending, passed, failed
