@@ -1,4 +1,3 @@
-
 function createLockOverlay() {
     if (document.getElementById('poll-lock-overlay')) {
         return; // Already exists
@@ -12,10 +11,11 @@ function createLockOverlay() {
             <i class="fas fa-lock lock-icon"></i>
             <h3>This poll is locked</h3>
             <p>Please wait for the lecturer to unlock responses</p>
+            <button id="close-overlay-btn" class="close-btn">Close</button>
         </div>
     `;
 
-    // Hide by default
+    // Initially hidden
     overlay.style.display = 'none';
     document.body.appendChild(overlay);
 
@@ -36,7 +36,7 @@ function createLockOverlay() {
             align-items: center;
             text-align: center;
         }
-        
+
         .lock-message {
             background-color: white;
             padding: 2rem;
@@ -44,14 +44,20 @@ function createLockOverlay() {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             max-width: 400px;
         }
-        
+
         .lock-icon {
             font-size: 3rem;
             color: #dc3545;
             margin-bottom: 1rem;
         }
+
     `;
     document.head.appendChild(style);
+
+    // Close button functionality
+    overlay.querySelector('#close-overlay-btn').addEventListener('click', () => {
+        showLockOverlay();
+    });
 }
 
 function showLockOverlay() {
@@ -59,7 +65,6 @@ function showLockOverlay() {
     if (overlay) {
         overlay.style.display = 'none';
     }
-
 }
 
 function hideLockOverlay() {
@@ -67,9 +72,10 @@ function hideLockOverlay() {
     if (overlay) {
         overlay.style.display = 'flex';
     }
-
 }
 
 window.createLockOverlay = createLockOverlay;
 window.showLockOverlay = showLockOverlay;
 window.hideLockOverlay = hideLockOverlay;
+
+
