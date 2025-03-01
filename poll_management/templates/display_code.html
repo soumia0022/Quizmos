@@ -61,6 +61,12 @@
           text: "{{ question.match_question|default:'' }}",
           options: {{ question.match_options|safe|default:"[]" }},
           answers: {{ question.match_answers|safe|default:"[]" }},
+
+        {% elif question.question_type == 'code_question' %}
+            text: "{{ question.code_question_text|default:'' }}",
+            language: "{{ question.coding_language|default:'python' }}",
+
+
         {% endif %}
       },
     {% endfor %}
