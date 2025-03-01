@@ -43,8 +43,11 @@
         </div>
 
     </div>
-
+    {% load static%}
+    <script type="module" src="{% static 'js/student_lock.js' %}"></script>
     <script>
+
+
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -129,6 +132,15 @@
             
             ws.onmessage = function(event) {
                 const data = JSON.parse(event.data);
+
+                // Handle poll lock/unlock messages
+                if (data.type === 'poll_status') {
+                    if (data.action === 'lock') {
+                        showLockOverlay();
+                    } else if (data.action === 'unlock') {
+                        hideLockOverlay();
+                    }
+                }
 
                 if (data.type === 'question') {
                     currentQuestionId = data.question.id;
@@ -258,7 +270,11 @@
                     showFeedback('Please provide a response', false);
                 }
             });
+
+            createLockOverlay();
         });
     </script>
+
+
 </body>
 {% endblock %}
