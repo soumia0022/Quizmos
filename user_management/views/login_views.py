@@ -28,10 +28,23 @@ def home(request):
 
     return render(request, 'home.html', {'form': form})
 
-
+@login_required(login_url='user_management:log_in')
 def dashboard(request):
     """Display the current user's dashboard."""
+    
     current_user = request.user
+
+    if current_user.first_name == "Guest":
+        user_id = current_user.id
+        logout(request)
+
+        # Import the User model and delete the guest user
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        User.objects.filter(id=user_id).delete()
+        
+        messages.info(request, "Guest sessions cannot access the dashboard.")
+        return redirect('user_management:home')
     
     if current_user.role == 'Student':
         # Search and sort for students
