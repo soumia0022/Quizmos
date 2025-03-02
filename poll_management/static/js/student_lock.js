@@ -9,7 +9,7 @@ function createLockOverlay() {
     overlay.innerHTML = `
         <div class="lock-message">
             <i class="fas fa-lock lock-icon"></i>
-            <h3>This poll is locked</h3>
+            <h3>This question is locked</h3>
             <p>Please wait for the lecturer to unlock responses</p>
             <button id="close-overlay-btn" class="close-btn">Close</button>
         </div>
