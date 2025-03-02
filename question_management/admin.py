@@ -60,6 +60,7 @@ class QuestionForm(forms.ModelForm):
             self.fields['match_question'].widget.attrs['style'] = ''
             self.fields['match_options'].widget.attrs['style'] = ''
             self.fields['match_answers'].widget.attrs['style'] = ''
+
         elif question_type == 'word_cloud':
             self.fields['wordcloud_question'].widget.attrs['style'] = ''
 
