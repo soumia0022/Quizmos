@@ -33,8 +33,11 @@
             </div>
         </div>
               <br/>
-                        
-                <div id="question">Waiting for a question...</div>
+
+                <div id="question">
+                    Waiting for a question...
+                    <div class="question-timer"></div>
+                </div>
                 <input type="text" id="answer" style="display: none;" placeholder="Your answer" />
                 <div id="question_options">Waiting for options...</div>
                 <div id="feedback" class="feedback"></div>
@@ -45,8 +48,10 @@
     </div>
     {% load static%}
     <script type="module" src="{% static 'js/student_lock.js' %}"></script>
-    <script>
+    <script type="module" src="{% static 'js/timer.js' %}"></script>
 
+    <script type="module">
+        import { startCountdownTimer } from "{% static 'js/timer.js' %}";
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -94,6 +99,7 @@
 
         let currentQuestionId = null;
         let currentQuestionType = null;
+        let currentTimerInterval = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             const pollCode = "{{ poll.number_code }}";
@@ -108,7 +114,7 @@
                 const progressBar = document.getElementById('question-progress-bar');
                 const progressText = document.getElementById('question-progress-text');
 
-                if (!progressBar || !progressText) return;  
+                if (!progressBar || !progressText) return;
 
                 const percentage = total > 0 ? (currentNum / total) * 100 : 0;
                 
@@ -143,9 +149,22 @@
                 }
 
                 if (data.type === 'question') {
+                    // Clear any existing timer
+                    if (currentTimerInterval) {
+                        clearInterval(currentTimerInterval);
+                    }
+
+
+                    const questionElement = document.getElementById('question');
+                    questionElement.innerHTML = data.question.text + '<div class="question-timer"></div>';
+
+                    // start timer
+                    if (data.question.question_timer) {
+                        currentTimerInterval = startCountdownTimer(questionElement, data.question.question_timer);
+                    }
+
                     currentQuestionId = data.question.id;
                     currentQuestionType = data.question.type;
-                    document.getElementById('question').innerText = data.question.text;
                     submitButton.style.display = 'block';
                    
                     // Update question progress information
