@@ -5,6 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from user_management.forms.update_profile import  PasswordForm, UserForm
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
 
 
@@ -41,6 +43,22 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = UserForm
     template_name = "profile.html"
     form_class = UserForm
+
+    
+    form_class = UserForm
+
+    def dispatch(self, request, *args, **kwargs):
+        """Block guest users from accessing profile update."""
+        print(f"🔍 ProfileUpdateView triggered for: {request.path}")  # Debugging
+        print(f"🔍 Request method: {request.method}")  # Debugging
+
+        if request.user.first_name == "Guest":
+            print("⚠️ Guest user detected! Logging them out.")  # Debugging
+            logout(request)
+            messages.info(request, "Guest users cannot edit profiles.")
+            return redirect('user_management:home')  # Redirect guests to home
+
+        return super
 
     def get_object(self):
         """Return the object (user) to be updated."""
