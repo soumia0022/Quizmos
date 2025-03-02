@@ -13,6 +13,7 @@ from poll_management.models.poll_model import Poll
 from django.db.models import Count, Q
 from poll_management.views.create_poll import create_poll
 from django.core.paginator import Paginator
+from django.contrib.auth import get_user_model
 
 @login_prohibited
 def home(request):
@@ -39,7 +40,6 @@ def dashboard(request):
         logout(request)
 
         # Import the User model and delete the guest user
-        from django.contrib.auth import get_user_model
         User = get_user_model()
         User.objects.filter(id=user_id).delete()
         
