@@ -3,6 +3,7 @@ import {renderChoice} from "./choice_display.js";
 import {renderText} from "./text_question_display.js";
 import {renderWordCloud} from "./word_cloud_display.js";
 import {renderMatch} from "./match_question_display.js";
+import {getFormattedTime, startCountdownTimer} from "./timer.js";
 
 
 
@@ -27,9 +28,7 @@ window.nextQuestion = function() {
     }
 };
 
-function shuffleArray(array) {
-    return array.sort(() => Math.random() - 0.5);
-  }
+
 function createQuestionHTML(question) {
   let html = '<div class="question-title">';//this will store the final html content needed to display the question
 
@@ -78,25 +77,25 @@ function createQuestionHTML(question) {
         Your browser does not support the audio element.
       </audio>
     </div>
-  `;
-}
+    `;
+    }
+
+  if (question.question_timer != null) {
+      // get the formatted time
+      const formattedTime = `${getFormattedTime(question.question_timer)}`;
+      html += `<div class="question-timer">Time remaining: ${formattedTime}</div>`;
+    }
 
   switch(question.type) {
-     case 'dropdown_fill':
-       html += renderChoice(question);
-       break;
+    case 'dropdown_fill':
+    case 'multiple_choice':
+    case 'single_choice':
+        html += renderChoice(question);
+        break;
 
     case 'text_fill':
-      html += renderText(question);
-      break;
-
-    case 'multiple_choice':
-      html += renderChoice(question);
-      break;
-
-    case 'single_choice':
-      html += renderChoice(question);
-      break;
+        html += renderText(question);
+        break;
 
     case 'wordcloud':
       html += renderText(question);//update this later when wordcloud responses are done
@@ -117,6 +116,16 @@ function updateQuestionDisplay() {
     // Update the question display
     questionContainer.innerHTML = createQuestionHTML(currentQuestion);
 
+
+    if (window.currentTimerInterval) {
+    clearInterval(window.currentTimerInterval);
+    window.currentTimerInterval = null;
+    }
+    questionContainer.innerHTML = createQuestionHTML(currentQuestion);
+    if (currentQuestion.question_timer != null) {
+    window.currentTimerInterval = startCountdownTimer(questionContainer, currentQuestion.question_timer);
+    }
+
     // Update navigation buttons
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
@@ -131,5 +140,4 @@ function updateQuestionDisplay() {
       }));
     }
   }
-
 
