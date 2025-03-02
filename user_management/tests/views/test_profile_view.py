@@ -36,11 +36,6 @@ class ProfileViewTest(TestCase):
         self.assertTrue(isinstance(form, UserForm))
         self.assertEqual(form.instance, self.user)
 
-    def test_get_profile_redirects_when_not_logged_in(self):
-        redirect_url = reverse_with_next('user_management:log_in', self.url)
-        response = self.client.get(self.url)
-        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-
     def test_unsuccesful_profile_update(self):
         self.client.login(username=self.user.username, password='Password123')
         self.form_input['username'] = 'BAD_USERNAME'
@@ -95,7 +90,22 @@ class ProfileViewTest(TestCase):
         self.assertEqual(self.user.last_name, 'Doe2')
         self.assertEqual(self.user.email, 'johndoe2@example.org')
 
+    def test_guest_user_cannot_edit_profile(self):
+        guest_user = User.objects.create_user(username="Guest", password="Guest123", first_name="Guest")
+        self.client.login(username=guest_user.username, password="Guest123")
+        response = self.client.get(self.url, follow=True)
+        self.assertRedirects(response, reverse('user_management:home'))
+        messages_list = list(response.context['messages'])
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(messages_list[0].message, "Guest users cannot edit profiles.")
+
+    def test_get_profile_redirects_when_not_logged_in(self):  
+        response = self.client.get(self.url)  
+        self.assertRedirects(response, reverse('user_management:home')) 
+
     def test_post_profile_redirects_when_not_logged_in(self):
-        redirect_url = reverse_with_next('user_management:log_in', self.url)
-        response = self.client.post(self.url, self.form_input)
-        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        response = self.client.post(self.url, self.form_input)  
+        self.assertRedirects(response, reverse('user_management:home')) 
+
+
+    

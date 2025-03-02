@@ -7,6 +7,7 @@ from django.urls import reverse
 from user_management.forms.update_profile import  PasswordForm, UserForm
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from django.contrib.auth.models import AnonymousUser
 
 
 
@@ -46,7 +47,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         """Block guest users from accessing profile update."""
-        if request.user.first_name == "Guest":
+        if isinstance(request.user, AnonymousUser) or request.user.first_name == "Guest":
             logout(request)  # Log out guest user
             messages.info(request, "Guest users cannot edit profiles.")
             return redirect('user_management:home')  # Redirect guests to home
