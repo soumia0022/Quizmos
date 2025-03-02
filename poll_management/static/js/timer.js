@@ -33,15 +33,8 @@ export function getFormattedTime(seconds){
 }
 
 // Handle what happens when the timer expires
-function handleTimerExpired(questionElement) {
+function handleTimerExpired() {
   window.unlock();
-
-  //add a message
-  const messageElement = document.createElement('div');
-  messageElement.className = 'timer-expired-message';
-  messageElement.textContent = 'Time expired!';
-  questionElement.appendChild(messageElement);
-
 }
 
 window.startCountdownTimer = startCountdownTimer;

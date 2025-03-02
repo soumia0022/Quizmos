@@ -237,7 +237,7 @@
                     }
                 } else if (data.type === 'response_status') {
                     showFeedback(
-                        data.success ? 'Response submitted successfully!' : 'Failed to submit response',
+                        data.success ? 'Response submitted successfully!' : "It seems like there's an invalid response, or this question might currently be locked. Please wait for the Lecturer to unlock it.",
                         data.success
                     );
                 }
