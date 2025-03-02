@@ -44,6 +44,11 @@
 
     </div>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+
+
     <script>
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -203,9 +208,26 @@
 
                         document.getElementById('answer').style.display = 'none';
                         initializeSortable();
-                    } else if (data.question.type === 'code_question'){
-                        document.getElementById('question_options').innerHTML = 'I NEED TO BE REPLACED WITH AN IDE';
+                    } else if (data.question.type === 'code_question') {
+                        document.getElementById('question_options').innerHTML = `
+                            <textarea id="code-editor"></textarea>
+                            <button onclick="runCode()">Run Code</button>
+                            <pre id="output"></pre>
+                        `;
+
                         document.getElementById('answer').style.display = 'none';
+
+                        // Initialize CodeMirror
+                        let editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+                            mode: "python",
+                            theme: "default",
+                            lineNumbers: true
+                        });
+
+                        window.runCode = function () {
+                            const code = editor.getValue();
+                            document.getElementById('output').innerText = "Code submitted: \n" + code;
+                        };
                     }
                 } else if (data.type === 'response_status') {
                     showFeedback(
