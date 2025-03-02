@@ -44,21 +44,13 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "profile.html"
     form_class = UserForm
 
-    
-    form_class = UserForm
-
     def dispatch(self, request, *args, **kwargs):
         """Block guest users from accessing profile update."""
-        print(f"🔍 ProfileUpdateView triggered for: {request.path}")  # Debugging
-        print(f"🔍 Request method: {request.method}")  # Debugging
-
         if request.user.first_name == "Guest":
-            print("⚠️ Guest user detected! Logging them out.")  # Debugging
-            logout(request)
+            logout(request)  # Log out guest user
             messages.info(request, "Guest users cannot edit profiles.")
             return redirect('user_management:home')  # Redirect guests to home
-
-        return super
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         """Return the object (user) to be updated."""
