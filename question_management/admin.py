@@ -72,7 +72,7 @@ class QuestionForm(forms.ModelForm):
 class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
     list_display = (
-        'poll', 'poll_title', 'question_type', 'timer',
+        'poll', 'poll_title', 'question_type', 'question_timer',
         'text_fill_question', 'text_fill_answer','dropdown_fill_question', 'dropdown_options','dropdown_correct_answer',
         'multiple_choice_question', 'multiple_choice_options', 'multiple_choice_answers',
         'single_choice_question', 'single_choice_option', 'single_choice_answers',
@@ -88,15 +88,15 @@ class QuestionAdmin(admin.ModelAdmin):
         fields = ['poll', 'question_type']
 
         if obj and obj.question_type == 'text_fill':
-            fields.extend(['text_fill_question','timer'])
+            fields.extend(['text_fill_question','question_timer'])
         elif obj and obj.question_type == 'dropdown_fill':
-            fields.extend(['dropdown_fill_question', 'dropdown_options','timer'])
+            fields.extend(['dropdown_fill_question', 'dropdown_options','question_timer'])
         elif obj and obj.question_type == 'multiple_choice':
-            fields.extend(['multiple_choice_question', 'multiple_choice_options','timer'])
+            fields.extend(['multiple_choice_question', 'multiple_choice_options','question_timer'])
         elif obj and obj.question_type == 'single_choice':
-            fields.extend(['single_choice_question', 'single_choice_option', 'timer'])
+            fields.extend(['single_choice_question', 'single_choice_option', 'question_timer'])
         elif obj and obj.question_type == 'word_cloud':
-            fields.extend(['wordcloud_question', 'timer'])
+            fields.extend(['wordcloud_question', 'question_timer'])
 
 
         return fields
