@@ -224,6 +224,7 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'match_options': match_options,
                 'match_answers': match_answers,
                 'dropdown_correct_answer': question.dropdown_correct_answer,
+                'question_timer': question.question_timer,
             }
         except Question.DoesNotExist:
             return None

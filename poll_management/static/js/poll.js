@@ -136,7 +136,8 @@ function updateQuestionDisplay() {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
         type: 'question',
-        question_id: currentQuestion.id
+        question_id: currentQuestion.id,
+        question_timer: currentQuestion.question_timer,
       }));
     }
   }
