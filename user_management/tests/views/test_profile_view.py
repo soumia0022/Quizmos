@@ -95,9 +95,6 @@ class ProfileViewTest(TestCase):
         self.client.login(username=guest_user.username, password="Guest123")
         response = self.client.get(self.url, follow=True)
         self.assertRedirects(response, reverse('user_management:home'))
-        messages_list = list(response.context['messages'])
-        self.assertEqual(len(messages_list), 1)
-        self.assertEqual(messages_list[0].message, "Guest users cannot edit profiles.")
 
     def test_get_profile_redirects_when_not_logged_in(self):  
         response = self.client.get(self.url)  

@@ -8,6 +8,7 @@ from user_management.forms.update_profile import  PasswordForm, UserForm
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth import get_user_model
 
 
 
@@ -53,9 +54,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         if request.user.first_name == "Guest":
             session_key = request.session.session_key
             
-            # Add message
-            messages.info(request, "Guest users cannot edit profiles.")
-            
             # Make sure message is saved
             request.session.modified = True
             
@@ -65,7 +63,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
             # Log out guest user
             logout(request)
             # Delete the guest user
-            from django.contrib.auth import get_user_model
             User = get_user_model()
             User.objects.filter(id=user_id).delete()
 
