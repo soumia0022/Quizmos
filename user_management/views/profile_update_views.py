@@ -47,10 +47,30 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         """Block guest users from accessing profile update."""
-        if isinstance(request.user, AnonymousUser) or request.user.first_name == "Guest":
-            logout(request)  # Log out guest user
+        if not request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+            
+        if request.user.first_name == "Guest":
+            session_key = request.session.session_key
+            
+            # Add message
             messages.info(request, "Guest users cannot edit profiles.")
+            
+            # Make sure message is saved
+            request.session.modified = True
+            
+            # Store user ID only once
+            user_id = request.user.id
+            
+            # Log out guest user
+            logout(request)
+            # Delete the guest user
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            User.objects.filter(id=user_id).delete()
+
             return redirect('user_management:home')  # Redirect guests to home
+        
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
