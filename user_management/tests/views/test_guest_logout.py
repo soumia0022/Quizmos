@@ -29,5 +29,6 @@ class LogoutAndLoginTestCase(TestCase):
 
 
         self.assertFalse(User.objects.filter(username='guestuser').exists())
-        self.assertRedirects(response, reverse('user_management:log_in') + '?next=/dashboard/')
+        self.assertRedirects(response, reverse('user_management:home'))
+
 

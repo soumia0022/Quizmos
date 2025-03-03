@@ -1,0 +1,69 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+}
+
+.left {
+    width: 50%;
+}
+
+.box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px;
+    background-color: #fff;
+}
+
+.dropzone-box {
+    border: 1px dashed #ccc;
+    padding: 10px;
+    margin: 5px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    background-color: #f9f9f9;
+}
+
+.draggable {
+    cursor: grab;
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.right {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.feedback {
+    display: none;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
