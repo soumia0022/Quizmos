@@ -43,7 +43,8 @@ def dashboard(request):
         User = get_user_model()
         User.objects.filter(id=user_id).delete()
         
-        messages.info(request, "Guest sessions cannot access the dashboard.")
+        request.session["dashboard_redirect_message"] = "Guest sessions cannot access the dashboard."
+
         return redirect('user_management:home')
     
     if current_user.role == 'Student':
