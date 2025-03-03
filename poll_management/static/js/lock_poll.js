@@ -11,7 +11,7 @@ function unlock() {
 
         ws.send(JSON.stringify({
             type: 'poll_status',
-            action: 'lock'
+            action: 'unlock'
         }));
     }
 }
@@ -27,7 +27,7 @@ function lock() {
 
         ws.send(JSON.stringify({
             type: 'poll_status',
-            action: 'unlock'
+            action: 'lock'
         }));
     }
 }
