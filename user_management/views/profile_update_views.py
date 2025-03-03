@@ -48,7 +48,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     def dispatch(self, request, *args, **kwargs):
         """Block guest users from accessing profile update."""
         if not request.user.is_authenticated:
-            return super().dispatch(request, *args, **kwargs)
+            return redirect('user_management:home')
             
         if request.user.first_name == "Guest":
             session_key = request.session.session_key
