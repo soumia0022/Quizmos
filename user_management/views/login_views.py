@@ -97,7 +97,7 @@ def dashboard(request):
 
         return f"{base_title} ({next_number})"
 
-    # 🛠 If the request is POST, handle poll creation (Lecturers only)
+
     if request.method == "POST" and "title" in request.POST:
         title = request.POST.get("title", "").strip()
         confirmed = request.POST.get("confirmed", "false") == "true"
@@ -124,16 +124,16 @@ def dashboard(request):
 
         return HttpResponseRedirect(reverse('user_management:dashboard'))
 
-    # 🛠 Handle GET requests (Filtering, Sorting, Searching)
+
     sort_by = request.GET.get('sort_by', 'created_at_desc')
     search_query = request.GET.get('search', '')
 
-    # 🟢 ✅ FIX: Filter polls differently for students and lecturers
+
     if current_user.role == "Lecturer":
-        polls = Poll.objects.filter(user=request.user)  # ✅ Lecturer sees own polls
+        polls = Poll.objects.filter(user=request.user)
         template = 'lecturer_dashboard.html'
-    else:  # 🛠 Students should see polls they joined
-        polls = Poll.objects.filter(joined_students=request.user)  # ✅ Student sees joined polls
+    else:
+        polls = Poll.objects.filter(joined_students=request.user)
         template = 'student_dashboard.html'
 
     polls = polls.annotate(
@@ -168,7 +168,7 @@ def dashboard(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # 🟢 Return the correct template based on the user role
+
     return render(request, template, {
         'user': current_user,
         'polls': page_obj,
@@ -178,6 +178,8 @@ def dashboard(request):
         'original_title': original_title,
         'suggested_title': suggested_title,
     })
+
+
 
 
 class LoginProhibitedMixin:
