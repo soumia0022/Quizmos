@@ -13,6 +13,16 @@ from poll_management.models.poll_model import Poll
 from django.db.models import Count, Q
 from poll_management.views.create_poll import create_poll
 from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect
+import re
+from django.db.models import Count
+from django.shortcuts import render
+
+
+
+
+
+
 import re
 @login_prohibited
 def home(request):
@@ -29,63 +39,104 @@ def home(request):
     return render(request, 'home.html', {'form': form})
 
 
+def generate_suggested_title(base_title, existing_titles):
+    matching_polls = [p for p in existing_titles if p.startswith(base_title)]
+    number_pattern = re.compile(r'\((\d+)\)')
+    existing_numbers = []
+
+
+    for poll_title in matching_polls:
+        number_matches = number_pattern.findall(poll_title)
+        if number_matches:
+            existing_numbers.append(tuple(map(int, number_matches)))
+
+
+    if not existing_numbers:
+        return f"{base_title} (1)"
+
+
+    if f"{base_title} (1)" in existing_titles:
+        return f"{base_title} (1)"
+
+
+    existing_numbers.sort()
+    next_number = 1
+    while (next_number,) in existing_numbers:
+        next_number += 1
+
+
+    return f"{base_title} ({next_number})"
+
 def dashboard(request):
     """Display the current user's dashboard."""
     current_user = request.user
+    show_confirmation_popup = False
+    original_title = ""
+    suggested_title = ""
 
-    if request.method == "POST":
+    def generate_suggested_title(base_title, existing_titles):
+        matching_polls = [p for p in existing_titles if p.startswith(base_title)]
+        number_pattern = re.compile(r'\((\d+)\)')
+        existing_numbers = []
+
+        for poll_title in matching_polls:
+            number_matches = number_pattern.findall(poll_title)
+            if number_matches:
+                existing_numbers.append(tuple(map(int, number_matches)))
+
+        if not existing_numbers:
+            return f"{base_title} (1)"
+
+        if f"{base_title} (1)" not in existing_titles:
+            return f"{base_title} (1)"
+
+        existing_numbers.sort()
+        next_number = 1
+        while (next_number,) in existing_numbers:
+            next_number += 1
+
+        return f"{base_title} ({next_number})"
+
+    # 🛠 If the request is POST, handle poll creation (Lecturers only)
+    if request.method == "POST" and "title" in request.POST:
         title = request.POST.get("title", "").strip()
         confirmed = request.POST.get("confirmed", "false") == "true"
-
-
-        pattern = re.compile(r'^(.*?)(?:\s*\((\d+)\))?\s*$')
-        match = pattern.match(title)
-
-        if match:
-            base_title = match.group(1).strip()
-            existing_number = int(match.group(2)) if match.group(2) else None
-        else:
-            base_title = title
-            existing_number = None
-
 
         existing_polls = Poll.objects.filter(user=request.user)
         existing_titles = {poll.title for poll in existing_polls}
 
-
         if title in existing_titles and not confirmed:
-            suggested_title = f"{title} (1)"
+            suggested_title = generate_suggested_title(title, existing_titles)
+            show_confirmation_popup = True
+            original_title = title
+
             return render(request, 'lecturer_dashboard.html', {
                 'user': current_user,
                 'polls': existing_polls,
-                'show_confirmation_popup': True,
-                'original_title': title,
+                'show_confirmation_popup': show_confirmation_popup,
+                'original_title': original_title,
                 'suggested_title': suggested_title,
             })
 
-
-        existing_numbers = []
-        for poll_title in existing_titles:
-            poll_match = pattern.match(poll_title)
-            if poll_match and poll_match.group(1).strip() == base_title:
-                if poll_match.group(2):  # If there's a number
-                    existing_numbers.append(int(poll_match.group(2)))
-
-
-        next_number = max(existing_numbers) + 1 if existing_numbers else 1
-
-
-        if title in existing_titles or confirmed:
-            title = f"{base_title} ({next_number})"
-
-
-        new_poll = Poll.objects.create(user=request.user, title=title)
+        new_poll_title = title if title not in existing_titles else generate_suggested_title(title, existing_titles)
+        new_poll = Poll.objects.create(user=request.user, title=new_poll_title)
         new_poll.save()
 
+        return HttpResponseRedirect(reverse('user_management:dashboard'))
+
+    # 🛠 Handle GET requests (Filtering, Sorting, Searching)
     sort_by = request.GET.get('sort_by', 'created_at_desc')
     search_query = request.GET.get('search', '')
 
-    polls = Poll.objects.filter(user=request.user).annotate(
+    # 🟢 ✅ FIX: Filter polls differently for students and lecturers
+    if current_user.role == "Lecturer":
+        polls = Poll.objects.filter(user=request.user)  # ✅ Lecturer sees own polls
+        template = 'lecturer_dashboard.html'
+    else:  # 🛠 Students should see polls they joined
+        polls = Poll.objects.filter(joined_students=request.user)  # ✅ Student sees joined polls
+        template = 'student_dashboard.html'
+
+    polls = polls.annotate(
         multiple_choice_responses_count=Count('multiplechoiceresponse'),
         single_choice_responses_count=Count('singlechoiceresponse'),
         dropdown_fill_responses_count=Count('dropdownfillresponse'),
@@ -106,23 +157,26 @@ def dashboard(request):
 
     for p in polls:
         p.total_responses_count = (
-            p.multiple_choice_responses_count +
-            p.single_choice_responses_count +
-            p.dropdown_fill_responses_count +
-            p.text_fill_responses_count +
-            p.match_question_responses_count
+                p.multiple_choice_responses_count +
+                p.single_choice_responses_count +
+                p.dropdown_fill_responses_count +
+                p.text_fill_responses_count +
+                p.match_question_responses_count
         )
 
-    # Pagination
     paginator = Paginator(polls, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'lecturer_dashboard.html', {
+    # 🟢 Return the correct template based on the user role
+    return render(request, template, {
         'user': current_user,
         'polls': page_obj,
         'sort_by': sort_by,
         'search_query': search_query,
+        'show_confirmation_popup': show_confirmation_popup,
+        'original_title': original_title,
+        'suggested_title': suggested_title,
     })
 
 
