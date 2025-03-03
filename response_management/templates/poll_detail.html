@@ -6,68 +6,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poll Results</title>
     {% return_button %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        #chart-container {
-            width: 19%;
-            height: 400px; /* You can adjust the height as needed */
-            margin: 0 auto;
+        /* Layout styles */
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 30%;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-right: 2px solid #ddd;
+        }
+
+        .question-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .question-item:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Chart section */
+        .chart-container {
+            width: 70%;
+            padding: 20px;
         }
 
         canvas {
             width: 100% !important;
-            height: 100% !important;
+            height: 400px !important;
         }
 
         /* Button styles */
         .button-container {
-            margin-top: 20px;
+            margin-top: 10px;
             text-align: center;
         }
 
         button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            font-size: 16px;
+            margin: 5px;
+            padding: 8px 15px;
+            font-size: 14px;
             cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div id="poll-details">
-        <h1>Poll Results for {{ poll.title }}</h1>
 
-        <!-- Buttons to switch between charts -->
-        <div class="button-container">
-            <button id="viewPieChart">View Pie Chart</button>
-            <button id="viewBarGraph">View Bar Graph</button>
-            <button id="viewLineGraph">View Line Graph</button>
+    <div class="container">
+        <!-- Sidebar for Questions -->
+        <div class="sidebar">
+            <h3 class="text-center">Questions</h3>
+            <div id="questions-list">
+                {% for question in poll.questions.all %}
+                    <div class="question-item" data-question-id="{{ question.id }}">
+                        <strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}
+                        <button class="view-analytics-btn" data-question-id="{{ question.id }}">View Analytics</button>
+                    </div>
+                {% empty %}
+                    <p class="text-muted text-center">No questions created yet.</p>
+                {% endfor %}
+            </div>
         </div>
 
-        <!-- Chart container -->
-        <div id="chart-container">
-            <canvas id="chart"></canvas> <!-- The canvas where the chart will be rendered -->
-        </div>
+        <!-- Chart Container -->
+        <div class="chart-container">
+            <h2 id="selected-question-title">Select a question to view analytics</h2>
 
-        <!-- Download CSV link -->
-        <div class="download-button">
-            <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
+            <button id="viewPollResults">Show Poll Results</button>
+            <div class="button-container">
+                <button id="viewPieChart">View Pie Chart</button>
+                <button id="viewBarGraph">View Bar Graph</button>
+                <button id="viewLineGraph">View Line Graph</button>
+            </div>
+
+            <canvas id="chart"></canvas>
         </div>
     </div>
 
     <script>
-        // Get the canvas element and its context
         var ctx = document.getElementById('chart').getContext('2d');
         var chartInstance = null;
+        var selectedQuestionId = null;  // Track the selected question
 
-        // Function to clear the existing chart and create a new one
         function clearChart() {
             if (chartInstance) {
-                chartInstance.destroy();  // Destroy the existing chart before creating a new one
+                chartInstance.destroy();
             }
         }
 
-         // Function to generate a random color for each question
+        function fetchAndShowChart(chartType) {
+            if (!selectedQuestionId) {
+                // Don't show the error when viewing poll results
+                if (document.getElementById('selected-question-title').innerText !== "Poll Results") {
+                    alert("Please select a question first!");
+                    return;
+                }
+            }
+
+            let url = selectedQuestionId
+                ? `/responses/questions/${selectedQuestionId}/analytics/?type=${chartType}`
+                : `/responses/polls/{{ poll.id }}/${chartType}_data/`; // Use the correct poll-level URL
+
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    clearChart();
+
+                    chartInstance = new Chart(ctx, {
+                        type: chartType,
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                data: data.data,
+                                backgroundColor: data.labels.map(() => generateRandomColor()),
+                                borderColor: '#3d073e',
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: selectedQuestionId ? `Analytics for Question: ${data.question}` : "Overall Poll Results",
+                                    font: { size: 18 }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("Error fetching analytics:", error));
+        }
+
+
         function generateRandomColor() {
             var letters = '0123456789ABCDEF';
             var color = '#';
@@ -77,76 +161,39 @@
             return color;
         }
 
-        // Function to display Pie Chart
-        function showPieChart() {
-            clearChart();  // Clear the previous chart
+        document.querySelectorAll('.view-analytics-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                selectedQuestionId = this.getAttribute('data-question-id');
+                document.getElementById('selected-question-title').innerText = `Analytics for Question ${selectedQuestionId}`;
 
-            // Fetch the pie chart data
-            fetch('/responses/polls/{{ poll.id }}/piechart_data/')
+                // Clear old chart when a new question is selected
+                clearChart();
+            });
+        });
+
+        document.getElementById('viewPieChart').addEventListener('click', () => fetchAndShowChart('pie'));
+        document.getElementById('viewBarGraph').addEventListener('click', () => fetchAndShowChart('bar'));
+        document.getElementById('viewLineGraph').addEventListener('click', () => fetchAndShowChart('line'));
+
+        // Show poll results when the button is clicked
+        document.getElementById('viewPollResults').addEventListener('click', function () {
+            selectedQuestionId = null;
+            document.getElementById('selected-question-title').innerText = "Poll Results";
+
+            fetch(`/responses/poll/analytics/`)
                 .then(response => response.json())
                 .then(data => {
+                    clearChart();
+
                     chartInstance = new Chart(ctx, {
-                        type: 'pie',
+                        type: 'bar', // Default type for poll results
                         data: {
                             labels: data.labels,
                             datasets: [{
                                 data: data.data,
-                                 backgroundColor: data.labels.map(() => generateRandomColor()), // Assign unique colors
-                            }]
-                        }
-                    });
-                });
-        }
-
-        // Function to display Bar Graph
-        function showBarGraph() {
-            clearChart();
-            fetch('/responses/polls/{{ poll.id }}/bargraph_data/')
-                .then(response => response.json())
-                .then(data => {
-                    chartInstance = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: data.labels,
-                            datasets: [{
-                                label: 'Responses',
-                                data: data.data,
-                                backgroundColor: '#5e4caf',
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: { beginAtZero: true }
-                            },
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Number of responses per question (Bar Chart)',
-                                    font: { size: 18 }
-                                }
-                            }
-                        }
-                    });
-                });
-        }
-
-        // Function to display Line Graph
-        function showLineGraph() {
-            clearChart();
-            fetch('/responses/polls/{{ poll.id }}/linegraph_data/')
-                .then(response => response.json())
-                .then(data => {
-                    chartInstance = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: data.labels,
-                            datasets: [{
-                                label: 'Responses',
-                                data: data.data,
+                                backgroundColor: data.labels.map(() => generateRandomColor()),
                                 borderColor: '#3d073e',
-                                fill: false,
+                                fill: false
                             }]
                         },
                         options: {
@@ -158,22 +205,17 @@
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: 'Number of responses per question (Line Graph)',
+                                    text: "Overall Poll Results",
                                     font: { size: 18 }
                                 }
                             }
                         }
                     });
-                });
-        }
+                })
+                .catch(error => console.error("Error fetching poll results:", error));
+        });
 
-        // Add event listeners to buttons
-        document.getElementById('viewPieChart').addEventListener('click', showPieChart);
-        document.getElementById('viewBarGraph').addEventListener('click', showBarGraph);
-        document.getElementById('viewLineGraph').addEventListener('click', showLineGraph);
-
-        // Load the pie chart by default on page load
-        showPieChart();
     </script>
+
 </body>
 </html>
