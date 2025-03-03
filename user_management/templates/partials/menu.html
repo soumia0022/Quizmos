@@ -11,10 +11,16 @@
       </a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user-account-dropdown">
         {% if user.is_authenticated %}
-          <li><a class="dropdown-item" href="{% url 'user_management:profile' %}">Change profile</a></li>
-          <li><a class="dropdown-item" href="{% url 'user_management:password' %}">Change password</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="{% url 'user_management:log_out' %}">Log out</a></li>
+        {% if user.first_name and user.first_name != "Guest" %}  {# ✅ Now correctly hides profile & password options #}
+        <li><a class="dropdown-item" href="{% url 'user_management:profile' %}">Change profile</a></li>
+        <li><a class="dropdown-item" href="{% url 'user_management:password' %}">Change password</a></li>
+        <li><hr class="dropdown-divider"></li>
+      {% endif %}
+
+      {% if user.first_name != "Guest" %}
+        <li><a class="dropdown-item" href="{% url 'user_management:log_out' %}">Log out</a></li>
+      {% endif %}
+
         {% else %}
           <li><a class="dropdown-item" href="{% url 'user_management:log_in' %}">Log In</a></li>
           <li><a class="dropdown-item" href="{% url 'user_management:sign_up' %}">Sign Up</a></li>
