@@ -27,7 +27,7 @@ class EditDropdownFillQuestionTestCase(TestCase):
             question_type="dropdown_fill",
             dropdown_options="Option1,Option2,Option3",
             dropdown_correct_answer="Option1",
-            timer=30
+            question_timer=30
         )
 
         # Define URL

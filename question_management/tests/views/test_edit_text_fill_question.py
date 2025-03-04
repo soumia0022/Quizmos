@@ -27,7 +27,7 @@ class EditTextFillQuestionTestCase(TestCase):
             question_type="text_fill",
             text_fill_question="Original Text Fill Question",
             text_fill_answer="OriginalAnswer",
-            timer=30
+            question_timer=30
         )
 
         # Define URL
