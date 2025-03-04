@@ -104,7 +104,7 @@
 
         function fetchAndShowChart(chartType) {
             if (!selectedQuestionId) {
-                // Don't show the error when viewing poll results
+                // Don't show the error when viewing poll results - will not require this
                 if (document.getElementById('selected-question-title').innerText !== "Poll Results") {
                     alert("Please select a question first!");
                     return;
@@ -141,7 +141,7 @@
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: selectedQuestionId ? `Analytics for Question: ${data.question}` : "Overall Poll Results",
+                                    text: selectedQuestionId ? `Analytics for Question: ${data.question}` : "Total Responses",
                                     font: { size: 18 }
                                 }
                             }
