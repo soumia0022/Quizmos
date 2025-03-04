@@ -4,7 +4,7 @@ from poll_management.models.poll_model import Poll
 from user_management.models.user_model import User
 from question_management.models.question_models import Question
 from response_management.models.response_model import (
-    MatchQuestionResponse, MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    MatchQuestionResponse, MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse
 )
 import json
 
@@ -18,7 +18,7 @@ class PollResultsViewTest(TestCase):
         self.client = Client()
         self.user = User.objects.get(username='johndoe')
         self.poll = Poll.objects.create(title='Poll 1', user=self.user, status='active', number_code=111111)
-
+        self.question_wordcloud = Question.objects.create(question_text='Enter your word(s)', poll=self.poll, question_type='wordcloud')
         
         self.poll_results_url = reverse('poll_management:poll_results', kwargs={'code': self.poll.number_code})
 
@@ -31,7 +31,7 @@ class PollResultsViewTest(TestCase):
 
     def test_poll_not_found(self):
         self.client.force_login(self.user)
-        url = reverse('poll_management:view_poll', kwargs={'poll_id': 999999})
+        url = reverse('poll_management:poll_results', kwargs={'code': 999999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
@@ -42,4 +42,4 @@ class PollResultsViewTest(TestCase):
         self.assertTemplateUsed(response, 'poll_results.html')
         self.assertContains(response, self.poll.title)
 
-
+    

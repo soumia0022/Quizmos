@@ -3,7 +3,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from response_management.models.response_model import (
     MatchQuestionResponse, MultipleChoiceResponse,
-    SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    SingleChoiceResponse, DropdownFillResponse, TextFillResponse, 
+    WordCloudResponse 
 )
 from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
@@ -81,11 +82,27 @@ class PollConsumer(AsyncWebsocketConsumer):
             )
         elif message_type == 'question':
             # If it's a question, fetch it from the database and broadcast it
+            questions = await self.get_all_questions()
+            total_questions = len(questions)
+            # Find the index of the requested question
             question = await self.get_question(question_id)
+            # Calculating question_number with type conversion
+            question_number = None
+            for i, q in enumerate(questions):
+                # Convert question_id to integer to match q.id's type
+                if int(q.id) == int(question_id): 
+                    question_number = i + 1
+                    break
+
             if question:
                 await self.channel_layer.group_send(
                     self.poll_group_name,
-                    {"type": "poll_question", "question": question}
+                    {
+                        "type": "poll_question",
+                        "question": question,
+                        "question_number": question_number,  
+                        "total_questions": total_questions 
+                    }
                 )
         elif message_type == 'response':
             # Handle different types of responses
@@ -128,12 +145,15 @@ class PollConsumer(AsyncWebsocketConsumer):
     async def poll_question(self, event):
         # Handler for sending questions back to the WebSocket
         question = event['question']
-
-        # Send question to WebSocket
+        question_number = event.get('question_number', None)  
+        total_questions = event.get('total_questions', None)  
+        
         await self.send(text_data=json.dumps({
-            'type': 'question',
-            'question': question
-        }))
+        'type': 'question',
+        'question': question,
+        'question_number': question_number,  
+        'total_questions': total_questions  
+    }))
 
     @database_sync_to_async
     def get_question(self, question_id):
@@ -153,6 +173,7 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'dropdown_options': dropdown_options,
                 'match_options': match_options,
                 'match_answers': match_answers,
+                'wordcloud_question': question.wordcloud_question,
 
                 'dropdown_correct_answer': question.dropdown_correct_answer,
 
@@ -178,7 +199,8 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'multiple_choice': (MultipleChoiceResponse, 'selected_options'),
                 'single_choice': (SingleChoiceResponse, 'selected_option'),
                 'dropdown_fill': (DropdownFillResponse, 'selected_option'),
-                'text_fill': (TextFillResponse, 'answer_text')
+                'text_fill': (TextFillResponse, 'answer_text'),
+                'wordcloud': (WordCloudResponse, 'word_cloud_response') 
             }
 
             if response_type not in response_models:
@@ -222,3 +244,7 @@ class PollConsumer(AsyncWebsocketConsumer):
             'response_type': event['response_type'],
             'user': event['user']
         }))
+
+    @database_sync_to_async
+    def get_all_questions(self):
+        return list(Question.objects.filter(poll=self.poll))

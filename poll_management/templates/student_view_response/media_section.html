@@ -1,0 +1,61 @@
+{% if question.image_file or question.audio_file or question.video_file or question.youtube_link %}
+    <section class="media-section p-3 mb-3 border-bottom">
+        <h4 class="h5 mb-3">Media</h4>
+
+        {% if question.image_file %}
+            <figure class="mb-3">
+                <figcaption class="h6">Image:</figcaption>
+                <img src="{{ question.image_file.url }}"
+                     alt="Question image for {{ question.question_text|truncatechars:50 }}"
+                     class="img-fluid rounded">
+            </figure>
+        {% endif %}
+
+        {% if question.audio_file %}
+            <div class="mb-3">
+                <h5 class="h6">Audio:</h5>
+                <audio controls class="w-100">
+                    <source src="{{ question.audio_file.url }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        {% endif %}
+
+        {% if question.video_file %}
+            <div class="mb-3">
+                <h5 class="h6">Video:</h5>
+                <video controls class="w-100">
+                    <source src="{{ question.video_file.url }}" type="video/mp4">
+                    Your browser does not support the video element.
+                </video>
+            </div>
+        {% endif %}
+
+        {% if question.youtube_link %}
+            <div class="mb-3">
+                <h5 class="h6">YouTube Video:</h5>
+                <div class="ratio ratio-16x9">
+                    {% if 'embed' in question.youtube_link %}
+                        <iframe src="{{ question.youtube_link }}"
+                                title="YouTube video related to question"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>
+                    {% elif 'youtu.be' in question.youtube_link %}
+                        <iframe src="https://www.youtube.com/embed/{{ question.youtube_link|cut:'https://youtu.be/' }}"
+                                title="YouTube video related to question"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>
+                    {% else %}
+                        <iframe src="https://www.youtube.com/embed/{{ question.youtube_link|cut:'https://www.youtube.com/watch?v=' }}"
+                                title="YouTube video related to question"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </section>
+{% endif %}

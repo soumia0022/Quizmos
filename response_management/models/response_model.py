@@ -27,3 +27,6 @@ class DropdownFillResponse(Response):
 
 class MatchQuestionResponse(Response):
     match_responses = models.JSONField()  
+
+class WordCloudResponse(Response):
+    word_cloud_response = models.JSONField(default=dict)

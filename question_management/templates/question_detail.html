@@ -1,6 +1,7 @@
 {% extends 'base_content.html' %}
 {% load system_extras %}
 {% load custom_filters %}
+{% load static %}
 
 {% block content %}
 {% noscript_warning %}
@@ -10,40 +11,7 @@
     <h1>Welcome to {{ poll.title }}!</h1>
     <p>{{ question.question_text }}</p>
 
-    <style>
-        .option-item {
-            display: flex;
-            align-items: center;
-        }
-
-        .box {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 5px;
-            background-color: #f9f9f9;
-        }
-
-        .dropzone-box {
-            border: 1px dashed #ccc;
-            padding: 10px;
-            margin: 5px;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            background-color: #f9f9f9;
-        }
-
-        .flex-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .container > *:not(button) {
-            margin: 0;
-            padding: 0;
-        }
-
-    </style>
+    <link rel="stylesheet" href="{% static 'poll_management/css/poll_styles.css' %}">
 
     <!-- Display options based on question type -->
     {% if question.question_type == 'multiple_choice' %}
@@ -64,30 +32,40 @@
 
     {% elif question.question_type == 'dropdown_fill' %}
         <select name="dropdown_answer">
-                <option value="" disabled selected>Select an option</option>
-                {% for option in question.get_dropdown_options %}
-                    <option value="{{ option }}">{{ option }}</option>
-                {% endfor %}
-            </select>
-
-    {% elif question.question_type == 'match_question' %}
-    <h2>Match the following:</h2>
-    <div>
-        {% for option, answer in question.match_options|zip_lists:question.match_answers %}
-            <div class="flex-container">
-                <div class="box">{{ option }}</div>
-                <div class="dropzone-box">{{ answer }}</div>
-            </div>
-        {% endfor %}
-    </div>
-
+            <option value="" disabled selected>Select an option</option>
+            {% for option in question.get_dropdown_options %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+            
     {% elif question.question_type == 'text_fill' %}
         <input type="text" name="text_fill_answer" placeholder="Your answer">
 
     {% elif question.question_type == 'wordcloud' %}
         <input type="text" name="text_fill_answer" placeholder="Your answer">
-    {% endif %}
+    
+    {% elif question.question_type == 'match_question' %}
+        <div class="container">
+            {% for option in question.match_options %}
+            <div class="row">
+                <div class="flex-container">
+                    <div class="box left">{{ option }}</div>
+                    <div class="dropzone-box dropzone"></div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="row">
+                <div id="right" class="right">
+                    {% for answer in question.match_answers %}
+                        <div class="box draggable">{{ answer }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+        <script src="{% static 'poll_management/js/drag_and_drop.js' %}"></script>
 
-   <br> <button type="button" class="submit-button">Submit</button> </br>
+    {% endif %}
 </div>
 {% endblock %}

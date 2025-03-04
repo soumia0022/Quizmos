@@ -19,6 +19,13 @@ ws.onmessage = function(event) {
         // When we receive a response update, fetch the latest counts
         fetchResponseCounts(data.question_id);
     }
+
+    if (data.type === 'question') {
+        if (data.question) {  
+            const currentQuestionNumber = data.question.question_number;
+            const totalQuestions = data.question.total_questions;
+        } 
+    }
 };
 
 // Function to fetch response counts for a specific question
