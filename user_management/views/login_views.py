@@ -18,12 +18,6 @@ import re
 from django.db.models import Count
 from django.shortcuts import render
 
-
-
-
-
-
-import re
 @login_prohibited
 def home(request):
     if request.method == 'POST':
@@ -97,7 +91,6 @@ def dashboard(request):
 
         return f"{base_title} ({next_number})"
 
-
     if request.method == "POST" and "title" in request.POST:
         title = request.POST.get("title", "").strip()
         confirmed = request.POST.get("confirmed", "false") == "true"
@@ -128,56 +121,135 @@ def dashboard(request):
     sort_by = request.GET.get('sort_by', 'created_at_desc')
     search_query = request.GET.get('search', '')
 
-
     if current_user.role == "Lecturer":
+
         polls = Poll.objects.filter(user=request.user)
-        template = 'lecturer_dashboard.html'
-    else:
-        polls = Poll.objects.filter(joined_students=request.user)
-        template = 'student_dashboard.html'
-
-    polls = polls.annotate(
-        multiple_choice_responses_count=Count('multiplechoiceresponse'),
-        single_choice_responses_count=Count('singlechoiceresponse'),
-        dropdown_fill_responses_count=Count('dropdownfillresponse'),
-        text_fill_responses_count=Count('textfillresponse'),
-        match_question_responses_count=Count('matchquestionresponse')
-    )
-
-    if search_query:
-        polls = polls.filter(Q(title__icontains=search_query))
-
-    sort_options = {
-        'title_asc': 'title',
-        'title_desc': '-title',
-        'created_at_asc': 'created_at',
-        'created_at_desc': '-created_at'
-    }
-    polls = polls.order_by(sort_options.get(sort_by, '-created_at'))
-
-    for p in polls:
-        p.total_responses_count = (
-                p.multiple_choice_responses_count +
-                p.single_choice_responses_count +
-                p.dropdown_fill_responses_count +
-                p.text_fill_responses_count +
-                p.match_question_responses_count
+        polls = polls.annotate(
+            multiple_choice_responses_count=Count('multiplechoiceresponse'),
+            single_choice_responses_count=Count('singlechoiceresponse'),
+            dropdown_fill_responses_count=Count('dropdownfillresponse'),
+            text_fill_responses_count=Count('textfillresponse'),
+            match_question_responses_count=Count('matchquestionresponse')
         )
 
-    paginator = Paginator(polls, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+        if search_query:
+            polls = polls.filter(Q(title__icontains=search_query))
+
+        sort_options = {
+            'title_asc': 'title',
+            'title_desc': '-title',
+            'created_at_asc': 'created_at',
+            'created_at_desc': '-created_at'
+        }
+        polls = polls.order_by(sort_options.get(sort_by, '-created_at'))
+
+        for p in polls:
+            p.total_responses_count = (
+                    p.multiple_choice_responses_count +
+                    p.single_choice_responses_count +
+                    p.dropdown_fill_responses_count +
+                    p.text_fill_responses_count +
+                    p.match_question_responses_count
+            )
+
+        paginator = Paginator(polls, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'lecturer_dashboard.html', {
+            'user': current_user,
+            'polls': page_obj,
+            'sort_by': sort_by,
+            'search_query': search_query,
+            'show_confirmation_popup': show_confirmation_popup,
+            'original_title': original_title,
+            'suggested_title': suggested_title,
+        })
+
+    elif current_user.role == "Student":
+
+        joined_polls = current_user.joined_polls.all()
+
+        if search_query:
+            joined_polls = joined_polls.filter(Q(title__icontains=search_query))
+
+        sort_options = {
+            'title_asc': 'title',
+            'title_desc': '-title',
+            'created_at_asc': 'created_at',
+            'created_at_desc': '-created_at'
+        }
 
 
-    return render(request, template, {
-        'user': current_user,
-        'polls': page_obj,
-        'sort_by': sort_by,
-        'search_query': search_query,
-        'show_confirmation_popup': show_confirmation_popup,
-        'original_title': original_title,
-        'suggested_title': suggested_title,
-    })
+        if sort_by == 'title_asc':
+            joined_polls = joined_polls.order_by(Lower('title'))
+        elif sort_by == 'title_desc':
+            joined_polls = joined_polls.order_by(Lower('title').desc())
+        elif sort_by == 'created_at_asc':
+            joined_polls = joined_polls.order_by('created_at')
+        elif sort_by == 'created_at_desc':
+            joined_polls = joined_polls.order_by('-created_at')
+
+
+        paginator = Paginator(joined_polls, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'student_dashboard.html', {
+            'user': current_user,
+            'polls': page_obj,
+            'search_query': search_query,
+            'sort_by': sort_by,
+        })
+
+    else:
+
+        create_poll(request)
+
+        sort_by = request.GET.get('sort_by', 'created_at_desc')
+        search_query = request.GET.get('search', '')
+
+        polls = Poll.objects.filter(user=request.user).annotate(
+            multiple_choice_responses_count=Count('multiplechoiceresponse'),
+            single_choice_responses_count=Count('singlechoiceresponse'),
+            dropdown_fill_responses_count=Count('dropdownfillresponse'),
+            text_fill_responses_count=Count('textfillresponse'),
+            match_question_responses_count=Count('matchquestionresponse')
+        )
+
+        if search_query:
+            polls = polls.filter(Q(title__icontains=search_query))
+
+        sort_options = {
+            'title_asc': 'title',
+            'title_desc': '-title',
+            'created_at_asc': 'created_at',
+            'created_at_desc': '-created_at'
+        }
+        polls = polls.order_by(sort_options.get(sort_by, '-created_at'))
+
+        for p in polls:
+            p.total_responses_count = (
+                    p.multiple_choice_responses_count +
+                    p.single_choice_responses_count +
+                    p.dropdown_fill_responses_count +
+                    p.text_fill_responses_count +
+                    p.match_question_responses_count
+            )
+
+        paginator = Paginator(polls, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'lecturer_dashboard.html', {
+            'user': current_user,
+            'polls': page_obj,
+            'search_query': search_query,
+            'sort_by': sort_by,
+            'show_confirmation_popup': show_confirmation_popup,
+            'original_title': original_title,
+            'suggested_title': suggested_title,
+        })
 
 
 
