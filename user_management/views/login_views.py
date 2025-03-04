@@ -33,33 +33,7 @@ def home(request):
     return render(request, 'home.html', {'form': form})
 
 
-def generate_suggested_title(base_title, existing_titles):
-    matching_polls = [p for p in existing_titles if p.startswith(base_title)]
-    number_pattern = re.compile(r'\((\d+)\)')
-    existing_numbers = []
 
-
-    for poll_title in matching_polls:
-        number_matches = number_pattern.findall(poll_title)
-        if number_matches:
-            existing_numbers.append(tuple(map(int, number_matches)))
-
-
-    if not existing_numbers:
-        return f"{base_title} (1)"
-
-
-    if f"{base_title} (1)" in existing_titles:
-        return f"{base_title} (1)"
-
-
-    existing_numbers.sort()
-    next_number = 1
-    while (next_number,) in existing_numbers:
-        next_number += 1
-
-
-    return f"{base_title} ({next_number})"
 
 def dashboard(request):
     """Display the current user's dashboard."""
