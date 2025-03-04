@@ -103,23 +103,31 @@
         }
 
         function fetchAndShowChart(chartType) {
-            if (!selectedQuestionId) {
-                // Don't show the error when viewing poll results - will not require this
-                if (document.getElementById('selected-question-title').innerText !== "Poll Results") {
-                    alert("Please select a question first!");
-                    return;
-                }
-            }
+
 
             let url = selectedQuestionId
                 ? `/responses/questions/${selectedQuestionId}/analytics/?type=${chartType}`
                 : `/responses/polls/{{ poll.id }}/${chartType}_data/`; // Use the correct poll-level URL
 
+            let backgroundColor;
+            let questionType = selectedQuestionId
+                ? document.querySelector(`.question-item[data-question-id="${selectedQuestionId}"]`).getAttribute("data-question-type")
+                : null;
 
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     clearChart();
+
+                    // Apply color logic
+                    if (chartType === "pie") {
+                        backgroundColor = data.labels.map(() => generateRandomColor()); // Multi-color for Pie
+                    } else if (chartType === "bar") {
+                        backgroundColor = "#800080";
+                    } else if (chartType === "line") {
+                        backgroundColor = "#3d073e";
+                    }
+
 
                     chartInstance = new Chart(ctx, {
                         type: chartType,
@@ -127,7 +135,7 @@
                             labels: data.labels,
                             datasets: [{
                                 data: data.data,
-                                backgroundColor: data.labels.map(() => generateRandomColor()),
+                                backgroundColor: backgroundColor,
                                 borderColor: '#3d073e',
                                 fill: false
                             }]
@@ -213,6 +221,20 @@
                     });
                 })
                 .catch(error => console.error("Error fetching poll results:", error));
+        });
+
+         // Load the poll-wide pie chart by default on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            fetchAndShowChart('pie');  // Show poll-wide pie chart on load
+        });
+
+        // When a question is clicked, load its pie chart immediately
+        document.querySelectorAll('.question-item').forEach(item => {
+            item.addEventListener('click', function () {
+                selectedQuestionId = this.getAttribute('data-question-id');
+                document.getElementById('selected-question-title').innerText = `Analytics for Question ${selectedQuestionId}`;
+                fetchAndShowChart('pie', selectedQuestionId);  // Load question pie chart immediately
+            });
         });
 
     </script>
