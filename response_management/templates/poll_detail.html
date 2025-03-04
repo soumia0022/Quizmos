@@ -35,14 +35,14 @@
 
         /* Chart section */
         .chart-container {
-            width: 70%;
-            padding: 20px;
+            width: 20%;
+            height: 400px;
+            margin: 0 auto;
         }
 
         canvas {
-            width: 800px !important;
-            height: 500px !important;
-            max-width: 100%;  /* Prevent overflow */
+            width: 100% !important;
+            height: 100% !important;
         }
 
         /* Button styles */
@@ -160,7 +160,7 @@
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: selectedQuestionId ? `Analytics for Question: ${data.question}` : "Total Responses",
+                                    text: selectedQuestionId ? `Analytics for Question: ${data.question}` : "Total Number of Responses",
                                     font: {
                                         size: 22,
                                         weight: 'bold'
@@ -176,7 +176,7 @@
                                 },
                                 legend: {
                                     labels: {
-                                        font: { size: 16 }
+                                        font: { size: 12 }
                                     }
                                 }
                             }
