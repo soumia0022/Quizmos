@@ -36,7 +36,6 @@ def home(request):
 @login_required(login_url='user_management:log_in')
 
 def dashboard(request):
-
     current_user = request.user
     show_confirmation_popup = False
     original_title = ""
@@ -169,9 +168,6 @@ def dashboard(request):
 
     else:
         return redirect(reverse('user_management:dashboard'))
-
-
-
 
 
 class LoginProhibitedMixin:
