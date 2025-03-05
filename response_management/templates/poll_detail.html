@@ -33,17 +33,21 @@
             background-color: #e9ecef;
         }
 
-        /* Chart section */
         .chart-container {
-            width: 20%;
-            height: 400px;
-            margin: 0 auto;
+            width: 80%;
+            max-width: 800px;
+            height: 500px;
+            margin: 0 auto; /* Centres the chart */
         }
+
 
         canvas {
             width: 100% !important;
             height: 100% !important;
+            max-width: 800px;
+            max-height: 500px;
         }
+
 
         /* Button styles */
         .button-container {
@@ -93,101 +97,19 @@
     </div>
 
     <script>
+        // Get the canvas element and its context
         var ctx = document.getElementById('chart').getContext('2d');
         var chartInstance = null;
         var selectedQuestionId = null;  // Track the selected question
 
+        // Function to clear the existing chart
         function clearChart() {
             if (chartInstance) {
                 chartInstance.destroy();
             }
         }
 
-        function fetchAndShowChart(chartType) {
-
-
-            let url = selectedQuestionId
-                ? `/responses/questions/${selectedQuestionId}/analytics/?type=${chartType}`
-                : `/responses/polls/{{ poll.id }}/${chartType}_data/`; // Use the correct poll-level URL
-
-            let backgroundColor;
-            let questionType = selectedQuestionId
-                ? document.querySelector(`.question-item[data-question-id="${selectedQuestionId}"]`).getAttribute("data-question-type")
-                : null;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    clearChart();
-
-                    // Apply color logic
-                    if (chartType === "pie") {
-                        backgroundColor = data.labels.map(() => generateRandomColor()); // Multi-color for Pie
-                    } else if (chartType === "bar") {
-                        backgroundColor = "#800080";
-                    } else if (chartType === "line") {
-                        backgroundColor = "#3d073e";
-                    }
-
-
-                    chartInstance = new Chart(ctx, {
-                        type: chartType,
-                        data: {
-                            labels: data.labels,
-                            datasets: [{
-                                data: data.data,
-                                backgroundColor: backgroundColor,
-                                borderColor: '#3d073e',
-                                fill: false
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        font: { size: 14 }
-                                    }
-                                },
-                                x: {
-                                    ticks: {
-                                        font: { size: 14 }
-                                    }
-                                }
-                            },
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: selectedQuestionId ? `Analytics for Question: ${data.question}` : "Total Number of Responses",
-                                    font: {
-                                        size: 22,
-                                        weight: 'bold'
-                                    }
-                                },
-                                tooltip: {
-                                    bodyFont: {
-                                        size: 14
-                                    },
-                                    titleFont: {
-                                        size: 16
-                                    }
-                                },
-                                legend: {
-                                    labels: {
-                                        font: { size: 12 }
-                                    }
-                                }
-                            }
-                        }
-                    });
-
-                })
-                .catch(error => console.error("Error fetching analytics:", error));
-        }
-
-
+        // Function to generate a random color for charts
         function generateRandomColor() {
             var letters = '0123456789ABCDEF';
             var color = '#';
@@ -197,38 +119,123 @@
             return color;
         }
 
-        document.querySelectorAll('.view-analytics-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                selectedQuestionId = this.getAttribute('data-question-id');
-                document.getElementById('selected-question-title').innerText = `Analytics for Question ${selectedQuestionId}`;
+        // Function to fetch and display pie chart
+        function showPieChart() {
+            clearChart(); // Clear previous chart
 
-                // Clear old chart when a new question is selected
-                clearChart();
-            });
-        });
+            let url = selectedQuestionId
+                ? `/responses/questions/${selectedQuestionId}/analytics/?type=pie`
+                : `/responses/polls/{{ poll.id }}/piechart_data/`;
 
-        document.getElementById('viewPieChart').addEventListener('click', () => fetchAndShowChart('pie'));
-        document.getElementById('viewBarGraph').addEventListener('click', () => fetchAndShowChart('bar'));
-        document.getElementById('viewLineGraph').addEventListener('click', () => fetchAndShowChart('line'));
-
-        // Show poll results when the button is clicked
-        document.getElementById('viewPollResults').addEventListener('click', function () {
-            selectedQuestionId = null;
-            document.getElementById('selected-question-title').innerText = "Poll Results";
-
-            fetch(`/responses/poll/analytics/`)
-                .then(response => response.json())
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error("Pie chart data not found.");
+                    return response.json();
+                })
                 .then(data => {
-                    clearChart();
-
                     chartInstance = new Chart(ctx, {
-                        type: 'bar', // Default type for poll results
+                        type: 'pie',
                         data: {
                             labels: data.labels,
                             datasets: [{
                                 data: data.data,
-                                backgroundColor: data.labels.map(() => generateRandomColor()),
-                                borderColor: '#3d073e',
+                                backgroundColor: data.labels.map(() => generateRandomColor()) // Assign unique colors
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: selectedQuestionId
+                                        ? `Analytics for Question: ${data.question}`
+                                        : "Total Number of Responses",
+                                    font: { size: 22, weight: 'bold' }
+                                },
+                                legend: {
+                                    labels: { font: { size: 14 } }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("Error fetching pie chart data:", error));
+        }
+
+
+        function showBarGraph() {
+            clearChart();
+
+            let url = selectedQuestionId
+                ? `/responses/questions/${selectedQuestionId}/analytics/?type=bar`
+                : `/responses/polls/{{ poll.id }}/bargraph_data/`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error("Bar graph data not found.");
+                    return response.json();
+                })
+                .then(data => {
+                    chartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Responses',
+                                data: data.data,
+                                backgroundColor: "#800080"
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { font: { size: 14 } }
+                                },
+                                x: {
+                                    ticks: { font: { size: 14 } }
+                                }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: selectedQuestionId
+                                        ? `Analytics for Question: ${data.question}`
+                                        : "Total Number of Responses (Bar Chart)",
+                                    font: { size: 22, weight: 'bold' }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("Error fetching bar chart data:", error));
+        }
+
+
+        function showLineGraph() {
+            clearChart();
+
+            let url = selectedQuestionId
+                ? `/responses/questions/${selectedQuestionId}/analytics/?type=line`
+                : `/responses/polls/{{ poll.id }}/linegraph_data/`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error("Line graph data not found.");
+                    return response.json();
+                })
+                .then(data => {
+                    chartInstance = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Responses',
+                                data: data.data,
+                                borderColor: "#3d073e",
                                 fill: false
                             }]
                         },
@@ -236,34 +243,54 @@
                             responsive: true,
                             maintainAspectRatio: false,
                             scales: {
-                                y: { beginAtZero: true }
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { font: { size: 14 } }
+                                },
+                                x: {
+                                    ticks: { font: { size: 14 } }
+                                }
                             },
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: "Overall Poll Results",
-                                    font: { size: 18 }
+                                    text: selectedQuestionId
+                                        ? `Analytics for Question: ${data.question}`
+                                        : "Total Number of Responses (Line Graph)",
+                                    font: { size: 22, weight: 'bold' }
                                 }
                             }
                         }
                     });
                 })
-                .catch(error => console.error("Error fetching poll results:", error));
-        });
+                .catch(error => console.error("Error fetching line graph data:", error));
+        }
 
-         // Load the poll-wide pie chart by default on page load
-        document.addEventListener("DOMContentLoaded", function () {
-            fetchAndShowChart('pie');  // Show poll-wide pie chart on load
-        });
+        // Show overall poll results
+        function showPollResults() {
+            selectedQuestionId = null; // Reset question selection
+            document.getElementById('selected-question-title').innerText = "Poll Results";
 
-        // When a question is clicked, load its pie chart immediately
+            showPieChart(); // Default to pie chart when viewing poll results
+        }
+
+
+        document.getElementById('viewPieChart').addEventListener('click', showPieChart);
+        document.getElementById('viewBarGraph').addEventListener('click', showBarGraph);
+        document.getElementById('viewLineGraph').addEventListener('click', showLineGraph);
+        document.getElementById('viewPollResults').addEventListener('click', showPollResults);
+
+        // When a question is clicked, load pie chart
         document.querySelectorAll('.question-item').forEach(item => {
             item.addEventListener('click', function () {
                 selectedQuestionId = this.getAttribute('data-question-id');
                 document.getElementById('selected-question-title').innerText = `Analytics for Question ${selectedQuestionId}`;
-                fetchAndShowChart('pie', selectedQuestionId);  // Load question pie chart immediately
+                showPieChart(); // Load pie chart for the selected question by default
             });
         });
+
+        // default on page load
+        document.addEventListener("DOMContentLoaded", showPieChart);
 
     </script>
 

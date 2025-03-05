@@ -6,9 +6,9 @@ from response_management.views.download_csv import download_csv
 urlpatterns = [
     path('polls/', lecturer_poll_list, name='lecturer_poll_list'),
     path('polls/<int:poll_id>/', poll_detail, name='poll_detail'),
-    path('polls/<int:poll_id>/pie_data/', piechart_data, name='piechart_data'),
-    path('polls/<int:poll_id>/bar_data/', bargraph_data, name='bargraph_data'),
-    path('polls/<int:poll_id>/line_data/', linegraph_data, name='linegraph_data'),
+    path('polls/<int:poll_id>/piechart_data/', piechart_data, name='piechart_data'),
+    path('polls/<int:poll_id>/bargraph_data/', bargraph_data, name='bargraph_data'),
+    path('polls/<int:poll_id>/linegraph_data/', linegraph_data, name='linegraph_data'),
     path('polls/<int:poll_id>/download_csv/', download_csv, name='download_csv'),
     path('questions/<int:question_id>/analytics/', question_analytics, name='question_analytics'),
 ]
