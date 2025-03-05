@@ -81,19 +81,22 @@ class QuestionResponseCounterTests(TestCase):
             user=self.test_users[0],
             poll=self.poll,
             question=self.mcq,
-            selected_options=["Option A"]
+            selected_options=["Option A"],
+            session_code =123456
         )
         MultipleChoiceResponse.objects.create(
             user=self.test_users[1],
             poll=self.poll,
             question=self.mcq,
-            selected_options=["Option A", "Option B"]
+            selected_options=["Option A", "Option B"],
+            session_code=123456
         )
         MultipleChoiceResponse.objects.create(
             user=self.test_users[2],
             poll=self.poll,
             question=self.mcq,
-            selected_options=["Option C"]
+            selected_options=["Option C"],
+            session_code=123456
         )
 
         # count responses
@@ -117,19 +120,22 @@ class QuestionResponseCounterTests(TestCase):
             user=self.test_users[0],
             poll=self.poll,
             question=self.scq,
-            selected_option="Yes"
+            selected_option="Yes",
+            session_code=123456
         )
         SingleChoiceResponse.objects.create(
             user=self.test_users[1],
             poll=self.poll,
             question=self.scq,
-            selected_option="No"
+            selected_option="No",
+            session_code=123456
         )
         SingleChoiceResponse.objects.create(
             user=self.test_users[2],
             poll=self.poll,
             question=self.scq,
-            selected_option="Yes"
+            selected_option="Yes",
+            session_code=123456
         )
 
         # count responses
@@ -153,19 +159,22 @@ class QuestionResponseCounterTests(TestCase):
             user=self.test_users[0],
             poll=self.poll,
             question=self.dropdown,
-            selected_option="Red"
+            selected_option="Red",
+            session_code=123456
         )
         DropdownFillResponse.objects.create(
             user=self.test_users[1],
             poll=self.poll,
             question=self.dropdown,
-            selected_option="Blue"
+            selected_option="Blue",
+            session_code=123456
         )
         DropdownFillResponse.objects.create(
             user=self.test_users[2],
             poll=self.poll,
             question=self.dropdown,
-            selected_option="Red"
+            selected_option="Red",
+            session_code=123456
         )
 
         # count responses
@@ -188,19 +197,22 @@ class QuestionResponseCounterTests(TestCase):
             user=self.test_users[0],
             poll=self.poll,
             question=self.text,
-            answer_text="First answer"
+            answer_text="First answer",
+            session_code=123456
         )
         TextFillResponse.objects.create(
             user=self.test_users[1],
             poll=self.poll,
             question=self.text,
-            answer_text="Second answer"
+            answer_text="Second answer",
+            session_code=123456
         )
         TextFillResponse.objects.create(
             user=self.test_users[2],
             poll=self.poll,
             question=self.text,
-            answer_text="   "  # empty answer that should be filtered out
+            answer_text="   ",  # empty answer that should be filtered out
+            session_code=123456
         )
 
         # count responses
@@ -227,7 +239,8 @@ class QuestionResponseCounterTests(TestCase):
                 {'left': 'A', 'right': '1'},
                 {'left': 'B', 'right': '2'},
                 {'left': 'C', 'right': '3'}
-            ]
+            ],
+            session_code=123456
         )
         MatchQuestionResponse.objects.create(
             user=self.test_users[1],
@@ -237,7 +250,8 @@ class QuestionResponseCounterTests(TestCase):
                 {'left': 'A', 'right': '2'},
                 {'left': 'B', 'right': '3'},
                 {'left': 'C', 'right': '1'}
-            ]
+            ],
+            session_code=123456
         )
 
         # count responses
