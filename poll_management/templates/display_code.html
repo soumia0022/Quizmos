@@ -11,6 +11,7 @@
       <div class="left-column">
         <h1 id="id_start_poll_title">{{ poll.title }}</h1>
         {% include 'poll_components/lock.html' %}
+        {% include 'poll_components/show_answer.html' %}
         <div id="poll-controls">
           <button id="start-poll-btn" onclick="startPoll()" class="btn btn-primary mb-3">Start Poll</button>
           {% include 'poll_components/questions.html' %}
