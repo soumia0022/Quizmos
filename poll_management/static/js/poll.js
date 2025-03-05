@@ -11,24 +11,43 @@ window.startPoll = function() {
     document.getElementById('start-poll-btn').style.display = 'none';
     document.getElementById('question-display').style.display = 'block';
     document.getElementById('unlock').style.display = '';
-    document.getElementById('show-answer-closed').style.display = '';
+    document.getElementById('show-answer-closed').style.display = 'inline';
+    document.getElementById('show-answer-open').style.display = 'none';
     updateQuestionDisplay();
 };
 
 window.previousQuestion = function() {
-    if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
+    if (window.currentQuestionIndex > 0) {
+        window.currentQuestionIndex--;
         updateQuestionDisplay();
+        resetShowAnswerState(); 
     }
 };
 
 window.nextQuestion = function() {
-    if (currentQuestionIndex < questions.length - 1) {
-        currentQuestionIndex++;
+    if (window.currentQuestionIndex < window.questions.length - 1) {
+        window.currentQuestionIndex++;
         updateQuestionDisplay();
+        resetShowAnswerState(); 
     }
 };
 
+function resetShowAnswerState() {
+    const closedEyeButton = document.getElementById('show-answer-closed');
+    const openEyeButton = document.getElementById('show-answer-open');
+    closedEyeButton.style.display = 'inline';
+    openEyeButton.style.display = 'none';
+
+    // notify the server to hide answers and show the closed eye icon 
+    const questionId = window.questions[window.currentQuestionIndex].id;
+    if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'show_answers',
+            question_id: questionId,
+            action: 'hide_answer'
+        }));
+    }
+}
 
 function createQuestionHTML(question) {
   let html = '<div class="question-title">';//this will store the final html content needed to display the question
@@ -110,28 +129,28 @@ break;
   html += '</div>';
   return html;
 }
+
 function updateQuestionDisplay() {
     const questionContainer = document.getElementById('question-container');
-    const currentQuestion = questions[currentQuestionIndex];
+    const currentQuestion = window.questions[window.currentQuestionIndex];
 
-    // Update the question display
+    // Update the question display (only set innerHTML once)
     questionContainer.innerHTML = createQuestionHTML(currentQuestion);
 
 
     if (window.currentTimerInterval) {
-    clearInterval(window.currentTimerInterval);
-    window.currentTimerInterval = null;
+        clearInterval(window.currentTimerInterval);
+        window.currentTimerInterval = null;
     }
-    questionContainer.innerHTML = createQuestionHTML(currentQuestion);
     if (currentQuestion.question_timer != null) {
-    window.currentTimerInterval = startCountdownTimer(questionContainer, currentQuestion.question_timer);
+        window.currentTimerInterval = startCountdownTimer(questionContainer, currentQuestion.question_timer);
     }
 
     // Update navigation buttons
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
-    prevBtn.disabled = currentQuestionIndex === 0;
-    nextBtn.disabled = currentQuestionIndex === questions.length - 1;
+    prevBtn.disabled = window.currentQuestionIndex === 0;
+    nextBtn.disabled = window.currentQuestionIndex === window.questions.length - 1;
 
     // Send question update to WebSocket
     if (ws.readyState === WebSocket.OPEN) {
@@ -141,5 +160,4 @@ function updateQuestionDisplay() {
         question_timer: currentQuestion.question_timer,
       }));
     }
-  }
-
+}
