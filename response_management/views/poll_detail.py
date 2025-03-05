@@ -116,8 +116,8 @@ def question_analytics(request, question_id):
     elif question.question_type == 'single_choice':
         options = question.single_choice_option
         for option in options:
-            responses = MultipleChoiceResponse.objects.filter(question=question)
-            count = sum(1 for response in responses if option in response.selected_options)
+            responses = SingleChoiceResponse.objects.filter(question=question)
+            count = sum(1 for response in responses if option in response.selected_option)
 
             labels.append(option)
             data.append(count)
