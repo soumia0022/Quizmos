@@ -99,7 +99,7 @@ function createQuestionHTML(question) {
       break;
 
     case 'wordcloud':
-      html += renderText(question);//update this later when wordcloud responses are done
+      html += renderWordCloud(question);
       break;
 
     case 'match_question':
