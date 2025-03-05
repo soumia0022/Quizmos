@@ -17,6 +17,7 @@ class QuestionResponseCounter:
             'dropdown_fill': self._get_dropdown_responses,
             'text_fill' : self._get_text_responses,
             'match_question' : self._get_match_responses,
+            'wordcloud': self._get_word_cloud_responses,
         }
 
     def get_counts(self) -> JsonResponse:
@@ -28,6 +29,13 @@ class QuestionResponseCounter:
                 }, status=400)
 
             counts_dict = self.response_handlers[self.question_type]()
+            if self.question_type == 'wordcloud':
+                word_cloud_data = self.response_handlers[self.question_type]()
+                return JsonResponse({
+                    'question_id': self.question.id,
+                    'question_type': 'wordcloud',
+                    'word_cloud_data': word_cloud_data
+                })
 
             if self.question_type == 'text_fill':
                 return JsonResponse(counts_dict)
@@ -148,6 +156,32 @@ class QuestionResponseCounter:
 
         return counts
 
+    def _get_word_cloud_responses(self) -> Dict[str, int]:
+        """
+        Handle word cloud question responses.
+
+        Returns a dictionary of words and their frequencies.
+        """
+        from response_management.models.response_model import WordCloudResponse
+
+        # Fetch all word cloud responses for this question
+        responses = WordCloudResponse.objects.filter(question=self.question).values_list('word_cloud_response', flat=True)
+
+        # Aggregate word frequencies
+        word_frequencies = {}
+
+        for response in responses:
+
+
+            for word in response:
+                normalized_word = str(word).lower().strip()
+                if not normalized_word:
+                    continue
+
+                word_frequencies[normalized_word] = word_frequencies.get(normalized_word, 0) + 1
+
+        return word_frequencies
+
 
 def get_question_response_counts(request, poll_code, question_id):
     question = Question.objects.filter(id=question_id).first()
@@ -158,3 +192,5 @@ def get_question_response_counts(request, poll_code, question_id):
 
     counter = QuestionResponseCounter(question)
     return counter.get_counts()
+
+

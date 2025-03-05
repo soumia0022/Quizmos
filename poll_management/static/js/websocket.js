@@ -1,5 +1,5 @@
 // websocket.js
-import {updateMatchResponseUI, updateResponseUI, updateTextResponseUI} from './response_ui.js';
+import {updateMatchResponseUI, updateResponseUI, updateTextResponseUI, updateWordCloudUI} from './response_ui.js';
 
 const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${pollCode}/`;
@@ -38,11 +38,15 @@ async function fetchResponseCounts(questionId) {
         const data = await response.json();
         console.log('Received counts:', data);
 
-        if (data.question_type === "text_fill" || data.question_type === "wordcloud"){//update this later when word cloud responses is done
+        if (data.question_type === "text_fill" ){
             updateTextResponseUI(questionId, data.responses);
         }
         else if (data.question_type === "match_question") {
             updateMatchResponseUI(questionId, data);
+        }
+        else if (data.question_type === "wordcloud"){
+            questionId = 'word-cloud-' + questionId
+            updateWordCloudUI(questionId, data.word_cloud_data)
         }
         else{
             updateResponseUI(questionId, data.counts);
