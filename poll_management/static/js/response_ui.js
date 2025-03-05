@@ -1,3 +1,5 @@
+import {WordCloudGenerator} from "./word_could_generator.js";
+
 function updateProgressElements(element, count, totalResponses) {
     const percentage = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
     const percentageElement = element.querySelector('.response-percentage');
@@ -85,4 +87,9 @@ export function updateMatchResponseUI(questionId, matchData) {
             }
         });
     });
+}
+
+export function updateWordCloudUI(containerID, wordData, options = {}) {
+    const wordCloud = new WordCloudGenerator(containerID, options);
+    wordCloud.generate(wordData);
 }
