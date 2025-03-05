@@ -83,10 +83,11 @@
 
         <!-- Chart Container -->
         <div class="chart-container">
-            <h2 id="selected-question-title">Select a question to view analytics</h2>
+            <h2 id="selected-question-title">Select to view analytics for the whole poll or a particular question</h2>
 
             <button id="viewPollResults">Show Poll Results</button>
             <div class="button-container">
+                <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
                 <button id="viewPieChart">View Pie Chart</button>
                 <button id="viewBarGraph">View Bar Graph</button>
                 <button id="viewLineGraph">View Line Graph</button>
@@ -149,7 +150,7 @@
                                 title: {
                                     display: true,
                                     text: selectedQuestionId
-                                        ? `Analytics for Question: ${data.question}`
+                                        ? `Responses for Question: ${data.question}`
                                         : "Total Number of Responses",
                                     font: { size: 22, weight: 'bold' }
                                 },
@@ -203,7 +204,7 @@
                                 title: {
                                     display: true,
                                     text: selectedQuestionId
-                                        ? `Analytics for Question: ${data.question}`
+                                        ? `Responses for Question: ${data.question}`
                                         : "Total Number of Responses (Bar Chart)",
                                     font: { size: 22, weight: 'bold' }
                                 }
@@ -255,7 +256,7 @@
                                 title: {
                                     display: true,
                                     text: selectedQuestionId
-                                        ? `Analytics for Question: ${data.question}`
+                                        ? `Responses for Question: ${data.question}`
                                         : "Total Number of Responses (Line Graph)",
                                     font: { size: 22, weight: 'bold' }
                                 }
@@ -280,14 +281,23 @@
         document.getElementById('viewLineGraph').addEventListener('click', showLineGraph);
         document.getElementById('viewPollResults').addEventListener('click', showPollResults);
 
-        // When a question is clicked, load pie chart
-        document.querySelectorAll('.question-item').forEach(item => {
+        // When a question is clicked, load the pie chart
+        document.querySelectorAll('.question-item').forEach((item, index) => {
             item.addEventListener('click', function () {
                 selectedQuestionId = this.getAttribute('data-question-id');
-                document.getElementById('selected-question-title').innerText = `Analytics for Question ${selectedQuestionId}`;
-                showPieChart(); // Load pie chart for the selected question by default
+
+                // Format the question number (Q1, Q2, etc.)
+                let questionNumber = `Q${index + 1}`;
+                let questionText = this.innerText.replace(questionNumber, '').replace('View Analytics', '').trim();
+                questionText = questionText.replace(/^:/, '').trim();
+
+                document.getElementById('selected-question-title').innerText = `Analytics for ${questionNumber}: ${questionText}`;
+
+                // Load pie chart for the selected question by default
+                showPieChart();
             });
         });
+
 
         // default on page load
         document.addEventListener("DOMContentLoaded", showPieChart);
