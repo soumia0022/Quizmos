@@ -113,6 +113,32 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'type': 'poll_status',
                 'action': 'lock' if self.poll_lock_status[self.poll_code] else 'unlock'
             }))
+
+        elif message_type == 'show_answers':
+            if self.scope["user"].role == 'Lecturer':
+                action = text_data_json.get('action')
+                if action == 'show_answer' and question_id:
+                    answers = await self.get_correct_answers(question_id)
+                    if answers is not None:
+                        await self.channel_layer.group_send(
+                            self.poll_group_name,
+                            {
+                                'type': 'broadcast_answers',
+                                'question_id': question_id,
+                                'answers': answers,
+                                'action': 'show_answer'
+                            }
+                        )
+                elif action == 'hide_answer' and question_id:
+                    await self.channel_layer.group_send(
+                        self.poll_group_name,
+                        {
+                            'type': 'broadcast_answers',
+                            'question_id': question_id,
+                            'answers': None,
+                            'action': 'hide_answer'
+                        }
+                    )
         elif message_type == 'question':
             # If it's a question, fetch it from the database and broadcast it
             questions = await self.get_all_questions()
@@ -300,3 +326,34 @@ class PollConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_all_questions(self):
         return list(Question.objects.filter(poll=self.poll))
+    
+    async def broadcast_answers(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'answers',
+            'question_id': event['question_id'],
+            'answers': event['answers'],
+            'action': event['action']
+        }))
+
+    @database_sync_to_async
+    def get_correct_answers(self, question_id):
+        try:
+            question = Question.objects.get(id=question_id)
+            answers = None  # Default to None
+
+            if question.question_type == 'multiple_choice':
+                answers = question.multiple_choice_answers or []
+            elif question.question_type == 'single_choice':
+                answers = question.single_choice_answers or []
+            elif question.question_type == 'dropdown_fill':
+                answers = question.dropdown_correct_answer or ""
+            elif question.question_type == 'text_fill':
+                answers = question.text_fill_answer or ""
+            elif question.question_type == 'wordcloud':
+                answers = None  # No correct answer typically
+            elif question.question_type == 'match_question':
+                answers = question.match_answers or []
+
+            return answers
+        except Question.DoesNotExist:
+            return None
