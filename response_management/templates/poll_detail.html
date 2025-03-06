@@ -242,6 +242,7 @@
             clearChart();
 
             let url = selectedQuestionId
+                ? `/responses/questions/${selectedQuestionId}/analytics/?type=line`
                 : `/responses/polls/{{ poll.id }}/linegraph_data/`;
 
             fetch(url)
