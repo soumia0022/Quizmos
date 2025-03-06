@@ -1,134 +1,79 @@
 from collections import Counter
-
 from django.shortcuts import get_object_or_404, render
+from django.http import JsonResponse
 from poll_management.models.poll_model import Poll
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
-from django.http import HttpResponse, JsonResponse
 from question_management.models.question_models import Question
 
-
-def poll_detail(request, poll_id):
+def poll_analytics(request, poll_id):
+    """To do with analytics for the whole poll."""
     poll = get_object_or_404(Poll, id=poll_id)
     return render(request, 'poll_detail.html', {'poll': poll})
 
-def piechart_data(request, poll_id):
-    poll = get_object_or_404(Poll, id=poll_id)
 
-    # Get the questions for the poll
+def get_response_count(poll, question):
+    """Helper function to get response count for a question."""
+    response_models = {
+        'multiple_choice': MultipleChoiceResponse,
+        'single_choice': SingleChoiceResponse,
+        'text_fill': TextFillResponse,
+        'dropdown_fill': DropdownFillResponse,
+        'match_question': MatchQuestionResponse,
+    }
+
+    model = response_models.get(question.question_type)
+
+    if model:
+        return model.objects.filter(poll=poll, question=question).count()
+    return 0
+
+
+def get_graph_data(request, poll_id):
+    """Extracts question text and response counts for each question."""
+    poll = get_object_or_404(Poll, id=poll_id)
     questions = poll.questions.all()
 
-    # Initialise the data
-    labels = []
-    data = []
-
-    for question in questions:
-        # For each question, count the number of responses
-        response_count = 0
-        if question.question_type == 'multiple_choice':
-            response_count = MultipleChoiceResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'single_choice':
-            response_count = SingleChoiceResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'text_fill':
-            response_count = TextFillResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'dropdown_fill':
-            response_count = DropdownFillResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'match_question':
-            response_count = MatchQuestionResponse.objects.filter(poll=poll, question=question).count()
-
-        # Will need to add something for code question and word cloud
-
-        labels.append(question.question_text)  # Label is the question text
-        data.append(response_count)  # Data is the response count
+    labels = [question.question_text for question in questions]
+    data = [get_response_count(poll, question) for question in questions]
 
     return JsonResponse({'labels': labels, 'data': data})
 
+
+def piechart_data(request, poll_id):
+    return get_graph_data(request, poll_id)
 
 def bargraph_data(request, poll_id):
-    poll = get_object_or_404(Poll, id=poll_id)
-
-    questions = poll.questions.all()
-
-    labels = []
-    data = []
-
-    for question in questions:
-        response_count = 0
-        if question.question_type == 'multiple_choice':
-            response_count = MultipleChoiceResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'single_choice':
-            response_count = SingleChoiceResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'text_fill':
-            response_count = TextFillResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'dropdown_fill':
-            response_count = DropdownFillResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'match_question':
-            response_count = MatchQuestionResponse.objects.filter(poll=poll, question=question).count()
-
-        labels.append(question.question_text)
-        data.append(response_count)
-
-    return JsonResponse({'labels': labels, 'data': data})
-
+    return get_graph_data(request, poll_id)
 
 def linegraph_data(request, poll_id):
-    poll = get_object_or_404(Poll, id=poll_id)
-
-    questions = poll.questions.all()
-
-    labels = []
-    data = []
-
-    for question in questions:
-        response_count = 0
-        if question.question_type == 'multiple_choice':
-            response_count = MultipleChoiceResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'single_choice':
-            response_count = SingleChoiceResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'text_fill':
-            response_count = TextFillResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'dropdown_fill':
-            response_count = DropdownFillResponse.objects.filter(poll=poll, question=question).count()
-        elif question.question_type == 'match_question':
-            response_count = MatchQuestionResponse.objects.filter(poll=poll, question=question).count()
-
-        labels.append(question.question_text)
-        data.append(response_count)
-
-    return JsonResponse({'labels': labels, 'data': data})
-
+    return get_graph_data(request, poll_id)
 
 
 def question_analytics(request, question_id):
-    """Returns analytics for a specific question."""
+    """Question-specific method to handle displaying of different question types."""
     question = get_object_or_404(Question.objects, id=question_id)
-
     labels = []
     data = []
 
-    if question.question_type == 'multiple_choice':
-        options = question.multiple_choice_options
+    if question.question_type in ['multiple_choice', 'single_choice']:
+        options = (
+            question.multiple_choice_options
+            if question.question_type == 'multiple_choice'
+            else question.single_choice_option
+        )
+
+        response_model = MultipleChoiceResponse if question.question_type == 'multiple_choice' else SingleChoiceResponse
+        responses = response_model.objects.filter(question=question)
+
         for option in options:
-            responses = MultipleChoiceResponse.objects.filter(question=question)
-            count = sum(1 for response in responses if option in response.selected_options)
-
-            labels.append(option)
-            data.append(count)
-
-    elif question.question_type == 'single_choice':
-        options = question.single_choice_option
-        for option in options:
-            responses = SingleChoiceResponse.objects.filter(question=question)
-            count = sum(1 for response in responses if option in response.selected_option)
-
+            count = sum(1 for response in responses if option in getattr(response, 'selected_options', '') or option in getattr(response, 'selected_option', ''))
             labels.append(option)
             data.append(count)
 
     elif question.question_type == 'text_fill':
-        responses = TextFillResponse.objects.filter(question=question).values_list('answer_text', flat=True) # Get all text responses for the question
-
-        response_counts = Counter(responses) # Count occurrences of each unique response
-        labels = list(response_counts.keys())
-        data = list(response_counts.values())
+        responses = TextFillResponse.objects.filter(question=question).values_list('answer_text', flat=True)
+        response_counts = Counter(responses)
+        labels, data = list(response_counts.keys()), list(response_counts.values())
 
     elif question.question_type == 'dropdown_fill':
         options = question.dropdown_options.split(',')
@@ -141,8 +86,4 @@ def question_analytics(request, question_id):
         labels.append("Total Number of Matches")
         data.append(MatchQuestionResponse.objects.filter(question=question).count())
 
-    return JsonResponse({
-        'question': question.question_text,
-        'labels': labels,
-        'data': data
-    })
+    return JsonResponse({'question': question.question_text, 'labels': labels, 'data': data})
