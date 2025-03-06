@@ -17,11 +17,15 @@
 
         /* Sidebar styles */
         .sidebar {
-            width: 30%;
+            max-height: 100vh; /* Maximum height is the full screen */
+            overflow-y: auto; /* Can scroll if content exceeds height */
+            border: 1px solid #ccc;
+            padding: 10px;
             background-color: #f8f9fa;
-            padding: 20px;
-            border-right: 2px solid #ddd;
+            display: flex;
+            flex-direction: column;
         }
+
 
         .question-item {
             padding: 10px;
@@ -132,8 +136,8 @@
             clearChart(); // Clear previous chart
 
             let url = selectedQuestionId
-                ? `/responses/questions/${selectedQuestionId}/analytics/?type=pie`
-                : `/responses/polls/{{ poll.id }}/piechart_data/`;
+                ? `/responses/questions/${selectedQuestionId}/analytics/?type=pie` // Question specific
+                : `/responses/polls/{{ poll.id }}/piechart_data/`; // Poll-wide
 
             fetch(url)
                 .then(response => {
