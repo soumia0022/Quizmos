@@ -100,7 +100,6 @@ def question_analytics(request, question_id):
     """Returns analytics for a specific question."""
     question = get_object_or_404(Question.objects, id=question_id)
 
-
     labels = []
     data = []
 
@@ -123,7 +122,7 @@ def question_analytics(request, question_id):
             data.append(count)
 
     elif question.question_type == 'text_fill':
-        labels.append("Total Number of Responses")
+        labels.append("Total Number of Text Responses")
         data.append(TextFillResponse.objects.filter(question=question).count())
 
     elif question.question_type == 'dropdown_fill':
