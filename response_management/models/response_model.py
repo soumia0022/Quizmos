@@ -8,7 +8,8 @@ class Response(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, default=1)
-    submitted_on = models.DateTimeField(auto_now_add=True) 
+    submitted_on = models.DateTimeField(auto_now_add=True)
+    session_code = models.IntegerField(default=0)
 
     class Meta:
         abstract = True
@@ -28,6 +29,8 @@ class DropdownFillResponse(Response):
 class MatchQuestionResponse(Response):
     match_responses = models.JSONField()  
 
+class WordCloudResponse(Response):
+    word_cloud_response = models.JSONField(default=dict)
 class CodeQuestionResponse(Response):
     submitted_code = models.TextField()  # Stores the student's code
     language = models.CharField(max_length=20, default="python")  # Language used

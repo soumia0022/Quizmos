@@ -3,7 +3,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from response_management.models.response_model import (
     MatchQuestionResponse, MultipleChoiceResponse,
-    SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    SingleChoiceResponse, DropdownFillResponse, TextFillResponse, 
+    WordCloudResponse 
 )
 from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
@@ -12,6 +13,8 @@ from question_management.models.question_models import Question
 class PollConsumer(AsyncWebsocketConsumer):
     # This consumer handles WebSocket connections for a polling system
     students_joined = {}
+    poll_lock_status = {}  # Track lock status for each poll
+
     async def connect(self):
         try:
             #extract the poll_code from the URL route
@@ -26,6 +29,11 @@ class PollConsumer(AsyncWebsocketConsumer):
 
         if self.poll_code not in self.students_joined:
             self.students_joined[self.poll_code] = 0
+
+        # Initialize lock status for this poll if not already set
+        if self.poll_code not in self.poll_lock_status:
+            self.poll_lock_status[self.poll_code] = True
+
         if not self.poll:
             await self.close()
             return
@@ -48,7 +56,11 @@ class PollConsumer(AsyncWebsocketConsumer):
                     'message': f'{self.students_joined[self.poll_code]}'
                 })
 
-
+        # Send current lock status to the new connection
+        await self.send(text_data=json.dumps({
+            'type': 'poll_status',
+            'action': 'lock' if self.poll_lock_status[self.poll_code] else 'unlock'
+        }))
 
     async def disconnect(self, close_code):
         # When a client disconnects, remove them from the poll group
@@ -79,6 +91,54 @@ class PollConsumer(AsyncWebsocketConsumer):
                 self.poll_group_name,
                 {"type": "new_student", "message": message_content}
             )
+        elif message_type == 'poll_status':
+            # Handle poll lock/unlock requests (from lecturer)
+            if self.scope["user"].role == 'Lecturer':  # Only lecturers can lock/unlock
+                action = text_data_json.get('action')
+                if action in ['lock', 'unlock']:
+                    # Update lock status
+                    self.poll_lock_status[self.poll_code] = (action == 'lock')
+
+                    # Broadcast to all clients in the group
+                    await self.channel_layer.group_send(
+                        self.poll_group_name,
+                        {
+                            'type': 'poll_status_update',
+                            'action': action
+                        }
+                    )
+        elif message_type == 'get_poll_status':
+            # Send current poll lock status to the requester
+            await self.send(text_data=json.dumps({
+                'type': 'poll_status',
+                'action': 'lock' if self.poll_lock_status[self.poll_code] else 'unlock'
+            }))
+
+        elif message_type == 'show_answers':
+            if self.scope["user"].role == 'Lecturer':
+                action = text_data_json.get('action')
+                if action == 'show_answer' and question_id:
+                    answers = await self.get_correct_answers(question_id)
+                    if answers is not None:
+                        await self.channel_layer.group_send(
+                            self.poll_group_name,
+                            {
+                                'type': 'broadcast_answers',
+                                'question_id': question_id,
+                                'answers': answers,
+                                'action': 'show_answer'
+                            }
+                        )
+                elif action == 'hide_answer' and question_id:
+                    await self.channel_layer.group_send(
+                        self.poll_group_name,
+                        {
+                            'type': 'broadcast_answers',
+                            'question_id': question_id,
+                            'answers': None,
+                            'action': 'hide_answer'
+                        }
+                    )
         elif message_type == 'question':
             # If it's a question, fetch it from the database and broadcast it
             questions = await self.get_all_questions()
@@ -89,7 +149,7 @@ class PollConsumer(AsyncWebsocketConsumer):
             question_number = None
             for i, q in enumerate(questions):
                 # Convert question_id to integer to match q.id's type
-                if int(q.id) == int(question_id): 
+                if int(q.id) == int(question_id):
                     question_number = i + 1
                     break
 
@@ -99,11 +159,21 @@ class PollConsumer(AsyncWebsocketConsumer):
                     {
                         "type": "poll_question",
                         "question": question,
-                        "question_number": question_number,  
-                        "total_questions": total_questions 
+                        "question_number": question_number,
+                        "total_questions": total_questions
                     }
                 )
         elif message_type == 'response':
+            # Check if poll is locked before saving responses (for students)
+            if self.scope["user"].role == 'Student' and self.poll_lock_status[self.poll_code] == False:
+                # If poll is locked, reject the response
+                await self.send(text_data=json.dumps({
+                    'type': 'response_status',
+                    'success': False,
+                    'message': 'Poll is currently locked'
+                }))
+                return
+
             # Handle different types of responses
             success = await self.save_response(
                 text_data_json.get('question_id'),
@@ -141,18 +211,26 @@ class PollConsumer(AsyncWebsocketConsumer):
             'type': event['type'],
             'message': event['message']
         }))
+
+    async def poll_status_update(self, event):
+        # Handler for broadcasting poll lock/unlock status
+        await self.send(text_data=json.dumps({
+            'type': 'poll_status',
+            'action': event['action']
+        }))
+
     async def poll_question(self, event):
         # Handler for sending questions back to the WebSocket
         question = event['question']
-        question_number = event.get('question_number', None)  
-        total_questions = event.get('total_questions', None)  
-        
+        question_number = event.get('question_number', None)
+        total_questions = event.get('total_questions', None)
+
         await self.send(text_data=json.dumps({
-        'type': 'question',
-        'question': question,
-        'question_number': question_number,  
-        'total_questions': total_questions  
-    }))
+            'type': 'question',
+            'question': question,
+            'question_number': question_number,
+            'total_questions': total_questions
+        }))
 
     @database_sync_to_async
     def get_question(self, question_id):
@@ -167,15 +245,17 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'id': question.id,
                 'text': question.question_text,
                 'type': question.question_type,
-                'mcq_options' : question.multiple_choice_options,
+                'mcq_options': question.multiple_choice_options,
                 'single_option': question.single_choice_option,
                 'dropdown_options': dropdown_options,
                 'match_options': match_options,
                 'match_answers': match_answers,
 
+                'wordcloud_question': question.wordcloud_question,
+
+
                 'dropdown_correct_answer': question.dropdown_correct_answer,
-
-
+                'question_timer': question.question_timer,
             }
         except Question.DoesNotExist:
             return None
@@ -197,7 +277,8 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'multiple_choice': (MultipleChoiceResponse, 'selected_options'),
                 'single_choice': (SingleChoiceResponse, 'selected_option'),
                 'dropdown_fill': (DropdownFillResponse, 'selected_option'),
-                'text_fill': (TextFillResponse, 'answer_text')
+                'text_fill': (TextFillResponse, 'answer_text'),
+                'wordcloud': (WordCloudResponse, 'word_cloud_response') 
             }
 
             if response_type not in response_models:
@@ -210,6 +291,7 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'user': self.scope['user'],
                 'poll': self.poll,
                 'question': question,
+                'session_code': self.poll.number_code,
                 field_name: response_data
             }
 
@@ -217,6 +299,7 @@ class PollConsumer(AsyncWebsocketConsumer):
             existing_response = ResponseModel.objects.filter(
                 user=self.scope['user'],
                 poll=self.poll,
+                session_code = self.poll.number_code,
                 question=question
             ).first()
 
@@ -245,3 +328,34 @@ class PollConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_all_questions(self):
         return list(Question.objects.filter(poll=self.poll))
+    
+    async def broadcast_answers(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'answers',
+            'question_id': event['question_id'],
+            'answers': event['answers'],
+            'action': event['action']
+        }))
+
+    @database_sync_to_async
+    def get_correct_answers(self, question_id):
+        try:
+            question = Question.objects.get(id=question_id)
+            answers = None  # Default to None
+
+            if question.question_type == 'multiple_choice':
+                answers = question.multiple_choice_answers or []
+            elif question.question_type == 'single_choice':
+                answers = question.single_choice_answers or []
+            elif question.question_type == 'dropdown_fill':
+                answers = question.dropdown_correct_answer or ""
+            elif question.question_type == 'text_fill':
+                answers = question.text_fill_answer or ""
+            elif question.question_type == 'wordcloud':
+                answers = None  # No correct answer typically
+            elif question.question_type == 'match_question':
+                answers = question.match_answers or []
+
+            return answers
+        except Question.DoesNotExist:
+            return None

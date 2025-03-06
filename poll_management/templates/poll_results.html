@@ -1,22 +1,14 @@
 {% extends 'base_content.html' %}
 {% load system_extras %}
 {% block content %}
+{% load static %}
+
 <head>
     <title>{{ poll.title }}</title>
-    <style>
-        .container { display: flex; flex-direction: column; }
-        .row { display: flex; align-items: center; }
-        .left { width: 50%; }
-        .box { border: 1px solid #ccc; padding: 10px; margin: 5px; }
-        .dropzone-box { border: 1px dashed #ccc; padding: 10px; margin: 5px; min-height: 50px; display: flex; align-items: center; width: 50%; }
-        .draggable { cursor: pointer; }
-        .dragging { opacity: 0.5; }
-        .flex-container { display: flex; align-items: center; justify-content: space-between; }
-        .feedback { display: none; margin: 10px 0; padding: 10px; border-radius: 4px; }
-        .success { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
-    </style>
+    <link rel="stylesheet" href="{% static 'poll_management/css/poll_styles.css' %}">
+
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <script src="{% static 'poll_management/js/drag_and_drop.js' %}"></script>
 </head>
 <body>
 
@@ -24,7 +16,8 @@
         <div class="row">
             <div class="col-12">
                 <h1>Welcome to {{ poll.title }}!</h1>
-                
+
+
                 <!-- progress bar  -->           
         <div class="progress rounded-pill" style="height: 30px;">
             <div id="question-progress-bar" class="progress-bar bg-success rounded-pill" role="progressbar" 
@@ -33,8 +26,12 @@
             </div>
         </div>
               <br/>
-                        
-                <div id="question">Waiting for a question...</div>
+
+                <div id="question">
+                    Waiting for a question...
+                    <div class="question-timer"></div>
+                </div>
+
                 <input type="text" id="answer" style="display: none;" placeholder="Your answer" />
                 <div id="question_options">Waiting for options...</div>
                 <div id="feedback" class="feedback"></div>
@@ -43,6 +40,12 @@
         </div>
 
     </div>
+    {% load static%}
+    <script type="module" src="{% static 'js/student_lock.js' %}"></script>
+    <script type="module" src="{% static 'js/timer.js' %}"></script>
+
+    <script type="module">
+        import { startCountdownTimer } from "{% static 'js/timer.js' %}";
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
@@ -58,32 +61,6 @@
             return array;
         }
 
-        function initializeSortable() {
-            const rightContainer = document.getElementById('right');
-            if (rightContainer) {
-                new Sortable(rightContainer, {
-                    group: "shared",
-                    animation: 150
-                });
-            }
-
-            const dropzones = document.querySelectorAll('.dropzone');
-            dropzones.forEach(dropzone => {
-                if (dropzone) {
-                    new Sortable(dropzone, {
-                        group: "shared",
-                        animation: 150,
-                        onAdd: function(evt) {
-                            if (dropzone.children.length > 1) {
-                                const oldItem = dropzone.children[0];
-                                rightContainer.appendChild(oldItem);
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
         function showFeedback(message, isSuccess) {
             const feedback = document.getElementById('feedback');
             feedback.textContent = message;
@@ -96,6 +73,7 @@
 
         let currentQuestionId = null;
         let currentQuestionType = null;
+        let currentTimerInterval = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             const pollCode = "{{ poll.number_code }}";
@@ -110,37 +88,58 @@
                 const progressBar = document.getElementById('question-progress-bar');
                 const progressText = document.getElementById('question-progress-text');
 
-                if (!progressBar || !progressText) return;  
+                if (!progressBar || !progressText) return;
 
                 const percentage = total > 0 ? (currentNum / total) * 100 : 0;
-                
+
                 progressBar.style.width = `${percentage}%`;
                 progressBar.setAttribute('aria-valuenow', percentage);
                 progressText.textContent = `Question ${currentNum} of ${total}`;
 
-                 // the colour will changes based on question progression
+                // The color changes based on question progression
                 if (percentage <= 25) {
                     progressBar.classList.remove('bg-warning', 'bg-success');
-                    progressBar.classList.add('bg-danger'); 
+                    progressBar.classList.add('bg-danger');
                 } else if (percentage > 25 && percentage < 75) {
                     progressBar.classList.remove('bg-danger', 'bg-success');
-                    progressBar.classList.add('bg-warning'); 
+                    progressBar.classList.add('bg-warning');
                 } else {
                     progressBar.classList.remove('bg-danger', 'bg-warning');
-                    progressBar.classList.add('bg-success'); 
+                    progressBar.classList.add('bg-success');
                 }
             }
 
-            
             ws.onmessage = function(event) {
                 const data = JSON.parse(event.data);
 
+                // Handle poll lock/unlock messages
+                if (data.type === 'poll_status') {
+                    if (data.action === 'lock') {
+                        showLockOverlay();
+                    } else if (data.action === 'unlock') {
+                        hideLockOverlay();
+                    }
+                }
+
                 if (data.type === 'question') {
+                    // Clear any existing timer
+                    if (currentTimerInterval) {
+                        clearInterval(currentTimerInterval);
+                    }
+
+
+                    const questionElement = document.getElementById('question');
+                    questionElement.innerHTML = data.question.text + '<div class="question-timer"></div>';
+
+                    // start timer
+                    if (data.question.question_timer) {
+                        currentTimerInterval = startCountdownTimer(questionElement, data.question.question_timer);
+                    }
+
                     currentQuestionId = data.question.id;
                     currentQuestionType = data.question.type;
-                    document.getElementById('question').innerText = data.question.text;
                     submitButton.style.display = 'block';
-                   
+
                     // Update question progress information
                     if (data.total_questions) {
                         totalQuestions = data.total_questions;
@@ -148,10 +147,10 @@
                     if (data.question_number) {
                         currentQuestionNumber = data.question_number;
                     }
-                    
+
                     // Update the progress bar
                     updateProgressBar(currentQuestionNumber, totalQuestions);
-                    
+
                     if (data.question.type === 'multiple_choice') {
                         let options = "";
                         data.question.mcq_options.forEach(option => {
@@ -181,6 +180,12 @@
                         document.getElementById('question_options').innerHTML = '';
                         document.getElementById('answer').style.display = 'block';
 
+                    } else if (data.question.type === 'wordcloud') {
+                        document.getElementById('question_options').innerHTML = `
+                            <input type="text" id="answer1" name="word_cloud_response1" placeholder="Your first answer" />
+                            <input type="text" id="answer2" name="word_cloud_response2" placeholder="Your second answer (optional)" />`;
+                        document.getElementById('answer').style.display = 'none';
+
                     } else if (data.question.type === 'match_question') {
                         let leftOptions = "";
                         let rightOptions = "";
@@ -189,24 +194,26 @@
                             leftOptions += `
                                 <div class="flex-container">
                                     <div class="box left">${option}</div>
-                                    <div class="dropzone-box dropzone right"></div>
+                                    <div class="dropzone-box dropzone"></div>
                                 </div>`;
                         });
 
                         const shuffledAnswers = shuffleArray(data.question.match_answers);
                         shuffledAnswers.forEach(answer => {
-                            rightOptions += `<div class="box draggable" draggable="true">${answer}</div>`;
+                            rightOptions += `<div class="box draggable">${answer}</div>`;
                         });
 
                         document.getElementById('question_options').innerHTML = `
-                            <div id="options-container" class="flex-container">
-                                <div id="left" class="left">${leftOptions}</div>
-                            </div>
-                            <div class="row">
-                                <div id="right" class="right">${rightOptions}</div>
+                            <div class="container">
+                                ${leftOptions}
+                                <div id="right" class="right">
+                                    ${rightOptions}
+                                </div>
                             </div>`;
 
                         document.getElementById('answer').style.display = 'none';
+
+                        initializeDragAndDrop();
                         initializeSortable();
                     } else if (data.question.type === 'code_question') {
                         document.getElementById('question_options').innerHTML = `
@@ -231,7 +238,7 @@
                     }
                 } else if (data.type === 'response_status') {
                     showFeedback(
-                        data.success ? 'Response submitted successfully!' : 'Failed to submit response',
+                        data.success ? 'Response submitted successfully!' : "It seems like there's an invalid response, or this question might currently be locked. Please wait for the Lecturer to unlock it.",
                         data.success
                     );
                 }
@@ -261,18 +268,25 @@
                         break;
 
                     case 'match_question':
-                        responseData = Array.from(document.querySelectorAll('.dropzone')).map(dropzone => {
-                            const leftOption = dropzone.parentElement.querySelector('.left .box');
-                            const rightOption = dropzone.querySelector('.box');
+                        responseData = Array.from(document.querySelectorAll('.flex-container')).map(container => {
+                            const leftOption = container.querySelector('.left').textContent.trim();
+                            const rightOptionElement = container.querySelector('.dropzone .box');
+                            const rightOption = rightOptionElement ? rightOptionElement.textContent.trim() : null;
                             return {
-                                left: leftOption ? leftOption.textContent.trim() : null,
-                                right: rightOption ? rightOption.textContent.trim() : null
+                                left: leftOption,
+                                right: rightOption
                             };
                         }).filter(match => match.left && match.right);
                         break;
+
+                    case 'wordcloud':
+                        const answer1 = document.getElementById('answer1').value;
+                        const answer2 = document.getElementById('answer2').value;
+                        responseData = [answer1, answer2].filter(answer => answer !== '');
+                        break;
                 }
 
-                if (responseData) {
+                if (responseData && responseData.length !== 0) {
                     ws.send(JSON.stringify({
                         type: 'response',
                         question_id: currentQuestionId,
@@ -283,6 +297,8 @@
                     showFeedback('Please provide a response', false);
                 }
             });
+
+            createLockOverlay();
         });
     </script>
 </body>

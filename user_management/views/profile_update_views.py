@@ -5,6 +5,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from user_management.forms.update_profile import  PasswordForm, UserForm
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth import get_user_model
 
 
 
@@ -41,6 +45,30 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = UserForm
     template_name = "profile.html"
     form_class = UserForm
+
+    def dispatch(self, request, *args, **kwargs):
+        """Block guest users from accessing profile update."""
+        if not request.user.is_authenticated:
+            return redirect('user_management:home')
+            
+        if request.user.first_name == "Guest":
+            session_key = request.session.session_key
+            
+            # Make sure message is saved
+            request.session.modified = True
+            
+            # Store user ID only once
+            user_id = request.user.id
+            
+            # Log out guest user
+            logout(request)
+            # Delete the guest user
+            User = get_user_model()
+            User.objects.filter(id=user_id).delete()
+
+            return redirect('user_management:home')  # Redirect guests to home
+        
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self):
         """Return the object (user) to be updated."""

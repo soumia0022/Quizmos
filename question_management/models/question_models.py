@@ -17,7 +17,7 @@ class Question(models.Model):
     question_type = models.CharField(max_length=20, choices=QUESTION_TYPES, default='multiple_choice')
 
     # Timer field (time in seconds)
-    timer = models.IntegerField(null=True, blank=True, help_text="Time limit in seconds", default=None)
+    question_timer = models.IntegerField(null=True, blank=True, help_text="Time limit in seconds", default=None)
 
 
     # Fields for different question types

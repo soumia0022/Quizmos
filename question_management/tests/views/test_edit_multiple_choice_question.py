@@ -28,7 +28,7 @@ class EditQuestionTestCase(TestCase):
             multiple_choice_question="Original Question",
             multiple_choice_options=['Option1', 'Option2'],
             multiple_choice_answers=['Option1'],
-            timer=30
+            question_timer=30
         )
 
         # Define URL

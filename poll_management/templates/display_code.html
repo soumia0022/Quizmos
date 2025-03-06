@@ -11,10 +11,10 @@
       <div class="left-column">
         <h1 id="id_start_poll_title">{{ poll.title }}</h1>
         {% include 'poll_components/lock.html' %}
+        {% include 'poll_components/show_answer.html' %}
         <div id="poll-controls">
           <button id="start-poll-btn" onclick="startPoll()" class="btn btn-primary mb-3">Start Poll</button>
           {% include 'poll_components/questions.html' %}
-
         </div>
       </div>
     </div>
@@ -33,16 +33,15 @@
 </div>
 
 <script>
-  const pollCode = "{{ code }}";
-  let currentQuestionIndex = 0;
-  // store questions with their data depending on their type
-  const questions = [
+  window.pollCode = "{{ code }}";
+  window.currentQuestionIndex = 0;
+  window.questions = [
     {% for question in poll.questions.all %}
       {
         id: "{{ question.id }}",
         type: "{{ question.question_type }}",
         video_file: {% if question.video_file %}"{{ question.video_file.url }}"{% else %}null{% endif %},
-        audio_file: {% if question.audio_file %}"{{ question.audio_file.url }}"{% else %}null{% endif %},
+        question_timer: {% if question.question_timer %}{{ question.question_timer }}{% else %}null{% endif %},        audio_file: {% if question.audio_file %}"{{ question.audio_file.url }}"{% else %}null{% endif %},
         youtube_link: {% if question.youtube_link %}"{{ question.youtube_link }}"{% else %}null{% endif %},
         {% if question.question_type == 'dropdown_fill' %}
           text: "{{ question.dropdown_fill_question|default:'' }}",
@@ -72,14 +71,45 @@
     {% endfor %}
   ];
   window.pollManagementBaseUrl = "/polls/poll/";
-
 </script>
-{% load static%}
+
+{% load static %}
 <script type="module" src="{% static 'js/websocket.js' %}"></script>
 <script type="module" src="{% static 'js/poll.js' %}"></script>
+<script type="module" src="{% static 'js/show_answer.js' %}"></script>
+<script type="module">
+  import { ws } from "{% static 'js/websocket.js' %}";
+  ws.addEventListener('message', function(event) {
+    const data = JSON.parse(event.data);
+    if (data.type === 'answers' && data.question_id === window.questions[window.currentQuestionIndex].id) {
+      const questionContainer = document.getElementById('question-container');
+      if (data.action === 'show_answer' && data.answers !== null) {
+        let answerHtml = '<div class="correct-answers mt-3"><strong>Correct Answer(s):</strong> ';
+        const currentQuestion = window.questions[window.currentQuestionIndex];
+        switch (currentQuestion.type) {
+          case 'multiple_choice':
+          case 'single_choice':
+            answerHtml += Array.isArray(data.answers) ? data.answers.join(', ') : data.answers;
+            break;
+          case 'dropdown_fill':
+          case 'text_fill':
+            answerHtml += data.answers;
+            break;
+          case 'match_question':
+            answerHtml += Array.isArray(data.answers) ? data.answers.map((ans, idx) => `${currentQuestion.options[idx]} → ${ans}`).join(', ') : '';
+            break;
+          case 'wordcloud':
+            answerHtml += 'No correct answer for word cloud.';
+            break;
+        }
+        answerHtml += '</div>';
+        questionContainer.insertAdjacentHTML('beforeend', answerHtml);
+      } else if (data.action === 'hide_answer') {
+        const answerDiv = document.getElementById('question-container').querySelector('.correct-answers');
+        if (answerDiv) answerDiv.remove();
+      }
+    }
+  });
+</script>
 <link rel="stylesheet" href="{% static 'css/response_styles.css' %}">
-
-
-
 {% endblock %}
-

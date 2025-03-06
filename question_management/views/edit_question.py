@@ -29,7 +29,7 @@ class EditQuestionView(View):
         question = get_object_or_404(Question, id=question_id, poll=poll)
 
         question.question_text = request.POST.get("question_text")
-        question.timer = request.POST.get("question_timer")
+        question.question_timer = request.POST.get("question_timer")
 
         validation_response = None
         if question.question_type == "multiple_choice":
