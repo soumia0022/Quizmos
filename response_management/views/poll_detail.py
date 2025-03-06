@@ -1,3 +1,5 @@
+from collections import Counter
+
 from django.shortcuts import get_object_or_404, render
 from poll_management.models.poll_model import Poll
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
@@ -122,8 +124,11 @@ def question_analytics(request, question_id):
             data.append(count)
 
     elif question.question_type == 'text_fill':
-        labels.append("Total Number of Text Responses")
-        data.append(TextFillResponse.objects.filter(question=question).count())
+        responses = TextFillResponse.objects.filter(question=question).values_list('answer_text', flat=True) # Get all text responses for the question
+
+        response_counts = Counter(responses) # Count occurrences of each unique response
+        labels = list(response_counts.keys())
+        data = list(response_counts.values())
 
     elif question.question_type == 'dropdown_fill':
         options = question.dropdown_options.split(',')
