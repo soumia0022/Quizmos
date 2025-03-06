@@ -117,10 +117,8 @@ class PollConsumer(AsyncWebsocketConsumer):
         elif message_type == 'show_answers':
             if self.scope["user"].role == 'Lecturer':
                 action = text_data_json.get('action')
-                print(f"Received show_answers message: action={action}, question_id={question_id}")
                 if action == 'show_answer' and question_id:
                     answers = await self.get_correct_answers(question_id)
-                    print(f"Fetched answers for question {question_id}: {answers}")
                     if answers is not None:
                         await self.channel_layer.group_send(
                             self.poll_group_name,
@@ -131,8 +129,6 @@ class PollConsumer(AsyncWebsocketConsumer):
                                 'action': 'show_answer'
                             }
                         )
-                    else:
-                        print(f"No answers found for question {question_id}")
                 elif action == 'hide_answer' and question_id:
                     await self.channel_layer.group_send(
                         self.poll_group_name,
@@ -332,7 +328,6 @@ class PollConsumer(AsyncWebsocketConsumer):
         return list(Question.objects.filter(poll=self.poll))
     
     async def broadcast_answers(self, event):
-        print(f"Broadcasting answers: question_id={event['question_id']}, action={event['action']}, answers={event['answers']}")
         await self.send(text_data=json.dumps({
             'type': 'answers',
             'question_id': event['question_id'],
@@ -361,5 +356,4 @@ class PollConsumer(AsyncWebsocketConsumer):
 
             return answers
         except Question.DoesNotExist:
-            print(f"Question {question_id} does not exist")
             return None
