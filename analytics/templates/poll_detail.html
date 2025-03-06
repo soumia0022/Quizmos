@@ -1,4 +1,5 @@
 {% load system_extras %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,65 +8,8 @@
     <title>Poll Results</title>
     {% return_button %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'css/poll_detail.css' %}">
 
-    <style>
-        /* Layout styles */
-        .container {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* Sidebar styles */
-        .sidebar {
-            max-height: 100vh; /* Maximum height is the full screen */
-            overflow-y: auto; /* Can scroll if content exceeds height */
-            border: 1px solid #ccc;
-            padding: 10px;
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-        }
-
-
-        .question-item {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            cursor: pointer;
-        }
-
-        .question-item:hover {
-            background-color: #e9ecef;
-        }
-
-        .chart-container {
-            width: 80%;
-            max-width: 800px;
-            height: 500px;
-            margin: 0 auto; /* Centres the chart */
-        }
-
-
-        canvas {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 800px;
-            max-height: 500px;
-        }
-
-
-        /* Button styles */
-        .button-container {
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        button {
-            margin: 5px;
-            padding: 8px 15px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
 
@@ -342,13 +286,12 @@
         document.getElementById('viewPollResults').addEventListener('click', showPollResults);
 
 
-        // default on page load
+        // Default on page load
         document.addEventListener("DOMContentLoaded", function() {
             showPieChart();
             toggleLineGraphButton();
         });
-
-    </script>
+</script>
 
 </body>
 </html>

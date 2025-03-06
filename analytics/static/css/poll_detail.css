@@ -1,0 +1,53 @@
+/* Please be careful when editing below styling (other than buttons) - it can mess with pie chart, bar graph and
+ line graph functionality and sizing, and tooltips for each graph */
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sidebar {
+    max-height: 100vh; /* Maximum height is the full screen */
+    overflow-y: auto; /* Can scroll if content exceeds height */
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+}
+
+.question-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.question-item:hover {
+    background-color: #e9ecef;
+}
+
+.chart-container {
+    width: 80%;
+    max-width: 800px;
+    height: 500px;
+    margin: 0 auto; /* Centres the chart */
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 800px;
+    max-height: 500px;
+}
+
+.button-container {
+    margin-top: 10px;
+    text-align: center;
+}
+
+button {
+    margin: 5px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
