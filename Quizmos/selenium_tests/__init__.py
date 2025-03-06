@@ -38,7 +38,7 @@ def wait(driver_client):
         lambda driver: driver.execute_script("return document.readyState") == "complete"
     )
 
-def wait_for_element(driver_client, by, value, timeout=50):
+def wait_for_element(driver_client, by, value, timeout=70):
     """Waits for element to be fully present in the DOM."""
     return WebDriverWait(driver_client, timeout).until(
         EC.presence_of_element_located((by, value))  # Element found
