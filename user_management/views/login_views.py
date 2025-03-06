@@ -18,6 +18,7 @@ import re
 from django.db.models import Count
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
+from user_management.helpers import generate_suggested_title
 
 @login_prohibited
 def home(request):
@@ -48,28 +49,6 @@ def dashboard(request):
         User.objects.filter(id=user_id).delete()
         return redirect('user_management:home')
 
-    def generate_suggested_title(base_title, existing_titles):
-        matching_polls = [p for p in existing_titles if p.startswith(base_title)]
-        number_pattern = re.compile(r'\((\d+)\)')
-        existing_numbers = []
-
-        for poll_title in matching_polls:
-            number_matches = number_pattern.findall(poll_title)
-            if number_matches:
-                existing_numbers.append(tuple(map(int, number_matches)))
-
-        if not existing_numbers:
-            return f"{base_title} (1)"
-
-        if f"{base_title} (1)" not in existing_titles:
-            return f"{base_title} (1)"
-
-        existing_numbers.sort()
-        next_number = 1
-        while (next_number,) in existing_numbers:
-            next_number += 1
-
-        return f"{base_title} ({next_number})"
 
     if request.method == "POST" and "title" in request.POST:
         title = request.POST.get("title", "").strip()
