@@ -66,7 +66,7 @@ class QuestionResponseCounter:
         options = list(self.question.multiple_choice_options)
         counts_dict = {i: 0 for i in range(len(options))}
         responses = MultipleChoiceResponse.objects.filter(
-            question=self.question
+            question=self.question, session_code=self.question.poll.number_code
         ).values_list('selected_options', flat=True)
 
         for selected_values in responses:
@@ -90,7 +90,7 @@ class QuestionResponseCounter:
         options = list(self.question.single_choice_option)
         counts_dict = {i: 0 for i in range(len(options))}
         responses = SingleChoiceResponse.objects.filter(
-            question=self.question
+            question=self.question, session_code=self.question.poll.number_code
         ).values_list('selected_option', flat=True)
 
         for selected_value in responses:
@@ -111,7 +111,7 @@ class QuestionResponseCounter:
         options = [opt.strip() for opt in self.question.dropdown_options.split(',')]
         counts_dict = {i: 0 for i in range(len(options))}
         responses = DropdownFillResponse.objects.filter(
-            question=self.question
+            question=self.question, session_code=self.question.poll.number_code
         ).values_list('selected_option', flat=True)
 
         for selected_value in responses:
@@ -122,7 +122,7 @@ class QuestionResponseCounter:
     def _get_text_responses(self) -> Dict[str, List[str]]:
         """Handle text fill responses."""
         responses = TextFillResponse.objects.filter(
-            question=self.question
+            question=self.question, session_code=self.question.poll.number_code
         ).values_list('answer_text', flat=True)
 
         # Convert QuerySet to list and filter out empty responses
@@ -138,7 +138,7 @@ class QuestionResponseCounter:
         """
         Handle match question responses.
         """
-        responses = MatchQuestionResponse.objects.filter( question=self.question).values_list('match_responses', flat=True)
+        responses = MatchQuestionResponse.objects.filter( question=self.question, session_code=self.question.poll.number_code).values_list('match_responses', flat=True)
 
         options = self.question.match_options
 

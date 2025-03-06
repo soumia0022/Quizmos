@@ -291,6 +291,7 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'user': self.scope['user'],
                 'poll': self.poll,
                 'question': question,
+                'session_code': self.poll.number_code,
                 field_name: response_data
             }
 
@@ -298,6 +299,7 @@ class PollConsumer(AsyncWebsocketConsumer):
             existing_response = ResponseModel.objects.filter(
                 user=self.scope['user'],
                 poll=self.poll,
+                session_code = self.poll.number_code,
                 question=question
             ).first()
 
