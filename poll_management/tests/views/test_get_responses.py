@@ -9,7 +9,7 @@ from poll_management.models.poll_model import Poll
 from user_management.models import User
 from response_management.models.response_model import (
     MatchQuestionResponse, MultipleChoiceResponse,
-    SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse
 )
 from poll_management.views.get_responses import QuestionResponseCounter, get_question_response_counts
 
@@ -62,6 +62,13 @@ class QuestionResponseCounterTests(TestCase):
             question_type="match_question",
             match_options=["A", "B", "C"],
             match_answers=["1", "2", "3"]
+        )
+
+        self.word_cloud = Question.objects.create(
+            poll=self.poll,
+            wordcloud_question="Word cloud question?",
+            question_type="wordcloud",
+
         )
 
         self.test_users = []
@@ -258,6 +265,42 @@ class QuestionResponseCounterTests(TestCase):
         self.assertEqual(counts['B']['3'], 1)
         self.assertEqual(counts['C']['1'], 1)
         self.assertEqual(counts['C']['3'], 1)
+
+    def test_word_cloud_responses(self):
+        """Test collecting word cloud responses"""
+        # responses
+        WordCloudResponse.objects.create(
+            user=self.test_users[0],
+            poll=self.poll,
+            question=self.word_cloud,
+            word_cloud_response= ["hello", "world"]
+        )
+        WordCloudResponse.objects.create(
+            user=self.test_users[1],
+            poll=self.poll,
+            question=self.word_cloud,
+            word_cloud_response =["hello", "hi"]
+        )
+        WordCloudResponse.objects.create(
+            user=self.test_users[2],
+            poll=self.poll,
+            question=self.word_cloud,
+            word_cloud_response=[]  # empty answer that should be filtered out
+        )
+
+        # count responses
+        counter = QuestionResponseCounter(self.word_cloud)
+        response = counter.get_counts()
+
+        data = json.loads(response.content)
+        self.assertEqual(data['question_id'], self.word_cloud.id)
+        self.assertEqual(data['question_type'], 'wordcloud')
+
+
+        self.assertEqual(len(data['word_cloud_data']), 3) # hello: 2, hi :1, world:1
+        self.assertEqual(data['word_cloud_data']['hello'], 2)
+        self.assertEqual(data['word_cloud_data']['hi'], 1)
+        self.assertEqual(data['word_cloud_data']['world'], 1)
 
     def test_get_question_response_counts_function(self):
         """Test the view function that uses the counter class"""
