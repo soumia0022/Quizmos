@@ -27,7 +27,7 @@ class EditQuestionTestCase(TestCase):
             question_type="multiple_choice",
             multiple_choice_options=['Option1', 'Option2'],
             multiple_choice_answers=['Option1'],
-            timer=30
+            question_timer=30
         )
 
         # Define URL
@@ -52,7 +52,7 @@ class EditQuestionTestCase(TestCase):
         # Check if the question is updated in the database
         self.question.refresh_from_db()
         self.assertEqual(self.question.question_text, 'Updated Question?')
-        self.assertEqual(self.question.timer, 45)
+        self.assertEqual(self.question.question_timer, 45)
         self.assertEqual(self.question.multiple_choice_options, ['Updated Option1', 'Updated Option2'])
         self.assertEqual(self.question.multiple_choice_answers, ['Updated Option1'])
 
@@ -92,7 +92,7 @@ class EditQuestionTestCase(TestCase):
 
         self.question.refresh_from_db()
         self.assertEqual(self.question.question_text, 'Updated Single Choice?')
-        self.assertEqual(self.question.timer, 60)
+        self.assertEqual(self.question.question_timer, 60)
         self.assertEqual(self.question.single_choice_option, ['OptionA', 'OptionB'])
         self.assertEqual(self.question.single_choice_answers, ['OptionA'])
 

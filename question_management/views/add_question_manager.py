@@ -15,11 +15,11 @@ class QuestionManager:
      sets the relevant fields to their values for the specific question type chosen.
      """
 
-    def __init__(self, request, poll_id, youtube_link, timer):
+    def __init__(self, request, poll_id, youtube_link, question_timer):
         self.request = request
         self.poll_id = poll_id
         self.youtube_link = youtube_link
-        self.timer = timer
+        self.question_timer = question_timer
         self.question = None
         self.question_type = request.POST.get('question_type')
         self.question_text = None
@@ -31,7 +31,7 @@ class QuestionManager:
             question_text=question_text,
             question_type=self.question_type,
             youtube_link=self.youtube_link,
-            timer=self.timer
+            question_timer=self.question_timer
         )
         return self.question
 

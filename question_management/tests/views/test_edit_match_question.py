@@ -28,7 +28,7 @@ class EditMatchQuestionTestCase(TestCase):
             match_question="Original Match Question",
             match_options=['Option1', 'Option2', 'Option3'],
             match_answers=['Answer1', 'Answer2', 'Answer3'],
-            timer=30
+            question_timer=30
         )
 
         # Define URL

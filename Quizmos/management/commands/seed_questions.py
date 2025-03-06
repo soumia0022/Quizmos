@@ -481,7 +481,7 @@ class Command(BaseCommand):
         question_data = {
             'poll': poll,
             'question_type': question_type,
-            'timer': random.choice([None, 30, 60, 120]),
+            'question_timer': random.choice([None, 30, 60, 120]),
         }
 
         if question_type == 'dropdown_fill':

@@ -36,13 +36,15 @@
   const pollCode = "{{ code }}";
   let currentQuestionIndex = 0;
   // store questions with their data depending on their type
+
   const questions = [
     {% for question in poll.questions.all %}
+
       {
         id: "{{ question.id }}",
         type: "{{ question.question_type }}",
         video_file: {% if question.video_file %}"{{ question.video_file.url }}"{% else %}null{% endif %},
-        audio_file: {% if question.audio_file %}"{{ question.audio_file.url }}"{% else %}null{% endif %},
+        question_timer: {% if question.question_timer %}{{ question.question_timer }}{% else %}null{% endif %},        audio_file: {% if question.audio_file %}"{{ question.audio_file.url }}"{% else %}null{% endif %},
         youtube_link: {% if question.youtube_link %}"{{ question.youtube_link }}"{% else %}null{% endif %},
         {% if question.question_type == 'dropdown_fill' %}
           text: "{{ question.dropdown_fill_question|default:'' }}",
@@ -63,6 +65,7 @@
           answers: {{ question.match_answers|safe|default:"[]" }},
         {% endif %}
       },
+
     {% endfor %}
   ];
   window.pollManagementBaseUrl = "/polls/poll/";

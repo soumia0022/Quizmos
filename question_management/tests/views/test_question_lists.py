@@ -12,13 +12,13 @@ class QuestionListViewTest(TestCase):
         self.question1 = Question.objects.create(
             poll=self.poll,
             question_type='multiple_choice',
-            timer=30,
+            question_timer=30,
             question_text="What is your favorite color?",
         )
         self.question2 = Question.objects.create(
             poll=self.poll,
             question_type='text',
-            timer=45,
+            question_timer=45,
             question_text="Describe your favorite hobby."
         )
 

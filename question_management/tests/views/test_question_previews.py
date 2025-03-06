@@ -12,7 +12,7 @@ class QuestionPreviewViewTest(TestCase):
         self.question = Question.objects.create(
             poll=self.poll,
             question_type='multiple_choice',
-            timer=30,
+            question_timer=30,
             question_text="What is your favorite color?",
         )
 
@@ -21,7 +21,7 @@ class QuestionPreviewViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {
             'question_type': self.question.get_question_type_display(),
-            'timer': self.question.timer,
+            'question_timer': self.question.question_timer,
             'question_text': self.question.question_text,
         })
 
@@ -33,7 +33,7 @@ class QuestionDetailViewTest(TestCase):
         self.question = Question.objects.create(
             poll=self.poll,
             question_type='multiple_choice',
-            timer=30,
+            question_timer=30,
             question_text="What is your favorite color?",
         )
 
@@ -42,5 +42,5 @@ class QuestionDetailViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'question_detail.html')
         self.assertContains(response, self.question.question_text)
-        context_timer = response.context['question'].timer
+        context_timer = response.context['question'].question_timer
         self.assertEqual(context_timer, 30)

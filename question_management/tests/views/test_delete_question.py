@@ -27,7 +27,7 @@ class DeleteQuestionTestCase(TestCase):
             question_type="multiple_choice",
             multiple_choice_options=['Option1', 'Option2'],
             multiple_choice_answers=['Option1'],
-            timer=30
+            question_timer=30
         )
 
         # Define URL
