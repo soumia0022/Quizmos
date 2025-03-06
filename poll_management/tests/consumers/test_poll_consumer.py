@@ -80,6 +80,7 @@ class TestPollConsumer(TransactionTestCase):
 
         message = {'type': 'question', 'question_id': self.question.id}
         await communicator.send_json_to(message)
+        await communicator.receive_json_from()
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'question')
         self.assertEqual(response['question']['id'], self.question.id)
@@ -109,6 +110,7 @@ class TestPollConsumer(TransactionTestCase):
             'response_data': ['Option A', 'Option C']
         }
         await communicator.receive_json_from()  # gets the new student message
+        await communicator.receive_json_from()
         await communicator.send_json_to(message)
 
         # Check response status
@@ -172,6 +174,7 @@ class TestPollConsumer(TransactionTestCase):
             'response_data': 'First answer'
         }
         await communicator.send_json_to(message)
+        await communicator.receive_json_from()
         await communicator.receive_json_from()  # Response status
         await communicator.receive_json_from()  # Broadcast update
 
@@ -200,6 +203,7 @@ class TestPollConsumer(TransactionTestCase):
         await communicator.send_json_to(message)
 
         # Check response status
+        await communicator.receive_json_from()
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'response_status')
         self.assertFalse(response['success'])
@@ -232,7 +236,8 @@ class TestPollConsumer(TransactionTestCase):
             'response_type': 'match_question',
             'response_data': match_data
         }
-        await communicator.receive_json_from()  # new student
+        await communicator.receive_json_from() # new student
+        await communicator.receive_json_from() #status
         await communicator.send_json_to(message)
 
         # Check response status
@@ -265,6 +270,7 @@ class TestPollConsumer(TransactionTestCase):
             'response_type': 'dropdown_fill',
             'response_data': 'Blue'
         }
+
         await communicator.receive_json_from()
         await communicator.send_json_to(message)
 
@@ -318,6 +324,7 @@ class TestPollConsumer(TransactionTestCase):
         await communicator1.send_json_to(message)
 
         # Check that the message is broadcast
+        await communicator2.receive_json_from()
         response = await communicator2.receive_json_from()
         self.assertEqual(response['type'], 'new_student')
         self.assertEqual(response['message'], '5')
@@ -332,6 +339,7 @@ class TestPollConsumer(TransactionTestCase):
 
         message = {'type': 'question', 'question_id': self.word_cloud_question.id}
         await communicator.send_json_to(message)
+        await communicator.receive_json_from()
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'question')
         self.assertEqual(response['question']['id'], self.word_cloud_question.id)
@@ -350,6 +358,7 @@ class TestPollConsumer(TransactionTestCase):
 
             # Connect student and check for student count message
             await student_communicator.connect()
+            await student_communicator.receive_json_from()
             response = await student_communicator.receive_json_from()
 
             self.assertEqual(response['type'], 'new_student')

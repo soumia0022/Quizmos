@@ -28,7 +28,7 @@ class EditSingleChoiceQuestionTestCase(TestCase):
             single_choice_question="Original Single Choice Question",
             single_choice_option=['Option1', 'Option2', 'Option3'],
             single_choice_answers=['Option1'],
-            timer=30
+            question_timer=30
         )
 
         # Define URL
