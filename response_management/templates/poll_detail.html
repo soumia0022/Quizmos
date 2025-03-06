@@ -131,6 +131,7 @@
         }
 
 
+
         // Function to fetch and display pie chart
         function showPieChart() {
             clearChart(); // Clear previous chart
@@ -165,10 +166,16 @@
                                     text: selectedQuestionId
                                         ? `Responses (Pie Chart)`
                                         : "Total Number of Responses",
-                                    font: { size: 22, weight: 'bold' }
+                                    font: { size: 22, weight: 'bold' },
                                 },
                                 legend: {
-                                    labels: { font: { size: 14 } }
+                                    display: true,
+                                    labels: {
+                                        font: { size: 14 },
+                                        padding: 12,
+                                        boxWidth: 20,
+                                    },
+
                                 }
                             }
                         }
@@ -235,7 +242,6 @@
             clearChart();
 
             let url = selectedQuestionId
-                ? `/responses/questions/${selectedQuestionId}/analytics/?type=line`
                 : `/responses/polls/{{ poll.id }}/linegraph_data/`;
 
             fetch(url)
@@ -283,19 +289,25 @@
                 .catch(error => console.error("Error fetching line graph data:", error));
         }
 
+        // Function to toggle visibility of line graph button
+        function toggleLineGraphButton() {
+            if (selectedQuestionId) {
+                // If question-specific analytics, hide the line graph button
+                document.getElementById('viewLineGraph').style.display = 'none';
+            } else {
+                // If poll-wide analytics, show the line graph button
+                document.getElementById('viewLineGraph').style.display = 'block';
+            }
+        }
+
         // Show overall poll results
         function showPollResults() {
             selectedQuestionId = null; // Reset question selection
             document.getElementById('selected-question-title').innerText = "Poll Results";
 
             showPieChart(); // Default to pie chart when viewing poll results
+            toggleLineGraphButton() // Update visibility of line graph
         }
-
-
-        document.getElementById('viewPieChart').addEventListener('click', showPieChart);
-        document.getElementById('viewBarGraph').addEventListener('click', showBarGraph);
-        document.getElementById('viewLineGraph').addEventListener('click', showLineGraph);
-        document.getElementById('viewPollResults').addEventListener('click', showPollResults);
 
         // When a question is clicked, load the pie chart
         document.querySelectorAll('.question-item').forEach((item, index) => {
@@ -311,12 +323,21 @@
 
                 // Load pie chart for the selected question by default
                 showPieChart();
+                toggleLineGraphButton() // Update visibility of line graph
             });
         });
 
+        document.getElementById('viewPieChart').addEventListener('click', showPieChart);
+        document.getElementById('viewBarGraph').addEventListener('click', showBarGraph);
+        document.getElementById('viewLineGraph').addEventListener('click', showLineGraph);
+        document.getElementById('viewPollResults').addEventListener('click', showPollResults);
+
 
         // default on page load
-        document.addEventListener("DOMContentLoaded", showPieChart);
+        document.addEventListener("DOMContentLoaded", function() {
+            showPieChart();
+            toggleLineGraphButton();
+        });
 
     </script>
 

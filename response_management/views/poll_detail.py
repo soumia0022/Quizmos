@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, render
 from poll_management.models.poll_model import Poll
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
 from django.http import HttpResponse, JsonResponse
-import csv
 from question_management.models.question_models import Question
 
 
@@ -16,7 +15,7 @@ def piechart_data(request, poll_id):
     # Get the questions for the poll
     questions = poll.questions.all()
 
-    # Initialize the data
+    # Initialise the data
     labels = []
     data = []
 
@@ -33,6 +32,8 @@ def piechart_data(request, poll_id):
             response_count = DropdownFillResponse.objects.filter(poll=poll, question=question).count()
         elif question.question_type == 'match_question':
             response_count = MatchQuestionResponse.objects.filter(poll=poll, question=question).count()
+
+        # Will need to add something for code question and word cloud
 
         labels.append(question.question_text)  # Label is the question text
         data.append(response_count)  # Data is the response count
@@ -99,7 +100,6 @@ def question_analytics(request, question_id):
     """Returns analytics for a specific question."""
     question = get_object_or_404(Question.objects, id=question_id)
 
-    chart_type = request.GET.get('type', 'pie')  # Get chart type from request
 
     labels = []
     data = []
@@ -123,7 +123,7 @@ def question_analytics(request, question_id):
             data.append(count)
 
     elif question.question_type == 'text_fill':
-        labels.append("Total Responses")
+        labels.append("Total Number of Responses")
         data.append(TextFillResponse.objects.filter(question=question).count())
 
     elif question.question_type == 'dropdown_fill':
@@ -134,7 +134,7 @@ def question_analytics(request, question_id):
             data.append(count)
 
     elif question.question_type == 'match_question':
-        labels.append("Total Matches")
+        labels.append("Total Number of Matches")
         data.append(MatchQuestionResponse.objects.filter(question=question).count())
 
     return JsonResponse({
