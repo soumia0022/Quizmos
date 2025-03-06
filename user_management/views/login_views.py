@@ -49,7 +49,6 @@ def dashboard(request):
         User.objects.filter(id=user_id).delete()
         return redirect('user_management:home')
 
-
     if request.method == "POST" and "title" in request.POST:
         title = request.POST.get("title", "").strip()
         confirmed = request.POST.get("confirmed", "false") == "true"
@@ -89,11 +88,12 @@ def dashboard(request):
             polls = polls.filter(Q(title__icontains=search_query))
 
         sort_options = {
-            'title_asc': 'title',
-            'title_desc': '-title',
+            'title_asc': Lower('title'),
+            'title_desc': Lower('title').desc(),
             'created_at_asc': 'created_at',
             'created_at_desc': '-created_at'
         }
+
         polls = polls.order_by(sort_options.get(sort_by, '-created_at'))
 
         for p in polls:
@@ -147,7 +147,6 @@ def dashboard(request):
 
     else:
         return redirect(reverse('user_management:dashboard'))
-
 
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
