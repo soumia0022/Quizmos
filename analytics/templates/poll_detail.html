@@ -137,8 +137,8 @@
             clearChart(); // Clear previous chart
 
             let url = selectedQuestionId
-                ? `/responses/questions/${selectedQuestionId}/analytics/?type=pie` // Question specific
-                : `/responses/polls/{{ poll.id }}/piechart_data/`; // Poll-wide
+                ? `/analytics/questions/${selectedQuestionId}/analytics/?type=pie` // Question specific
+                : `/analytics/polls/{{ poll.id }}/piechart_data/`; // Poll-wide
 
             fetch(url)
                 .then(response => {
@@ -197,8 +197,8 @@
             clearChart();
 
             let url = selectedQuestionId
-                ? `/responses/questions/${selectedQuestionId}/analytics/?type=bar`
-                : `/responses/polls/{{ poll.id }}/bargraph_data/`;
+                ? `/analytics/questions/${selectedQuestionId}/analytics/?type=bar`
+                : `/analytics/polls/{{ poll.id }}/bargraph_data/`;
 
             fetch(url)
                 .then(response => {
@@ -250,8 +250,8 @@
             clearChart();
 
             let url = selectedQuestionId
-                ? `/responses/questions/${selectedQuestionId}/analytics/?type=line`
-                : `/responses/polls/{{ poll.id }}/linegraph_data/`;
+                ? `/analytics/questions/${selectedQuestionId}/analytics/?type=line`
+                : `/analytics/polls/{{ poll.id }}/linegraph_data/`;
 
             fetch(url)
                 .then(response => {
