@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     var ctx = document.getElementById('chart').getContext('2d');
     var chartInstance = null;
@@ -12,10 +11,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function generateRandomColor() {
-        const hueRanges = [[200, 250], [260, 290], [300, 340]];
+        const hueRanges = [[200, 250], [260, 290], [300, 340]]; // Blue, purple and pink colour scheme
         const selectedRange = hueRanges[Math.floor(Math.random() * hueRanges.length)];
         const hue = Math.floor(Math.random() * (selectedRange[1] - selectedRange[0]) + selectedRange[0]);
-        return `hsl(${hue}, 60%, 60%)`;
+        const saturation = Math.floor(Math.random() * (80 - 50) + 50); // 50% - 80% saturation
+        const lightness = Math.floor(Math.random() * (75 - 40) + 40);  // 40% - 75% lightness
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`; // Convert HSL to CSS format
     }
 
     function showPieChart() {
@@ -38,7 +39,35 @@ document.addEventListener("DOMContentLoaded", function () {
                             borderWidth: 2
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: selectedQuestionId
+                                    ? `Responses (Pie Chart)`
+                                    : "Total Number of Responses",
+                                font: {size: 22, weight: 'bold'},
+                            },
+                            legend: {
+                                display: true,
+                                labels: {
+                                    font: {size: 15},
+                                    padding: 12,
+                                    boxWidth: 20,
+                                },
+                            },
+                            tooltip: {
+                                bodyFont: {
+                                    size: 12
+                                },
+                                titleFont: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
                 });
             })
             .catch(error => console.error("Error fetching pie chart data:", error));
@@ -65,7 +94,28 @@ document.addEventListener("DOMContentLoaded", function () {
                             borderWidth: 2
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { font: { size: 14 } }
+                            },
+                            x: {
+                                ticks: { font: { size: 14 } }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: selectedQuestionId
+                                    ? `Responses (Bar Graph)`
+                                    : "Total Number of Responses (Bar Chart)",
+                                font: { size: 22, weight: 'bold' }
+                            }
+                        }
+                    }
                 });
             })
             .catch(error => console.error("Error fetching bar chart data:", error));
@@ -92,7 +142,28 @@ document.addEventListener("DOMContentLoaded", function () {
                             fill: false
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { font: { size: 14 } }
+                            },
+                            x: {
+                                ticks: { font: { size: 14 } }
+                            }
+                        },
+                         plugins: {
+                            title: {
+                                display: true,
+                                text: selectedQuestionId
+                                    ? `Responses (Line Graph)`
+                                    : "Total Number of Responses (Line Graph)",
+                                font: { size: 22, weight: 'bold' }
+                            }
+                        }
+                    }
                 });
             })
             .catch(error => console.error("Error fetching line graph data:", error));
@@ -103,18 +174,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function showPollResults() {
-        selectedQuestionId = null;
+        selectedQuestionId = null; // Reset question selection
         document.getElementById('selected-question-title').innerText = "Poll Results";
         showPieChart();
         toggleLineGraphButton();
     }
 
+    // Load pie chart automatically when question is clicked
     document.querySelectorAll('.question-item').forEach((item, index) => {
         item.addEventListener('click', function () {
             selectedQuestionId = this.getAttribute('data-question-id');
             let questionNumber = `Q${index + 1}`;
             let questionText = this.innerText.replace(questionNumber, '').replace('View Analytics', '').trim();
-            document.getElementById('selected-question-title').innerText = `Analytics for ${questionNumber}: ${questionText}`;
+            document.getElementById('selected-question-title').innerText = `Analytics for ${questionNumber} ${questionText}`;
             showPieChart();
             toggleLineGraphButton();
         });
