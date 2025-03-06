@@ -271,9 +271,11 @@ class TestPollConsumer(TransactionTestCase):
             'response_data': 'Blue'
         }
 
-        await communicator.send_json_to(message)
-        # Check response status
         await communicator.receive_json_from()
+        await communicator.send_json_to(message)
+
+        # Check response status
+
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'response_status')
         self.assertTrue(response['success'])
