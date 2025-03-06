@@ -62,60 +62,12 @@
       <p>You already have a poll with the name "{{ original_title }}".</p>
       <p>The new one will be named "{{ suggested_title }}". Do you want to continue?</p>
       <p class="error-message" style="color: red;">{{ error_message }}</p>
-      <button id="confirmCreatePoll" class="btn btn-success">Yes</button>
-      <button id="cancelCreatePoll" class="btn btn-danger">No</button>
+      <button data-csrf-token="{{ csrf_token }}"
+        data-suggested-title="{{ suggested_title }}" id="confirmCreatePoll" class="btn btn-success">Yes</button>
+      <button data-csrf-token="{{ csrf_token }}" id="cancelCreatePoll" class="btn btn-danger">No</button>
     </div>
   </div>
 
-  <script>
-    document.getElementById("confirmCreatePoll").addEventListener("click", function() {
-        let form = document.createElement("form");
-        form.method = "POST";
-        form.action = "";
-
-        let csrfToken = document.createElement("input");
-        csrfToken.type = "hidden";
-        csrfToken.name = "csrfmiddlewaretoken";
-        csrfToken.value = "{{ csrf_token }}";
-
-        let titleInput = document.createElement("input");
-        titleInput.type = "hidden";
-        titleInput.name = "title";
-        titleInput.value = "{{ suggested_title }}";
-
-        let confirmedInput = document.createElement("input");
-        confirmedInput.type = "hidden";
-        confirmedInput.name = "confirmed";
-        confirmedInput.value = "true";
-
-        form.appendChild(csrfToken);
-        form.appendChild(titleInput);
-        form.appendChild(confirmedInput);
-        document.body.appendChild(form);
-        form.submit();
-    });
-
-    document.getElementById("cancelCreatePoll").addEventListener("click", function() {
-        let form = document.createElement("form");
-        form.method = "POST";
-        form.action = "";
-
-        let csrfToken = document.createElement("input");
-        csrfToken.type = "hidden";
-        csrfToken.name = "csrfmiddlewaretoken";
-        csrfToken.value = "{{ csrf_token }}";
-
-        let cancelInput = document.createElement("input");
-        cancelInput.type = "hidden";
-        cancelInput.name = "cancelled";
-        cancelInput.value = "true";
-
-        form.appendChild(csrfToken);
-        form.appendChild(cancelInput);
-        document.body.appendChild(form);
-        form.submit();
-    });
-  </script>
   {% endif %}
 
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
@@ -125,6 +77,8 @@
     var roomName = document.querySelector('#room-name-input').value;
     window.location.pathname = '/poll/' + roomName + '/';
   };
+
 </script>
+    <script src="{% static 'js/dashboard_popup.js' %}"></script>
 {% endblock %}
 </div>
