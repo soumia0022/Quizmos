@@ -1,3 +1,5 @@
+// This file requires some refactoring
+
 document.addEventListener("DOMContentLoaded", function () {
     var ctx = document.getElementById('chart').getContext('2d');
     var chartInstance = null;
