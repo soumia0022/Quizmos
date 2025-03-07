@@ -47,4 +47,24 @@
         </div>
     {% endif %}
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all answer sections and fetch correct answers
+        document.querySelectorAll("[id^='correct-answer-']").forEach(function (element) {
+            const questionId = element.id.split("-")[2];  // Extract question ID
+            const pollId = "{{ poll.id }}";  // Ensure poll ID is available
+    
+            fetch(`/responses/get_answer/${pollId}/${questionId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.correct_answer) {
+                        document.getElementById(`correct-answer-${questionId}`).innerText = data.correct_answer;
+                    } else {
+                        document.getElementById(`correct-answer-${questionId}`).innerText = "Not available";
+                    }
+                })
+                .catch(error => console.error("Error fetching correct answer:", error));
+        });
+    });
+    </script>    
 {% endblock %}
