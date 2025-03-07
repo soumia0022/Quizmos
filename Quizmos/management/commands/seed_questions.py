@@ -547,7 +547,6 @@ class Command(BaseCommand):
                 'question_text': question_text,
                 'code_question_text':question_text,
                 'code_language': random.choice(["python", "javascript", "java"]),
-                'code_test_cases': [{"input": "1 2", "output": "3"}, {"input": "3 3", "output": "6"}],
             })
 
         # Create question in the database
