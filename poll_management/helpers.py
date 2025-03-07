@@ -30,12 +30,18 @@ def apply_profanity_filter(text_data_json, message_type):
             text_data_json['response_data'] = profanity.censor(response_data)
 
         elif isinstance(response_data, list):
-            text_data_json['response_data'] = [
-                profanity.censor(item) if isinstance(item, str) else item
-                for item in response_data
-            ]
+            filtered_list = []
+            for item in response_data:
+                if isinstance(item, str):
+                    censored = profanity.censor(item)
+                    filtered_list.append(censored)
+
+
+            text_data_json['response_data'] = filtered_list
+            print(filtered_list)
 
         elif isinstance(response_data, dict):
+            print(response_data)
             for key, value in response_data.items():
                 if isinstance(value, str):
                     response_data[key] = profanity.censor(value)
