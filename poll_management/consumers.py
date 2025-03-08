@@ -3,8 +3,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from response_management.models.response_model import (
     MatchQuestionResponse, MultipleChoiceResponse,
-    SingleChoiceResponse, DropdownFillResponse, TextFillResponse, 
-    WordCloudResponse 
+    SingleChoiceResponse, DropdownFillResponse, TextFillResponse,
+    WordCloudResponse, CodeQuestionResponse
 )
 from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
@@ -253,8 +253,10 @@ class PollConsumer(AsyncWebsocketConsumer):
 
                 'wordcloud_question': question.wordcloud_question,
 
-
                 'dropdown_correct_answer': question.dropdown_correct_answer,
+
+                # 'correct_code' : question.correct_code, doesn't exsist yet so is just a placeholder
+
                 'question_timer': question.question_timer,
             }
         except Question.DoesNotExist:
@@ -278,7 +280,8 @@ class PollConsumer(AsyncWebsocketConsumer):
                 'single_choice': (SingleChoiceResponse, 'selected_option'),
                 'dropdown_fill': (DropdownFillResponse, 'selected_option'),
                 'text_fill': (TextFillResponse, 'answer_text'),
-                'wordcloud': (WordCloudResponse, 'word_cloud_response') 
+                'wordcloud': (WordCloudResponse, 'word_cloud_response'),
+                'code_question': (CodeQuestionResponse, 'submitted_code'),
             }
 
             if response_type not in response_models:
@@ -355,6 +358,9 @@ class PollConsumer(AsyncWebsocketConsumer):
                 answers = None  # No correct answer typically
             elif question.question_type == 'match_question':
                 answers = question.match_answers or []
+            # elif question.question_type == 'code_question':
+            #     answers = question.correct_code or ""
+            #correct_code doesn't exsist yet so its just a placeholder
 
             return answers
         except Question.DoesNotExist:
