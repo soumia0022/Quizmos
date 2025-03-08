@@ -31,6 +31,7 @@ class MatchQuestionResponse(Response):
 
 class WordCloudResponse(Response):
     word_cloud_response = models.JSONField(default=dict)
+
 class CodeQuestionResponse(Response):
-    submitted_code = models.TextField()  # Stores the student's code
-    language = models.CharField(max_length=20, default="python")  # Language used
+    submitted_code = models.TextField()
+    # language = models.CharField(max_length=20, default="python") #lecturer will input this type student response doesnt need it
