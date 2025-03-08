@@ -228,10 +228,10 @@
                         });
 
                         window.runCode = function () {
-                            console.log("Run Code button clicked.");
+                            {#console.log("Run Code button clicked.");#}
 
                             const code = editor.getValue();
-                            console.log("User entered code:", code);
+                            {#console.log("User entered code:", code);#}
 
                             const data = JSON.stringify({
                                 source_code: btoa(code), // Convert input to Base64
@@ -249,24 +249,24 @@
 
                             xhr.addEventListener('readystatechange', function () {
                                 if (this.readyState === XMLHttpRequest.DONE) {
-                                    console.log("API Response received:", this.responseText);
+                                    {#console.log("API Response received:", this.responseText);#}
                                     try {
                                         const response = JSON.parse(this.responseText);
 
                                         if (response.stdout) {
                                             const decodedOutput = atob(response.stdout);
-                                            console.log("Decoded Output:", decodedOutput);
+                                            {#console.log("Decoded Output:", decodedOutput);#}
                                             document.getElementById('output').innerText = decodedOutput;
                                         } else if (response.stderr) {
                                             const errorOutput = atob(response.stderr);
-                                            console.log("Error Output:", errorOutput);
+                                            {#console.log("Error Output:", errorOutput);#}
                                             document.getElementById('output').innerText = "Error:\n" + errorOutput;
                                         } else {
-                                            console.log("Execution failed, no output received.");
+                                            {#console.log("Execution failed, no output received.");#}
                                             document.getElementById('output').innerText = "Execution failed.";
                                         }
                                     } catch (error) {
-                                        console.error("Error parsing API response:", error);
+                                        {#console.error("Error parsing API response:", error);#}
                                         document.getElementById('output').innerText = "Error: Invalid API response";
                                     }
                                 }
@@ -328,6 +328,20 @@
                         const answer1 = document.getElementById('answer1').value;
                         const answer2 = document.getElementById('answer2').value;
                         responseData = [answer1, answer2].filter(answer => answer !== '');
+                        break;
+
+                    case 'code_question':
+                        // Get the CodeMirror instance from the text area
+                        let codeEditor = document.querySelector('.CodeMirror'); // Get the CodeMirror container
+                        if (codeEditor) {
+                            let editorInstance = codeEditor.CodeMirror; // Access CodeMirror instance
+                            responseData = editorInstance.getValue(); // Get the code inside the editor
+                            alert("Response data is: " + responseData);
+                            {#document.getElementById('answer').value = responseData; // Set the hidden answer value#} //might not be needed
+                        } else {
+                            console.error("CodeMirror instance not found.");
+                            responseData = "";
+                        }
                         break;
                 }
 

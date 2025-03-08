@@ -1,5 +1,5 @@
 from django.contrib import admin
-from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse, WordCloudResponse
+from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse, WordCloudResponse, CodeQuestionResponse
 
 @admin.register(MultipleChoiceResponse)
 class MultipleChoiceResponseAdmin(admin.ModelAdmin):
@@ -34,5 +34,11 @@ class MatchQuestionResponseAdmin(admin.ModelAdmin):
 @admin.register(WordCloudResponse)
 class WordCloudResponseAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'poll', 'submitted_on', 'word_cloud_response')
+    search_fields = ('question__text', 'user__username', 'poll__title')
+    list_filter = ('submitted_on', 'poll')
+
+@admin.register(CodeQuestionResponse)
+class CodeQuestionResponseAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'submitted_code')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
