@@ -65,6 +65,68 @@ export function updateTextResponseUI(questionId, responses) {
     }
 }
 
+export function updateCodeResponseUI(questionId, responses) {
+    const questionContainer = document.querySelector(`[data-question="${questionId}"]`);
+    const responseList = questionContainer.querySelector(`#responseList-${questionId}`);
+
+    responseList.innerHTML = '';
+
+    responses.forEach((response) => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+
+        // Display user’s name and make it clickable to show code in the editor
+        listItem.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="response-user" style="cursor: pointer; color: blue;" data-code="${encodeURIComponent(response.code)}">
+                    ${response.username}
+                </span>
+            </div>
+        `;
+
+        responseList.appendChild(listItem);
+
+        // Add event listener to show code in CodeMirror when user clicks on their name
+        listItem.querySelector('.response-user').addEventListener('click', function () {
+            const code = decodeURIComponent(this.getAttribute('data-code'));
+            displayCodeInEditor(code);
+        });
+    });
+
+    // Show or hide response list container
+    const responseListContainer = questionContainer.querySelector('.response-list-container');
+    if (responseListContainer) {
+        responseListContainer.style.display = responses.length > 0 ? 'block' : 'none';
+    }
+}
+
+// Function to display code inside a CodeMirror editor
+function displayCodeInEditor(code) {
+    // Ensure there's a textarea available for CodeMirror
+    let codeEditorTextarea = document.getElementById('code-editor');
+    if (!codeEditorTextarea) {
+        console.error('Code editor textarea not found!');
+        return;
+    }
+
+    // If CodeMirror is already initialized, update its content
+    if (window.codeEditorInstance) {
+        window.codeEditorInstance.setValue(code);
+    } else {
+        // Initialize CodeMirror and store reference globally
+        window.codeEditorInstance = CodeMirror.fromTextArea(codeEditorTextarea, {
+            mode: "python", // Adjust language dynamically later
+            theme: "default",
+            lineNumbers: true,
+            readOnly: true // Set to read-only to prevent editing
+        });
+
+        // Set the code after initializing
+        window.codeEditorInstance.setValue(code);
+    }
+}
+
+
 export function updateMatchResponseUI(questionId, matchData) {
     const questionContainer = document.querySelector(`[data-question="${questionId}"]`);
     if (!questionContainer) {
