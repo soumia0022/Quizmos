@@ -1,5 +1,6 @@
 {% extends 'base_content.html' %}
 {% load system_extras %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-4">
@@ -8,7 +9,7 @@
     </header>
 
     {% if responses_by_question %}
-        <div id="pollResponsesSlideshow" class="carousel slide mt-4" data-bs-interval="false" data-bs-ride="false" aria-roledescription="carousel" aria-label="Poll responses slideshow">
+        <div id="pollResponsesSlideshow" class="carousel slide mt-4" data-bs-interval="false" data-bs-ride="false" data-poll-id="{{ poll.id }}" aria-roledescription="carousel" aria-label="Poll responses slideshow">
             {% include 'student_view_response/indicators.html' with responses=responses_by_question %}
 
             <div class="carousel-inner">
@@ -47,39 +48,6 @@
         </div>
     {% endif %}
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Select all answer sections and fetch correct answers
-        document.querySelectorAll("[id^='correct-answer-']").forEach(function (element) {
-            const questionId = element.id.split("-")[2];
-            const pollId = "{{ poll.id }}";
 
-            fetch(`/responses/get_answer/${pollId}/${questionId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.correct_answer) {
-                        const correctAnswerDiv = document.getElementById(`correct-answer-${questionId}`);
-                        if (Array.isArray(data.correct_answer) && data.correct_answer.length > 0 && data.correct_answer[0].left) {
-                            const tbody = correctAnswerDiv.querySelector('.correct-match-tbody');
-                            tbody.innerHTML = '';
-                            data.correct_answer.forEach(pair => {
-                                const row = document.createElement('tr');
-                                row.innerHTML = `
-                                    <td>${pair.left}</td>
-                                    <td class="bg-success text-white">${pair.right}</td>
-                                `;
-                                tbody.appendChild(row);
-                            });
-                        } else {
-                            correctAnswerDiv.innerText = data.correct_answer;
-                        }
-                    } else {
-                        element.innerText = "Not available";
-                    }
-                })
-                .catch(error => console.error("Error fetching correct answer:", error));
-        });
-    });
-</script>
-
+<script src="{% static 'js/fetch_correct_answers.js' %}"></script>
 {% endblock %}
