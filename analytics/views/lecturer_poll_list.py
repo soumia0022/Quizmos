@@ -1,3 +1,5 @@
+# Will likely be deleted
+
 from django.shortcuts import render
 from poll_management.models.poll_model import Poll
 
