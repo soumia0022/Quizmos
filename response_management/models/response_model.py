@@ -34,4 +34,3 @@ class WordCloudResponse(Response):
 
 class CodeQuestionResponse(Response):
     submitted_code = models.TextField()
-    # language = models.CharField(max_length=20, default="python") #lecturer will input this type student response doesnt need it
