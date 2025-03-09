@@ -5,7 +5,6 @@ import {renderWordCloud} from "./word_cloud_display.js";
 import {renderMatch} from "./match_question_display.js";
 import {getFormattedTime, startCountdownTimer} from "./timer.js";
 import { renderCodeQuestion } from "./code_question_display.js";
-// console.log("renderCodeQuestion function:", renderCodeQuestion);
 
 
 
