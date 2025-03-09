@@ -11,6 +11,15 @@
     <script src="{% static 'js/question_buttons.js' %}"></script>
     <script src="{% static 'js/question_constraints.js' %}"></script>
 
+    <!-- CodeMirror Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+
+    <!-- CodeMirror Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script> <!-- For Java & C++ -->
+
 </head>
 <body>
     {% noscript_warning %}
@@ -153,6 +162,21 @@
             </div>
 
         {% endif %}
+
+    {% if question.question_type == 'code_question' %}
+
+        <label for="code_language" class="form-label">Select Language:</label>
+        <select id="language-selector" name="code_language" class="form-select mb-2">
+            <option value="python" {% if question.code_language == 'python' %}selected{% endif %}>Python</option>
+            <option value="javascript" {% if question.code_language == 'javascript' %}selected{% endif %}>JavaScript</option>
+            <option value="java" {% if question.code_language == 'java' %}selected{% endif %}>Java</option>
+            <option value="cpp" {% if question.code_language == 'cpp' %}selected{% endif %}>C++</option>
+        </select>
+
+        <!-- Code Editor -->
+        <textarea id="code-editor" name="correct_code">{{ question.correct_code }}</textarea>
+
+    {% endif %}
 
         <br>
         <button type="submit">Save Changes</button>

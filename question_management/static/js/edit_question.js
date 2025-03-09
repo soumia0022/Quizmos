@@ -30,6 +30,20 @@ document.addEventListener('DOMContentLoaded', function () {
     //for the delete buttons that appear with the pre-existing data
     const deleteButtons = document.querySelectorAll('.delete-option-btn');
 
+    let editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+        mode: "python", // Default mode
+        theme: "default",
+        lineNumbers: true
+    });
+    // Language Mode Mapping
+    const languageModes = {
+        python: "python",
+        javascript: "javascript",
+        java: "text/x-java",
+        cpp: "text/x-c++src"
+    };
+    const codingLanguageSelector = document.getElementById('language-selector');
+
     /* Event listeners*/
 
     deleteButtons.forEach((btn) => {
