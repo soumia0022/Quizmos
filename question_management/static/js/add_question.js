@@ -41,8 +41,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // New Code Question fields
     const codeQuestionFields = document.getElementById('code-question-fields');
+    let editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+        mode: "python", // Default mode
+        theme: "default",
+        lineNumbers: true
+    });
+    // Language Mode Mapping
+    const languageModes = {
+        python: "python",
+        javascript: "javascript",
+        java: "text/x-java",
+        cpp: "text/x-c++src"
+    };
+    const codingLanguageSelector = document.getElementById('language-selector');
 
-    console.log("DOM fully loaded");
+
 
     /*Event Listeners */
     // Show or hide the question form
@@ -96,6 +109,14 @@ document.addEventListener('DOMContentLoaded', function() {
             clickTextPreview(dropdownCorrectAnswerField,dropdownInput,textPreview);
             blankAdded = true;
         }
+    });
+
+    codingLanguageSelector.addEventListener('change', function () {
+        let selectedLanguage = this.value;
+        let newMode = languageModes[selectedLanguage];
+
+        editor.setOption("mode", newMode);
+        alert(`Mode changed to: ${newMode}`);
     });
 
     function showRelevantField(questionType){

@@ -137,16 +137,9 @@ class QuestionManager:
         """Handle the creation of a coding question."""
         question_text = self.request.POST.get("code_question_text", "")
         code_language = self.request.POST.get("code_language", "python")
-        # code_test_cases_raw = self.request.POST.get("code_test_cases", "[]")
-
-        # try:
-        #     code_test_cases = json.loads(code_test_cases_raw)  # Parse test cases as JSON
-        # except json.JSONDecodeError:
-        #     return JsonResponse({"error": "Invalid JSON format for test cases."}, status=400)
 
         self.create_base_question(question_text)
         self.question.code_question_text = question_text
         self.question.code_language = code_language
-        # self.question.code_test_cases = code_test_cases
         self.question.save()
         self.save_files()
