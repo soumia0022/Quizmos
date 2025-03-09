@@ -8,5 +8,11 @@ export function renderCodeQuestion(question) {
                   Run your code in the IDE
                 </div>
               </div>
+              <div class="response-list-container mt-3">
+                <h6>Responses:</h6>
+                <ul id="responseList-${question.id}" class="list-group response-list">
+                  <!-- Responses will be inserted here -->
+                </ul>
+              </div>
             </div>`;
 }
