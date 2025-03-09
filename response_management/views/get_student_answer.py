@@ -29,7 +29,18 @@ def get_student_answer(request, poll_id, question_id):
         elif question.question_type == 'text_fill':
             correct_answer = question.text_fill_answer
         elif question.question_type == 'match_question':
-            correct_answer = question.match_answers
+            try:
+                match_options = question.match_options or []
+                match_answers = question.match_answers or []
+                if len(match_options) != len(match_answers):
+                    correct_answer = "Mismatch between options and answers"
+                else:
+                    correct_answer = [
+                        {"left": option, "right": answer}
+                        for option, answer in zip(match_options, match_answers)
+                    ]
+            except Exception as e:
+                return JsonResponse({"error": f"Error processing match answers: {str(e)}"}, status=500)
         else:
             correct_answer = "No correct answer available"
 
