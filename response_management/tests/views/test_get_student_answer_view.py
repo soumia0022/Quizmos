@@ -14,7 +14,6 @@ class GetStudentAnswerViewTest(TestCase):
         User = get_user_model()
         self.student = User.objects.create_user(username="teststudent", password="testpass")
 
-        # ✅ Fix: Assign a user when creating the Poll
         self.poll = Poll.objects.create(title="Test Poll", number_code=123456, user=self.student)
 
         # Create Questions with different types
@@ -50,7 +49,8 @@ class GetStudentAnswerViewTest(TestCase):
             poll=self.poll,
             question_type="match_question",
             question_text="Match the following",
-            match_answers={"A": "1", "B": "2"}
+            match_options=["A", "B"],  
+            match_answers=["1", "2"]   
         )
 
         # Create Student Responses
@@ -88,8 +88,8 @@ class GetStudentAnswerViewTest(TestCase):
         response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.mcq_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["correct_answer"], ["4"])  # Correct answer
-        self.assertEqual(data["selected_answer"], ["4"])  # Student's answer
+        self.assertEqual(data["correct_answer"], ["4"])
+        self.assertEqual(data["selected_answer"], ["4"])
 
     def test_api_returns_correct_answer_for_single_choice(self):
         """Test if the API correctly returns Single Choice correct answer"""
@@ -97,8 +97,8 @@ class GetStudentAnswerViewTest(TestCase):
         response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.single_choice_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["correct_answer"], ["Paris"])  # Correct answer
-        self.assertEqual(data["selected_answer"], "Paris")  # Student's answer
+        self.assertEqual(data["correct_answer"], ["Paris"])
+        self.assertEqual(data["selected_answer"], "Paris")
 
     def test_api_returns_correct_answer_for_text_fill(self):
         """Test if the API correctly returns Text Fill correct answer"""
@@ -106,8 +106,8 @@ class GetStudentAnswerViewTest(TestCase):
         response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.text_fill_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["correct_answer"], "World")  # Correct answer
-        self.assertEqual(data["selected_answer"], "World")  # Student's answer
+        self.assertEqual(data["correct_answer"], "World")
+        self.assertEqual(data["selected_answer"], "World")
 
     def test_api_returns_correct_answer_for_dropdown(self):
         """Test if the API correctly returns Dropdown correct answer"""
@@ -115,16 +115,21 @@ class GetStudentAnswerViewTest(TestCase):
         response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.dropdown_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["correct_answer"], "CorrectOption")  # Correct answer
-        self.assertEqual(data["selected_answer"], "CorrectOption")  # Student's answer
+        self.assertEqual(data["correct_answer"], "CorrectOption")
+        self.assertEqual(data["selected_answer"], "CorrectOption")
 
     def test_api_returns_correct_answer_for_match_question(self):
         """Test if API correctly returns match question answer"""
         self.client.login(username="teststudent", password="testpass")
+
         response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.match_question.id]))
         data = response.json()
+        
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["correct_answer"], {"A": "1", "B": "2"})  # Expected output
+        self.assertEqual(data["correct_answer"], [
+            {"left": "A", "right": "1"},
+            {"left": "B", "right": "2"}
+        ])
 
     def test_api_returns_null_if_no_response(self):
         """Test if API returns null when student hasn't answered"""
