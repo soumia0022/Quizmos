@@ -1,4 +1,4 @@
-# Will likely be deleted
+# Will likely be deleted as functionality will change (button on each poll card instead of on dashboard and then list)
 
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -41,7 +41,7 @@ class LecturerPollListTestCase(TestCase):
 
     def test_no_polls_for_lecturer(self):
         """Test that the view returns an empty poll list if the lecturer has no polls."""
-        user_with_no_polls = User.objects.create_user(username='no_polls_lecturer', password='password', email='nopolls@example.com')
+        User.objects.create_user(username='no_polls_lecturer', password='password', email='nopolls@example.com')
         self.client.login(username='no_polls_lecturer', password='password')
         url = reverse('lecturer_poll_list')
         response = self.client.get(url)

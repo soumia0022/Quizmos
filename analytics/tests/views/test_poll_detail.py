@@ -6,6 +6,10 @@ from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
 
+# Will add tests for wordcloud and code question once functionality has been added
+# Will add tests when other analytics have been completed - correct/incorrect answers
+
+
 class PollAnalyticsTestCase(TestCase):
     fixtures = [
         'user_management/tests/fixtures/default_user.json',
@@ -26,7 +30,7 @@ class PollAnalyticsTestCase(TestCase):
 
         self.multiple_choice_question = Question.objects.create(
             poll=self.poll,
-            question_text="Favorite Color?",
+            question_text="Favorite Colour?",
             question_type="multiple_choice",
             multiple_choice_options=["Red", "Blue", "Green"]
         )
@@ -204,5 +208,3 @@ class PollAnalyticsTestCase(TestCase):
         self.assertEqual(json_response["question"], "Match the countries to their capitals.")
         self.assertListEqual(json_response["labels"], ["Total Number of Matches"])
         self.assertListEqual(json_response["data"], [1])  # One response
-
-    # Will add tests for wordcloud and code question once functionality has been added
