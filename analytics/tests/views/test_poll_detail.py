@@ -122,7 +122,7 @@ class PollAnalyticsTestCase(TestCase):
                         f"Expected JSON response but got: {response.headers.get('Content-Type')}") # Ensure JSON response
         json_response = response.json()
         self.assertEqual(set(json_response.keys()), {"labels", "data"})
-        expected_labels = ["Favorite Color?", "Best Programming Language?", "Describe your experience?", "Select your country?", "Match the countries to their capitals."]
+        expected_labels = ["Favorite Colour?", "Best Programming Language?", "Describe your experience?", "Select your country?", "Match the countries to their capitals."]
         self.assertListEqual(json_response["labels"], expected_labels)
         self.assertEqual(json_response["data"], [1, 1, 1, 1, 1])  # One response per question
 
@@ -136,7 +136,7 @@ class PollAnalyticsTestCase(TestCase):
                         f"Expected JSON response but got: {response.headers.get('Content-Type')}")  # Ensure JSON response
         json_response = response.json()
         self.assertEqual(set(json_response.keys()), {"labels", "data"})
-        expected_labels = ["Favorite Color?", "Best Programming Language?", "Describe your experience?",
+        expected_labels = ["Favorite Colour?", "Best Programming Language?", "Describe your experience?",
                            "Select your country?", "Match the countries to their capitals."]
         self.assertListEqual(json_response["labels"], expected_labels)
         self.assertEqual(json_response["data"], [1, 1, 1, 1, 1])  # One response per question
@@ -151,7 +151,7 @@ class PollAnalyticsTestCase(TestCase):
                         f"Expected JSON response but got: {response.headers.get('Content-Type')}")  # Ensure JSON response
         json_response = response.json()
         self.assertEqual(set(json_response.keys()), {"labels", "data"})
-        expected_labels = ["Favorite Color?", "Best Programming Language?", "Describe your experience?",
+        expected_labels = ["Favorite Colour?", "Best Programming Language?", "Describe your experience?",
                            "Select your country?", "Match the countries to their capitals."]
         self.assertListEqual(json_response["labels"], expected_labels)
         self.assertEqual(json_response["data"], [1, 1, 1, 1, 1])  # One response per question
@@ -163,7 +163,7 @@ class PollAnalyticsTestCase(TestCase):
         json_response = response.json()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json_response["question"], "Favorite Color?")
+        self.assertEqual(json_response["question"], "Favorite Colour?")
         self.assertListEqual(json_response["labels"], ["Red", "Blue", "Green"])
         self.assertListEqual(json_response["data"], [1, 0, 0])  # "Red" has 1 response
 
