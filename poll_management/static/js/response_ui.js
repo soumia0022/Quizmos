@@ -100,30 +100,64 @@ export function updateCodeResponseUI(questionId, responses) {
     }
 }
 
-// Function to display code inside a CodeMirror editor
+// Function to display code inside a popup(modal) with CodeMirror
 function displayCodeInEditor(code) {
-    // Ensure there's a textarea available for CodeMirror
-    let codeEditorTextarea = document.getElementById('code-editor');
-    if (!codeEditorTextarea) {
-        console.error('Code editor textarea not found!');
-        return;
+    // Remove existing modal if it exists
+    let existingModal = document.getElementById('code-editor-modal');
+    if (existingModal) {
+        existingModal.remove();
     }
 
-    // If CodeMirror is already initialized, update its content
-    if (window.codeEditorInstance) {
-        window.codeEditorInstance.setValue(code);
-    } else {
-        // Initialize CodeMirror and store reference globally
-        window.codeEditorInstance = CodeMirror.fromTextArea(codeEditorTextarea, {
-            mode: "python", // Adjust language dynamically later
-            theme: "default",
-            lineNumbers: true,
-            readOnly: true // Set to read-only to prevent editing
-        });
+    // Create the modal container
+    let modal = document.createElement('div');
+    modal.id = 'code-editor-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)';
+    modal.style.width = '80%';
+    modal.style.maxWidth = '600px';
+    modal.style.background = 'white';
+    modal.style.padding = '20px';
+    modal.style.borderRadius = '8px';
+    modal.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+    modal.style.zIndex = '1000';
 
-        // Set the code after initializing
-        window.codeEditorInstance.setValue(code);
-    }
+    // Add a close button
+    let closeButton = document.createElement('button');
+    closeButton.textContent = 'Close';
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '10px';
+    closeButton.style.right = '10px';
+    closeButton.style.background = 'red';
+    closeButton.style.color = 'white';
+    closeButton.style.border = 'none';
+    closeButton.style.padding = '5px 10px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.zIndex = '1001';
+    closeButton.addEventListener('click', () => {
+        modal.remove();
+    });
+
+    // Create the textarea for CodeMirror
+    let textarea = document.createElement('textarea');
+    textarea.id = 'code-editor';
+
+    // Append elements to modal
+    modal.appendChild(closeButton);
+    modal.appendChild(textarea);
+    document.body.appendChild(modal);
+
+    // Initialize CodeMirror
+    let editor = CodeMirror.fromTextArea(textarea, {
+        mode: "python", // Adjust language dynamically later
+        theme: "default",
+        lineNumbers: true,
+        readOnly: true // Make it read-only
+    });
+
+    // Set the retrieved code
+    editor.setValue(code);
 }
 
 
