@@ -1,3 +1,5 @@
+import { initializeCodeEditor, executeCode } from "./code_executor.js";
+
 document.addEventListener('DOMContentLoaded', function() {
     // DOM elements
     const addButton = document.getElementById('add-question-btn');
@@ -41,11 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // New Code Question fields
     const codeQuestionFields = document.getElementById('code-question-fields');
-    let editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
-        mode: "python", // Default mode
-        theme: "default",
-        lineNumbers: true
-    });
+    const codingLanguageSelector = document.getElementById('language-selector');
+    const runCodeButton = document.getElementById('run-code-button')
+    let editor = initializeCodeEditor("code-editor", "python");
     // Language Mode Mapping
     const languageModes = {
         python: "python",
@@ -53,9 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
         java: "text/x-java",
         cpp: "text/x-c++src"
     };
-    const codingLanguageSelector = document.getElementById('language-selector');
-
-
 
     /*Event Listeners */
     // Show or hide the question form
@@ -117,6 +114,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         editor.setOption("mode", newMode);
         alert(`Mode changed to: ${newMode}`);
+    });
+
+    runCodeButton.addEventListener("click", function () {
+        executeCode(editor,editor.getOption("mode"), "code-output");
     });
 
     function showRelevantField(questionType){
