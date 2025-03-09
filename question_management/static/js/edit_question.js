@@ -1,3 +1,5 @@
+import { initializeCodeEditor, executeCode } from "./code_executor.js";
+
 document.addEventListener('DOMContentLoaded', function () {
     const questionType = document.getElementById("question-type").value
 
@@ -30,11 +32,9 @@ document.addEventListener('DOMContentLoaded', function () {
     //for the delete buttons that appear with the pre-existing data
     const deleteButtons = document.querySelectorAll('.delete-option-btn');
 
-    let editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
-        mode: "python", // Default mode
-        theme: "default",
-        lineNumbers: true
-    });
+    const codingLanguageSelector = document.getElementById('language-selector');
+    const runCodeButton = document.getElementById('run-code-button')
+    let editor = initializeCodeEditor("code-editor", codingLanguageSelector.value)
     // Language Mode Mapping
     const languageModes = {
         python: "python",
@@ -42,9 +42,11 @@ document.addEventListener('DOMContentLoaded', function () {
         java: "text/x-java",
         cpp: "text/x-c++src"
     };
-    const codingLanguageSelector = document.getElementById('language-selector');
 
     /* Event listeners*/
+    runCodeButton.addEventListener("click", function () {
+        executeCode(editor,editor.getOption("mode"), "code-output");
+    });
 
     codingLanguageSelector.addEventListener('change', function () {
         let selectedLanguage = this.value;
