@@ -137,9 +137,11 @@ class QuestionManager:
         """Handle the creation of a coding question."""
         question_text = self.request.POST.get("code_question_text", "")
         code_language = self.request.POST.get("code_language", "python")
+        correct_code = self.request.POST.get("correct_code", "")
 
         self.create_base_question(question_text)
         self.question.code_question_text = question_text
         self.question.code_language = code_language
+        self.question.correct_code = correct_code
         self.question.save()
         self.save_files()
