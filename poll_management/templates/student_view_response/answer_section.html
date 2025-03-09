@@ -18,7 +18,7 @@
             <thead class="table-light">
                 <tr>
                     <th>Question Item</th>
-                    <th >Your Match</th>
+                    <th>Your Match</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,9 +32,21 @@
         </table>
     {% endif %}
 
-    <!-- Button to Fetch Correct Answer -->
+    <!-- displaying the correct answers-->
     <h5 class="mt-3 mb-2">Correct Answer:</h5>
-    <p id="correct-answer-{{ response.question.id }}" class="p-2 border rounded bg-success text-white">
-        Loading...
-    </p>
+    <div id="correct-answer-{{ response.question.id }}" class="p-2 border rounded bg-success text-white">
+        {% if response.type == 'match' %}
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Question Item</th>
+                        <th>Correct Match</th>
+                    </tr>
+                </thead>
+                <tbody class="correct-match-tbody"></tbody>
+            </table>
+        {% else %}
+            <p>Loading...</p>
+        {% endif %}
+    </div>
 </div>
