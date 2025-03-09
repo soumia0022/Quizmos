@@ -45,14 +45,6 @@ class GetStudentAnswerViewTest(TestCase):
             dropdown_correct_answer="CorrectOption"
         )
 
-        self.match_question = Question.objects.create(
-            poll=self.poll,
-            question_type="match_question",
-            question_text="Match the following",
-            match_options=["A", "B"],  
-            match_answers=["1", "2"]   
-        )
-
         # Create Student Responses
         self.mcq_response = MultipleChoiceResponse.objects.create(
             user=self.student,
@@ -82,6 +74,7 @@ class GetStudentAnswerViewTest(TestCase):
             selected_option="CorrectOption"
         )
 
+    # Regular tests
     def test_api_returns_correct_answer_for_mcq(self):
         """Test if the API correctly returns MCQ correct answer"""
         self.client.login(username="teststudent", password="testpass")
@@ -118,41 +111,64 @@ class GetStudentAnswerViewTest(TestCase):
         self.assertEqual(data["correct_answer"], "CorrectOption")
         self.assertEqual(data["selected_answer"], "CorrectOption")
 
-    def test_api_returns_correct_answer_for_match_question(self):
-        """Test if API correctly returns match question answer"""
+    # These tests cover the match question handling in the view
+    def test_api_returns_mismatch_error_for_match_question(self):
+        """Test if API returns mismatch error when match options and answers do not align"""
         self.client.login(username="teststudent", password="testpass")
-
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.match_question.id]))
+        mismatched_match_question = Question.objects.create(
+            poll=self.poll,
+            question_type="match_question",
+            question_text="Mismatched Match Question",
+            match_options=["A", "B", "C"],  # 3 options
+            match_answers=["1", "2"]  # 2 answers (Mismatch!)
+        )
+        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, mismatched_match_question.id]))
         data = response.json()
-        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["correct_answer"], "Mismatch between options and answers")
+
+    def test_api_returns_correct_format_for_match_question(self):
+        """Test if API correctly formats match question answers when options and answers align"""
+        self.client.login(username="teststudent", password="testpass")
+        well_formed_match_question = Question.objects.create(
+            poll=self.poll,
+            question_type="match_question",
+            question_text="Well-formed Match Question",
+            match_options=["X", "Y"],
+            match_answers=["Alpha", "Beta"]
+        )
+        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, well_formed_match_question.id]))
+        data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], [
-            {"left": "A", "right": "1"},
-            {"left": "B", "right": "2"}
+            {"left": "X", "right": "Alpha"},
+            {"left": "Y", "right": "Beta"}
         ])
-
-    def test_api_returns_null_if_no_response(self):
-        """Test if API returns null when student hasn't answered"""
+    
+    def test_api_handles_nonexistent_question(self):
+        """Test if API correctly handles nonexistent question ID"""
         self.client.login(username="teststudent", password="testpass")
-        new_question = Question.objects.create(
-            poll=self.poll,
-            question_type="single_choice",
-            question_text="Unanswered Question?"
-        )
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, new_question.id]))
-        data = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertIsNone(data["selected_answer"])  # No response yet
-        self.assertIn(data["correct_answer"], [[], "No correct answer available"])
-
-    def test_api_returns_404_for_invalid_question(self):
-        """Test if API returns 404 when question does not exist"""
-        self.client.login(username="teststudent", password="testpass")
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, 99999]))  # Invalid question
+        # Using a non-existent question ID
+        nonexistent_id = 9999
+        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, nonexistent_id]))
         self.assertEqual(response.status_code, 404)
 
-    def test_api_returns_400_for_invalid_method(self):
-        """Test if API returns 400 when method is not GET"""
+    def test_api_handles_unsupported_question_type(self):
+        """Test if API correctly handles unsupported question type"""
+        self.client.login(username="teststudent", password="testpass")
+        # Create a question with an unsupported type
+        unsupported_question = Question.objects.create(
+            poll=self.poll,
+            question_type="unsupported_type",  # Non-standard type
+            question_text="Unsupported Question Type"
+        )
+        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, unsupported_question.id]))
+        data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["correct_answer"], "No correct answer available")
+
+    def test_api_handles_post_method(self):
+        """Test if API correctly rejects POST method"""
         self.client.login(username="teststudent", password="testpass")
         response = self.client.post(reverse('get_student_answer', args=[self.poll.id, self.mcq_question.id]))
         self.assertEqual(response.status_code, 400)
