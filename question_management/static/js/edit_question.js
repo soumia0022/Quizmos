@@ -46,6 +46,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* Event listeners*/
 
+    codingLanguageSelector.addEventListener('change', function () {
+        let selectedLanguage = this.value;
+        let newMode = languageModes[selectedLanguage];
+
+        editor.setOption("mode", newMode);
+        alert(`Mode changed to: ${newMode}`);
+    });
+
     deleteButtons.forEach((btn) => {
         btn.addEventListener('click', function () {
             const optionContainer = this.parentElement; // Get the div containing the option
