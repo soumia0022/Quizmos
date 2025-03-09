@@ -19,6 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             `;
                             tbody.appendChild(row);
                         });
+                    } else if (Array.isArray(data.correct_answer)) {
+                        // Handling multiple-choice questions with multiple correct answers
+                        correctAnswerDiv.innerHTML = data.correct_answer.map(answer => `<p>${answer}</p>`).join("\n");
                     } else {
                         correctAnswerDiv.innerText = data.correct_answer;
                     }

@@ -32,7 +32,7 @@
         </table>
     {% endif %}
 
-    <!-- displaying the correct answers-->
+    <!-- Displaying the correct answers -->
     <h5 class="mt-3 mb-2">Correct Answer:</h5>
     <div id="correct-answer-{{ response.question.id }}" class="p-2 border rounded bg-success text-white">
         {% if response.type == 'match' %}
@@ -45,6 +45,8 @@
                 </thead>
                 <tbody class="correct-match-tbody"></tbody>
             </table>
+        {% elif response.type == 'multiple_choice' %}
+            <ul id="correct-answer-list-{{ response.question.id }}"></ul>
         {% else %}
             <p>Loading...</p>
         {% endif %}
