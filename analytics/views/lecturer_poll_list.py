@@ -1,5 +1,3 @@
-# Will likely be deleted due to change in functionality
-
 from django.shortcuts import render
 from poll_management.models.poll_model import Poll
 
