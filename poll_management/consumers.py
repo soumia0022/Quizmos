@@ -255,7 +255,8 @@ class PollConsumer(AsyncWebsocketConsumer):
 
                 'dropdown_correct_answer': question.dropdown_correct_answer,
 
-                # 'correct_code' : question.correct_code, doesn't exsist yet so is just a placeholder
+                'code_language': question.code_language,
+                'correct_code' : question.correct_code,
 
                 'question_timer': question.question_timer,
             }

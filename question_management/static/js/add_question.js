@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let newMode = languageModes[selectedLanguage];
 
         editor.setOption("mode", newMode);
-        alert(`Mode changed to: ${newMode}`);
+        // alert(`Mode changed to: ${newMode}`);
     });
 
     runCodeButton.addEventListener("click", function () {
