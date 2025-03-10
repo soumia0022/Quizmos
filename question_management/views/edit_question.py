@@ -68,6 +68,7 @@ class EditQuestionView(View):
             question.code_question = request.POST.get("question_text")
             question.code_language = request.POST.get("code_language")
             question.correct_code = request.POST.get("correct_code")
+            validation_response = QuestionManager.validate_code_question(question)
 
         if validation_response:
             return validation_response
