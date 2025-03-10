@@ -1,5 +1,3 @@
-# Will likely be deleted as functionality will change (button on each poll card instead of on dashboard and then list)
-
 from django.test import TestCase, Client
 from django.urls import reverse
 from user_management.models.user_model import User
