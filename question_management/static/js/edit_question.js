@@ -33,8 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const deleteButtons = document.querySelectorAll('.delete-option-btn');
 
     const codingLanguageSelector = document.getElementById('language-selector');
+    const codeEditorArea = document.getElementById('code-editor');
     const runCodeButton = document.getElementById('run-code-button')
-    let editor = initializeCodeEditor("code-editor", codingLanguageSelector.value)
+    let editor = initializeCodeEditor(codeEditorArea, "python");
     // Language Mode Mapping
     const languageModes = {
         python: "python",
@@ -122,6 +123,11 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (questionType === 'dropdown_fill'){
             const options = document.querySelectorAll('[name="dropdown_options[]"]');
             dropdownConstraint(options);
+        } else if (questionType === 'code_question'){
+             let codeValue = editor.getValue().trim();
+             if (!codeValue){
+                 displayErrorMessage("Please enter correct code", event);
+             }
         }
     });
 
