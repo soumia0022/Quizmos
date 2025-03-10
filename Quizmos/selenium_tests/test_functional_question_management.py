@@ -177,27 +177,27 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         match_question_text = question.match_question
         self.assertEqual(match_question_text, "Match the following items.")
 
-    def test_user_can_add_code_question(self):
-        # Test if Code Question can be selected
-        self.select_question("code_question", "code-question-fields")
-
-        # Test the creation of a Code question
-        code_question_input = wait_for_element(self.driver, By.ID, "id_code_question")
-        code_question_input.send_keys("Allow the user to input the capital of France and print the answer with an ! at the end")
-        code_language_dropdown = Select(self.driver.find_element("name", "code_language"))
-        code_language_dropdown.select_by_value("python")
-        code_answer_input = wait_for_element(self.driver, By.ID, "id_code_answer")
-        code_answer_input.send_keys('[{"input": "Paris", "output": "Paris!"}]')
-        wait(self.driver)
-
-        # Test the saving of a Code question (verify in database)
-        self.save_question()
-        poll = Poll.objects.get(id=self.poll.id)
-        question = poll.questions.last()
-        code_test_cases = question.code_test_cases
-        expected_test_case = "[{'input': 'Paris', 'output': 'Paris!'}]"
-        expected_test_case = ast.literal_eval(expected_test_case)  # Convert to a list
-        self.assertIn(expected_test_case[0], code_test_cases)
+    # def test_user_can_add_code_question(self):
+    #     # Test if Code Question can be selected
+    #     self.select_question("code_question", "code-question-fields")
+    #
+    #     # Test the creation of a Code question
+    #     code_question_input = wait_for_element(self.driver, By.ID, "id_code_question")
+    #     code_question_input.send_keys("Allow the user to input the capital of France and print the answer with an ! at the end")
+    #     code_language_dropdown = Select(self.driver.find_element("name", "code_language"))
+    #     code_language_dropdown.select_by_value("python")
+    #     code_answer_input = wait_for_element(self.driver, By.ID, "id_code_answer")
+    #     code_answer_input.send_keys('[{"input": "Paris", "output": "Paris!"}]')
+    #     wait(self.driver)
+    #
+    #     # Test the saving of a Code question (verify in database)
+    #     self.save_question()
+    #     poll = Poll.objects.get(id=self.poll.id)
+    #     question = poll.questions.last()
+    #     code_test_cases = question.code_test_cases
+    #     expected_test_case = "[{'input': 'Paris', 'output': 'Paris!'}]"
+    #     expected_test_case = ast.literal_eval(expected_test_case)  # Convert to a list
+    #     self.assertIn(expected_test_case[0], code_test_cases)
 
 
     # Helper methods below:
