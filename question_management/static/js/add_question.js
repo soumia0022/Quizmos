@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // New Code Question fields
     const codeQuestionFields = document.getElementById('code-question-fields');
-    const codeQuestionPromptInput = document.getElementById('code_question');
+    const codeQuestionPromptInput = document.getElementById('id_code_question');
     const codeEditorArea = document.getElementById('code-editor');
     const codingLanguageSelector = document.getElementById('language-selector');
     const runCodeButton = document.getElementById('run-code-button')
