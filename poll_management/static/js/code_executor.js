@@ -1,6 +1,5 @@
 // Initializes the CodeMirror editor
-export function initializeCodeEditor(textareaId, language = "python") {
-    let textarea = document.getElementById(textareaId);
+export function initializeCodeEditor(textarea, language = "python") {
     if (!textarea) {
         console.error(`Textarea with ID '${textareaId}' not found.`);
         return null;

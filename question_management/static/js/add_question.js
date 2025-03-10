@@ -43,9 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // New Code Question fields
     const codeQuestionFields = document.getElementById('code-question-fields');
+    const codeQuestionPromptInput = document.getElementById('code_question');
+    const codeEditorArea = document.getElementById('code-editor');
     const codingLanguageSelector = document.getElementById('language-selector');
     const runCodeButton = document.getElementById('run-code-button')
-    let editor = initializeCodeEditor("code-editor", "python");
+    let editor = initializeCodeEditor(codeEditorArea, "python");
     // Language Mode Mapping
     const languageModes = {
         python: "python",
@@ -80,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Hide all fields
         const fields = [textFillFields, dropdownFillFields, multipleChoiceFields, singleChoiceFields, wordCloudFields, matchQuestionFields, codeQuestionFields];
-        const inputFields = [multipleChoiceInput, singleChoiceInput, matchQuestionInput, textFillQuestionInput, textFillAnswerInput, wordCloudQuestionInput, dropdownOption1Input]
+        const inputFields = [multipleChoiceInput, singleChoiceInput, matchQuestionInput, textFillQuestionInput, textFillAnswerInput, wordCloudQuestionInput, dropdownOption1Input, codeQuestionPromptInput];
 
         fields.forEach(field => field.style.display = 'none');
         inputFields.forEach(field => field.required = false);
@@ -150,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'code_question':
                 codeQuestionFields.style.display = 'block';
+                codeQuestionPromptInput.required = true;
                 break;
         }
     }
@@ -180,7 +183,12 @@ document.addEventListener('DOMContentLoaded', function() {
             else{
                 dropdownCorrectAnswerField.style.border = ''; // Remove highlighting
             }
-        }
+        } else if (questionType === 'code_question'){
+             let codeValue = editor.getValue().trim();
+             if (!codeValue){
+                 displayErrorMessage("Please enter correct code", event);
+             }
+         }
     });
 
     /* This is how to do the validation testing without the required field
