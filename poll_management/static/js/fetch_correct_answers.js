@@ -7,9 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 if (data.correct_answer) {
-                    const correctAnswerDiv = document.getElementById(`correct-answer-${questionId}`);
+                    const correctAnswerContainer = document.getElementById(`correct-answer-${questionId}`);
+
                     if (Array.isArray(data.correct_answer) && data.correct_answer.length > 0 && data.correct_answer[0].left) {
-                        const tbody = correctAnswerDiv.querySelector('.correct-match-tbody');
+                        const tbody = correctAnswerContainer.querySelector('.correct-match-tbody');
                         tbody.innerHTML = '';
                         data.correct_answer.forEach(pair => {
                             const row = document.createElement('tr');
@@ -21,14 +22,28 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     } else if (Array.isArray(data.correct_answer)) {
                         // Handling multiple-choice questions with multiple correct answers
-                        correctAnswerDiv.innerHTML = data.correct_answer.map(answer => `<p>${answer}</p>`).join("\n");
+                        const optionsContainer = document.getElementById(`correct-answer-options-${questionId}`) || correctAnswerContainer;
+                        optionsContainer.innerHTML = ''; 
+
+                        data.correct_answer.forEach(answer => {
+                            const answerBox = document.createElement('div');
+                            answerBox.className = 'multiple-choice-answer mb-2';
+                            answerBox.innerHTML = `<p class="p-2 border rounded bg-success text-white mb-0">${answer}</p>`;
+                            optionsContainer.appendChild(answerBox);
+                        });
+
                     } else {
-                        correctAnswerDiv.innerText = data.correct_answer;
+                        // Handling single answer questions
+                        correctAnswerContainer.innerHTML = `<p class="p-2 border rounded bg-success text-white mb-0">${data.correct_answer}</p>`;
                     }
+
                 } else {
-                    element.innerText = "Not available";
-                }
+                        element.innerHTML = "<p class='p-2 border rounded bg-secondary text-white mb-0'>Not available</p>";
+                        }
             })
-            .catch(error => console.error("Error fetching correct answer:", error));
+            .catch(error => {
+                console.error("Error fetching correct answer:", error);
+                element.innerHTML = "<p class='p-2 border rounded bg-danger text-white mb-0'>Error loading answer</p>";
+            });
+        });
     });
-});

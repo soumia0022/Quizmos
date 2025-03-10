@@ -46,3 +46,24 @@
     font-size: 0.8em;
 }
 
+.multiple-choice-answers, 
+.multiple-choice-correct-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.multiple-choice-answer {
+    width: 100%;
+}
+
+.multiple-choice-answer p {
+    margin-bottom: 0;
+}
+
+.correct-answer-container {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
