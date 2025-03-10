@@ -6,9 +6,15 @@
 <head>
     <title>{{ poll.title }}</title>
     <link rel="stylesheet" href="{% static 'poll_management/css/poll_styles.css' %}">
+
+        <!-- CodeMirror Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+
+    <!-- CodeMirror Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script> <!-- For Java & C++ -->
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
     <script src="{% static 'poll_management/js/drag_and_drop.js' %}"></script>
@@ -49,6 +55,7 @@
 
     <script type="module">
      import { startCountdownTimer } from "{% static 'js/timer.js' %}";
+     import {initializeCodeEditor, executeCode} from "{% static 'js/code_executor.js'%}";
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -214,72 +221,21 @@
                     } else if (data.question.type === 'code_question') {
                         document.getElementById('question_options').innerHTML = `
                             <textarea id="code-editor"></textarea>
-                            <button onclick="runCode()">Run Code</button>
+                            <button id="run-button" >Run Code</button>
                             <pre id="output"></pre>
                         `;
 
                         document.getElementById('answer').style.display = 'none';
 
-                        // Initialize CodeMirror
-                        let editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
-                            mode: "python", //change this based on whatever language the lecturer selected
-                            theme: "default",
-                            lineNumbers: true
+                        let language = data.question.code_language || "python"; // Default to Python if null
+                        let textarea = document.getElementById('code-editor');
+
+                        // Initialize CodeMirror using imported function
+                        let editor = initializeCodeEditor(textarea, language);
+
+                        document.getElementById('run-button').addEventListener('click', function () {
+                            executeCode(editor, language, 'output'); // Use imported function
                         });
-
-                        window.runCode = function () {
-                            {#console.log("Run Code button clicked.");#}
-
-                            const code = editor.getValue();
-                            {#console.log("User entered code:", code);#}
-
-                            const data = JSON.stringify({
-                                source_code: btoa(code), // Convert input to Base64
-                                language_id: 71, // 71 = Python 3 - change dynamically
-                                stdin: btoa(""), // Base64 encode stdin for encryption
-                                expected_output: "",
-                                cpu_time_limit: 2, // Set time limit to 2 seconds
-                                {#max_output_size: 10 //this api doesnt respect this header#}
-                            });
-
-                            console.log("Payload being sent:", data);
-
-                            const xhr = new XMLHttpRequest();
-                            xhr.withCredentials = true;
-
-                            xhr.addEventListener('readystatechange', function () {
-                                if (this.readyState === XMLHttpRequest.DONE) {
-                                    {#console.log("API Response received:", this.responseText);#}
-                                    try {
-                                        const response = JSON.parse(this.responseText);
-
-                                        if (response.stdout) {
-                                            const decodedOutput = atob(response.stdout);
-                                            {#console.log("Decoded Output:", decodedOutput);#}
-                                            document.getElementById('output').innerText = decodedOutput;
-                                        } else if (response.stderr) {
-                                            const errorOutput = atob(response.stderr);
-                                            {#console.log("Error Output:", errorOutput);#}
-                                            document.getElementById('output').innerText = "Error:\n" + errorOutput;
-                                        } else {
-                                            {#console.log("Execution failed, no output received.");#}
-                                            document.getElementById('output').innerText = "Execution failed.";
-                                        }
-                                    } catch (error) {
-                                        {#console.error("Error parsing API response:", error);#}
-                                        document.getElementById('output').innerText = "Error: Invalid API response";
-                                    }
-                                }
-                            });
-
-                            xhr.open('POST', 'https://judge029.p.rapidapi.com/submissions?base64_encoded=true&wait=true&fields=*');
-                            xhr.setRequestHeader('x-rapidapi-key', '23edc00d09mshd3a835541d54666p15c81fjsnc12fc8e7ca81');
-                            xhr.setRequestHeader('x-rapidapi-host', 'judge029.p.rapidapi.com');
-                            xhr.setRequestHeader('Content-Type', 'application/json');
-
-                            console.log("Sending request to API...");
-                            xhr.send(data);
-                        };
                     }
                 } else if (data.type === 'response_status') {
                     showFeedback(
@@ -336,7 +292,7 @@
                         if (codeEditor) {
                             let editorInstance = codeEditor.CodeMirror; // Access CodeMirror instance
                             responseData = editorInstance.getValue(); // Get the code inside the editor
-                            {#document.getElementById('answer').value = responseData; // Set the hidden answer value#} //might not be needed
+                            // document.getElementById('answer').value = responseData; // Set the hidden answer value, might not be needed
                         } else {
                             console.error("CodeMirror instance not found.");
                             responseData = "";
