@@ -45,6 +45,7 @@ class CodeQuestionTestCase(TestCase):
             'question_type': 'code_question',
             'code_question_text': 'Write a function to reverse a string.',
             'code_language': 'python',
+            'correct_code':'correct code',
         }
 
         # Send a POST request
@@ -58,6 +59,7 @@ class CodeQuestionTestCase(TestCase):
         self.assertEqual(question.poll_id, self.poll.id)
         self.assertEqual(question.code_question_text, data['code_question_text'])
         self.assertEqual(question.code_language, data['code_language'])
+        self.assertEqual(question.correct_code, data['correct_code'])
 
     def test_code_question_missing_code_language(self):
         """
@@ -67,9 +69,7 @@ class CodeQuestionTestCase(TestCase):
             'question_type': 'code_question',
             'code_question_text': 'Write a function to reverse a string.',
             'code_language': '',  # Missing code language
-            'code_test_cases': json.dumps([
-                {"input": "hello", "output": "olleh"}
-            ])
+            'correct_code': 'correct code',
         }
 
         # Send a POST request
@@ -86,9 +86,7 @@ class CodeQuestionTestCase(TestCase):
             'question_type': 'code_question',
             'code_question_text': '',  # Missing code question text
             'code_language': 'python',
-            'code_test_cases': json.dumps([
-                {"input": "hello", "output": "olleh"}
-            ])
+            'correct_code':'correct code',
         }
 
         # Send a POST request
