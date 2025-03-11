@@ -20,26 +20,25 @@ document.addEventListener("DOMContentLoaded", function () {
                             `;
                             tbody.appendChild(row);
                         });
-                    } else if (Array.isArray(data.correct_answer)) {
-                        // Handling multiple-choice questions with multiple correct answers
+                    } else if (Array.isArray(data.correct_answer) && data.correct_answer.length > 0) {
                         const optionsContainer = document.getElementById(`correct-answer-options-${questionId}`) || correctAnswerContainer;
                         optionsContainer.innerHTML = ''; 
-
+                    
                         data.correct_answer.forEach(answer => {
                             const answerBox = document.createElement('div');
                             answerBox.className = 'multiple-choice-answer mb-2';
                             answerBox.innerHTML = `<p class="p-2 border rounded bg-success text-white mb-0">${answer}</p>`;
                             optionsContainer.appendChild(answerBox);
                         });
-
+                    
+                    } else if (Array.isArray(data.correct_answer) && data.correct_answer.length === 0) {
+                        // If correct answers exist but are empty
+                        correctAnswerContainer.innerHTML = "<p class='p-2 border rounded bg-secondary text-white mb-0'>No correct answers provided</p>";
                     } else {
-                        // Handling single answer questions
-                        correctAnswerContainer.innerHTML = `<p class="p-2 border rounded bg-success text-white mb-0">${data.correct_answer}</p>`;
+                        // If correct answer is missing entirely
+                        correctAnswerContainer.innerHTML = "<p class='p-2 border rounded bg-danger text-white mb-0'>Error loading answer</p>";
                     }
-
-                } else {
-                        element.innerHTML = "<p class='p-2 border rounded bg-secondary text-white mb-0'>Not available</p>";
-                        }
+                }
             })
             .catch(error => {
                 console.error("Error fetching correct answer:", error);

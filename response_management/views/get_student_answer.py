@@ -22,6 +22,8 @@ def get_student_answer(request, poll_id, question_id):
         correct_answer = None
         if question.question_type == 'multiple_choice':
             correct_answer = question.multiple_choice_answers
+            if isinstance(correct_answer, str): 
+                correct_answer = [correct_answer]
         elif question.question_type == 'single_choice':
             correct_answer = question.single_choice_answers
         elif question.question_type == 'dropdown_fill':
