@@ -13,7 +13,12 @@ from poll_management.models.poll_model import Poll
 from django.db.models import Count, Q
 from poll_management.views.create_poll import create_poll
 from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect
+import re
+from django.db.models import Count
+from django.shortcuts import render
 from django.contrib.auth import get_user_model
+from user_management.helpers import generate_suggested_title
 
 @login_prohibited
 def home(request):
@@ -30,51 +35,48 @@ def home(request):
     return render(request, 'home.html', {'form': form})
 
 @login_required(login_url='user_management:log_in')
+
 def dashboard(request):
-    """Display the current user's dashboard."""
-    
     current_user = request.user
+    show_confirmation_popup = False
+    original_title = ""
+    suggested_title = ""
 
     if current_user.first_name == "Guest":
         user_id = current_user.id
         logout(request)
-
-        # Import the User model and delete the guest user
         User = get_user_model()
         User.objects.filter(id=user_id).delete()
-
         return redirect('user_management:home')
-    
-    if current_user.role == 'Student':
-        # Search and sort for students
-        search_query = request.GET.get('search', '')
-        sort_by = request.GET.get('sort_by', 'created_at_desc')
-        joined_polls = current_user.joined_polls.all()
 
-        if search_query:
-            joined_polls = joined_polls.filter(Q(title__icontains=search_query))
-        if sort_by == 'title_asc':
-            joined_polls = joined_polls.order_by(Lower('title'))
-        elif sort_by == 'title_desc':
-            joined_polls = joined_polls.order_by(Lower('title').desc())
-        elif sort_by == 'created_at_asc':
-            joined_polls = joined_polls.order_by('created_at')
-        elif sort_by == 'created_at_desc':
-            joined_polls = joined_polls.order_by('-created_at')
+    if request.method == "POST" and "title" in request.POST:
+        title = request.POST.get("title", "").strip()
+        confirmed = request.POST.get("confirmed", "false") == "true"
+        existing_polls = Poll.objects.filter(user=request.user)
+        existing_titles = {poll.title for poll in existing_polls}
 
-        # Paginate after sorting and searching
-        paginator = Paginator(joined_polls, 10)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+        if title in existing_titles and not confirmed:
+            suggested_title = generate_suggested_title(title, existing_titles)
+            show_confirmation_popup = True
+            original_title = title
+            return render(request, 'lecturer_dashboard.html', {
+                'user': current_user,
+                'polls': existing_polls,
+                'show_confirmation_popup': show_confirmation_popup,
+                'original_title': original_title,
+                'suggested_title': suggested_title,
+            })
 
-        return render(request, 'student_dashboard.html', {'user': current_user, 'polls': page_obj, 'search_query': search_query, 'sort_by': sort_by})
-    else:
-        create_poll(request)
-        
-        sort_by = request.GET.get('sort_by', 'created_at_desc')  # Default sorting
-        search_query = request.GET.get('search', '')  # Get the search query
+        new_poll_title = title if title not in existing_titles else generate_suggested_title(title, existing_titles)
+        new_poll = Poll.objects.create(user=request.user, title=new_poll_title)
+        new_poll.save()
+        return redirect(reverse('user_management:dashboard'))
 
-        poll = Poll.objects.filter(user=request.user).annotate(
+    sort_by = request.GET.get('sort_by', 'created_at_desc')
+    search_query = request.GET.get('search', '')
+
+    if current_user.role == "Lecturer":
+        polls = Poll.objects.filter(user=request.user).annotate(
             multiple_choice_responses_count=Count('multiplechoiceresponse'),
             single_choice_responses_count=Count('singlechoiceresponse'),
             dropdown_fill_responses_count=Count('dropdownfillresponse'),
@@ -82,22 +84,19 @@ def dashboard(request):
             match_question_responses_count=Count('matchquestionresponse')
         )
 
-        # Filtering based on search query
         if search_query:
-            poll = poll.filter(Q(title__icontains=search_query))
+            polls = polls.filter(Q(title__icontains=search_query))
 
-        # Sorting logic based on sort_by parameter
-        if sort_by == 'title_asc':
-            poll = poll.order_by(Lower('title'))
-        elif sort_by == 'title_desc':
-            poll = poll.order_by(Lower('title').desc()) #can't use default '-' for sorting because it's case sensitive
-        elif sort_by == 'created_at_asc':
-            poll = poll.order_by('created_at')
-        elif sort_by == 'created_at_desc':
-            poll = poll.order_by('-created_at')
+        sort_options = {
+            'title_asc': Lower('title'),
+            'title_desc': Lower('title').desc(),
+            'created_at_asc': 'created_at',
+            'created_at_desc': '-created_at'
+        }
 
-        # Add up all response counts for each poll
-        for p in poll:
+        polls = polls.order_by(sort_options.get(sort_by, '-created_at'))
+
+        for p in polls:
             p.total_responses_count = (
                 p.multiple_choice_responses_count +
                 p.single_choice_responses_count +
@@ -106,19 +105,48 @@ def dashboard(request):
                 p.match_question_responses_count
             )
 
-         #This where I paginate the polls
-        paginator = Paginator(poll, 10)
-        page_number = request.GET.get('page')  # Getting the page number
-        page_obj = paginator.get_page(page_number)  # Getting the page object
+        paginator = Paginator(polls, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
-        # Essentially rendering the template
         return render(request, 'lecturer_dashboard.html', {
             'user': current_user,
             'polls': page_obj,
             'sort_by': sort_by,
             'search_query': search_query,
+            'show_confirmation_popup': show_confirmation_popup,
+            'original_title': original_title,
+            'suggested_title': suggested_title,
         })
 
+    elif current_user.role == "Student":
+        joined_polls = current_user.joined_polls.all()
+
+        if search_query:
+            joined_polls = joined_polls.filter(Q(title__icontains=search_query))
+
+        sort_options = {
+            'title_asc': Lower('title'),
+            'title_desc': Lower('title').desc(),
+            'created_at_asc': 'created_at',
+            'created_at_desc': '-created_at'
+        }
+
+        joined_polls = joined_polls.order_by(sort_options.get(sort_by, '-created_at'))
+
+        paginator = Paginator(joined_polls, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'student_dashboard.html', {
+            'user': current_user,
+            'polls': page_obj,
+            'search_query': search_query,
+            'sort_by': sort_by,
+        })
+
+    else:
+        return redirect(reverse('user_management:dashboard'))
 
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
