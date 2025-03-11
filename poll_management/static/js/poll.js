@@ -1,4 +1,4 @@
-import {ws} from './websocket.js';
+import {fetchResponseCounts, ws} from './websocket.js';
 import {renderChoice} from "./choice_display.js";
 import {renderText} from "./text_question_display.js";
 import {renderWordCloud} from "./word_cloud_display.js";
@@ -22,6 +22,7 @@ window.previousQuestion = function() {
         window.currentQuestionIndex--;
         updateQuestionDisplay();
         resetShowAnswerState();
+        fetchResponseCounts(window.questions[window.currentQuestionIndex].id);
     }
 };
 
@@ -30,6 +31,7 @@ window.nextQuestion = function() {
         window.currentQuestionIndex++;
         updateQuestionDisplay();
         resetShowAnswerState();
+        fetchResponseCounts(window.questions[window.currentQuestionIndex].id);
     }
 };
 
@@ -39,7 +41,7 @@ function resetShowAnswerState() {
     closedEyeButton.style.display = 'inline';
     openEyeButton.style.display = 'none';
 
-    // notify the server to hide answers and show the closed eye icon
+    // notify the server to hide answers and show the closed eye icon 
     const questionId = window.questions[window.currentQuestionIndex].id;
     if (ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({

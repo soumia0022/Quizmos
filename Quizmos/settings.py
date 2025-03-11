@@ -99,6 +99,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'poll_management.middleware.ProfanityFilterMiddleware',
 ]
 
 ROOT_URLCONF = 'Quizmos.urls'

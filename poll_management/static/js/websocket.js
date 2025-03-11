@@ -29,7 +29,7 @@ ws.onmessage = function(event) {
 };
 
 // Function to fetch response counts for a specific question
-async function fetchResponseCounts(questionId) {
+export async function fetchResponseCounts(questionId) {
     try {
         const response = await fetch(`${window.pollManagementBaseUrl}${window.pollCode}/question/${questionId}/counts/`);
         if (!response.ok) {

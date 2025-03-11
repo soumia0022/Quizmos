@@ -277,7 +277,12 @@
                                 left: leftOption,
                                 right: rightOption
                             };
-                        }).filter(match => match.left && match.right);
+                        })
+
+                        if (responseData.some(match => !match.right)) {
+                            showFeedback('Please match all items before submitting.', false);
+                            return;
+                        }
                         break;
 
                     case 'wordcloud':

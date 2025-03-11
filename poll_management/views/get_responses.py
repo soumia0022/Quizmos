@@ -128,6 +128,7 @@ class QuestionResponseCounter:
         responses = TextFillResponse.objects.filter(
             question=self.question, session_code=self.question.poll.number_code
         ).values_list('answer_text', flat=True)
+        responses = [response for response in responses if "****" not in response]
 
         # Convert QuerySet to list and filter out empty responses
         response_list = [resp.strip() for resp in responses if resp and resp.strip()]
