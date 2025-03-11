@@ -13,6 +13,8 @@
         <p class="p-2 border rounded bg-primary text-white">{{ response.selected_option }}</p>
     {% elif response.type == 'dropdown' %}
         <p class="p-2 border rounded bg-primary text-white">{{ response.selected_option }}</p>
+    {% elif response.type == 'text_fill' %}
+        <p class="p-2 border rounded bg-primary text-white">{{ response.answer_text }}</p>    
     {% elif response.type == 'match' %}
         <table class="table table-bordered">
             <thead class="table-light">
