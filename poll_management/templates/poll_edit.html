@@ -1,32 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'base_content.html' %}
+{% load static %}
+{% load system_extras %}
+{% block content %}
 
-    <title>Edit Poll</title>
-</head>
-<body>
-    {% load system_extras %} <!-- When refactored, this can go under the extend base content line -->
-    {% noscript_warning %}
+<link rel="stylesheet" href="{% static 'css/poll_edit.css' %}">
+
+<!-- Background Elements -->
+<div class="stars"></div>
+<div class="planet planet-1"></div> <!-- Cool Orange -->
+<div class="planet planet-2"></div> <!-- Red-Orange -->
+<div class="large-planet-icon">🪐</div>
+
+<!-- Poll Edit Content -->
+<div class="container d-flex align-items-center justify-content-center flex-column" style="height: 100vh;">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6">
+            <div class="card normal-card p-4 shadow-lg">
+                <h3 id="id_edit_poll_title" class="glowy-title text-center">
+                    Edit Poll: {{ poll.title }}
+                </h3>                
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Poll Title:</label>
+                        <input type="text" id="title" name="title" class="form-control" value="{{ poll.title }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status:</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="active" {% if poll.status == "active" %}selected{% endif %}>Active</option>
+                            <option value="closed" {% if poll.status == "closed" %}selected{% endif %}>Closed</option>
+                        </select>
+                    </div>
+                    <div class="d-flex flex-column gap-3 mt-3">
+                        <button type="submit" class="btn btn-primary-custom btn-block">Save Changes</button>
+                        <a id="id_edit_questions_button" href="{% url 'question_management:add_question' poll.id %}" class="btn btn-outline-light btn-block">Edit Questions</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     {% return_button %}
-    <h1 id="id_edit_poll_title">Edit Poll: {{ poll.title }}</h1>
-    <form method="POST">
-        {% csrf_token %}
-        <label for="title">Poll Title:</label>
-        <input type="text" id="title" name="title" value="{{ poll.title }}" required>
-        <br>
-        <label for="status">Status:</label>
-        <select id="status" name="status">
-            <option value="active" {% if poll.status == "active" %}selected{% endif %}>Active</option>
-            <option value="closed" {% if poll.status == "closed" %}selected{% endif %}>Closed</option>
-        </select>
-        <br>
-        <button type="submit">Save Changes</button>
-    </form>
-    <br>
-    <a href="{% url 'question_management:add_question' poll.id %}">
-        <button id="id_edit_questions_button" type="button" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; cursor: pointer;">
-            Edit Questions
-        </button>
-    </a>
-</body>
-</html>
+
+{% endblock %} 

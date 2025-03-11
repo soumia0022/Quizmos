@@ -1,0 +1,34 @@
+<div class="answer-section p-3 bg-light rounded">
+    <h5 class="mb-2">Your Answer:</h5>
+
+    {% if response.type == 'multiple_choice' %}
+        <ul class="list-group">
+            {% for option in response.selected_options %}
+                <p class="p-2 border rounded bg-primary text-white">{{ option }}</p>
+            {% endfor %}
+        </ul>
+    {% elif response.type == 'single_choice' %}
+        <p class="p-2 border rounded bg-primary text-white">{{ response.selected_option }}</p>
+    {% elif response.type == 'text_fill' %}
+        <p class="p-2 border rounded bg-primary text-white">{{ response.answer_text }}</p>
+    {% elif response.type == 'dropdown' %}
+        <p class="p-2 border rounded bg-primary text-white">{{ response.selected_option }}</p>
+    {% elif response.type == 'match' %}
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Question Item</th>
+                    <th >Your Match</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in response.match_responses %}
+                    <tr>
+                        <td>{{ item.left }}</td>
+                        <td class="bg-primary text-white">{{ item.right }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>

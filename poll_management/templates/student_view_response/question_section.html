@@ -1,0 +1,33 @@
+<div class="question-section p-3 mb-3 border-bottom">
+  <h5 class="mb-2">Question:</h5>
+  <p class="lead">{{ response.question.question_text }}</p>
+
+  {% if response.type == 'multiple_choice' %}
+      <div class="mt-3">
+          <h6>Options:</h6>
+          <ul class="list-group">
+              {% for option in response.question.multiple_choice_options %}
+                  <li class="list-group-item">{{ option }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+  {% elif response.type == 'single_choice' %}
+      <div class="mt-3">
+          <h6>Options:</h6>
+          <ul class="list-group">
+              {% for option in response.question.single_choice_option %}
+                  <li class="list-group-item">{{ option }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+  {% elif response.type == 'dropdown' %}
+      <div class="mt-3">
+          <h6>Dropdown Options:</h6>
+          <ul class="list-group">
+              {% for option in response.question.get_dropdown_options %}
+                  <li class="list-group-item">{{ option }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+  {% endif %}
+  </div>

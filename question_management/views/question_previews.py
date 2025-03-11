@@ -7,7 +7,7 @@ def question_preview(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     preview_data = {
         'question_type': question.get_question_type_display(),
-        'timer': question.timer,
+        'question_timer': question.question_timer,
         'question_text': question.question_text,
     }
     return JsonResponse(preview_data)

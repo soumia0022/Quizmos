@@ -9,7 +9,7 @@ from poll_management.models.poll_model import Poll
 from user_management.models import User
 from response_management.models.response_model import (
     MatchQuestionResponse, MultipleChoiceResponse,
-    SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse
 )
 from poll_management.views.get_responses import QuestionResponseCounter, get_question_response_counts
 
@@ -64,6 +64,13 @@ class QuestionResponseCounterTests(TestCase):
             match_answers=["1", "2", "3"]
         )
 
+        self.word_cloud = Question.objects.create(
+            poll=self.poll,
+            wordcloud_question="Word cloud question?",
+            question_type="wordcloud",
+
+        )
+
         self.test_users = []
         for i in range(5):
             user = User.objects.create_user(
@@ -81,19 +88,22 @@ class QuestionResponseCounterTests(TestCase):
             user=self.test_users[0],
             poll=self.poll,
             question=self.mcq,
-            selected_options=["Option A"]
+            selected_options=["Option A"],
+            session_code =123456
         )
         MultipleChoiceResponse.objects.create(
             user=self.test_users[1],
             poll=self.poll,
             question=self.mcq,
-            selected_options=["Option A", "Option B"]
+            selected_options=["Option A", "Option B"],
+            session_code=123456
         )
         MultipleChoiceResponse.objects.create(
             user=self.test_users[2],
             poll=self.poll,
             question=self.mcq,
-            selected_options=["Option C"]
+            selected_options=["Option C"],
+            session_code=123456
         )
 
         # count responses
@@ -117,19 +127,22 @@ class QuestionResponseCounterTests(TestCase):
             user=self.test_users[0],
             poll=self.poll,
             question=self.scq,
-            selected_option="Yes"
+            selected_option="Yes",
+            session_code=123456
         )
         SingleChoiceResponse.objects.create(
             user=self.test_users[1],
             poll=self.poll,
             question=self.scq,
-            selected_option="No"
+            selected_option="No",
+            session_code=123456
         )
         SingleChoiceResponse.objects.create(
             user=self.test_users[2],
             poll=self.poll,
             question=self.scq,
-            selected_option="Yes"
+            selected_option="Yes",
+            session_code=123456
         )
 
         # count responses
@@ -153,19 +166,22 @@ class QuestionResponseCounterTests(TestCase):
             user=self.test_users[0],
             poll=self.poll,
             question=self.dropdown,
-            selected_option="Red"
+            selected_option="Red",
+            session_code=123456
         )
         DropdownFillResponse.objects.create(
             user=self.test_users[1],
             poll=self.poll,
             question=self.dropdown,
-            selected_option="Blue"
+            selected_option="Blue",
+            session_code=123456
         )
         DropdownFillResponse.objects.create(
             user=self.test_users[2],
             poll=self.poll,
             question=self.dropdown,
-            selected_option="Red"
+            selected_option="Red",
+            session_code=123456
         )
 
         # count responses
@@ -188,19 +204,22 @@ class QuestionResponseCounterTests(TestCase):
             user=self.test_users[0],
             poll=self.poll,
             question=self.text,
-            answer_text="First answer"
+            answer_text="First answer",
+            session_code=123456
         )
         TextFillResponse.objects.create(
             user=self.test_users[1],
             poll=self.poll,
             question=self.text,
-            answer_text="Second answer"
+            answer_text="Second answer",
+            session_code=123456
         )
         TextFillResponse.objects.create(
             user=self.test_users[2],
             poll=self.poll,
             question=self.text,
-            answer_text="   "  # empty answer that should be filtered out
+            answer_text="   ",  # empty answer that should be filtered out
+            session_code=123456
         )
 
         # count responses
@@ -227,7 +246,8 @@ class QuestionResponseCounterTests(TestCase):
                 {'left': 'A', 'right': '1'},
                 {'left': 'B', 'right': '2'},
                 {'left': 'C', 'right': '3'}
-            ]
+            ],
+            session_code=123456
         )
         MatchQuestionResponse.objects.create(
             user=self.test_users[1],
@@ -237,7 +257,8 @@ class QuestionResponseCounterTests(TestCase):
                 {'left': 'A', 'right': '2'},
                 {'left': 'B', 'right': '3'},
                 {'left': 'C', 'right': '1'}
-            ]
+            ],
+            session_code=123456
         )
 
         # count responses
@@ -258,6 +279,42 @@ class QuestionResponseCounterTests(TestCase):
         self.assertEqual(counts['B']['3'], 1)
         self.assertEqual(counts['C']['1'], 1)
         self.assertEqual(counts['C']['3'], 1)
+
+    def test_word_cloud_responses(self):
+        """Test collecting word cloud responses"""
+        # responses
+        WordCloudResponse.objects.create(
+            user=self.test_users[0],
+            poll=self.poll,
+            question=self.word_cloud,
+            word_cloud_response= ["hello", "world"]
+        )
+        WordCloudResponse.objects.create(
+            user=self.test_users[1],
+            poll=self.poll,
+            question=self.word_cloud,
+            word_cloud_response =["hello", "hi"]
+        )
+        WordCloudResponse.objects.create(
+            user=self.test_users[2],
+            poll=self.poll,
+            question=self.word_cloud,
+            word_cloud_response=[]  # empty answer that should be filtered out
+        )
+
+        # count responses
+        counter = QuestionResponseCounter(self.word_cloud)
+        response = counter.get_counts()
+
+        data = json.loads(response.content)
+        self.assertEqual(data['question_id'], self.word_cloud.id)
+        self.assertEqual(data['question_type'], 'wordcloud')
+
+
+        self.assertEqual(len(data['word_cloud_data']), 3) # hello: 2, hi :1, world:1
+        self.assertEqual(data['word_cloud_data']['hello'], 2)
+        self.assertEqual(data['word_cloud_data']['hi'], 1)
+        self.assertEqual(data['word_cloud_data']['world'], 1)
 
     def test_get_question_response_counts_function(self):
         """Test the view function that uses the counter class"""

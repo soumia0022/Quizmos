@@ -26,7 +26,7 @@ class EditWordCloudQuestionTestCase(TestCase):
             question_text="Original WordCloud Question",
             question_type="wordcloud",
             wordcloud_question="Original WordCloud Question",
-            timer=30
+            question_timer=30
         )
 
         # Define URL

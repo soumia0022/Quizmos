@@ -1,8 +1,9 @@
-import {ws} from './websocket.js';
+import {fetchResponseCounts, ws} from './websocket.js';
 import {renderChoice} from "./choice_display.js";
 import {renderText} from "./text_question_display.js";
 import {renderWordCloud} from "./word_cloud_display.js";
 import {renderMatch} from "./match_question_display.js";
+import {getFormattedTime, startCountdownTimer} from "./timer.js";
 
 
 
@@ -10,26 +11,46 @@ window.startPoll = function() {
     document.getElementById('start-poll-btn').style.display = 'none';
     document.getElementById('question-display').style.display = 'block';
     document.getElementById('unlock').style.display = '';
+    document.getElementById('show-answer-closed').style.display = 'inline';
+    document.getElementById('show-answer-open').style.display = 'none';
     updateQuestionDisplay();
 };
 
 window.previousQuestion = function() {
-    if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
+    if (window.currentQuestionIndex > 0) {
+        window.currentQuestionIndex--;
         updateQuestionDisplay();
+        resetShowAnswerState();
+        fetchResponseCounts(window.questions[window.currentQuestionIndex].id);
     }
 };
 
 window.nextQuestion = function() {
-    if (currentQuestionIndex < questions.length - 1) {
-        currentQuestionIndex++;
+    if (window.currentQuestionIndex < window.questions.length - 1) {
+        window.currentQuestionIndex++;
         updateQuestionDisplay();
+        resetShowAnswerState();
+        fetchResponseCounts(window.questions[window.currentQuestionIndex].id);
     }
 };
 
-function shuffleArray(array) {
-    return array.sort(() => Math.random() - 0.5);
-  }
+function resetShowAnswerState() {
+    const closedEyeButton = document.getElementById('show-answer-closed');
+    const openEyeButton = document.getElementById('show-answer-open');
+    closedEyeButton.style.display = 'inline';
+    openEyeButton.style.display = 'none';
+
+    // notify the server to hide answers and show the closed eye icon 
+    const questionId = window.questions[window.currentQuestionIndex].id;
+    if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'show_answers',
+            question_id: questionId,
+            action: 'hide_answer'
+        }));
+    }
+}
+
 function createQuestionHTML(question) {
   let html = '<div class="question-title">';//this will store the final html content needed to display the question
 
@@ -78,28 +99,28 @@ function createQuestionHTML(question) {
         Your browser does not support the audio element.
       </audio>
     </div>
-  `;
-}
+    `;
+    }
+
+  if (question.question_timer != null) {
+      // get the formatted time
+      const formattedTime = `${getFormattedTime(question.question_timer)}`;
+      html += `<div class="question-timer">Time remaining: ${formattedTime}</div>`;
+    }
 
   switch(question.type) {
-     case 'dropdown_fill':
-       html += renderChoice(question);
-       break;
+    case 'dropdown_fill':
+    case 'multiple_choice':
+    case 'single_choice':
+        html += renderChoice(question);
+        break;
 
     case 'text_fill':
-      html += renderText(question);
-      break;
-
-    case 'multiple_choice':
-      html += renderChoice(question);
-      break;
-
-    case 'single_choice':
-      html += renderChoice(question);
-      break;
+        html += renderText(question);
+        break;
 
     case 'wordcloud':
-      html += renderText(question);//update this later when wordcloud responses are done
+      html += renderWordCloud(question);
       break;
 
     case 'match_question':
@@ -110,26 +131,35 @@ break;
   html += '</div>';
   return html;
 }
+
 function updateQuestionDisplay() {
     const questionContainer = document.getElementById('question-container');
-    const currentQuestion = questions[currentQuestionIndex];
+    const currentQuestion = window.questions[window.currentQuestionIndex];
 
-    // Update the question display
+    // Update the question display (only set innerHTML once)
     questionContainer.innerHTML = createQuestionHTML(currentQuestion);
+
+
+    if (window.currentTimerInterval) {
+        clearInterval(window.currentTimerInterval);
+        window.currentTimerInterval = null;
+    }
+    if (currentQuestion.question_timer != null) {
+        window.currentTimerInterval = startCountdownTimer(questionContainer, currentQuestion.question_timer);
+    }
 
     // Update navigation buttons
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
-    prevBtn.disabled = currentQuestionIndex === 0;
-    nextBtn.disabled = currentQuestionIndex === questions.length - 1;
+    prevBtn.disabled = window.currentQuestionIndex === 0;
+    nextBtn.disabled = window.currentQuestionIndex === window.questions.length - 1;
 
     // Send question update to WebSocket
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
         type: 'question',
-        question_id: currentQuestion.id
+        question_id: currentQuestion.id,
+        question_timer: currentQuestion.question_timer,
       }));
     }
-  }
-
-
+}

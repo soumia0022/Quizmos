@@ -21,14 +21,11 @@ class TestPollConsumer(TransactionTestCase):
         self.user = await database_sync_to_async(User.objects.get)(username='johndoe')
         self.student = await database_sync_to_async(User.objects.get)(username='janedoe')
         self.poll = await database_sync_to_async(Poll.objects.create)(
-
             title="Test Poll",
             user=self.user,
-            number_code = 123456
-
+            number_code=123456
         )
 
-        #  create the question in the poll
         self.question = await database_sync_to_async(Question.objects.create)(
             poll=self.poll,
             question_text="Test question?",
@@ -39,6 +36,13 @@ class TestPollConsumer(TransactionTestCase):
             single_choice_answers=[],
             match_options=[],
             match_answers=[]
+        )
+
+        self.word_cloud_question = await database_sync_to_async(Question.objects.create)(
+            poll=self.poll,
+            question_text="Enter your word(s):",
+            question_type="wordcloud",
+            wordcloud_question="Enter your word(s):"
         )
 
         self.application = URLRouter([
@@ -56,9 +60,8 @@ class TestPollConsumer(TransactionTestCase):
         super().tearDown()
 
     async def test_connect(self):
-        await sync_to_async(self.client.login)(username = self.user.username, password= "Password123")
+        await sync_to_async(self.client.login)(username=self.user.username, password="Password123")
         communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
-
         communicator.scope['user'] = self.user
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
@@ -77,6 +80,7 @@ class TestPollConsumer(TransactionTestCase):
 
         message = {'type': 'question', 'question_id': self.question.id}
         await communicator.send_json_to(message)
+        await communicator.receive_json_from()
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'question')
         self.assertEqual(response['question']['id'], self.question.id)
@@ -84,24 +88,6 @@ class TestPollConsumer(TransactionTestCase):
         self.assertEqual(response['question']['type'], "multiple_choice")
 
         await communicator.disconnect()
-
-    async def test_student_join_count(self):
-        """Test that student join counter works correctly"""
-
-        student_communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
-
-
-        student_communicator.scope['user'] = self.student  # Student
-
-        # Connect student and check for student count message
-        await student_communicator.connect()
-        response = await student_communicator.receive_json_from()
-
-        self.assertEqual(response['type'], 'new_student')
-        self.assertEqual(response['message'], '1')
-
-
-
 
 
     async def test_save_multiple_choice_response(self):
@@ -124,6 +110,7 @@ class TestPollConsumer(TransactionTestCase):
             'response_data': ['Option A', 'Option C']
         }
         await communicator.receive_json_from()  # gets the new student message
+        await communicator.receive_json_from()
         await communicator.send_json_to(message)
 
         # Check response status
@@ -187,6 +174,7 @@ class TestPollConsumer(TransactionTestCase):
             'response_data': 'First answer'
         }
         await communicator.send_json_to(message)
+        await communicator.receive_json_from()
         await communicator.receive_json_from()  # Response status
         await communicator.receive_json_from()  # Broadcast update
 
@@ -215,6 +203,7 @@ class TestPollConsumer(TransactionTestCase):
         await communicator.send_json_to(message)
 
         # Check response status
+        await communicator.receive_json_from()
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'response_status')
         self.assertFalse(response['success'])
@@ -247,7 +236,8 @@ class TestPollConsumer(TransactionTestCase):
             'response_type': 'match_question',
             'response_data': match_data
         }
-        await communicator.receive_json_from()  # new student
+        await communicator.receive_json_from() # new student
+        await communicator.receive_json_from() #status
         await communicator.send_json_to(message)
 
         # Check response status
@@ -280,9 +270,12 @@ class TestPollConsumer(TransactionTestCase):
             'response_type': 'dropdown_fill',
             'response_data': 'Blue'
         }
+
+        await communicator.receive_json_from()
         await communicator.send_json_to(message)
 
         # Check response status
+
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'response_status')
         self.assertTrue(response['success'])
@@ -331,6 +324,7 @@ class TestPollConsumer(TransactionTestCase):
         await communicator1.send_json_to(message)
 
         # Check that the message is broadcast
+        await communicator2.receive_json_from()
         response = await communicator2.receive_json_from()
         self.assertEqual(response['type'], 'new_student')
         self.assertEqual(response['message'], '5')
@@ -338,9 +332,174 @@ class TestPollConsumer(TransactionTestCase):
         await communicator1.disconnect()
         await communicator2.disconnect()
 
+    async def test_receive_word_cloud_question(self):
+        communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator.scope['user'] = self.user
+        await communicator.connect()
+
+        message = {'type': 'question', 'question_id': self.word_cloud_question.id}
+        await communicator.send_json_to(message)
+        await communicator.receive_json_from()
+        response = await communicator.receive_json_from()
+        self.assertEqual(response['type'], 'question')
+        self.assertEqual(response['question']['id'], self.word_cloud_question.id)
+        self.assertEqual(response['question']['text'], "Enter your word(s):")
+        self.assertEqual(response['question']['type'], "wordcloud")
+
+        await communicator.disconnect()
+
+    async def test_student_join_count(self):
+            """Test that student join counter works correctly"""
+
+            student_communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
 
 
+            student_communicator.scope['user'] = self.student  # Student
+
+            # Connect student and check for student count message
+            await student_communicator.connect()
+            await student_communicator.receive_json_from()
+            response = await student_communicator.receive_json_from()
+
+            self.assertEqual(response['type'], 'new_student')
+            self.assertEqual(response['message'], '1')
+    
+    async def test_get_correct_answers(self):
+        """Test retrieving correct answers for different question types"""
+        # Create a PollConsumer instance directly
+        consumer = PollConsumer()
+        # Set necessary attributes that would normally be set during connection
+        consumer.poll_code = "123456"
+        consumer.poll = self.poll
+        
+        # Multiple choice question
+        multiple_choice_q = await database_sync_to_async(Question.objects.create)(
+            poll=self.poll,
+            question_text="Multiple choice question?",
+            question_type="multiple_choice",
+            multiple_choice_options=["A", "B", "C", "D"],
+            multiple_choice_answers=["A", "C"]
+        )
+        
+        # Single choice question
+        single_choice_q = await database_sync_to_async(Question.objects.create)(
+            poll=self.poll,
+            question_text="Single choice question?",
+            question_type="single_choice",
+            single_choice_option=["Yes", "No", "Maybe"],
+            single_choice_answers=["Yes"]
+        )
+        
+        # Text fill question
+        text_fill_q = await database_sync_to_async(Question.objects.create)(
+            poll=self.poll,
+            question_text="Text fill question?",
+            question_type="text_fill",
+            text_fill_answer="Correct answer"
+        )
+        
+        # Dropdown fill question
+        dropdown_q = await database_sync_to_async(Question.objects.create)(
+            poll=self.poll,
+            question_text="Dropdown question?",
+            question_type="dropdown_fill",
+            dropdown_options="Red,Green,Blue",
+            dropdown_correct_answer="Blue"
+        )
+        
+        # Match question
+        match_q = await database_sync_to_async(Question.objects.create)(
+            poll=self.poll,
+            question_text="Match question?",
+            question_type="match_question",
+            match_options=["A", "B", "C"],
+            match_answers=["1", "2", "3"]
+        )
+        
+        # Test get_correct_answers for multiple choice
+        answers = await consumer.get_correct_answers(multiple_choice_q.id)
+        self.assertEqual(answers, ["A", "C"])
+        
+        # Test get_correct_answers for single choice
+        answers = await consumer.get_correct_answers(single_choice_q.id)
+        self.assertEqual(answers, ["Yes"])
+        
+        # Test get_correct_answers for text fill
+        answers = await consumer.get_correct_answers(text_fill_q.id)
+        self.assertEqual(answers, "Correct answer")
+        
+        # Test get_correct_answers for dropdown
+        answers = await consumer.get_correct_answers(dropdown_q.id)
+        self.assertEqual(answers, "Blue")
+        
+        # Test get_correct_answers for wordcloud (should be None)
+        answers = await consumer.get_correct_answers(self.word_cloud_question.id)
+        self.assertIsNone(answers)
+        
+        # Test get_correct_answers for match question
+        answers = await consumer.get_correct_answers(match_q.id)
+        self.assertEqual(answers, ["1", "2", "3"])
+        
+        # Test with non-existent question ID
+        answers = await consumer.get_correct_answers(99999)
+        self.assertIsNone(answers)
+
+   
+
+    
+
+    
 
 
+    async def test_show_answers_lecturer(self):
+        """Test showing correct answers by a lecturer"""
+        # Set user as lecturer
+        await database_sync_to_async(setattr)(self.user, 'role', 'Lecturer')
+        await database_sync_to_async(self.user.save)()
+        
+        # Update test question to have answers
+        await database_sync_to_async(setattr)(
+            self.question, 'multiple_choice_answers', ['Option A', 'Option C']
+        )
+        await database_sync_to_async(self.question.save)()
+        
+        communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator.scope['user'] = self.user
+        await communicator.connect()
+        
+        # Request to show answers
+        show_message = {
+            'type': 'show_answers',
+            'action': 'show_answer',
+            'question_id': self.question.id
+        }
+        await communicator.send_json_to(show_message)
+        
+        # Verify answers are broadcasted
+        await communicator.receive_json_from()
+        response = await communicator.receive_json_from()
+        self.assertEqual(response['type'], 'answers')
+        self.assertEqual(response['question_id'], self.question.id)
+        self.assertEqual(response['answers'], ['Option A', 'Option C'])
+        self.assertEqual(response['action'], 'show_answer')
+        
+        # Request to hide answers
+        hide_message = {
+            'type': 'show_answers',
+            'action': 'hide_answer',
+            'question_id': self.question.id
+        }
+        await communicator.send_json_to(hide_message)
+        
+        # Verify hide command is broadcasted
+        response = await communicator.receive_json_from()
+        self.assertEqual(response['type'], 'answers')
+        self.assertEqual(response['question_id'], self.question.id)
+        self.assertIsNone(response['answers'])
+        self.assertEqual(response['action'], 'hide_answer')
+        
+        await communicator.disconnect()
 
+    
 
+   

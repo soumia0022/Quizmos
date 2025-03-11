@@ -17,6 +17,7 @@ class QuestionResponseCounter:
             'dropdown_fill': self._get_dropdown_responses,
             'text_fill' : self._get_text_responses,
             'match_question' : self._get_match_responses,
+            'wordcloud': self._get_word_cloud_responses,
         }
 
     def get_counts(self) -> JsonResponse:
@@ -28,6 +29,13 @@ class QuestionResponseCounter:
                 }, status=400)
 
             counts_dict = self.response_handlers[self.question_type]()
+            if self.question_type == 'wordcloud':
+                word_cloud_data = self.response_handlers[self.question_type]()
+                return JsonResponse({
+                    'question_id': self.question.id,
+                    'question_type': 'wordcloud',
+                    'word_cloud_data': word_cloud_data
+                })
 
             if self.question_type == 'text_fill':
                 return JsonResponse(counts_dict)
@@ -58,7 +66,7 @@ class QuestionResponseCounter:
         options = list(self.question.multiple_choice_options)
         counts_dict = {i: 0 for i in range(len(options))}
         responses = MultipleChoiceResponse.objects.filter(
-            question=self.question
+            question=self.question, session_code=self.question.poll.number_code
         ).values_list('selected_options', flat=True)
 
         for selected_values in responses:
@@ -82,7 +90,7 @@ class QuestionResponseCounter:
         options = list(self.question.single_choice_option)
         counts_dict = {i: 0 for i in range(len(options))}
         responses = SingleChoiceResponse.objects.filter(
-            question=self.question
+            question=self.question, session_code=self.question.poll.number_code
         ).values_list('selected_option', flat=True)
 
         for selected_value in responses:
@@ -103,7 +111,7 @@ class QuestionResponseCounter:
         options = [opt.strip() for opt in self.question.dropdown_options.split(',')]
         counts_dict = {i: 0 for i in range(len(options))}
         responses = DropdownFillResponse.objects.filter(
-            question=self.question
+            question=self.question, session_code=self.question.poll.number_code
         ).values_list('selected_option', flat=True)
 
         for selected_value in responses:
@@ -114,8 +122,9 @@ class QuestionResponseCounter:
     def _get_text_responses(self) -> Dict[str, List[str]]:
         """Handle text fill responses."""
         responses = TextFillResponse.objects.filter(
-            question=self.question
+            question=self.question, session_code=self.question.poll.number_code
         ).values_list('answer_text', flat=True)
+        responses = [response for response in responses if "****" not in response]
 
         # Convert QuerySet to list and filter out empty responses
         response_list = [resp.strip() for resp in responses if resp and resp.strip()]
@@ -130,7 +139,7 @@ class QuestionResponseCounter:
         """
         Handle match question responses.
         """
-        responses = MatchQuestionResponse.objects.filter( question=self.question).values_list('match_responses', flat=True)
+        responses = MatchQuestionResponse.objects.filter( question=self.question, session_code=self.question.poll.number_code).values_list('match_responses', flat=True)
 
         options = self.question.match_options
 
@@ -148,6 +157,32 @@ class QuestionResponseCounter:
 
         return counts
 
+    def _get_word_cloud_responses(self) -> Dict[str, int]:
+        """
+        Handle word cloud question responses.
+
+        Returns a dictionary of words and their frequencies.
+        """
+        from response_management.models.response_model import WordCloudResponse
+
+        # Fetch all word cloud responses for this question
+        responses = WordCloudResponse.objects.filter(question=self.question).values_list('word_cloud_response', flat=True)
+
+        # Aggregate word frequencies
+        word_frequencies = {}
+
+        for response in responses:
+
+
+            for word in response:
+                normalized_word = str(word).lower().strip()
+                if not normalized_word:
+                    continue
+
+                word_frequencies[normalized_word] = word_frequencies.get(normalized_word, 0) + 1
+
+        return word_frequencies
+
 
 def get_question_response_counts(request, poll_code, question_id):
     question = Question.objects.filter(id=question_id).first()
@@ -158,3 +193,5 @@ def get_question_response_counts(request, poll_code, question_id):
 
     counter = QuestionResponseCounter(question)
     return counter.get_counts()
+
+

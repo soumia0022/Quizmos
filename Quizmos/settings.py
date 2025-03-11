@@ -28,8 +28,8 @@ SECRET_KEY = 'REMOVED_SECRET_KEY'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'ec2-13-48-203-183.eu-north-1.compute.amazonaws.com',
-    '13.48.203.183',
+    'ec2-51-21-202-49.eu-north-1.compute.amazonaws.com',
+    '51.21.202.49',
     'localhost',
     '127.0.0.1',
     'quizmos.me', 
@@ -99,6 +99,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'poll_management.middleware.ProfanityFilterMiddleware',
 ]
 
 ROOT_URLCONF = 'Quizmos.urls'
