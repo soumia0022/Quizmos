@@ -1,3 +1,5 @@
+import { initializeCodeEditor, executeCode } from "./code_executor.js";
+
 document.addEventListener('DOMContentLoaded', function () {
     const questionType = document.getElementById("question-type").value
 
@@ -30,7 +32,30 @@ document.addEventListener('DOMContentLoaded', function () {
     //for the delete buttons that appear with the pre-existing data
     const deleteButtons = document.querySelectorAll('.delete-option-btn');
 
+    const codingLanguageSelector = document.getElementById('language-selector');
+    const codeEditorArea = document.getElementById('code-editor');
+    const runCodeButton = document.getElementById('run-code-button')
+    let editor = initializeCodeEditor(codeEditorArea, "python");
+    // Language Mode Mapping
+    const languageModes = {
+        python: "python",
+        javascript: "javascript",
+        java: "text/x-java",
+        cpp: "text/x-c++src"
+    };
+
     /* Event listeners*/
+    runCodeButton.addEventListener("click", function () {
+        executeCode(editor,editor.getOption("mode"), "code-output");
+    });
+
+    codingLanguageSelector.addEventListener('change', function () {
+        let selectedLanguage = this.value;
+        let newMode = languageModes[selectedLanguage];
+
+        editor.setOption("mode", newMode);
+        // alert(`Mode changed to: ${newMode}`);
+    });
 
     deleteButtons.forEach((btn) => {
         btn.addEventListener('click', function () {
@@ -98,6 +123,11 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (questionType === 'dropdown_fill'){
             const options = document.querySelectorAll('[name="dropdown_options[]"]');
             dropdownConstraint(options);
+        } else if (questionType === 'code_question'){
+             let codeValue = editor.getValue().trim();
+             if (!codeValue){
+                 displayErrorMessage("Please enter correct code", event);
+             }
         }
     });
 

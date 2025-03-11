@@ -1,5 +1,5 @@
 from poll_management.helpers import format_youtube_link
-from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
+from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse, CodeQuestionResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from poll_management.models.poll_model import Poll
@@ -23,7 +23,8 @@ def student_view_poll(request, poll_id):
         'single_choice': {'model': SingleChoiceResponse,'value_field': 'selected_option'},
         'text_fill': {'model': TextFillResponse,'value_field': 'answer_text'},
         'dropdown': {'model': DropdownFillResponse,'value_field': 'selected_option'},
-        'match': {'model': MatchQuestionResponse,'value_field': 'match_responses'}
+        'match': {'model': MatchQuestionResponse,'value_field': 'match_responses'},
+        'code': {'model': CodeQuestionResponse,'value_field': 'submitted_code'},
     }
 
     responses_by_question = {}

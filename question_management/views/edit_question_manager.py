@@ -62,3 +62,14 @@ class QuestionManager:
         if len(question.match_options) != len(question.match_answers):
             return JsonResponse({'error': 'The number of options must match the number of answers.'}, status=400)
         return None
+
+    @staticmethod
+    def validate_code_question(question):
+        """Validate code question."""
+        if not question.code_question:
+            return JsonResponse({'error': 'Question text is required for a code question.'}, status=400)
+        if not question.code_language:
+            return JsonResponse({'error': 'Code language is required'}, status=400)
+        if not question.correct_code:
+            return JsonResponse({'error': 'Correct code is required'}, status=400)
+        return None

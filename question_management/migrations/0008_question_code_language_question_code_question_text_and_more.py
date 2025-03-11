@@ -20,11 +20,6 @@ class Migration(migrations.Migration):
             name='code_question_text',
             field=models.TextField(blank=True, null=True),
         ),
-        migrations.AddField(
-            model_name='question',
-            name='code_test_cases',
-            field=models.JSONField(blank=True, default=list),
-        ),
         migrations.AlterField(
             model_name='question',
             name='question_type',

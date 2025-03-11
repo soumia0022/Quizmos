@@ -4,6 +4,7 @@ import {renderText} from "./text_question_display.js";
 import {renderWordCloud} from "./word_cloud_display.js";
 import {renderMatch} from "./match_question_display.js";
 import {getFormattedTime, startCountdownTimer} from "./timer.js";
+import { renderCodeQuestion } from "./code_question_display.js";
 
 
 
@@ -125,6 +126,12 @@ function createQuestionHTML(question) {
 
     case 'match_question':
        html += renderMatch(question);
+       break;
+
+   case 'code_question':
+       html += renderCodeQuestion(question);
+
+
 break;
   }
 

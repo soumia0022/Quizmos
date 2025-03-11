@@ -31,3 +31,6 @@ class MatchQuestionResponse(Response):
 
 class WordCloudResponse(Response):
     word_cloud_response = models.JSONField(default=dict)
+
+class CodeQuestionResponse(Response):
+    submitted_code = models.TextField()

@@ -15,7 +15,7 @@ class CodeQuestionTestCase(TestCase):
             last_name="Doe",
             email="testuser@example.com",
             password="Password123",
-            role="Lecturer",  # Specify role as required
+            role="Lecturer",
         )
         self.client.login(username='testuser', password='Password123')
 
@@ -45,10 +45,7 @@ class CodeQuestionTestCase(TestCase):
             'question_type': 'code_question',
             'code_question_text': 'Write a function to reverse a string.',
             'code_language': 'python',
-            'code_test_cases': json.dumps([
-                {"input": "hello", "output": "olleh"},
-                {"input": "world", "output": "dlrow"}
-            ])
+            'correct_code':'correct code',
         }
 
         # Send a POST request
@@ -62,45 +59,7 @@ class CodeQuestionTestCase(TestCase):
         self.assertEqual(question.poll_id, self.poll.id)
         self.assertEqual(question.code_question_text, data['code_question_text'])
         self.assertEqual(question.code_language, data['code_language'])
-        self.assertEqual(question.code_test_cases, json.loads(data['code_test_cases']))
-
-    def test_code_question_invalid_json_test_cases(self):
-        """
-        Test creating a code question with invalid JSON format for test cases.
-        """
-        data = {
-            'question_type': 'code_question',
-            'code_question_text': 'Write a function to reverse a string.',
-            'code_language': 'python',
-            'code_test_cases': '{"input": "hello", "output": "olleh" '  # Invalid JSON format
-        }
-
-        # Send a POST request
-        response = self.client.post(self.create_question_url, data)
-
-        # Check response status and error message
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("Invalid JSON format for test cases", response.json().get("error"))
-
-    def test_code_question_missing_test_cases(self):
-        """
-        Test creating a code question with missing test cases.
-        """
-        data = {
-            'question_type': 'code_question',
-            'code_question_text': 'Write a function to reverse a string.',
-            'code_language': 'python',
-            'code_test_cases': '[]'  # Empty test cases
-        }
-
-        # Send a POST request
-        response = self.client.post(self.create_question_url, data)
-
-        # Check response status
-        self.assertEqual(response.status_code, 302)  # Assuming a redirect occurs after creation
-        question = Question.objects.get(question_type='code_question')
-        self.assertEqual(question.poll_id, self.poll.id)
-        self.assertEqual(question.code_test_cases, [])
+        self.assertEqual(question.correct_code, data['correct_code'])
 
     def test_code_question_missing_code_language(self):
         """
@@ -110,9 +69,7 @@ class CodeQuestionTestCase(TestCase):
             'question_type': 'code_question',
             'code_question_text': 'Write a function to reverse a string.',
             'code_language': '',  # Missing code language
-            'code_test_cases': json.dumps([
-                {"input": "hello", "output": "olleh"}
-            ])
+            'correct_code': 'correct code',
         }
 
         # Send a POST request
@@ -129,9 +86,7 @@ class CodeQuestionTestCase(TestCase):
             'question_type': 'code_question',
             'code_question_text': '',  # Missing code question text
             'code_language': 'python',
-            'code_test_cases': json.dumps([
-                {"input": "hello", "output": "olleh"}
-            ])
+            'correct_code':'correct code',
         }
 
         # Send a POST request

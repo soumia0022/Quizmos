@@ -4,6 +4,17 @@
 {% block content %}
     {% noscript_warning %}
     {% return_button %}
+
+        <!-- CodeMirror Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+
+    <!-- CodeMirror Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script> <!-- For Java & C++ -->
+
+
 <div class="container">
   <div class="row">
     <div class="col-6">
@@ -60,6 +71,12 @@
           text: "{{ question.match_question|default:'' }}",
           options: {{ question.match_options|safe|default:"[]" }},
           answers: {{ question.match_answers|safe|default:"[]" }},
+
+        {% elif question.question_type == 'code_question' %}
+            text: "{{ question.code_question_text|default:'' }}",
+            language: "{{ question.coding_language|default:'python' }}",
+
+
         {% endif %}
       },
     {% endfor %}
