@@ -1,6 +1,8 @@
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+from better_profanity import profanity
+from poll_management.helpers import apply_profanity_filter
 from response_management.models.response_model import (
     MatchQuestionResponse, MultipleChoiceResponse,
     SingleChoiceResponse, DropdownFillResponse, TextFillResponse, 
@@ -173,7 +175,8 @@ class PollConsumer(AsyncWebsocketConsumer):
                     'message': 'Poll is currently locked'
                 }))
                 return
-
+            text_data_json = apply_profanity_filter(text_data_json,
+                                                    text_data_json.get('type'))
             # Handle different types of responses
             success = await self.save_response(
                 text_data_json.get('question_id'),
