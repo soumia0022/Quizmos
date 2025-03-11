@@ -65,7 +65,7 @@ export function updateTextResponseUI(questionId, responses) {
     }
 }
 
-export function updateCodeResponseUI(questionId, responses) {
+export function updateCodeResponseUI(questionId, responses, language) {
     const questionContainer = document.querySelector(`[data-question="${questionId}"]`);
     const responseList = questionContainer.querySelector(`#responseList-${questionId}`);
 
@@ -89,7 +89,7 @@ export function updateCodeResponseUI(questionId, responses) {
         // Add event listener to show code in CodeMirror when user clicks on their name
         listItem.querySelector('.response-user').addEventListener('click', function () {
             const code = decodeURIComponent(this.getAttribute('data-code'));
-            displayCodeInEditor(code);
+            displayCodeInEditor(code, language);
         });
     });
 
@@ -101,7 +101,7 @@ export function updateCodeResponseUI(questionId, responses) {
 }
 
 // Function to display code inside a popup(modal) with CodeMirror
-function displayCodeInEditor(code) {
+function displayCodeInEditor(code, language) {
     // Remove existing modal if it exists
     let existingModal = document.getElementById('code-editor-modal');
     if (existingModal) {
@@ -148,9 +148,19 @@ function displayCodeInEditor(code) {
     modal.appendChild(textarea);
     document.body.appendChild(modal);
 
+    // Map question.code_language to CodeMirror modes
+    const languageMap = {
+        "python": "text/x-python",
+        "java": "text/x-java",
+        "javascript": "text/javascript",
+        "cpp": "text/x-c++src",
+    };
+
+    let mode = languageMap[language] || "python"; // Default to plain text if not found
+
     // Initialize CodeMirror
     let editor = CodeMirror.fromTextArea(textarea, {
-        mode: "python", // Adjust language dynamically later
+        mode: mode,
         theme: "default",
         lineNumbers: true,
         readOnly: true // Make it read-only

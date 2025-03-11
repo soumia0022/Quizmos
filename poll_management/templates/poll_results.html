@@ -292,7 +292,6 @@
                         if (codeEditor) {
                             let editorInstance = codeEditor.CodeMirror; // Access CodeMirror instance
                             responseData = editorInstance.getValue(); // Get the code inside the editor
-                            // document.getElementById('answer').value = responseData; // Set the hidden answer value, might not be needed
                         } else {
                             console.error("CodeMirror instance not found.");
                             responseData = "";

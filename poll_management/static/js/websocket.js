@@ -49,7 +49,7 @@ async function fetchResponseCounts(questionId) {
             updateWordCloudUI(questionId, data.word_cloud_data)
         }
         else if (data.question_type === "code_question"){
-            updateCodeResponseUI(questionId, data.responses)
+            updateCodeResponseUI(questionId, data.responses, data.code_language) //has username and code only, need code_language
         }
         else{
             updateResponseUI(questionId, data.counts);

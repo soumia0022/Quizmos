@@ -150,6 +150,7 @@ class QuestionResponseCounter:
         return {
             'question_id': self.question.id,
             'question_type': 'code_question',
+            'code_language': self.question.code_language,
             'responses': response_list
         }
 
