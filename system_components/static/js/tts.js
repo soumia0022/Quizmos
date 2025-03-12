@@ -10,7 +10,7 @@ function toggleSpeech() {
         let text = document.body.innerText; // Get full page text
         let speech = new SpeechSynthesisUtterance(text);
         speech.lang = "en-GB"; // Use British English
-        speech.rate = 1.0; // Adjust speed (0.5 - 2)
+        speech.rate = 1.0;
 
         speech.onend = function() {
             isSpeaking = false;

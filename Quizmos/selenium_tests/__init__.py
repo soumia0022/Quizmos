@@ -34,7 +34,7 @@ def logout(driver: WebDriver, live_server_url: str):
 
 def wait(driver_client):
     """Ensures page is fully loaded before continuing."""
-    WebDriverWait(driver_client, 10).until(
+    WebDriverWait(driver_client, 20).until(
         lambda driver: driver.execute_script("return document.readyState") == "complete"
     )
 

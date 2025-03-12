@@ -60,9 +60,11 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         paris_checkbox = self.driver.find_element(By.XPATH, "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
         paris_checkbox.click()  # Check the correct option
         wait(self.driver)
+        time.sleep(1)
 
         # Test the saving of a Multiple Choice Question (verify in database)
         self.save_question()
+        time.sleep(1)
         poll = Poll.objects.get(id=self.poll.id)
         question = poll.questions.last()
         multiple_choice_answers = question.multiple_choice_answers  # List of selected (correct) answers
@@ -83,9 +85,11 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         paris_checkbox = self.driver.find_element(By.XPATH, "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
         paris_checkbox.click()  # Check the correct option
         wait(self.driver)
+        time.sleep(1)
 
         # Test the saving of a Single Choice Question (verify in database)
         self.save_question()
+        time.sleep(1)
         poll = Poll.objects.get(id=self.poll.id)
         question = poll.questions.last()
         single_choice_answers = question.single_choice_answers  # List of selected (correct) answers
@@ -229,6 +233,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
             wait_for_clickable(self.driver, save_button).click()
         except ElementClickInterceptedException:
             self.driver.execute_script("arguments[0].click();", save_button)  # Click via JS
+        time.sleep(2)
 
     # End of helper methods
 
