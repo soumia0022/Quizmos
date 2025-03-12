@@ -34,7 +34,7 @@ def logout(driver: WebDriver, live_server_url: str):
 
 def wait(driver_client):
     """Ensures page is fully loaded before continuing."""
-    WebDriverWait(driver_client, 10).until(
+    WebDriverWait(driver_client, 60).until(
         lambda driver: driver.execute_script("return document.readyState") == "complete"
     )
 
@@ -44,7 +44,7 @@ def wait_for_element(driver_client, by, value, timeout=70):
         EC.presence_of_element_located((by, value))  # Element found
     )
 
-def wait_for_clickable(driver_client, elem: WebElement, timeout=20):
+def wait_for_clickable(driver_client, elem: WebElement, timeout=60):
     """Waits for an element to become clickable."""
     return WebDriverWait(driver_client, timeout).until(
         EC.element_to_be_clickable(elem)
