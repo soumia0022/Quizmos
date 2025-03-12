@@ -63,7 +63,7 @@ class Command(BaseCommand):
                 if question_type == "multiple_choice":
                     options = question.multiple_choice_options or []
                     selected_options = random.sample(options, min(2, len(options))) if options else ["Option A", "Option B"]
-                    response_data['selected_options'] = json.dumps(selected_options)
+                    response_data['selected_options'] = selected_options
                     response_type = MultipleChoiceResponse
 
                 elif question_type == "single_choice":
@@ -89,7 +89,7 @@ class Command(BaseCommand):
 
                 elif question_type == "wordcloud":
                     words = random.sample(SAMPLE_WORDS, 2)
-                    response_data['word_cloud_response'] = json.dumps({words[0]: 3, words[1]: 5})
+                    response_data['word_cloud_response'] = words
                     response_type = WordCloudResponse
 
                 elif question_type == "code_question":
