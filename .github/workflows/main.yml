@@ -47,12 +47,6 @@ jobs:
           yes "y" | python manage.py makemigrations --merge
           python manage.py migrate
 
-      - name: Load Test Data
-        run: python manage.py loaddata poll_management/tests/fixtures/default_poll.json
-
-      - name: Verify Fixture Files
-        run: ls -la poll_management/tests/fixtures/
-
       # Wait for Redis to be ready
       - name: Wait for Redis to be Ready
         run: |
