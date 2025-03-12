@@ -6,10 +6,30 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 import uuid
 import random
+import re
 
 
+def generate_suggested_title(base_title, existing_titles):
+    pattern = re.compile(f"^{re.escape(base_title)}(?: \\((\\d+)\\))?$")
 
+    existing_numbers = []
+    for title in existing_titles:
+        match = pattern.match(title)
+        if match and match.group(1):
+            existing_numbers.append(int(match.group(1)))
 
+    if base_title not in existing_titles and not existing_numbers:
+        return base_title
+
+    if f"{base_title} (1)" not in existing_titles:
+        return f"{base_title} (1)"
+
+    existing_numbers.sort()
+    next_number = 1
+    while next_number in existing_numbers:
+        next_number += 1
+
+    return f"{base_title} ({next_number})"
 def generate_guest_user_name():
     first_words = ["Nebula", "Star", "Galactic", "Cosmic", "Astral", "Lunar", "Solar", "Celestial"]
     second_words = ["Nomad", "Seeker", "Traveler", "Voyager", "Adventurer", "Explorer", "Surfer", "Chaser"]

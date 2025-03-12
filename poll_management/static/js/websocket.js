@@ -1,5 +1,5 @@
 // websocket.js
-import {updateMatchResponseUI, updateResponseUI, updateTextResponseUI, updateWordCloudUI} from './response_ui.js';
+import {updateMatchResponseUI, updateResponseUI, updateTextResponseUI, updateWordCloudUI, updateCodeResponseUI} from './response_ui.js';
 
 const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${window.pollCode}/`;
@@ -29,7 +29,7 @@ ws.onmessage = function(event) {
 };
 
 // Function to fetch response counts for a specific question
-async function fetchResponseCounts(questionId) {
+export async function fetchResponseCounts(questionId) {
     try {
         const response = await fetch(`${window.pollManagementBaseUrl}${window.pollCode}/question/${questionId}/counts/`);
         if (!response.ok) {
@@ -47,6 +47,9 @@ async function fetchResponseCounts(questionId) {
         else if (data.question_type === "wordcloud"){
             questionId = 'word-cloud-' + questionId
             updateWordCloudUI(questionId, data.word_cloud_data)
+        }
+        else if (data.question_type === "code_question"){
+            updateCodeResponseUI(questionId, data.responses, data.code_language) //has username and code only, need code_language
         }
         else{
             updateResponseUI(questionId, data.counts);

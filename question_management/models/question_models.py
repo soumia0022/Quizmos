@@ -49,8 +49,7 @@ class Question(models.Model):
     # Coding question fields
     code_question_text = models.TextField(null=True, blank=True)  # Prompt for the coding question
     code_language = models.CharField(max_length=20, default="python", null=True, blank=True)  # Programming language
-    code_test_cases = models.JSONField(default=list, blank=True)  # JSON field for test cases
-
+    correct_code = models.TextField(null=True, blank=True)
 
     audio_file = models.FileField(upload_to='uploads/audio/', null=True, blank=True)
     video_file = models.FileField(upload_to='uploads/video/', null=True, blank=True)

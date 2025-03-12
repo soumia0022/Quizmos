@@ -1,0 +1,52 @@
+{% load system_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll Results</title>
+    {% return_button %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'css/poll_detail.css' %}">
+</head>
+<body>
+    <!-- Hidden element to store poll ID for JS -->
+    <div id="poll-data" data-poll-id="{{ poll.id }}"></div>
+
+    <div class="container">
+        <!-- Sidebar for Questions -->
+        <div class="sidebar">
+            <h3 class="text-center">Questions</h3>
+            <div id="questions-list">
+                {% for question in poll.questions.all %}
+                    <div class="question-item" data-question-id="{{ question.id }}">
+                        <strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}
+                        <button class="view-analytics-btn" data-question-id="{{ question.id }}">View Analytics</button>
+                    </div>
+                {% empty %}
+                    <p class="text-muted text-center">No questions created yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Chart Container -->
+        <div class="chart-container">
+            <h2 id="selected-question-title">Select to view analytics for the whole poll or a particular question</h2>
+
+            <button id="viewPollResults">Show Poll Results</button>
+            <div class="button-container">
+                <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
+                <button id="viewPieChart">View Pie Chart</button>
+                <button id="viewBarGraph">View Bar Graph</button>
+                <button id="viewLineGraph">View Line Graph</button>
+            </div>
+
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+
+    <script src="{% static 'js/poll_detail.js' %}"></script>
+
+</body>
+</html>

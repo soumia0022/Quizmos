@@ -1,9 +1,10 @@
-import {ws} from './websocket.js';
+import {fetchResponseCounts, ws} from './websocket.js';
 import {renderChoice} from "./choice_display.js";
 import {renderText} from "./text_question_display.js";
 import {renderWordCloud} from "./word_cloud_display.js";
 import {renderMatch} from "./match_question_display.js";
 import {getFormattedTime, startCountdownTimer} from "./timer.js";
+import { renderCodeQuestion } from "./code_question_display.js";
 
 
 
@@ -20,7 +21,8 @@ window.previousQuestion = function() {
     if (window.currentQuestionIndex > 0) {
         window.currentQuestionIndex--;
         updateQuestionDisplay();
-        resetShowAnswerState(); 
+        resetShowAnswerState();
+        fetchResponseCounts(window.questions[window.currentQuestionIndex].id);
     }
 };
 
@@ -28,7 +30,8 @@ window.nextQuestion = function() {
     if (window.currentQuestionIndex < window.questions.length - 1) {
         window.currentQuestionIndex++;
         updateQuestionDisplay();
-        resetShowAnswerState(); 
+        resetShowAnswerState();
+        fetchResponseCounts(window.questions[window.currentQuestionIndex].id);
     }
 };
 
@@ -123,6 +126,12 @@ function createQuestionHTML(question) {
 
     case 'match_question':
        html += renderMatch(question);
+       break;
+
+   case 'code_question':
+       html += renderCodeQuestion(question);
+
+
 break;
   }
 

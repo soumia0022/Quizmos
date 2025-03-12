@@ -1,3 +1,5 @@
+import { initializeCodeEditor, executeCode } from "./code_executor.js";
+
 document.addEventListener('DOMContentLoaded', function() {
     // DOM elements
     const addButton = document.getElementById('add-question-btn');
@@ -41,8 +43,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // New Code Question fields
     const codeQuestionFields = document.getElementById('code-question-fields');
-
-    console.log("DOM fully loaded");
+    const codeQuestionPromptInput = document.getElementById('id_code_question');
+    const codeEditorArea = document.getElementById('code-editor');
+    const codingLanguageSelector = document.getElementById('language-selector');
+    const runCodeButton = document.getElementById('run-code-button')
+    let editor = initializeCodeEditor(codeEditorArea, "python");
+    // Language Mode Mapping
+    const languageModes = {
+        python: "python",
+        javascript: "javascript",
+        java: "text/x-java",
+        cpp: "text/x-c++src"
+    };
 
     /*Event Listeners */
     // Show or hide the question form
@@ -70,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Hide all fields
         const fields = [textFillFields, dropdownFillFields, multipleChoiceFields, singleChoiceFields, wordCloudFields, matchQuestionFields, codeQuestionFields];
-        const inputFields = [multipleChoiceInput, singleChoiceInput, matchQuestionInput, textFillQuestionInput, textFillAnswerInput, wordCloudQuestionInput, dropdownOption1Input]
+        const inputFields = [multipleChoiceInput, singleChoiceInput, matchQuestionInput, textFillQuestionInput, textFillAnswerInput, wordCloudQuestionInput, dropdownOption1Input, codeQuestionPromptInput];
 
         fields.forEach(field => field.style.display = 'none');
         inputFields.forEach(field => field.required = false);
@@ -96,6 +108,18 @@ document.addEventListener('DOMContentLoaded', function() {
             clickTextPreview(dropdownCorrectAnswerField,dropdownInput,textPreview);
             blankAdded = true;
         }
+    });
+
+    codingLanguageSelector.addEventListener('change', function () {
+        let selectedLanguage = this.value;
+        let newMode = languageModes[selectedLanguage];
+
+        editor.setOption("mode", newMode);
+        // alert(`Mode changed to: ${newMode}`);
+    });
+
+    runCodeButton.addEventListener("click", function () {
+        executeCode(editor,editor.getOption("mode"), "code-output");
     });
 
     function showRelevantField(questionType){
@@ -128,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'code_question':
                 codeQuestionFields.style.display = 'block';
+                codeQuestionPromptInput.required = true;
                 break;
         }
     }
@@ -158,7 +183,12 @@ document.addEventListener('DOMContentLoaded', function() {
             else{
                 dropdownCorrectAnswerField.style.border = ''; // Remove highlighting
             }
-        }
+        } else if (questionType === 'code_question'){
+             let codeValue = editor.getValue().trim();
+             if (!codeValue){
+                 displayErrorMessage("Please enter correct code", event);
+             }
+         }
     });
 
     /* This is how to do the validation testing without the required field

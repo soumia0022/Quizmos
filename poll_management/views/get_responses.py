@@ -1,5 +1,5 @@
 from response_management.models.response_model import DropdownFillResponse, MultipleChoiceResponse, \
-    SingleChoiceResponse, TextFillResponse, MatchQuestionResponse
+    SingleChoiceResponse, TextFillResponse, MatchQuestionResponse, CodeQuestionResponse
 from question_management.models.question_models import Question
 
 from django.http import JsonResponse
@@ -18,6 +18,7 @@ class QuestionResponseCounter:
             'text_fill' : self._get_text_responses,
             'match_question' : self._get_match_responses,
             'wordcloud': self._get_word_cloud_responses,
+            'code_question': self._get_code_responses,
         }
 
     def get_counts(self) -> JsonResponse:
@@ -39,6 +40,9 @@ class QuestionResponseCounter:
 
             if self.question_type == 'text_fill':
                 return JsonResponse(counts_dict)
+            if self.question_type == 'code_question':
+                return JsonResponse(counts_dict)
+
             if self.question_type == 'match_question':
                 total_responses = MatchQuestionResponse.objects.filter(
                     question=self.question
@@ -124,6 +128,7 @@ class QuestionResponseCounter:
         responses = TextFillResponse.objects.filter(
             question=self.question, session_code=self.question.poll.number_code
         ).values_list('answer_text', flat=True)
+        responses = [response for response in responses if "****" not in response]
 
         # Convert QuerySet to list and filter out empty responses
         response_list = [resp.strip() for resp in responses if resp and resp.strip()]
@@ -131,6 +136,22 @@ class QuestionResponseCounter:
         return {
             'question_id': self.question.id,
             'question_type': 'text_fill',
+            'responses': response_list
+        }
+
+    def _get_code_responses(self) -> Dict[str, List[Dict[str, str]]]:
+        """Handle code question responses."""
+        responses = CodeQuestionResponse.objects.filter(
+            question=self.question, session_code=self.question.poll.number_code
+        ).values('user__username', 'submitted_code')
+
+        # Convert QuerySet to list of dictionaries
+        response_list = [{"username": resp["user__username"], "code": resp["submitted_code"]} for resp in responses]
+
+        return {
+            'question_id': self.question.id,
+            'question_type': 'code_question',
+            'code_language': self.question.code_language,
             'responses': response_list
         }
 

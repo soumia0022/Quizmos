@@ -7,6 +7,15 @@
     <title>{{ poll.title }}</title>
     <link rel="stylesheet" href="{% static 'poll_management/css/poll_styles.css' %}">
 
+        <!-- CodeMirror Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+
+    <!-- CodeMirror Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script> <!-- For Java & C++ -->
+
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
     <script src="{% static 'poll_management/js/drag_and_drop.js' %}"></script>
 </head>
@@ -17,7 +26,7 @@
             <div class="col-12">
                 <h1>Welcome to {{ poll.title }}!</h1>
 
-    
+
                 <!-- progress bar  -->           
         <div class="progress rounded-pill" style="height: 30px;">
             <div id="question-progress-bar" class="progress-bar bg-success rounded-pill" role="progressbar" 
@@ -45,8 +54,8 @@
     <script type="module" src="{% static 'js/timer.js' %}"></script>
 
     <script type="module">
-        import { startCountdownTimer } from "{% static 'js/timer.js' %}";
-
+     import { startCountdownTimer } from "{% static 'js/timer.js' %}";
+     import {initializeCodeEditor, executeCode} from "{% static 'js/code_executor.js'%}";
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -200,7 +209,7 @@
                         document.getElementById('question_options').innerHTML = `
                             <div class="container">
                                 ${leftOptions}
-                                <div id="right" class="right">
+                               <div id="right" class="right">
                                     ${rightOptions}
                                 </div>
                             </div>`;
@@ -208,6 +217,25 @@
                         document.getElementById('answer').style.display = 'none';
 
                         initializeDragAndDrop();
+                        initializeSortable();
+                    } else if (data.question.type === 'code_question') {
+                        document.getElementById('question_options').innerHTML = `
+                            <textarea id="code-editor"></textarea>
+                            <button id="run-button" >Run Code</button>
+                            <pre id="output"></pre>
+                        `;
+
+                        document.getElementById('answer').style.display = 'none';
+
+                        let language = data.question.code_language || "python"; // Default to Python if null
+                        let textarea = document.getElementById('code-editor');
+
+                        // Initialize CodeMirror using imported function
+                        let editor = initializeCodeEditor(textarea, language);
+
+                        document.getElementById('run-button').addEventListener('click', function () {
+                            executeCode(editor, language, 'output'); // Use imported function
+                        });
                     }
                 } else if (data.type === 'response_status') {
                     showFeedback(
@@ -249,13 +277,30 @@
                                 left: leftOption,
                                 right: rightOption
                             };
-                        }).filter(match => match.left && match.right);
+                        })
+
+                        if (responseData.some(match => !match.right)) {
+                            showFeedback('Please match all items before submitting.', false);
+                            return;
+                        }
                         break;
 
                     case 'wordcloud':
                         const answer1 = document.getElementById('answer1').value;
                         const answer2 = document.getElementById('answer2').value;
                         responseData = [answer1, answer2].filter(answer => answer !== '');
+                        break;
+
+                    case 'code_question':
+                        // Get the CodeMirror instance from the text area
+                        let codeEditor = document.querySelector('.CodeMirror'); // Get the CodeMirror container
+                        if (codeEditor) {
+                            let editorInstance = codeEditor.CodeMirror; // Access CodeMirror instance
+                            responseData = editorInstance.getValue(); // Get the code inside the editor
+                        } else {
+                            console.error("CodeMirror instance not found.");
+                            responseData = "";
+                        }
                         break;
                 }
 

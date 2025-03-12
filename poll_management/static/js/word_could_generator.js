@@ -23,7 +23,9 @@ export class WordCloudGenerator {
             colorPalette: [
                 '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
                 '#9467bd', '#8c564b', '#e377c2', '#7f7f7f'
-            ]
+            ],
+            // filter function that returns false for words containing "****"
+            filterFunction: (text) => !text.includes('****')
         };
 
         // if there are any specified options put them with the default config
@@ -113,8 +115,27 @@ export class WordCloudGenerator {
 
         const maxCount = Math.max(...Object.values(wordData));
 
+        // remove words containing "****" before creating the word cloud
+        const filteredWordData = {};
+        for (const [text, count] of Object.entries(wordData)) {
+            if (this.config.filterFunction(text)) {
+                filteredWordData[text] = count;
+            }
+        }
 
-        const words = Object.entries(wordData)
+
+        if (Object.keys(filteredWordData).length === 0) {
+            const textElement = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            textElement.setAttribute('x', this.config.width / 2);
+            textElement.setAttribute('y', this.config.height / 2);
+            textElement.setAttribute('text-anchor', 'middle');
+            textElement.setAttribute('fill', 'gray');
+            textElement.textContent = 'No appropriate words to display';
+            this.svg.appendChild(textElement);
+            return;
+        }
+
+        const words = Object.entries(filteredWordData)
             .map(([text, count]) => ({
                 text,
                 count,
