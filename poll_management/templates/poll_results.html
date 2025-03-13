@@ -79,6 +79,7 @@
         let currentQuestionType = null;
         let currentTimerInterval = null;
         let currentQuestion = null;
+        let answerCodeEditor = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             const pollCode = "{{ poll.number_code }}";
@@ -116,7 +117,7 @@
 
             ws.onmessage = function(event) {
                 const data = JSON.parse(event.data);
-
+                console.log(data);
                 // Handle poll lock/unlock messages
                 if (data.type === 'poll_status') {
                     if (data.action === 'lock') {
@@ -130,8 +131,7 @@
 
                     const correctAnswersDiv = document.getElementById('correct-answers');
 
-                    if (data.action === 'show_answer' && data.answers !== null) {
-
+                    if (data.action === 'show_answer') {
                         let answerHtml = '<strong>Correct Answer(s):</strong> ';
 
                         switch (currentQuestionType) {
@@ -154,7 +154,29 @@
                             case 'wordcloud':
                                 answerHtml += 'No correct answer for word cloud.';
                                 break;
+                            case 'code_question':
+                                // For code questions, create a proper code display
+                                answerHtml = '<strong>Correct Answer:</strong><div id="answer-code-display"></div>';
+                                correctAnswersDiv.innerHTML = answerHtml;
 
+                                // Get the code language from the current question
+                                let language = currentQuestion && currentQuestion.code_language ?
+                                    currentQuestion.code_language : "python";
+
+                                // Create a textarea for the code editor
+                                const codeTextarea = document.createElement('textarea');
+                                codeTextarea.id = 'answer-code-editor';
+                                document.getElementById('answer-code-display').appendChild(codeTextarea);
+
+                                // Initialize CodeMirror for the answer
+                                answerCodeEditor = initializeCodeEditor(codeTextarea, language);
+
+                                // Set the answer code and make it read-only
+                                answerCodeEditor.setValue(data.answers);
+                                answerCodeEditor.setOption('readOnly', true);
+
+                                correctAnswersDiv.style.display = 'block';
+                                return; // Skip the rest since we've already set up the display
                         }
 
                         correctAnswersDiv.innerHTML = answerHtml;
@@ -162,6 +184,11 @@
                     } else if (data.action === 'hide_answer') {
                         correctAnswersDiv.style.display = 'none';
                         correctAnswersDiv.innerHTML = '';
+
+                        // Clean up CodeMirror instance if it exists
+                        if (answerCodeEditor) {
+                            answerCodeEditor = null;
+                        }
                     }
                 }
 
@@ -171,9 +198,15 @@
                         clearInterval(currentTimerInterval);
                     }
 
+                    // Reset correct answers display
                     const correctAnswersDiv = document.getElementById('correct-answers');
                     correctAnswersDiv.style.display = 'none';
                     correctAnswersDiv.innerHTML = '';
+
+                    // Clean up CodeMirror instance if it exists
+                    if (answerCodeEditor) {
+                        answerCodeEditor = null;
+                    }
 
                     const questionElement = document.getElementById('question');
                     questionElement.innerHTML = data.question.text + '<div class="question-timer"></div>';
