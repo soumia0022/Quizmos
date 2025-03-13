@@ -21,3 +21,13 @@ def go_back_button():
 @register.inclusion_tag('noscript_warning.html')
 def noscript_warning():
     return {}
+
+# For the full-page TTS button
+@register.inclusion_tag('tts_button.html')
+def tts_button():
+    return {}
+
+# For the selected text TTS button
+@register.inclusion_tag('tts_selected_button.html')
+def tts_selected_button():
+    return {}
