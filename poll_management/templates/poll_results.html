@@ -173,7 +173,7 @@
                                 // Set the answer code and make it read-only
                                 answerCodeEditor.setValue(data.answers);
                                 answerCodeEditor.setOption('readOnly', true);
-
+                                setTimeout(() => answerCodeEditor.refresh(), 100);
                                 correctAnswersDiv.style.display = 'block';
                                 return;
                         }
