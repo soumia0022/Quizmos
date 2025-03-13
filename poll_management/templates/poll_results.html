@@ -155,7 +155,6 @@
                                 answerHtml += 'No correct answer for word cloud.';
                                 break;
                             case 'code_question':
-                                // For code questions, create a proper code display
                                 answerHtml = '<strong>Correct Answer:</strong><div id="answer-code-display"></div>';
                                 correctAnswersDiv.innerHTML = answerHtml;
 
@@ -176,7 +175,7 @@
                                 answerCodeEditor.setOption('readOnly', true);
 
                                 correctAnswersDiv.style.display = 'block';
-                                return; // Skip the rest since we've already set up the display
+                                return;
                         }
 
                         correctAnswersDiv.innerHTML = answerHtml;
