@@ -1,6 +1,7 @@
 from django.test import TestCase
 from selenium.webdriver.common.by import By
 from django.shortcuts import reverse
+import time
 
 from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element  # From __init__.py
 from poll_management.tests.fixtures.create_test_polls import create_default_test_polls
@@ -58,6 +59,7 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
         confirm_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "confirm-delete"))  # Already given ID by another group member
         confirm_button.click()
         wait(self.driver)
+        time.sleep(1)
 
         self.assertFalse(Poll.objects.filter(pk=self.poll.id).exists(), "Poll was not deleted!")
 
