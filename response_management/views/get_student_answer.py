@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from question_management.models.question_models import Question
 from response_management.models.response_model import (
-    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse, CodeQuestionResponse  
 )
 
 @login_required
@@ -43,6 +43,8 @@ def get_student_answer(request, poll_id, question_id):
                     ]
             except Exception as e:
                 return JsonResponse({"error": f"Error processing match answers: {str(e)}"}, status=500)
+        elif question.question_type == 'code_question':
+            correct_answer = question.correct_code
         else:
             correct_answer = "No correct answer available"
 
@@ -53,6 +55,7 @@ def get_student_answer(request, poll_id, question_id):
             'single_choice': SingleChoiceResponse,
             'dropdown_fill': DropdownFillResponse,
             'text_fill': TextFillResponse,
+            'code_question': CodeQuestionResponse,  
         }
 
         if question.question_type in response_models:

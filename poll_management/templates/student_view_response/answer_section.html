@@ -32,6 +32,8 @@
                 {% endfor %}
             </tbody>
         </table>
+    {% elif response.type == 'code' %}
+        <pre><code class="language-{{ response.question.code_language }} p-2 border rounded bg-primary text-white">{{ response.submitted_code }}</code></pre>
     {% endif %}
 
     <!-- Displaying the correct answers -->
@@ -49,6 +51,8 @@
             </table>
         {% elif response.type == 'multiple_choice' %}
             <div id="correct-answer-options-{{ response.question.id }}" class="multiple-choice-correct-answers"></div>
+        {% elif response.type == 'code' %}
+            <pre><code class="language-{{ response.question.code_language }} p-2 border rounded bg-success text-white mb-0">Loading...</code></pre>
         {% else %}
           <p class="p-2 border rounded bg-success text-white mb-0">Loading...</p>
         {% endif %}

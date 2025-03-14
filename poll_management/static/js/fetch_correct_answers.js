@@ -38,6 +38,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     answerBox.innerHTML = `<p class="p-2 border rounded bg-success text-white mb-0">${answer}</p>`;
                     optionsContainer.appendChild(answerBox);
                 });
+            } else if (typeof data.correct_answer === 'string' && element.querySelector('code')) {
+                console.log(`Question ${questionId}: Handling as code question`);
+                const codeElement = correctAnswerContainer.querySelector('code');
+                codeElement.textContent = data.correct_answer;
             } else if (typeof data.correct_answer === 'string') {
                 console.log(`Question ${questionId}: Handling as string answer`);
                 correctAnswerContainer.innerHTML = `<p class='p-2 border rounded bg-success text-white mb-0'>${data.correct_answer}</p>`;
