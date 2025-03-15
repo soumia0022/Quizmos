@@ -73,6 +73,7 @@ def get_student_answer(request, poll_id, question_id):
 
         return JsonResponse({
             "question_id": question_id,
+            "question_type": question.question_type,  
             "selected_answer": student_answer,
             "correct_answer": correct_answer
         })
