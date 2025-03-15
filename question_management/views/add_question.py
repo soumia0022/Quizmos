@@ -13,7 +13,15 @@ def add_question(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user)
 
     if request.method == 'POST':
+        # Update Poll Title
+        new_title = request.POST.get('poll_title') or request.POST.get('poll_title_hidden')
+        if new_title and new_title != poll.title:
+            poll.title = new_title
+            poll.save()
+
         manager = QuestionManager(request, poll_id, request.POST.get('youtube_link'), get_timer(request))
+
+        response = None #if a manager is not created then there is no response. a manager isn't created if you're just changing the poll title
 
         if manager.question_type == 'text_fill':
             response = manager.handle_text_fill()
