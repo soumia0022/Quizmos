@@ -73,6 +73,9 @@ function addChoiceOptionComponents(question_type, optionCount){
 }
 
 function addMatchOptionComponents(matchQuestionOptionSection, matchOptionCount){
+    if (!canAddMoreOptions("match")){
+        displayErrorMessage("You can only add 4 options");
+    }
     const inputRow = document.createElement("div");
 
     const option = document.createElement("input");
