@@ -1,3 +1,13 @@
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/code_response.css' %}">
+</head>
+<body>
+<div class="container mt-5">
 <div class="answer-section p-3 bg-light rounded">
     <h5 class="mb-2">Your Answer:</h5>
 
@@ -33,7 +43,9 @@
             </tbody>
         </table>
     {% elif response.type == 'code' %}
-        <pre><code class="language-{{ response.question.code_language }} p-2 border rounded bg-primary text-white">{{ response.submitted_code }}</code></pre>
+        <div class="code-editor-container">
+            <pre id="submitted-code-{{ response.question.id }}" class="code-display">{{ response.submitted_code }}</pre>
+        </div>
     {% endif %}
 
     <!-- Displaying the correct answers -->
@@ -51,10 +63,9 @@
             </table>
         {% elif response.type == 'multiple_choice' %}
             <div id="correct-answer-options-{{ response.question.id }}" class="multiple-choice-correct-answers"></div>
-        {% elif response.type == 'code' %}
-            <pre><code class="language-{{ response.question.code_language }} p-2 border rounded bg-success text-white mb-0">Loading...</code></pre>
-        {% else %}
-          <p class="p-2 border rounded bg-success text-white mb-0">Loading...</p>
         {% endif %}
     </div>
 </div>
+</div>
+
+</body>
