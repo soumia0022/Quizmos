@@ -22,7 +22,6 @@ class CodeQuestionTestCase(TestCase):
         # Create a sample poll
         self.poll = Poll.objects.create(
             title="Sample Poll",
-            status="active",  # Setting default status
             user=self.user,  # Linking to the created user
             locked=False  # Default locked state
         )
@@ -33,7 +32,6 @@ class CodeQuestionTestCase(TestCase):
     def test_poll_creation(self):
         # Ensure the poll was created correctly
         self.assertEqual(self.poll.title, "Sample Poll")
-        self.assertEqual(self.poll.status, "active")
         self.assertFalse(self.poll.locked)
         self.assertEqual(self.poll.user, self.user)
 

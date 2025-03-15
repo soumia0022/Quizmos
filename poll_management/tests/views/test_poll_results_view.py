@@ -17,7 +17,7 @@ class PollResultsViewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(username='johndoe')
-        self.poll = Poll.objects.create(title='Poll 1', user=self.user, status='active', number_code=111111)
+        self.poll = Poll.objects.create(title='Poll 1', user=self.user, number_code=111111)
         self.question_wordcloud = Question.objects.create(question_text='Enter your word(s)', poll=self.poll, question_type='wordcloud')
         
         self.poll_results_url = reverse('poll_management:poll_results', kwargs={'code': self.poll.number_code})

@@ -18,7 +18,7 @@ class StudentViewResponseTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(username='johndoe')
-        self.poll = Poll.objects.create(title='Poll 1', user=self.user, status='active', number_code=111111)
+        self.poll = Poll.objects.create(title='Poll 1', user=self.user, number_code=111111)
 
         self.view_url = reverse('poll_management:student_view_poll', kwargs={'poll_id': self.poll.id})
 
