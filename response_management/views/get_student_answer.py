@@ -70,6 +70,8 @@ def get_student_answer(request, poll_id, question_id):
                 student_answer = response.selected_options
             elif hasattr(response, "answer_text"):
                 student_answer = response.answer_text
+            elif hasattr(response, "submitted_code"):  
+                student_answer = response.submitted_code
 
         return JsonResponse({
             "question_id": question_id,
