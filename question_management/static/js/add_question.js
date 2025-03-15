@@ -59,8 +59,17 @@ document.addEventListener('DOMContentLoaded', function() {
     /*Event Listeners */
     // Show or hide the question form
     addButton.addEventListener('click', function() {
+        if (countQuestions() === 20){
+            displayErrorMessage("Maximum question count reached. Cannot have more than 20 questions")
+        }
         questionForm.style.display = questionForm.style.display === 'none' ? 'block' : 'none';
     });
+
+    function countQuestions() {
+        const questionCount = document.querySelectorAll("#questions-list .question-item").length;
+        // console.log("Number of questions:", questionCount);
+        return questionCount;
+    }
 
     multipleChoiceAddOptionBtn.addEventListener("click", () => {
         //function in another file, returns new McOptionCount
