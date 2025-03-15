@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
         questionForm.style.display = questionForm.style.display === 'none' ? 'block' : 'none';
     });
 
-    function countQuestions() {
+    function countQuestions() { //move to question_constraints in refactoring
         const questionCount = document.querySelectorAll("#questions-list .question-item").length;
         // console.log("Number of questions:", questionCount);
         return questionCount;
