@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from poll_management.models.poll_model import Poll
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, \
-    DropdownFillResponse, MatchQuestionResponse, WordCloudResponse
+    DropdownFillResponse, MatchQuestionResponse, WordCloudResponse, CodeQuestionResponse
 from question_management.models.question_models import Question
 
 def poll_analytics(request, poll_id):
@@ -88,7 +88,6 @@ def question_analytics(request, question_id):
         labels.append("Total Number of Matches")
         data.append(MatchQuestionResponse.objects.filter(question=question).count())
 
-
     elif question.question_type == 'wordcloud':
         responses = WordCloudResponse.objects.filter(question=question)
         words = []
@@ -101,5 +100,21 @@ def question_analytics(request, question_id):
         else:
             labels = []
             data = []
+
+    elif question.question_type == 'code_question':
+        responses_count = (CodeQuestionResponse.objects.filter(question=question)).count()
+        labels = ['Total Number of Code Submissions']
+        data = [responses_count]
+
+        # For each code response count
+        # responses = CodeQuestionResponse.objects.filter(question=question)
+        # code_snippets = [response.submitted_code for response in responses]
+        # code_counts = Counter(code_snippets)
+        # if code_counts:
+        #     labels, data = zip(*code_counts.items())
+        # else:
+        #     labels = []
+        #     data = []
+
 
     return JsonResponse({'question': question.question_text, 'labels': labels, 'data': data})
