@@ -84,7 +84,7 @@ class GetStudentAnswerViewTest(TestCase):
             user=self.student,
             poll=self.poll,
             question=self.word_cloud_question,
-            word_cloud_response=["Einstein", "Tesla"]
+            response_text=["Einstein", "Tesla"]
         )
 
     # Regular tests
@@ -192,5 +192,5 @@ class GetStudentAnswerViewTest(TestCase):
         response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.word_cloud_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["selected_answer"], ["Einstein", "Tesla"])  # ✅ Student's answer should be returned
-        self.assertEqual(data["correct_answer"], "No correct answer for word cloud questions")  # ✅ Expected fixed answer
+        self.assertEqual(data["selected_answer"], ["Einstein", "Tesla"]) 
+        self.assertEqual(data["correct_answer"], "No correct answer available")   
