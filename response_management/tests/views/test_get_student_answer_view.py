@@ -4,7 +4,7 @@ from django.urls import reverse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
 from response_management.models.response_model import (
-    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse
 )
 
 class GetStudentAnswerViewTest(TestCase):
@@ -45,6 +45,12 @@ class GetStudentAnswerViewTest(TestCase):
             dropdown_correct_answer="CorrectOption"
         )
 
+        self.word_cloud_question = Question.objects.create(
+            poll=self.poll,
+            question_type="word_cloud",
+            question_text="Name a famous scientist"
+        )
+
         # Create Student Responses
         self.mcq_response = MultipleChoiceResponse.objects.create(
             user=self.student,
@@ -72,6 +78,13 @@ class GetStudentAnswerViewTest(TestCase):
             poll=self.poll,
             question=self.dropdown_question,
             selected_option="CorrectOption"
+        )
+
+        self.word_cloud_response = WordCloudResponse.objects.create(
+            user=self.student,
+            poll=self.poll,
+            question=self.word_cloud_question,
+            word_cloud_response=["Einstein", "Tesla"]
         )
 
     # Regular tests
@@ -172,3 +185,12 @@ class GetStudentAnswerViewTest(TestCase):
         self.client.login(username="teststudent", password="testpass")
         response = self.client.post(reverse('get_student_answer', args=[self.poll.id, self.mcq_question.id]))
         self.assertEqual(response.status_code, 400)
+
+    def test_api_returns_correct_answer_for_word_cloud(self):
+        """Test if the API correctly returns Word Cloud response"""
+        self.client.login(username="teststudent", password="testpass")
+        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.word_cloud_question.id]))
+        data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["selected_answer"], ["Einstein", "Tesla"])  # ✅ Student's answer should be returned
+        self.assertEqual(data["correct_answer"], "No correct answer for word cloud questions")  # ✅ Expected fixed answer
