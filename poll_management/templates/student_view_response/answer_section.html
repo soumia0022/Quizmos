@@ -34,7 +34,6 @@
         </table>
         {% elif response.type == "word_cloud" %}
         <div class="word-cloud-response mt-3">
-            <h5>Your Answer:</h5>
             <p class="p-2 border rounded bg-primary text-white">
                 {% if response.word_cloud_response %}
                     {% for answer in response.word_cloud_response %}
