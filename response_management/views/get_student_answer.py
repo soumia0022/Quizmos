@@ -71,11 +71,6 @@ def get_student_answer(request, poll_id, question_id):
                 response = WordCloudResponse.objects.filter(user=user, question=question, poll_id=poll_id).first()
                 student_answer = response.response_text if response else None
 
-        elif question.question_type == 'word_cloud':
-                response = WordCloudResponse.objects.filter(user=user, question=question, poll_id=poll_id).first()
-                student_answer = response.response_text if response else None
-                correct_answer = "No correct answer for word cloud questions"
-
 
         return JsonResponse({
             "question_id": question_id,
