@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from question_management.models.question_models import Question
 from response_management.models.response_model import (
-    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse
 )
 
 @login_required
@@ -67,6 +67,15 @@ def get_student_answer(request, poll_id, question_id):
                 student_answer = response.selected_options
             elif hasattr(response, "answer_text"):
                 student_answer = response.answer_text
+            elif question.question_type == 'word_cloud':
+                response = WordCloudResponse.objects.filter(user=user, question=question, poll_id=poll_id).first()
+                student_answer = response.response_text if response else None
+
+        elif question.question_type == 'word_cloud':
+                response = WordCloudResponse.objects.filter(user=user, question=question, poll_id=poll_id).first()
+                student_answer = response.response_text if response else None
+                correct_answer = "No correct answer for word cloud questions"
+
 
         return JsonResponse({
             "question_id": question_id,

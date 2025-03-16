@@ -32,6 +32,19 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% elif response.type == "word_cloud" %}
+        <div class="word-cloud-response mt-3">
+            <h5>Your Answer:</h5>
+            <p class="p-2 border rounded bg-primary text-white">
+                {% if response.word_cloud_response %}
+                    {% for answer in response.word_cloud_response %}
+                        {{ answer }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    No response submitted.
+                {% endif %}
+            </p>
+        </div>
     {% endif %}
 
     <!-- Displaying the correct answers -->
@@ -49,6 +62,8 @@
             </table>
         {% elif response.type == 'multiple_choice' %}
             <div id="correct-answer-options-{{ response.question.id }}" class="multiple-choice-correct-answers"></div>
+        {% elif response.type == "word_cloud" %}
+            <p class="p-2 border rounded bg-success text-white mb-0">Word cloud responses do not have a single correct answer.</p>
         {% else %}
           <p class="p-2 border rounded bg-success text-white mb-0">Loading...</p>
         {% endif %}
