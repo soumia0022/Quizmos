@@ -6,7 +6,6 @@ from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse, WordCloudResponse, CodeQuestionResponse
 
-# Will add tests for wordcloud and code question once functionality has been added
 # Will add tests when other analytics have been completed - correct/incorrect answers
 
 
@@ -232,7 +231,6 @@ class PollAnalyticsTestCase(TestCase):
         self.assertListEqual(json_response["labels"], ["Total Number of Matches"])
         self.assertListEqual(json_response["data"], [1])  # One response
 
-
     def test_wordcloud_question_analytics(self):
         """Test analytics for word cloud responses."""
         url = reverse("question_analytics", args=[self.wordcloud_question.id])
@@ -246,7 +244,6 @@ class PollAnalyticsTestCase(TestCase):
 
     def test_code_question_analytics(self):
         """Test analytics for code question responses."""
-        # Creating CodeQuestion responses
         for i in range(3):
             CodeQuestionResponse.objects.create(
                 poll=self.poll,
