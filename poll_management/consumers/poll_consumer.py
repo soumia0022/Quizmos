@@ -97,10 +97,12 @@ class PollConsumer(AsyncWebsocketConsumer):
             self.poll_group_name = f'poll_{self.poll_code}'
         except Exception as e:
             print(f"Error extracting poll code: {e}")
+            await self.close()
             return False
 
         self.poll = await DatabaseHandler.get_poll(self.poll_code)
         if not self.poll:
+            await self.close()
             return False
 
         # Initialize state for this poll if needed

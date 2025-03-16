@@ -126,5 +126,4 @@ class DatabaseHandler:
             return True
 
         except Exception as e:
-            print(f"Error saving response: {e}")
             return False
