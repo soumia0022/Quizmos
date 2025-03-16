@@ -3,11 +3,18 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: #02192F;
-  color: #e0e0ff;
-  font-family: 'Arial', sans-serif;
+  background: #02192F; 
+  color: #fff; 
+  font-family: 'Palanquin', sans-serif; 
   overflow-x: hidden;
   position: relative;
+}
+
+/* Additional font reset for common text elements */
+h1, h2, h3, h4, h5, h6, p, span, a, div, li {
+  font-family: inherit; 
+  color: inherit; 
+  letter-spacing: 0.05em; 
 }
 
 /* Navigation */
@@ -52,15 +59,6 @@ html, body {
   backdrop-filter: blur(10px);
   width: 800px;
   max-width: 90%;
-}
-
-/* Headings */
-.about-heading, .faq-heading {
-  font-family: 'Space Mono', monospace;
-  color: #9999ff;
-  text-shadow: 0 0 10px #6666ff;
-  font-size: 2.5rem;
-  margin-bottom: 20px;
 }
 
 /* Alert Styles */

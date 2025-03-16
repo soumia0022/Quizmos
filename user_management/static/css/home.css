@@ -12,14 +12,6 @@
   z-index: 2;
 }
 
-.cover-heading {
-  font-family: 'Space Mono', monospace;
-  color: #9999ff;
-  text-shadow: 0 0 10px #6666ff;
-  font-size: 3.5rem;
-  margin-bottom: 20px;
-}
-
 .btn-secondary {
   background-color: #6666ff;
   border-color: #4444cc;
