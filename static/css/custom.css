@@ -29,37 +29,6 @@ html, body {
   z-index: 100;
 }
 
-
-.nav-button {
-  background-color: rgba(50, 50, 100, 0.7);
-  border: 1px solid #6666ff;
-  color: #9999ff;
-  margin: 5px;
-  padding: 8px 15px;
-  border-radius: 20px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.nav-button:hover {
-  background-color: #6666ff;
-  color: white;
-  transform: scale(1.05);
-}
-
-.nav-buttons-left, .nav-buttons-right {
-  display: flex;
-  align-items: center;
-}
-
-.nav-buttons-left {
-  justify-content: flex-start;
-}
-
-.nav-buttons-right {
-  justify-content: flex-end;
-}
-
 /* Footer */
 .footer {
   background-color: rgba(30, 30, 70, 0.6);
