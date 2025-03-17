@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="card-footer text-muted">
-                        <a id="id_poll_view_button" href="{% url 'poll_management:view_poll' poll.id %}" class="btn btn-primary btn-sm">View</a>
+                        <a id="id_poll_view_button" href="{% url 'poll_analytics' poll.id %}" class="btn btn-primary btn-sm">View Analytics</a>
                         <a id="id_poll_edit_button" href="{% url 'poll_management:poll_edit' poll.id %}" class="btn btn-secondary btn-sm">Edit</a>
                         <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
                             {% csrf_token %}
