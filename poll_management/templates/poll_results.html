@@ -44,6 +44,7 @@
                 <input type="text" id="answer" style="display: none;" placeholder="Your answer" />
                 <div id="question_options">Waiting for options...</div>
                 <div id="feedback" class="feedback"></div>
+                <div id="correct-answers" class="correct-answers" style="display: none;"></div>
                 <button id="submitResponse" style="display: none;">Submit Response</button>
             </div>
         </div>
@@ -77,6 +78,8 @@
         let currentQuestionId = null;
         let currentQuestionType = null;
         let currentTimerInterval = null;
+        let currentQuestion = null;
+        let answerCodeEditor = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             const pollCode = "{{ poll.number_code }}";
@@ -114,13 +117,77 @@
 
             ws.onmessage = function(event) {
                 const data = JSON.parse(event.data);
-
+                console.log(data);
                 // Handle poll lock/unlock messages
                 if (data.type === 'poll_status') {
                     if (data.action === 'lock') {
                         showLockOverlay();
                     } else if (data.action === 'unlock') {
                         hideLockOverlay();
+                    }
+                }
+                // Handle answers display
+                if (data.type === 'answers') {
+
+                    const correctAnswersDiv = document.getElementById('correct-answers');
+
+                    if (data.action === 'show_answer') {
+                        let answerHtml = '<strong>Correct Answer(s):</strong> ';
+
+                        switch (currentQuestionType) {
+                            case 'multiple_choice':
+                            case 'single_choice':
+                                answerHtml += Array.isArray(data.answers) ? data.answers.join(', ') : data.answers;
+                                break;
+                            case 'dropdown_fill':
+                            case 'text_fill':
+                                answerHtml += data.answers;
+                                break;
+                            case 'match_question':
+                                if (Array.isArray(data.answers) && currentQuestion && currentQuestion.match_options) {
+                                    answerHtml += data.answers.map((ans, idx) =>
+                                        `${currentQuestion.match_options[idx]} → ${ans}`).join(', ');
+                                } else {
+                                    answerHtml += 'Matching pairs are shown.';
+                                }
+                                break;
+                            case 'wordcloud':
+                                answerHtml += 'No correct answer for word cloud.';
+                                break;
+                            case 'code_question':
+                                answerHtml = '<strong>Correct Answer:</strong><div id="answer-code-display"></div>';
+                                correctAnswersDiv.innerHTML = answerHtml;
+
+                                // Get the code language from the current question
+                                let language = currentQuestion && currentQuestion.code_language ?
+                                    currentQuestion.code_language : "python";
+
+                                // Create a textarea for the code editor
+                                const codeTextarea = document.createElement('textarea');
+                                codeTextarea.id = 'answer-code-editor';
+                                document.getElementById('answer-code-display').appendChild(codeTextarea);
+
+                                // Initialize CodeMirror for the answer
+                                answerCodeEditor = initializeCodeEditor(codeTextarea, language);
+
+                                // Set the answer code and make it read-only
+                                answerCodeEditor.setValue(data.answers);
+                                answerCodeEditor.setOption('readOnly', true);
+                                setTimeout(() => answerCodeEditor.refresh(), 100);
+                                correctAnswersDiv.style.display = 'block';
+                                return;
+                        }
+
+                        correctAnswersDiv.innerHTML = answerHtml;
+                        correctAnswersDiv.style.display = 'block';
+                    } else if (data.action === 'hide_answer') {
+                        correctAnswersDiv.style.display = 'none';
+                        correctAnswersDiv.innerHTML = '';
+
+                        // Clean up CodeMirror instance if it exists
+                        if (answerCodeEditor) {
+                            answerCodeEditor = null;
+                        }
                     }
                 }
 
@@ -130,6 +197,15 @@
                         clearInterval(currentTimerInterval);
                     }
 
+                    // Reset correct answers display
+                    const correctAnswersDiv = document.getElementById('correct-answers');
+                    correctAnswersDiv.style.display = 'none';
+                    correctAnswersDiv.innerHTML = '';
+
+                    // Clean up CodeMirror instance if it exists
+                    if (answerCodeEditor) {
+                        answerCodeEditor = null;
+                    }
 
                     const questionElement = document.getElementById('question');
                     questionElement.innerHTML = data.question.text + '<div class="question-timer"></div>';
@@ -141,6 +217,7 @@
 
                     currentQuestionId = data.question.id;
                     currentQuestionType = data.question.type;
+                    currentQuestion = data.question;
                     submitButton.style.display = 'block';
 
                     // Update question progress information
