@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from question_management.models.question_models import Question
 from response_management.models.response_model import (
-    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse, CodeQuestionResponse  
+    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse, CodeQuestionResponse, WordCloudResponse
 )
 
 @login_required
@@ -70,15 +70,11 @@ def get_student_answer(request, poll_id, question_id):
                 student_answer = response.selected_options
             elif hasattr(response, "answer_text"):
                 student_answer = response.answer_text
-            
             elif hasattr(response, "submitted_code"):  
                 student_answer = response.submitted_code
         elif question.question_type == 'word_cloud':
-                response = WordCloudResponse.objects.filter(user=user, question=question, poll_id=poll_id).first()
-                student_answer = response.word_cloud_response if response and response.word_cloud_response else None
-
-
-
+            response = WordCloudResponse.objects.filter(user=user, question = question, poll_id=poll_id).first()
+            student_answer = response.word_cloud_response if response and response.word_cloud_response else None
 
         return JsonResponse({
             "question_id": question_id,

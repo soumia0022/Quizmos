@@ -103,6 +103,7 @@ class GetStudentAnswerViewTest(TestCase):
             poll=self.poll,
             question=self.word_cloud_question,
             word_cloud_response=["Einstein", "Tesla"]
+        )
 
         self.mcq_string_response = MultipleChoiceResponse.objects.create(
             user=self.student,
@@ -259,3 +260,4 @@ class GetStudentAnswerViewTest(TestCase):
         self.assertEqual(data["correct_answer"], "print('Hello')")
         self.assertEqual(data["selected_answer"], "print('Hello')")
 
+        
