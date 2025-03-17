@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/code_editor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/ai_question_generator.css' %}">
 
     <!-- CodeMirror Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
@@ -31,6 +32,49 @@
     {% noscript_warning %}
 
     {% include 'partials/background_stars.html' %}
+    
+    
+    <div class="ai-question-generator">
+        <h3>Generate AI Based Questions</h3>
+        <div style="text-align: center;">
+            
+            <button id="import-pdf-btn">Import PDF</button>
+          
+            <button id="import-doc-btn">Import Document</button>
+        </div>
+        <div class="ai-generated-content">
+            <div id="ai-questions-area">
+                
+                <span style="color: #FFD700; display: block; text-align: center; margin-top: 50px;">
+                    AI-generated questions will appear here
+                    <br><br>
+                    Click "Import PDF" or "Import Document" to get started
+                </span>
+            </div>
+        </div>
+        
+        
+        <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;">
+        <input type="file" id="doc-file-input" accept=".doc,.docx" style="display: none;">
+    </div>
+
+    <div class="container">
+       
+        <h1>Edit Poll: {{ poll.title }}</h1>
+    
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+           
+        </form>
+    </div>
+     
+    <div class="container-fluid">
+        <div class="row">
+            <div id="main-content" class="col-lg-8 col-md-7 mb-4">
+               
+            </div>
+        </div>
+    </div>
 
     <div class="container-fluid mt-2 text-center">
         <div class="row justify-content-center align-items-center mb-3">
@@ -261,5 +305,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/hover_script.js' %}"></script>
     <script src="{% static 'js/media_options.js' %}" ></script>
+    
+    <script>
+        const pollId = '{{ poll.id }}';
+    </script>
+    <script src="{% static 'js/ai_question_upload.js' %}"></script>
 
 {% endblock %}
