@@ -38,20 +38,7 @@
   margin-bottom: 8px;
 }
 
-.review-text {
-  color: #e0e0ff;
-  font-style: italic;
-  margin-bottom: 8px;
-  line-height: 1.4;
-  flex-grow: 1; 
-}
 
-.review-author {
-  color: #9999ff;
-  font-size: 0.9rem;
-  margin: 0;
-  margin-top: auto; 
-}
 
 @media (max-width: 768px) {
   .reviews-container {
@@ -87,14 +74,7 @@
   .about-card::-webkit-scrollbar-thumb:hover {
     background: #7777ff;
   }
-  
-/* Mission Section */
-.about-content .lead {
-    font-size: 1.3rem;
-    color: #b3b3ff;
-    line-height: 1.6;
-  }
-  
+    
   /* Journey Section */
   .journey-section {
     background-color: rgba(40, 40, 80, 0.5);
@@ -117,27 +97,6 @@
   .team-member:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(102, 102, 255, 0.3);
-  }
-  
-  .team-member h5 {
-    color: #9999ff;
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-  }
-  
-  .team-member p {
-    color: #7777dd;
-    font-size: 0.9rem;
-    margin-bottom: 15px;
-  }
-  
-  .team-member blockquote {
-    font-style: italic;
-    color: #e0e0ff;
-    border-left: 3px solid #6666ff;
-    padding-left: 15px;
-    margin: 10px 0;
-    font-size: 0.95rem;
   }
   
   /* Core Values Section */
