@@ -52,14 +52,14 @@ class QuestionTypesTestCase(TestCase):
             'question_type': 'single_choice',
             'single_choice_question': 'What is your favorite color?',
             'single_choice_options[]': ['Red', 'Blue', 'Green'],
-            'single_choice_answers[]': 'Blue'
+            'single_choice_answers[]': ['Blue']
         }
 
         # Send a POST request
         response = self.client.post(self.create_question_url, data)
 
         # Check response status
-        self.assertEqual(response.status_code, 302)  # Assuming a redirect occurs after creation
+        self.assertEqual(response.status_code, 302)
 
         # Check that the question was created in the database
         question = Question.objects.get(question_type='single_choice')
@@ -104,7 +104,7 @@ class QuestionTypesTestCase(TestCase):
             'question_type': 'single_choice',
             'single_choice_question': 'What is your favorite color?',
             'single_choice_options[]': [],
-            'single_choice_answers[]': ''
+            'single_choice_answers[]': []
         }
 
         # Send a POST request
@@ -123,7 +123,7 @@ class QuestionTypesTestCase(TestCase):
             'question_type': 'single_choice',
             'single_choice_question': 'What is your favorite color?',
             'single_choice_options[]': ["Option1"],
-            'single_choice_answers[]': ''
+            'single_choice_answers[]': []
         }
 
         # Send a POST request
