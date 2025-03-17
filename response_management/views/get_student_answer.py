@@ -69,7 +69,7 @@ def get_student_answer(request, poll_id, question_id):
                 student_answer = response.answer_text
             elif question.question_type == 'word_cloud':
                 response = WordCloudResponse.objects.filter(user=user, question=question, poll_id=poll_id).first()
-                student_answer = response.response_text if response else None
+                student_answer = response.word_cloud_response if response else None
 
 
         return JsonResponse({

@@ -132,8 +132,8 @@ class GetStudentAnswerViewTest(TestCase):
             poll=self.poll,
             question_type="match_question",
             question_text="Mismatched Match Question",
-            match_options=["A", "B", "C"],  # 3 options
-            match_answers=["1", "2"]  # 2 answers (Mismatch!)
+            match_options=["A", "B", "C"],  
+            match_answers=["1", "2"]  
         )
         response = self.client.get(reverse('get_student_answer', args=[self.poll.id, mismatched_match_question.id]))
         data = response.json()
@@ -157,6 +157,22 @@ class GetStudentAnswerViewTest(TestCase):
             {"left": "X", "right": "Alpha"},
             {"left": "Y", "right": "Beta"}
         ])
+
+    def test_error_handling_in_match_questions(self):
+        """Test error handling in match questions when an exception occurs"""
+        # Create a match question with problematic data that would cause an exception
+        problematic_match = Question.objects.create(
+            poll=self.poll,
+            question_type="match_question",
+            question_text="Problematic Match Question",
+    )
+    
+        self.client.login(username="teststudent", password="testpass")
+        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, problematic_match.id]))
+        data = response.json()
+        self.assertEqual(response.status_code, 500)
+        self.assertTrue("error" in data)
+        self.assertTrue("Error processing match answers" in data["error"])
     
     def test_api_handles_nonexistent_question(self):
         """Test if API correctly handles nonexistent question ID"""
@@ -192,5 +208,21 @@ class GetStudentAnswerViewTest(TestCase):
         response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.word_cloud_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["selected_answer"], None) 
-        self.assertEqual(data["correct_answer"], "No correct answer available")   
+        self.assertEqual(data["selected_answer"], ["Einstein", "Tesla"])  # Match what you created in setUp
+        self.assertEqual(data["correct_answer"], "No correct answer available") 
+
+    def test_word_cloud_with_no_response(self):
+        """Test handling of word cloud questions with no student response"""
+        # Create a new word cloud question without any student response
+        new_word_cloud = Question.objects.create(
+            poll=self.poll,
+            question_type="word_cloud",
+            question_text="Name a famous painter"
+    )
+
+        self.client.login(username="teststudent", password="testpass")
+        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, new_word_cloud.id]))
+        data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["selected_answer"], None)  
+        self.assertEqual(data["correct_answer"], "No correct answer available")
