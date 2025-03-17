@@ -14,7 +14,7 @@ class PollOperationsTestCase(TestCase):
         self.student_user = User.objects.create_user(username='student', password='Password123', role='Student')
         self.client = Client()
         self.client.login(username='johndoe', password='Password123')
-        self.poll = Poll.objects.create(title='Test Poll', user=self.user, status='active')
+        self.poll = Poll.objects.create(title='Test Poll', user=self.user)
     
     def test_view_poll(self):
         response = self.client.get(reverse('poll_management:view_poll', args=[self.poll.pk]))
@@ -25,11 +25,9 @@ class PollOperationsTestCase(TestCase):
     def test_edit_poll(self):
         response = self.client.post(reverse('poll_management:poll_edit', args=[self.poll.pk]), {
             'title': 'Updated Poll Title',
-            'status': 'closed'
         })
         self.poll.refresh_from_db()
         self.assertEqual(self.poll.title, 'Updated Poll Title')
-        self.assertEqual(self.poll.status, 'closed')
         self.assertRedirects(response, reverse('poll_management:view_poll', args=[self.poll.pk]))
     
     def test_edit_poll_get_request(self):
@@ -57,7 +55,6 @@ class PollOperationsTestCase(TestCase):
     def test_edit_poll_not_found(self):
         response = self.client.post(reverse('poll_management:poll_edit', args=[999]), {
             'title': 'Updated Poll Title',
-            'status': 'closed'
         })
         self.assertEqual(response.status_code, 404)
     

@@ -4,7 +4,7 @@ from django.urls import reverse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
 from response_management.models.response_model import (
-    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse
+    MultipleChoiceResponse, SingleChoiceResponse, DropdownFillResponse, TextFillResponse, CodeQuestionResponse
 )
 
 class GetStudentAnswerViewTest(TestCase):
@@ -45,7 +45,20 @@ class GetStudentAnswerViewTest(TestCase):
             dropdown_correct_answer="CorrectOption"
         )
 
-        # Create Student Responses
+        self.mcq_string_question = Question.objects.create(
+            poll=self.poll,
+            question_type="multiple_choice",
+            question_text="What is 3 + 3?",
+            multiple_choice_answers="6"
+        )
+
+        self.code_question = Question.objects.create(
+            poll=self.poll,
+            question_type="code_question",
+            question_text="Write a print statement",
+            correct_code="print('Hello')"
+        )
+
         self.mcq_response = MultipleChoiceResponse.objects.create(
             user=self.student,
             poll=self.poll,
@@ -74,7 +87,20 @@ class GetStudentAnswerViewTest(TestCase):
             selected_option="CorrectOption"
         )
 
-    # Regular tests
+        self.mcq_string_response = MultipleChoiceResponse.objects.create(
+            user=self.student,
+            poll=self.poll,
+            question=self.mcq_string_question,
+            selected_options=["6"]
+        )
+
+        self.code_response = CodeQuestionResponse.objects.create(
+            user=self.student,
+            poll=self.poll,
+            question=self.code_question,
+            submitted_code="print('Hello')"
+        )
+
     def test_api_returns_correct_answer_for_mcq(self):
         """Test if the API correctly returns MCQ correct answer"""
         self.client.login(username="teststudent", password="testpass")
@@ -172,3 +198,19 @@ class GetStudentAnswerViewTest(TestCase):
         self.client.login(username="teststudent", password="testpass")
         response = self.client.post(reverse('get_student_answer', args=[self.poll.id, self.mcq_question.id]))
         self.assertEqual(response.status_code, 400)
+
+    def test_api_handles_string_multiple_choice_answer(self):
+        self.client.login(username="teststudent", password="testpass")
+        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.mcq_string_question.id]))
+        data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["correct_answer"], ["6"])
+        self.assertEqual(data["selected_answer"], ["6"])
+
+    def test_api_returns_correct_answer_for_code_question(self):
+        self.client.login(username="teststudent", password="testpass")
+        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.code_question.id]))
+        data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["correct_answer"], "print('Hello')")
+        self.assertEqual(data["selected_answer"], "print('Hello')")

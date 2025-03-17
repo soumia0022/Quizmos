@@ -15,7 +15,6 @@ def poll_edit(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user)
     if request.method == 'POST':
         poll.title = request.POST.get('title', poll.title)
-        poll.status = request.POST.get('status', poll.status)
         poll.save()
         return redirect('poll_management:view_poll', poll_id=poll.id)
     return render(request, 'poll_edit.html', {'poll': poll})

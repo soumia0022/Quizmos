@@ -16,7 +16,6 @@ class ResponseModelTest(TestCase):
         self.user = User.objects.create_user(username='testuser', password='password', role='Student')
         self.poll = Poll.objects.create(
             title="Sample Poll",
-            status="active",
             user=self.user,
             number_code=123456
         )
