@@ -8,7 +8,6 @@ from response_management.models.response_model import (
     CodeQuestionResponse
 )
 import random
-import json
 
 User = get_user_model()
 
@@ -36,7 +35,7 @@ class Command(BaseCommand):
     help = 'Seed responses for each question'
 
     def handle(self, *args, **kwargs):
-        users = list(User.objects.all())
+        users = list(User.objects.filter(role="Student"))
         polls = list(Poll.objects.all())
         questions = list(Question.objects.all())
 
@@ -83,8 +82,8 @@ class Command(BaseCommand):
                     response_type = DropdownFillResponse
 
                 elif question_type == "match_question":
-                    match_pairs = {opt: ans for opt, ans in zip(question.match_options, question.match_answers)}
-                    response_data['match_responses'] = json.dumps(match_pairs)
+                    match_pairs = [{"left": opt, "right": ans} for opt, ans in zip(question.match_options, question.match_answers)]
+                    response_data['match_responses'] = match_pairs
                     response_type = MatchQuestionResponse
 
                 elif question_type == "wordcloud":
