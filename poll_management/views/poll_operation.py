@@ -4,12 +4,6 @@ from django.contrib.auth.decorators import login_required
 
 from poll_management.models.poll_model import Poll
 
-
-@login_required
-def view_poll(request, poll_id):
-    poll = get_object_or_404(Poll, id=poll_id)
-    return render(request, 'view_poll.html', {'poll': poll})
-
 @login_required
 def poll_edit(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user)

@@ -15,12 +15,7 @@ class PollOperationsTestCase(TestCase):
         self.client = Client()
         self.client.login(username='johndoe', password='Password123')
         self.poll = Poll.objects.create(title='Test Poll', user=self.user, status='active')
-    
-    def test_view_poll(self):
-        response = self.client.get(reverse('poll_management:view_poll', args=[self.poll.pk]))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'view_poll.html')
-        self.assertEqual(response.context['poll'], self.poll)
+
     
     def test_edit_poll(self):
         response = self.client.post(reverse('poll_management:poll_edit', args=[self.poll.pk]), {
