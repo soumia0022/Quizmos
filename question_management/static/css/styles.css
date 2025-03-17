@@ -177,11 +177,199 @@ body #questions-sidebar {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Ensure the form takes up available space without extra scrolling */
-#question-form {
-    display: none;
-    max-height: 75vh; /* Prevents it from being too tall */
-    overflow-y: auto;
-    padding-bottom: 0; /* Ensures no unnecessary space */
-    background-color: rgba(30, 30, 70, 0.8); /* Matches the card-body */
+
+.ai-question-generator {
+  position: relative;
+  margin: 20px auto 30px auto;
+  width: 90%;
+  min-height: 350px;
+  background-color: rgba(16, 20, 59, 0.9);
+  border: 2px solid #4CAF50;
+  border-radius: 5px;
+  padding: 20px;
+  color: white;
+  z-index: 100;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.ai-question-generator h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #FFD700;
+  font-size: 1.5rem;
+}
+
+
+#import-pdf-btn, #import-doc-btn {
+  display: inline-block;
+  padding: 8px 15px;
+  margin: 5px;
+  background-color: #673AB7;
+  color: white;
+  border: 1px solid #9C27B0;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#import-pdf-btn:hover, #import-doc-btn:hover {
+  background-color: #7E57C2;
+}
+
+
+.ai-question-generator {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 320px;
+  min-height: 350px;
+  background-color: rgba(16, 20, 59, 0.9);
+  border: 2px solid #4CAF50;
+  border-radius: 5px;
+  padding: 20px;
+  color: white;
+  z-index: 100;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.ai-question-generator h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #FFD700;
+  font-size: 1.5rem;
+}
+
+
+#import-pdf-btn, #import-doc-btn {
+  display: inline-block;
+  padding: 8px 15px;
+  margin: 5px;
+  background-color: #673AB7;
+  color: white;
+  border: 1px solid #9C27B0;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#import-pdf-btn:hover, #import-doc-btn:hover {
+  background-color: #7E57C2;
+}
+
+
+
+
+.ai-question-generator {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 320px;
+  min-height: 350px;
+  background-color: rgba(16, 20, 59, 0.9);
+  border: 2px solid #4CAF50;
+  border-radius: 5px;
+  padding: 20px;
+  color: white;
+  z-index: 100;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.ai-question-generator h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #FFD700;
+  font-size: 1.5rem;
+}
+
+#import-pdf-btn, #import-doc-btn {
+  display: inline-block;
+  padding: 8px 15px;
+  margin: 5px;
+  background-color: #673AB7;
+  color: white;
+  border: 1px solid #9C27B0;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#import-pdf-btn:hover, #import-doc-btn:hover {
+  background-color: #7E57C2;
+}
+
+#main-content .ai-question-generator:first-of-type {
+  display: none;
+}
+
+#use-questions-btn {
+  display: none !important;
+}
+
+button.btn-success.mt-3 {
+  display: none !important;
+}
+
+.ai-generated-content {
+  background-color: #283593;
+  border: 1px solid white;
+  min-height: 200px;
+  max-height: 500px;
+  padding: 15px;
+  margin-top: 15px;
+  overflow-y: auto;
+  border-radius: 3px;
+}
+
+#ai-questions-area {
+  color: #FFD700;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+}
+
+.generated-question {
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #6d6d6d;
+  padding-bottom: 10px;
+}
+
+.generated-question h4 {
+  color: white;
+  margin-bottom: 8px;
+}
+
+.generated-question p strong {
+  color: #4CAF50;
+}
+
+.generated-question ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+.generated-question ul li {
+  margin-bottom: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.generated-question ul li.correct-answer {
+  background-color: rgba(76, 175, 80, 0.3);
+  border-left: 3px solid #4CAF50;
+}
+
+@media (max-width: 992px) {
+  .ai-question-generator {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    margin: 20px auto;
+  }
 }
