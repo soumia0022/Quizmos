@@ -186,7 +186,7 @@ class QuestionResponseCounter:
         from response_management.models.response_model import WordCloudResponse
 
         # Fetch all word cloud responses for this question
-        responses = WordCloudResponse.objects.filter(question=self.question).values_list('word_cloud_response', flat=True)
+        responses = WordCloudResponse.objects.filter(session_code= self.question.poll.number_code ,question=self.question).values_list('word_cloud_response', flat=True)
 
         # Aggregate word frequencies
         word_frequencies = {}
