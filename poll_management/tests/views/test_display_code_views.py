@@ -12,7 +12,7 @@ class DisplayCodeViewTest(TestCase):
      
     def setUp(self):
         self.user = User.objects.get(username = 'johndoe')
-        self.poll = Poll.objects.create(title = 'test_poll', user=self.user, status= 'active')
+        self.poll = Poll.objects.create(title = 'test_poll', user=self.user)
 
         
     def test_display_code(self):

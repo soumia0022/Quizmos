@@ -12,7 +12,7 @@ class JoinPollViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='password', role='Lecturer')
         self.student = User.objects.get(username= 'janedoe')
-        self.poll = Poll.objects.create(title='Poll 1', user=self.user, status='active', number_code = 111111)
+        self.poll = Poll.objects.create(title='Poll 1', user=self.user, number_code = 111111)
         self.join_poll_url = reverse('poll_management:join_poll', kwargs={'code': self.poll.number_code})
 
 
