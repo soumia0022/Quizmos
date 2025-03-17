@@ -1,5 +1,6 @@
 {% extends 'base_content.html' %}
 {% load static %}
+{% load system_extras %}
 {% block content %}
 <div class="container">
   <div class="row">
@@ -7,6 +8,9 @@
       <h1>Welcome to your lecturer dashboard, {{ user.username }}</h1>
     </div>
   </div>
+
+  {% tts_button %}
+  {% tts_selected_button %}
 
   <a href="{% url 'lecturer_poll_list' %}">
       <button type="button">View Poll Results</button>
@@ -33,9 +37,8 @@
 
                     <!-- Poll Body -->
                     <div class="card-body">
-                        <p><strong>Status:</strong> {{ poll.status }}</p>
                         <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
-                        <p><strong>Responses:</strong> {{ poll.responses_count }}</p>
+                        <p><strong> Questions:</strong> {{ poll.questions.count }}</p>
                     </div>
 
                     <div class="card-footer text-muted">

@@ -1,5 +1,6 @@
 {% extends 'base_content.html' %}
 {% load system_extras %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-4">
@@ -8,7 +9,7 @@
     </header>
 
     {% if responses_by_question %}
-        <div id="pollResponsesSlideshow" class="carousel slide mt-4" data-bs-interval="false" data-bs-ride="false" aria-roledescription="carousel" aria-label="Poll responses slideshow">
+        <div id="pollResponsesSlideshow" class="carousel slide mt-4" data-bs-interval="false" data-bs-ride="false" data-poll-id="{{ poll.id }}" aria-roledescription="carousel" aria-label="Poll responses slideshow">
             {% include 'student_view_response/indicators.html' with responses=responses_by_question %}
 
             <div class="carousel-inner">
@@ -47,4 +48,6 @@
         </div>
     {% endif %}
 </div>
+
+<script src="{% static 'js/fetch_correct_answers.js' %}"></script>
 {% endblock %}

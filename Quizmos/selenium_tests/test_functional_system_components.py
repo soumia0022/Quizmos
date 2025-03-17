@@ -1,3 +1,4 @@
+import time
 from django.test import TestCase
 from selenium.webdriver.support.ui import Select
 from django.shortcuts import reverse
@@ -82,6 +83,7 @@ class TestOtherSystemComponents(TestCase, BaseSeleniumTest):
         dropdown = Select(dropdown)
         dropdown.select_by_value("text_fill")
         wait_for_element(self.driver, By.ID, "text-fill-fields")
+        time.sleep(1)
 
         # Locate the info button using its Bootstrap class
         info_button = wait_for_element(self.driver, By.CSS_SELECTOR, ".info-button-wrapper .info-button")
@@ -94,6 +96,7 @@ class TestOtherSystemComponents(TestCase, BaseSeleniumTest):
         info_popup = wait_for_element(self.driver, By.CSS_SELECTOR, ".info-button-wrapper .info-popup")
         WebDriverWait(self.driver, 10).until(EC.visibility_of(info_popup))
         self.assertTrue(info_popup.is_displayed())
+        time.sleep(1)
 
         # Move the cursor away to hide the tooltip and verify it's hidden
         actions.move_by_offset(50, 50).perform()

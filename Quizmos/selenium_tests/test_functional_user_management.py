@@ -115,6 +115,7 @@ class TestFunctionalUserSystem(BaseSeleniumTest):
         self.populate_password_fields(self.get_password_change_fields())
         wait(self.driver)
         self.lecturer.refresh_from_db()
+        time.sleep(1)
         self.assertTrue(self.lecturer.check_password("NewPassword123"))  # Verify password has been updated
 
     def test_user_can_edit_their_profile(self):

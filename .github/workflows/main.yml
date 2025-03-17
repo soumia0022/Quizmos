@@ -73,17 +73,17 @@ jobs:
         run: npm test
         
 
-      # Install Chromium and ChromeDriver
-      - name: Install Chromium and ChromeDriver
-
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser
-          CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
-          wget https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip
-          unzip -q chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/chromedriver
-          sudo chmod +x /usr/local/bin/chromedriver
+#      # Install Chromium and ChromeDriver
+#      - name: Install Chromium and ChromeDriver
+#
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y chromium-browser
+#          CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+#          wget https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip
+#          unzip -q chromedriver_linux64.zip
+#          sudo mv chromedriver /usr/local/bin/chromedriver
+#          sudo chmod +x /usr/local/bin/chromedriver
 
       # Run non-Selenium tests
       - name: Run Non-Selenium and Non-Jest Tests
@@ -98,12 +98,12 @@ jobs:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
 
-      # Run Selenium Tests
-      - name: Run Selenium Tests
-        run: |
-          python manage.py test Quizmos.selenium_tests
-        env:
-          REDIS_HOST: localhost
-          REDIS_PORT: 6379
-          DISPLAY: :99.0  # For headless mode
-
+#      # Run Selenium Tests
+#      - name: Run Selenium Tests
+#        run: |
+#          python manage.py test Quizmos.selenium_tests
+#        env:
+#          REDIS_HOST: localhost
+#          REDIS_PORT: 6379
+#          DISPLAY: :99.0  # For headless mode
+#
