@@ -103,4 +103,5 @@ class Command(BaseCommand):
                 # Create the response instance
                 response_type.objects.create(**response_data)
 
-            self.stdout.write(self.style.SUCCESS(f'Successfully added 10 responses for question {question.id}'))
+            self.stdout.write(f"\r{self.style.SUCCESS(f'Successfully added 10 responses for question {question.id}')} ", ending="")
+
