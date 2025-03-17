@@ -4,9 +4,8 @@ from django.urls import reverse
 from user_management.models import User
 from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
-from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
+from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse, WordCloudResponse, CodeQuestionResponse
 
-# Will add tests for wordcloud and code question once functionality has been added
 # Will add tests when other analytics have been completed - correct/incorrect answers
 
 
@@ -64,6 +63,20 @@ class PollAnalyticsTestCase(TestCase):
             question_text="Match the countries to their capitals.",
         )
 
+        self.wordcloud_question = Question.objects.create(
+            poll=self.poll,
+            question_type="wordcloud",
+            wordcloud_question="Name some capital cities",
+            question_text="Name some capital cities",
+        )
+
+        self.code_question = Question.objects.create(
+            poll=self.poll,
+            question_type="code_question",
+            code_question_text="Write a program that takes the users name as an input and displays hello followed by their name",
+            question_text="Write a program that takes the users name as an input and displays hello followed by their name",
+        )
+
         # Create responses
 
         MultipleChoiceResponse.objects.create(
@@ -105,6 +118,14 @@ class PollAnalyticsTestCase(TestCase):
             ]
         )
 
+        WordCloudResponse.objects.create(
+            poll=self.poll,
+            question=self.wordcloud_question,
+            user=self.user,
+            word_cloud_response=["London", "Paris"]
+        )
+
+
     def test_poll_analytics_view(self):
         """Test that the poll analytics page loads correctly."""
         url = reverse("poll_analytics", args=[self.poll.id])
@@ -122,9 +143,10 @@ class PollAnalyticsTestCase(TestCase):
                         f"Expected JSON response but got: {response.headers.get('Content-Type')}") # Ensure JSON response
         json_response = response.json()
         self.assertEqual(set(json_response.keys()), {"labels", "data"})
-        expected_labels = ["Favorite Colour?", "Best Programming Language?", "Describe your experience?", "Select your country?", "Match the countries to their capitals."]
+        expected_labels = ["Favorite Colour?", "Best Programming Language?", "Describe your experience?", "Select your country?",
+                           "Match the countries to their capitals.", "Name some capital cities", "Write a program that takes the users name as an input and displays hello followed by their name"]
         self.assertListEqual(json_response["labels"], expected_labels)
-        self.assertEqual(json_response["data"], [1, 1, 1, 1, 1])  # One response per question
+        self.assertEqual(json_response["data"], [1, 1, 1, 1, 1, 1, 0])  # One response per question
 
     def test_bar_graph_poll_view(self):
         """Test bar graph data returns correct labels and response counts."""
@@ -137,9 +159,9 @@ class PollAnalyticsTestCase(TestCase):
         json_response = response.json()
         self.assertEqual(set(json_response.keys()), {"labels", "data"})
         expected_labels = ["Favorite Colour?", "Best Programming Language?", "Describe your experience?",
-                           "Select your country?", "Match the countries to their capitals."]
+                           "Select your country?", "Match the countries to their capitals.", "Name some capital cities", "Write a program that takes the users name as an input and displays hello followed by their name"]
         self.assertListEqual(json_response["labels"], expected_labels)
-        self.assertEqual(json_response["data"], [1, 1, 1, 1, 1])  # One response per question
+        self.assertEqual(json_response["data"], [1, 1, 1, 1, 1, 1, 0])  # One response per question
 
     def test_line_graph_poll_view(self):
         """Test line graph data returns correct labels and response counts."""
@@ -152,9 +174,9 @@ class PollAnalyticsTestCase(TestCase):
         json_response = response.json()
         self.assertEqual(set(json_response.keys()), {"labels", "data"})
         expected_labels = ["Favorite Colour?", "Best Programming Language?", "Describe your experience?",
-                           "Select your country?", "Match the countries to their capitals."]
+                           "Select your country?", "Match the countries to their capitals.", "Name some capital cities", "Write a program that takes the users name as an input and displays hello followed by their name"]
         self.assertListEqual(json_response["labels"], expected_labels)
-        self.assertEqual(json_response["data"], [1, 1, 1, 1, 1])  # One response per question
+        self.assertEqual(json_response["data"], [1, 1, 1, 1, 1, 1, 0])  # One response per question
 
     def test_multiple_choice_question_analytics(self):
         """Test analytics for multiple-choice questions."""
@@ -208,3 +230,32 @@ class PollAnalyticsTestCase(TestCase):
         self.assertEqual(json_response["question"], "Match the countries to their capitals.")
         self.assertListEqual(json_response["labels"], ["Total Number of Matches"])
         self.assertListEqual(json_response["data"], [1])  # One response
+
+    def test_wordcloud_question_analytics(self):
+        """Test analytics for word cloud responses."""
+        url = reverse("question_analytics", args=[self.wordcloud_question.id])
+        response = self.client.get(url)
+        json_response = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json_response["question"], "Name some capital cities")
+        self.assertCountEqual(json_response["labels"], ["London", "Paris"])
+        self.assertCountEqual(json_response["data"], [1, 1])  # Both appear once
+
+    def test_code_question_analytics(self):
+        """Test analytics for code question responses."""
+        for i in range(3):
+            CodeQuestionResponse.objects.create(
+                poll=self.poll,
+                question=self.code_question,
+                user=self.user,
+                submitted_code=f"print('Hello User {i}')"
+            )
+
+        url = reverse("question_analytics", args=[self.code_question.id])
+        response = self.client.get(url)
+        json_response = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json_response["labels"], ["Total Number of Code Submissions"])
+        self.assertEqual(json_response["data"], [3])  # 3 responses submitted
