@@ -362,8 +362,8 @@ class PollConsumer(AsyncWebsocketConsumer):
                 answers = None  # No correct answer typically
             elif question.question_type == 'match_question':
                 answers = question.match_answers or []
-            # elif question.question_type == 'code_question':
-            #     answers = question.correct_code or ""
+            elif question.question_type == 'code_question':
+                 answers = question.correct_code or ""
             #correct_code doesn't exsist yet so its just a placeholder
 
             return answers

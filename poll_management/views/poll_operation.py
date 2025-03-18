@@ -9,7 +9,6 @@ def poll_edit(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user)
     if request.method == 'POST':
         poll.title = request.POST.get('title', poll.title)
-        poll.status = request.POST.get('status', poll.status)
         poll.save()
         return redirect('user_management:dashboard')
     return render(request, 'poll_edit.html', {'poll': poll})
