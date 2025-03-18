@@ -177,47 +177,6 @@ body #questions-sidebar {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
 }
 
-
-.ai-question-generator {
-  position: relative;
-  margin: 20px auto 30px auto;
-  width: 90%;
-  min-height: 350px;
-  background-color: rgba(16, 20, 59, 0.9);
-  border: 2px solid #4CAF50;
-  border-radius: 5px;
-  padding: 20px;
-  color: white;
-  z-index: 100;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.ai-question-generator h3 {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #FFD700;
-  font-size: 1.5rem;
-}
-
-
-#import-pdf-btn, #import-doc-btn {
-  display: inline-block;
-  padding: 8px 15px;
-  margin: 5px;
-  background-color: #673AB7;
-  color: white;
-  border: 1px solid #9C27B0;
-  border-radius: 3px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-#import-pdf-btn:hover, #import-doc-btn:hover {
-  background-color: #7E57C2;
-}
-
-
 .ai-question-generator {
   position: absolute;
   left: 40px;
@@ -232,86 +191,6 @@ body #questions-sidebar {
   color: white;
   z-index: 100;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.ai-question-generator h3 {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #FFD700;
-  font-size: 1.5rem;
-}
-
-
-#import-pdf-btn, #import-doc-btn {
-  display: inline-block;
-  padding: 8px 15px;
-  margin: 5px;
-  background-color: #673AB7;
-  color: white;
-  border: 1px solid #9C27B0;
-  border-radius: 3px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-#import-pdf-btn:hover, #import-doc-btn:hover {
-  background-color: #7E57C2;
-}
-
-
-
-
-.ai-question-generator {
-  position: absolute;
-  left: 40px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 320px;
-  min-height: 350px;
-  background-color: rgba(16, 20, 59, 0.9);
-  border: 2px solid #4CAF50;
-  border-radius: 5px;
-  padding: 20px;
-  color: white;
-  z-index: 100;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.ai-question-generator h3 {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #FFD700;
-  font-size: 1.5rem;
-}
-
-#import-pdf-btn, #import-doc-btn {
-  display: inline-block;
-  padding: 8px 15px;
-  margin: 5px;
-  background-color: #673AB7;
-  color: white;
-  border: 1px solid #9C27B0;
-  border-radius: 3px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-#import-pdf-btn:hover, #import-doc-btn:hover {
-  background-color: #7E57C2;
-}
-
-#main-content .ai-question-generator:first-of-type {
-  display: none;
-}
-
-#use-questions-btn {
-  display: none !important;
-}
-
-button.btn-success.mt-3 {
-  display: none !important;
 }
 
 .ai-generated-content {
@@ -364,7 +243,7 @@ button.btn-success.mt-3 {
 }
 
 @media (max-width: 992px) {
-  .ai-question-generator {
+  .ai-question-formation {
     position: static;
     left: auto;
     top: auto;
