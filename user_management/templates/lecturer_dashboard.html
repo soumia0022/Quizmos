@@ -33,9 +33,8 @@
 
                     <!-- Poll Body -->
                     <div class="card-body">
-                        <p><strong>Status:</strong> {{ poll.status }}</p>
                         <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
-                        <p><strong>Responses:</strong> {{ poll.responses_count }}</p>
+                        <p><strong> Questions:</strong> {{ poll.questions.count }}</p>
                     </div>
 
                     <div class="card-footer text-muted">

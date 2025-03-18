@@ -1,5 +1,41 @@
-document.addEventListener("DOMContentLoaded", function () {
- document.querySelectorAll("[id^='correct-answer-']").forEach(function (element) {
+    document.addEventListener("DOMContentLoaded", function () {
+    function decodeUnicode(str) {
+    if (!str) return '';
+    return str.replace(/\\u([\dA-Fa-f]{4})/g, (match, grp) => {
+    return String.fromCharCode(parseInt(grp, 16));
+    });
+    }
+
+    // Function to process code elements and add line numbers
+    function processCodeElement(codeElement) {
+    const originalCode = codeElement.textContent;
+    const decodedText = decodeUnicode(originalCode);
+    const lines = decodedText.split('\n');
+    codeElement.innerHTML = lines.map(line => `<span class="code-line">${line}</span>`).join('\n');
+    }
+
+    document.querySelectorAll('.code-display, .correct-code-display').forEach(processCodeElement);
+
+    // Watch for dynamically added .correct-code-display elements
+    const observer = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+    if (mutation.addedNodes.length) {
+        mutation.addedNodes.forEach(node => {
+            if (node.nodeType === 1) { 
+                if (node.matches('.correct-code-display')) {
+                    processCodeElement(node);
+                } else {
+                    node.querySelectorAll('.correct-code-display').forEach(processCodeElement);
+                }
+            }
+        });
+    }
+    });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Fetch and display correct answers
+    document.querySelectorAll("[id^='correct-answer-']").forEach(function (element) {
     if (element.id.includes("options")) {
         return;
     }
@@ -10,15 +46,13 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch(`/responses/get_answer/${pollId}/${questionId}/`)
      .then(response => response.json())
      .then(data => {
-        console.log(`Question ${questionId} data:`, data);
         
         if (data.correct_answer) {
             const correctAnswerContainer = document.getElementById(`correct-answer-${questionId}`);
-            console.log(`Question ${questionId} answer type:`, typeof data.correct_answer, Array.isArray(data.correct_answer) ? "array" : "not array", data.correct_answer);
-            
-            if (Array.isArray(data.correct_answer) && data.correct_answer.length > 0 && data.correct_answer[0].left) {
-                console.log(`Question ${questionId}: Handling as match question`);
-                const tbody = correctAnswerContainer.querySelector('.correct-match-tbody');
+
+            if (data.question_type === "match_question" && Array.isArray(data.correct_answer) && data.correct_answer.length > 0 && data.correct_answer[0].left) {
+                const tbody = correctAnswerContainer.querySelector('.correct-match-tbody') || document.createElement('tbody');
+                tbody.classList.add('correct-match-tbody');
                 tbody.innerHTML = '';
                 data.correct_answer.forEach(pair => {
                     const row = document.createElement('tr');
@@ -28,8 +62,19 @@ document.addEventListener("DOMContentLoaded", function () {
                      `;
                     tbody.appendChild(row);
                 });
-            } else if (Array.isArray(data.correct_answer) && data.correct_answer.length > 0) {
-                console.log(`Question ${questionId}: Handling as multiple choice`);
+                if (!correctAnswerContainer.querySelector('.correct-match-tbody')) {
+                    const table = document.createElement('table');
+                    table.classList.add('table', 'table-bordered');
+                    table.innerHTML = `
+                        <thead class="bg-success text-white">
+                            <tr><th>Question Item</th><th>Correct Match</th></tr>
+                        </thead>
+                    `;
+                    table.appendChild(tbody);
+                    correctAnswerContainer.innerHTML = '';
+                    correctAnswerContainer.appendChild(table);
+                }
+            } else if ((data.question_type === "multiple_choice" || data.question_type === "single_choice") && Array.isArray(data.correct_answer) && data.correct_answer.length > 0) {
                 const optionsContainer = document.getElementById(`correct-answer-options-${questionId}`) || correctAnswerContainer;
                 optionsContainer.innerHTML = '';
                 data.correct_answer.forEach(answer => {
@@ -38,15 +83,29 @@ document.addEventListener("DOMContentLoaded", function () {
                     answerBox.innerHTML = `<p class="p-2 border rounded bg-success text-white mb-0">${answer}</p>`;
                     optionsContainer.appendChild(answerBox);
                 });
-            } else if (typeof data.correct_answer === 'string') {
-                console.log(`Question ${questionId}: Handling as string answer`);
-                correctAnswerContainer.innerHTML = `<p class='p-2 border rounded bg-success text-white mb-0'>${data.correct_answer}</p>`;
-            } else {
-                console.log(`Question ${questionId}: UNHANDLED FORMAT`, data.correct_answer);
+            } 
+            // Code answer
+            else if (data.question_type === "code_question" && typeof data.correct_answer === 'string') {
+                const codeEditorContainer = document.createElement("div");
+                codeEditorContainer.classList.add("code-editor-container");
+
+                const preElement = document.createElement("pre");
+                preElement.classList.add("correct-code-display");
+                preElement.textContent = data.correct_answer;
+
+                codeEditorContainer.appendChild(preElement);
+                correctAnswerContainer.innerHTML = '';
+                correctAnswerContainer.appendChild(codeEditorContainer);
+               
+            } 
+            //  string answers for remaining question types 
+            else if (typeof data.correct_answer === 'string') {
+                correctAnswerContainer.innerHTML = `<p class="p-2 border rounded bg-success text-white mb-0">${data.correct_answer}</p>`;
+            } 
+            else {
                 correctAnswerContainer.innerHTML = `<p class='p-2 border rounded bg-success text-white mb-0'>${JSON.stringify(data.correct_answer)}</p>`;
             }
         } else {
-            console.log(`Question ${questionId}: No correct answer available`);
             element.innerHTML = "<p class='p-2 border rounded bg-secondary text-white mb-0'>Not available</p>";
         }
      })

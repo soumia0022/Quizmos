@@ -287,19 +287,22 @@ class QuestionResponseCounterTests(TestCase):
             user=self.test_users[0],
             poll=self.poll,
             question=self.word_cloud,
-            word_cloud_response= ["hello", "world"]
+            word_cloud_response= ["hello", "world"],
+            session_code=123456
         )
         WordCloudResponse.objects.create(
             user=self.test_users[1],
             poll=self.poll,
             question=self.word_cloud,
-            word_cloud_response =["hello", "hi"]
+            word_cloud_response =["hello", "hi"],
+            session_code=123456
         )
         WordCloudResponse.objects.create(
             user=self.test_users[2],
             poll=self.poll,
             question=self.word_cloud,
-            word_cloud_response=[]  # empty answer that should be filtered out
+            word_cloud_response=[],  # empty answer that should be filtered out
+            session_code=123456
         )
 
         # count responses
