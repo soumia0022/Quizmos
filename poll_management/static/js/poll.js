@@ -41,11 +41,17 @@ window.nextQuestion = function() {
 function resetShowAnswerState() {
     const closedEyeButton = document.getElementById('show-answer-closed');
     const openEyeButton = document.getElementById('show-answer-open');
+    const currentQuestion = window.questions[window.currentQuestionIndex];
+
+  // hide eye icon for wordcloud questions
+  if (currentQuestion.type === 'wordcloud') {
+    closedEyeButton.style.display = 'none';
+    openEyeButton.style.display = 'none';
+  } else {
     closedEyeButton.style.display = 'inline';
     openEyeButton.style.display = 'none';
 
-    // notify the server to hide answers and show the closed eye icon 
-    const questionId = window.questions[window.currentQuestionIndex].id;
+    const questionId = currentQuestion.id;
     if (ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({
             type: 'show_answers',
@@ -53,7 +59,8 @@ function resetShowAnswerState() {
             action: 'hide_answer'
         }));
     }
-}
+  }
+  }
 
 function createQuestionHTML(question) {
   let html = '<div class="question-title">';//this will store the final html content needed to display the question
