@@ -149,6 +149,17 @@ function updateQuestionDisplay() {
     // Update the question display (only set innerHTML once)
     questionContainer.innerHTML = createQuestionHTML(currentQuestion);
 
+  // Hide eye icons for word cloud questions
+  const closedEyeButton = document.getElementById('show-answer-closed');
+  const openEyeButton = document.getElementById('show-answer-open');
+  if (currentQuestion.type === 'wordcloud') {
+      closedEyeButton.style.display = 'none';
+      openEyeButton.style.display = 'none';
+  } else {
+    
+      closedEyeButton.style.display = 'inline'; 
+      openEyeButton.style.display = 'none';
+  }
 
     if (window.currentTimerInterval) {
         clearInterval(window.currentTimerInterval);
@@ -172,4 +183,4 @@ function updateQuestionDisplay() {
         question_timer: currentQuestion.question_timer,
       }));
     }
-}
+  }
