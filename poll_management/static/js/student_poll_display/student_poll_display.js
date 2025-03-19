@@ -9,15 +9,15 @@ function shuffleArray(array) {
     return array;
 }
 
-        function showFeedback(message, isSuccess) {
-            const feedback = document.getElementById('feedback');
-            feedback.textContent = message;
-            feedback.className = `feedback ${isSuccess ? 'success' : 'error'}`;
-            feedback.style.display = 'block';
-            setTimeout(() => {
-                feedback.style.display = 'none';
-            }, 3000);
-        }
+function showFeedback(message, isSuccess) {
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = message;
+    feedback.className = `feedback ${isSuccess ? 'success' : 'error'}`;
+    feedback.style.display = 'block';
+    setTimeout(() => {
+        feedback.style.display = 'none';
+    }, 3000);
+}
 
         let currentQuestionId = null;
         let currentQuestionType = null;

@@ -1,11 +1,10 @@
 import {fetchResponseCounts, ws} from './websocket.js';
-import {renderChoice} from "./choice_display.js";
-import {renderText} from "./text_question_display.js";
-import {renderWordCloud} from "./word_cloud_display.js";
-import {renderMatch} from "./match_question_display.js";
-import {getFormattedTime, startCountdownTimer} from "./timer.js";
-import { renderCodeQuestion } from "./code_question_display.js";
-import {unlock} from "./lock_poll.js";
+import {renderChoice} from "./questions/choice_display.js";
+import {renderText} from "./questions/text_question_display.js";
+import {renderWordCloud} from "./questions/word_cloud_display.js";
+import {renderMatch} from "./questions/match_question_display.js";
+import {getFormattedTime, startCountdownTimer} from "../timer.js";
+import { renderCodeQuestion } from "./questions/code_question_display.js";
 
 
 

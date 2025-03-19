@@ -87,11 +87,11 @@
 </script>
 
 {% load static %}
-<script type="module" src="{% static 'js/websocket.js' %}"></script>
-<script type="module" src="{% static 'js/poll.js' %}"></script>
-<script type="module" src="{% static 'js/show_answer.js' %}"></script>
+<script type="module" src="{% static 'js/lecturer_poll_display/websocket.js' %}"></script>
+<script type="module" src="{% static 'js/lecturer_poll_display/poll.js' %}"></script>
+<script type="module" src="{% static 'js/lecturer_poll_display/show_answer.js' %}"></script>
 <script type="module">
-  import { ws } from "{% static 'js/websocket.js' %}";
+  import { ws } from "{% static 'js/lecturer_poll_display/websocket.js' %}";
   import { initializeCodeEditor } from "{% static 'js/code_executor.js' %}";
   let answerCodeEditor = null;
   ws.addEventListener('message', function(event) {
