@@ -14,7 +14,6 @@ def add_question(request, poll_id):
 
     if request.method == 'POST':
         #set max limit of questions to 20
-
         if (poll.questions.count() == 20):
             return JsonResponse({'error': f'Only 20 questions are allowed per poll'}, status=400)
 

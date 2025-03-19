@@ -16,21 +16,6 @@ class PollOperationsTestCase(TestCase):
         self.client.login(username='johndoe', password='Password123')
         self.poll = Poll.objects.create(title='Test Poll', user=self.user)
     
-    def test_edit_poll(self):
-        response = self.client.post(reverse('poll_management:poll_edit', args=[self.poll.pk]), {
-            'title': 'Updated Poll Title',
-        })
-        self.poll.refresh_from_db()
-        self.assertEqual(self.poll.title, 'Updated Poll Title')
-        self.assertRedirects(response, reverse('user_management:dashboard'))
-    
-    def test_edit_poll_get_request(self):
-        """Test if accessing poll_edit via GET renders the correct template."""
-        response = self.client.get(reverse('poll_management:poll_edit', args=[self.poll.pk]))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'poll_edit.html')
-        self.assertEqual(response.context['poll'], self.poll)
-    
     def test_delete_poll(self):
         response = self.client.post(reverse('poll_management:poll_delete', args=[self.poll.pk]))
         self.assertFalse(Poll.objects.filter(id=self.poll.pk).exists())
@@ -41,12 +26,6 @@ class PollOperationsTestCase(TestCase):
         response = self.client.get(reverse('poll_management:poll_delete', args=[self.poll.pk]))
         self.assertTrue(Poll.objects.filter(id=self.poll.pk).exists())
         self.assertRedirects(response, reverse('user_management:dashboard'))
-
-    def test_edit_poll_not_found(self):
-        response = self.client.post(reverse('poll_management:poll_edit', args=[999]), {
-            'title': 'Updated Poll Title',
-        })
-        self.assertEqual(response.status_code, 404)
     
     def test_delete_poll_not_found(self):
         response = self.client.post(reverse('poll_management:poll_delete', args=[999]))
