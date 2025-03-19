@@ -13,6 +13,11 @@ def add_question(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user)
 
     if request.method == 'POST':
+        #set max limit of questions to 20
+
+        if (poll.questions.count() == 20):
+            return JsonResponse({'error': f'Only 20 questions are allowed per poll'}, status=400)
+
         # Update Poll Title
         new_title = request.POST.get('poll_title') or request.POST.get('poll_title_hidden')
         if new_title and new_title != poll.title:
