@@ -1,8 +1,19 @@
 import { startCountdownTimer } from "../timer.js";
-import {initializeCodeEditor} from "../code_executor.js";
-import {display_questions} from "./display_questions.js";
+import { display_questions } from "./display_questions.js";
+import {updateProgressBar} from "./progress_bar.js";
+import {displayCorrectAnswer, hideCorrectAnswer} from "../display_correct_answer.js";
+import {clean_up_code_mirror} from "../clean_up_code_mirror.js";
 
-
+const pollState = {
+    currentQuestionId: null,
+    currentQuestionType: null,
+    currentTimerInterval: null,
+    currentQuestion: null,
+    answerCodeEditor: null,
+    totalQuestions: 0,
+    currentQuestionNumber: 0,
+    webSocket: null
+};
 
 function showFeedback(message, isSuccess) {
     const feedback = document.getElementById('feedback');
@@ -14,243 +25,185 @@ function showFeedback(message, isSuccess) {
     }, 3000);
 }
 
-    let currentQuestionId = null;
-    let currentQuestionType = null;
-    let currentTimerInterval = null;
-    let currentQuestion = null;
-    let answerCodeEditor = null;
+// WebSocket message handlers
+function handlePollStatus(data) {
+    if (data.action === 'lock') {
+        showLockOverlay();
+    } else if (data.action === 'unlock') {
+        hideLockOverlay();
+    }
+}
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const pollCodeElement = document.getElementById('poll-container');
-        const pollCode = pollCodeElement ? pollCodeElement.dataset.pollCode : null;
-        const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
-        const submitButton = document.getElementById('submitResponse');
+function handleAnswers(data) {
+    const correctAnswersDiv = document.getElementById('correct-answers');
+    if (data.action === 'show_answer') {
+        displayCorrectAnswer(data, correctAnswersDiv, pollState);
+    } else if (data.action === 'hide_answer') {
+        hideCorrectAnswer(correctAnswersDiv, pollState);
+    }
+}
 
-        // Function to update the progress bar
-        let totalQuestions = 0;
-        let currentQuestionNumber = 0;
+function handleQuestionDisplay(data) {
+    // clear any existing timer
+    if (pollState.currentTimerInterval) {
+        clearInterval(pollState.currentTimerInterval);
+    }
 
-        function updateProgressBar(currentNum, total) {
-            const progressBar = document.getElementById('question-progress-bar');
-            const progressText = document.getElementById('question-progress-text');
+    // reset correct answers display
+    const correctAnswersDiv = document.getElementById('correct-answers');
+    correctAnswersDiv.style.display = 'none';
+    correctAnswersDiv.innerHTML = '';
 
-            if (!progressBar || !progressText) return;
+   clean_up_code_mirror(pollState);
 
-            const percentage = total > 0 ? (currentNum / total) * 100 : 0;
+    const questionElement = document.getElementById('question');
+    questionElement.innerHTML = data.question.text + '<div class="question-timer"></div>';
 
-            progressBar.style.width = `${percentage}%`;
-            progressBar.setAttribute('aria-valuenow', percentage);
-            progressText.textContent = `Question ${currentNum} of ${total}`;
+    // start timer
+    if (data.question.question_timer) {
+        pollState.currentTimerInterval = startCountdownTimer(questionElement, data.question.question_timer);
+    }
 
-            // The color changes based on question progression
-            if (percentage <= 25) {
-                progressBar.classList.remove('bg-warning', 'bg-success');
-                progressBar.classList.add('bg-danger');
-            } else if (percentage > 25 && percentage < 75) {
-                progressBar.classList.remove('bg-danger', 'bg-success');
-                progressBar.classList.add('bg-warning');
+    // update state
+    pollState.currentQuestionId = data.question.id;
+    pollState.currentQuestionType = data.question.type;
+    pollState.currentQuestion = data.question;
+
+    // Display submit button
+    document.getElementById('submitResponse').style.display = 'block';
+
+    if (data.total_questions) {
+        pollState.totalQuestions = data.total_questions;
+    }
+    if (data.question_number) {
+        pollState.currentQuestionNumber = data.question_number;
+    }
+
+    updateProgressBar(pollState.currentQuestionNumber, pollState.totalQuestions);
+    display_questions(data);
+}
+
+function handleResponseStatus(data) {
+    showFeedback(
+        data.success ? 'Response submitted successfully!' : "It seems like there's an invalid response, or this question might currently be locked. Please wait for the Lecturer to unlock it.",
+        data.success
+    );
+}
+
+// Response collection based on question type
+function collectResponse() {
+    switch (pollState.currentQuestionType) {
+        case 'multiple_choice':
+            return Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+
+        case 'single_choice':
+            const selectedRadio = document.querySelector('input[name="single_choice"]:checked');
+            return selectedRadio ? selectedRadio.value : null;
+
+        case 'dropdown_fill':
+            const selectedOption = document.querySelector('select').value;
+            return selectedOption || null;
+
+        case 'text_fill':
+            return document.getElementById('answer').value;
+
+        case 'match_question':
+            const matchData = Array.from(document.querySelectorAll('.flex-container')).map(container => {
+                const leftOption = container.querySelector('.left').textContent.trim();
+                const rightOptionElement = container.querySelector('.dropzone .box');
+                const rightOption = rightOptionElement ? rightOptionElement.textContent.trim() : null;
+                return {
+                    left: leftOption,
+                    right: rightOption
+                };
+            });
+
+            if (matchData.some(match => !match.right)) {
+                showFeedback('Please match all items before submitting.', false);
+                return null;
+            }
+            return matchData;
+
+        case 'wordcloud':
+            const answer1 = document.getElementById('answer1').value;
+            const answer2 = document.getElementById('answer2').value;
+            return [answer1, answer2].filter(answer => answer !== '');
+
+        case 'code_question':
+            // Get the CodeMirror instance from the text area
+            let codeEditor = document.querySelector('.CodeMirror'); // Get the CodeMirror container
+            if (codeEditor) {
+                let editorInstance = codeEditor.CodeMirror; // Access CodeMirror instance
+                return editorInstance.getValue(); // Get the code inside the editor
             } else {
-                progressBar.classList.remove('bg-danger', 'bg-warning');
-                progressBar.classList.add('bg-success');
+                console.error("CodeMirror instance not found.");
+                return "";
             }
-        }
+    }
+    return null;
+}
 
-        ws.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            // Handle poll lock/unlock messages
-            if (data.type === 'poll_status') {
-                if (data.action === 'lock') {
-                    showLockOverlay();
-                } else if (data.action === 'unlock') {
-                    hideLockOverlay();
-                }
-            }
-            // Handle answers display
-            if (data.type === 'answers') {
+// Event handlers
+function handleSubmitResponse() {
+    const responseData = collectResponse();
 
-                const correctAnswersDiv = document.getElementById('correct-answers');
+    if (responseData && responseData.length !== 0) {
+        pollState.webSocket.send(JSON.stringify({
+            type: 'response',
+            question_id: pollState.currentQuestionId,
+            response_type: pollState.currentQuestionType,
+            response_data: responseData
+        }));
+    } else {
+        showFeedback('Please provide a response', false);
+    }
+}
 
-                if (data.action === 'show_answer') {
-                    let answerHtml = '<strong>Correct Answer(s):</strong> ';
+function handleWebSocketMessage(event) {
+    const data = JSON.parse(event.data);
 
-                    switch (currentQuestionType) {
-                        case 'multiple_choice':
-                        case 'single_choice':
-                            answerHtml += Array.isArray(data.answers) ? data.answers.join(', ') : data.answers;
-                            break;
-                        case 'dropdown_fill':
-                        case 'text_fill':
-                            answerHtml += data.answers;
-                            break;
-                        case 'match_question':
-                            if (Array.isArray(data.answers) && currentQuestion && currentQuestion.match_options) {
-                                answerHtml += data.answers.map((ans, idx) =>
-                                    `${currentQuestion.match_options[idx]} → ${ans}`).join(', ');
-                            } else {
-                                answerHtml += 'Matching pairs are shown.';
-                            }
-                            break;
-                        case 'wordcloud':
-                            answerHtml += 'No correct answer for word cloud.';
-                            break;
-                        case 'code_question':
-                            answerHtml = '<strong>Correct Answer:</strong><div id="answer-code-display"></div>';
-                            correctAnswersDiv.innerHTML = answerHtml;
+    switch (data.type) {
+        case 'poll_status':
+            handlePollStatus(data);
+            break;
+        case 'answers':
+            handleAnswers(data);
+            break;
+        case 'question':
+            handleQuestionDisplay(data);
+            break;
+        case 'response_status':
+            handleResponseStatus(data);
+            break;
+    }
+}
 
-                            // Get the code language from the current question
-                            let language = currentQuestion && currentQuestion.code_language ?
-                                currentQuestion.code_language : "python";
+// Initialization
+function initializeWebSocket(pollCode) {
+    const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
+    ws.onmessage = handleWebSocketMessage;
+    return ws;
+}
 
-                            // Create a textarea for the code editor
-                            const codeTextarea = document.createElement('textarea');
-                            codeTextarea.id = 'answer-code-editor';
-                            document.getElementById('answer-code-display').appendChild(codeTextarea);
+function initializeEventListeners() {
+    document.getElementById('submitResponse').addEventListener('click', handleSubmitResponse);
+}
 
-                            // Initialize CodeMirror for the answer
-                            answerCodeEditor = initializeCodeEditor(codeTextarea, language);
+// Main initialization function
+function initialize() {
+    const pollCodeElement = document.getElementById('poll-container');
+    const pollCode = pollCodeElement ? pollCodeElement.dataset.pollCode : null;
 
-                            // Set the answer code and make it read-only
-                            answerCodeEditor.setValue(data.answers);
-                            answerCodeEditor.setOption('readOnly', true);
-                            setTimeout(() => answerCodeEditor.refresh(), 100);
-                            correctAnswersDiv.style.display = 'block';
-                            return;
-                    }
+    if (!pollCode) {
+        console.error("Poll code not found");
+        return;
+    }
 
-                    correctAnswersDiv.innerHTML = answerHtml;
-                    correctAnswersDiv.style.display = 'block';
-                } else if (data.action === 'hide_answer') {
-                    correctAnswersDiv.style.display = 'none';
-                    correctAnswersDiv.innerHTML = '';
+    pollState.webSocket = initializeWebSocket(pollCode);
+    initializeEventListeners();
+    createLockOverlay();
+}
 
-                    // Clean up CodeMirror instance if it exists
-                    if (answerCodeEditor) {
-                        answerCodeEditor = null;
-                    }
-                }
-            }
-
-            if (data.type === 'question') {
-                // Clear any existing timer
-                if (currentTimerInterval) {
-                    clearInterval(currentTimerInterval);
-                }
-
-                // Reset correct answers display
-                const correctAnswersDiv = document.getElementById('correct-answers');
-                correctAnswersDiv.style.display = 'none';
-                correctAnswersDiv.innerHTML = '';
-
-                // Clean up CodeMirror instance if it exists
-                if (answerCodeEditor) {
-                    answerCodeEditor = null;
-                }
-
-                const questionElement = document.getElementById('question');
-                questionElement.innerHTML = data.question.text + '<div class="question-timer"></div>';
-
-                // start timer
-                if (data.question.question_timer) {
-                    currentTimerInterval = startCountdownTimer(questionElement, data.question.question_timer);
-                }
-
-                currentQuestionId = data.question.id;
-                currentQuestionType = data.question.type;
-                currentQuestion = data.question;
-                submitButton.style.display = 'block';
-
-                // Update question progress information
-                if (data.total_questions) {
-                    totalQuestions = data.total_questions;
-                }
-                if (data.question_number) {
-                    currentQuestionNumber = data.question_number;
-                }
-
-                // Update the progress bar
-                updateProgressBar(currentQuestionNumber, totalQuestions);
-
-                display_questions(data);
-
-
-            } else if (data.type === 'response_status') {
-                showFeedback(
-                    data.success ? 'Response submitted successfully!' : "It seems like there's an invalid response, or this question might currently be locked. Please wait for the Lecturer to unlock it.",
-                    data.success
-                );
-            }
-        };
-
-        submitButton.addEventListener('click', function() {
-            let responseData = null;
-
-            switch (currentQuestionType) {
-                case 'multiple_choice':
-                    responseData = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-                        .map(cb => cb.value);
-                    break;
-
-                case 'single_choice':
-                    const selectedRadio = document.querySelector('input[name="single_choice"]:checked');
-                    responseData = selectedRadio ? selectedRadio.value : null;
-                    break;
-
-                case 'dropdown_fill':
-                    const selectedOption = document.querySelector('select').value;
-                    responseData = selectedOption || null;
-                    break;
-
-                case 'text_fill':
-                    responseData = document.getElementById('answer').value;
-                    break;
-
-                case 'match_question':
-                    responseData = Array.from(document.querySelectorAll('.flex-container')).map(container => {
-                        const leftOption = container.querySelector('.left').textContent.trim();
-                        const rightOptionElement = container.querySelector('.dropzone .box');
-                        const rightOption = rightOptionElement ? rightOptionElement.textContent.trim() : null;
-                        return {
-                            left: leftOption,
-                            right: rightOption
-                        };
-                    })
-
-                    if (responseData.some(match => !match.right)) {
-                        showFeedback('Please match all items before submitting.', false);
-                        return;
-                    }
-                    break;
-
-                case 'wordcloud':
-                    const answer1 = document.getElementById('answer1').value;
-                    const answer2 = document.getElementById('answer2').value;
-                    responseData = [answer1, answer2].filter(answer => answer !== '');
-                    break;
-
-                case 'code_question':
-                    // Get the CodeMirror instance from the text area
-                    let codeEditor = document.querySelector('.CodeMirror'); // Get the CodeMirror container
-                    if (codeEditor) {
-                        let editorInstance = codeEditor.CodeMirror; // Access CodeMirror instance
-                        responseData = editorInstance.getValue(); // Get the code inside the editor
-                    } else {
-                        console.error("CodeMirror instance not found.");
-                        responseData = "";
-                    }
-                    break;
-            }
-
-            if (responseData && responseData.length !== 0) {
-                ws.send(JSON.stringify({
-                    type: 'response',
-                    question_id: currentQuestionId,
-                    response_type: currentQuestionType,
-                    response_data: responseData
-                }));
-            } else {
-                showFeedback('Please provide a response', false);
-            }
-        });
-
-        createLockOverlay();
-    });
+// Start the application when the DOM is loaded
+document.addEventListener('DOMContentLoaded', initialize);
