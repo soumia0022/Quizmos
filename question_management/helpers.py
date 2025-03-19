@@ -63,8 +63,6 @@ def validate_question_options_and_answers(options, answers, question_type):
 
     # Check if the number of answers exceeds the number of options
     if len(answers) > len(options):
-        print("answer: ", answers, "length", len(answers))
-        print("options: ", options, "length", len(options))
         return JsonResponse({'error': f'There cannot be more answers than options for a {question_type} question.'}, status=400)
 
     # If it's a single-choice question, ensure there is only one answer

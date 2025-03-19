@@ -133,3 +133,39 @@ class QuestionTypesTestCase(TestCase):
         # Ensure it returns a 400 status with an error message
         self.assertEqual(response.status_code, 400)
         self.assertIn('At least one answer is required', response.json().get('error'))
+
+    def test_exceeding_option_limit_multiple_choice(self):
+        """
+        Test that adding more than 4 options to a multiple-choice question results in an error.
+        """
+        data = {
+            'question_type': 'multiple_choice',
+            'multiple_choice_question': 'Select all prime numbers.',
+            'multiple_choice_options[]': ['2', '3', '5', '7', '11'],  # 5 options (exceeds limit)
+            'multiple_choice_answers[]': ['2', '3']
+        }
+
+        # Send a POST request
+        response = self.client.post(self.create_question_url, data)
+
+        # Ensure it returns a 400 status with the correct error message
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('You can only add up to 4 options for a multiple_choice question.', response.json().get('error'))
+
+    def test_exceeding_option_limit_single_choice(self):
+        """
+        Test that adding more than 4 options to a single-choice question results in an error.
+        """
+        data = {
+            'question_type': 'single_choice',
+            'single_choice_question': 'What is the capital of France?',
+            'single_choice_options[]': ['Paris', 'London', 'Berlin', 'Madrid', 'Rome'],  # 5 options (exceeds limit)
+            'single_choice_answers[]': ['Paris']
+        }
+
+        # Send a POST request
+        response = self.client.post(self.create_question_url, data)
+
+        # Ensure it returns a 400 status with the correct error message
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('You can only add up to 4 options for a single_choice question.', response.json().get('error'))
