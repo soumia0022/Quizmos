@@ -1,10 +1,8 @@
 from django.urls.conf import path
-from analytics.views.lecturer_poll_list import lecturer_poll_list
 from analytics.views.poll_detail import poll_analytics, piechart_data, bargraph_data, linegraph_data, question_analytics
 from analytics.views.download_csv import download_csv
 
 urlpatterns = [
-    path('polls/', lecturer_poll_list, name='lecturer_poll_list'),
     path('polls/<int:poll_id>/', poll_analytics, name='poll_analytics'),
     path('polls/<int:poll_id>/piechart_data/', piechart_data, name='piechart_data'),
     path('polls/<int:poll_id>/bargraph_data/', bargraph_data, name='bargraph_data'),

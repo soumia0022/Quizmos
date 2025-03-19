@@ -3,6 +3,8 @@ from response_management.models.response_model import MultipleChoiceResponse, Si
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from poll_management.models.poll_model import Poll
+from response_management.models.response_model import WordCloudResponse
+
 
 @login_required
 def student_view_poll(request, poll_id):
@@ -25,6 +27,7 @@ def student_view_poll(request, poll_id):
         'dropdown': {'model': DropdownFillResponse,'value_field': 'selected_option'},
         'match': {'model': MatchQuestionResponse,'value_field': 'match_responses'},
         'code': {'model': CodeQuestionResponse,'value_field': 'submitted_code'},
+        'word_cloud': {'model': WordCloudResponse, 'value_field': 'word_cloud_response'},
     }
 
     responses_by_question = {}
@@ -50,6 +53,8 @@ def student_view_poll(request, poll_id):
 
             value_field = config['value_field']
             responses_by_question[question.id][value_field] = getattr(response, value_field)
+
+            print(f"Question ID: {question.id}, Response Type: {response_type}, Answer: {getattr(response, value_field, 'No Answer Found')}")
 
     return render(request, 'student_view_response/poll_response.html', {
         'poll': poll,
