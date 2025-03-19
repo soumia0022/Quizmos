@@ -1,6 +1,6 @@
 import {ws} from './websocket.js';
 
-function unlock() {
+export function unlock() {
     const unlockButton = document.getElementById("unlock");
     const lockButton = document.getElementById("lock");
 

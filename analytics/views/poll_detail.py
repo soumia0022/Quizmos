@@ -2,7 +2,8 @@ from collections import Counter
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from poll_management.models.poll_model import Poll
-from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
+from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, \
+    DropdownFillResponse, MatchQuestionResponse, WordCloudResponse, CodeQuestionResponse
 from question_management.models.question_models import Question
 
 def poll_analytics(request, poll_id):
@@ -19,6 +20,7 @@ def get_response_count(poll, question):
         'text_fill': TextFillResponse,
         'dropdown_fill': DropdownFillResponse,
         'match_question': MatchQuestionResponse,
+        'wordcloud': WordCloudResponse,
     }
 
     model = response_models.get(question.question_type)
@@ -85,5 +87,34 @@ def question_analytics(request, question_id):
     elif question.question_type == 'match_question':
         labels.append("Total Number of Matches")
         data.append(MatchQuestionResponse.objects.filter(question=question).count())
+
+    elif question.question_type == 'wordcloud':
+        responses = WordCloudResponse.objects.filter(question=question)
+        words = []
+        for response in responses:
+            words.extend(response.word_cloud_response)  # List of words
+
+        word_counts = Counter(words)
+        if word_counts:
+            labels, data = zip(*word_counts.items())  # Words and their respective counts
+        else:
+            labels = []
+            data = []
+
+    elif question.question_type == 'code_question':
+        responses_count = (CodeQuestionResponse.objects.filter(question=question)).count()
+        labels = ['Total Number of Code Submissions']
+        data = [responses_count]
+
+        # For each code response count
+        # responses = CodeQuestionResponse.objects.filter(question=question)
+        # code_snippets = [response.submitted_code for response in responses]
+        # code_counts = Counter(code_snippets)
+        # if code_counts:
+        #     labels, data = zip(*code_counts.items())
+        # else:
+        #     labels = []
+        #     data = []
+
 
     return JsonResponse({'question': question.question_text, 'labels': labels, 'data': data})

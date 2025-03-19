@@ -1,62 +1,3 @@
-/* Stars and meteors */
-.stars {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.star {
-  position: absolute;
-  background-color: white;
-  border-radius: 50%;
-  width: 2px;
-  height: 2px;
-  animation: twinkle 2s infinite alternate;
-}
-
-#meteors-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.meteor {
-  position: absolute;
-  width: 3px;
-  height: 100px;
-  background: linear-gradient(to bottom right, 
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,0.8) 50%,
-    rgba(255,255,255,0) 100%);
-  transform: rotate(-45deg);
-  opacity: 0.7;
-  animation: meteorFall 3s linear infinite;
-}
-
-@keyframes twinkle {
-  0% { opacity: 0.3; }
-  100% { opacity: 1; }
-}
-
-@keyframes meteorFall {
-  0% { 
-      transform: rotate(-45deg) translateY(-100vh);
-      opacity: 0.7;
-  }
-  100% { 
-      transform: rotate(-45deg) translateY(100vh);
-      opacity: 0;
-  }
-}
-
 /* Cover card styles */
 .cover-card {
   background-color: rgba(30, 30, 70, 0.8);
@@ -69,14 +10,6 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 2;
-}
-
-.cover-heading {
-  font-family: 'Space Mono', monospace;
-  color: #9999ff;
-  text-shadow: 0 0 10px #6666ff;
-  font-size: 3.5rem;
-  margin-bottom: 20px;
 }
 
 .btn-secondary {
