@@ -1,31 +1,60 @@
-.join-poll-page {
-    position: relative;
-    background-color: #02192f;
-    overflow: hidden;
-  }
-  
-  .background-elements {
-    position: absolute;
-    width: 100%; 
-    height: 100%; 
-    overflow: hidden;
-    pointer-events: none;
-  }
-  
-  .star {
-    position: absolute;
-    width: auto;
-    height: auto;
-    max-width: 44px;
-    max-height: 45px;
-  }
-  
-  .planet {
-    position: absolute;
-    object-fit: cover;
-  }
-  
-  .astronaut {
-    position: absolute;
-    object-fit: cover;
-  }
+    .join-poll-page {
+        position: relative;
+        background-color: #02192f;
+        overflow: hidden;
+    }
+
+    .background-elements {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .astronaut {
+        position: absolute;
+        object-fit: cover;
+    }
+
+    .star, .planet {
+        position: absolute;
+        object-fit: contain;
+        transform: translateY(-200vh); 
+        animation: drop-and-bounce 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+        opacity: 1;
+    }
+
+    @keyframes drop-and-bounce {
+        0% {
+            transform: translateY(-200vh); 
+        }
+        50% {
+            transform: translateY(20px); 
+        }
+        70% {
+            transform: translateY(-10px); 
+        }
+        90% {
+            transform: translateY(5px);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    .star:nth-child(odd) {
+        animation-delay: 0.2s;
+    }
+
+    .star:nth-child(even) {
+        animation-delay: 0.4s;
+    }
+
+    .planet:nth-child(odd) {
+        animation-delay: 0.3s;
+    }
+
+    .planet:nth-child(even) {
+        animation-delay: 0.5s;
+    }
