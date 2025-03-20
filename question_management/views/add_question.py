@@ -21,6 +21,9 @@ tokenizer = T5Tokenizer.from_pretrained(model_name)
 
 
 
+
+
+
 def extract_text_from_pdf(uploaded_file):
     text = ""
     with pdfplumber.open(uploaded_file) as pdf:
