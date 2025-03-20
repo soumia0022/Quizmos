@@ -1,14 +1,14 @@
 .container h1 {
-    margin-top: 90px; 
-    font-family: 'Space Mono', monospace;
-    color: #9999ff;
-    text-shadow: 0 0 10px #6666ff;
+    font-family: 'Palanquin Dark', sans-serif;
+    color: #fff;
     margin-bottom: 1.5rem;
     text-align: center;
     width: 90%;
-    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
+    font-size: 50px;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .container form {
@@ -18,17 +18,12 @@
     padding: 2rem;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    margin: 2rem auto;
-    max-width: 800px;
+    margin: 15rem auto;
+    max-width: 700px;
     width: 90%;
 }
 
-/* proper spacing on mobile */
-@media (max-width: 768px) {
-    .container h1 {
-        margin-top: 100px;
-    }
-}
+
 
 /* Form Labels */
 .form-label {
