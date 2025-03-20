@@ -22,11 +22,16 @@
     }
 
     .btn-secondary {
-        background-color: #6666ff;
-        border-color: #4444cc;
+        background-color: #02192f;
+        border-radius: 25px;
+        border: 2px solid #fff;
+        font-size: 24px;
         color: white;
-        margin: 10px;
         transition: all 0.3s ease;
+        width: 270px; 
+        max-width: 90%; 
+        height: 60px; 
+        max-height: 90%;
     }
 
     .cover-heading {
