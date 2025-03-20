@@ -1,5 +1,5 @@
 // Initializes the CodeMirror editor
-export function initializeCodeEditor(textarea, language = "python") {
+export function initializeCodeEditor(textarea, language = "python", displayLanguage) {
     if (!textarea) {
         console.error(`Textarea with ID '${textareaId}' not found.`);
         return null;
@@ -25,8 +25,10 @@ export function initializeCodeEditor(textarea, language = "python") {
         lineNumbers: true
     });
 
-    // Set initial comment text
-    editor.setValue(commentMap[language] || "# This is a Python editor");
+    if (displayLanguage){
+        // Set initial comment text
+        editor.setValue(commentMap[language] || "# This is a Python editor");
+    }
 
     return editor;
 }
