@@ -4,6 +4,40 @@
         overflow: hidden;
     }
 
+    /* Cover card styles */
+    .cover-card {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 2px solid #fff;
+        border-radius: 30px;
+        padding: 40px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 2;
+        width: 600px; 
+        max-width: 90%; 
+        margin: 0 auto; 
+    }
+
+    .btn-secondary {
+        background-color: #6666ff;
+        border-color: #4444cc;
+        color: white;
+        margin: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .cover-heading {
+        font-family: 'Palanquin Dark', sans-serif;
+        font-size: 70px;
+        font-weight: bold;
+        color: #fff;
+        text-decoration: none;
+    }
+
+
     .background-elements {
         position: absolute;
         width: 100%;
