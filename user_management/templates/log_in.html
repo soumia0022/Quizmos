@@ -14,15 +14,14 @@
         <input type="hidden" name="next" value="{{ next }}">
         {% include 'partials/bootstrap_form.html' with form=form %}
         <input id="id_log_in_button" type="submit" value="Log in" class="btn btn-primary">
+
+        <div class="prompt">
+          Don't have an account? <a href="{% url 'user_management:sign_up' %}">Sign up</a>
+        </div>
+        <div class="prompt">
+          <a href="{% url 'user_management:password_reset' %}">Forgotten Password?</a>
+        </div>
       </form>
-      <div class="prompt">
-        <a href="{% url 'user_management:password_reset' %}">Forgotten Password?</a>
-
-      <div class="prompt">
-        Don't have an account? <a href="{% url 'user_management:sign_up' %}">Sign up</a>
-    </div>
-
-    </div>
   </div>
 </div>
 {% endblock %}
