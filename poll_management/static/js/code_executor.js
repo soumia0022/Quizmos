@@ -12,11 +12,23 @@ export function initializeCodeEditor(textarea, language = "python") {
         cpp: "text/x-c++src"
     };
 
-    return CodeMirror.fromTextArea(textarea, {
+    let commentMap = {
+        python: "# This is a Python editor",
+        javascript: "// This is a JavaScript editor",
+        java: "// This is a Java editor",
+        cpp: "// This is a C++ editor"
+    };
+
+    let editor = CodeMirror.fromTextArea(textarea, {
         mode: modeMap[language] || "python",
         theme: "default",
         lineNumbers: true
     });
+
+    // Set initial comment text
+    editor.setValue(commentMap[language] || "# This is a Python editor");
+
+    return editor;
 }
 
 // Executes the code and displays the result in the specified output element
