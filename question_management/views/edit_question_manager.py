@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from question_management.helpers import validate_question_options_and_answers
 
 class QuestionManager:
     """Class-based view to handle the validation of different types of questions when editing.
@@ -14,6 +15,9 @@ class QuestionManager:
             return JsonResponse({'error': 'At least one option is required for a multiple-choice question.'}, status=400)
         if not question.multiple_choice_answers:
             return JsonResponse({'error': 'At least one answer is required for a multiple-choice question.'}, status=400)
+        # Check if the number of options exceeds max - 4
+        if len(question.multiple_choice_options) > 4:
+            return JsonResponse({'error': f'You can only add up to 4 options for a multiple-choice question.'}, status=400)
         return None
 
     @staticmethod
@@ -25,6 +29,9 @@ class QuestionManager:
             return JsonResponse({'error': 'At least one option is required for a single-choice question.'}, status=400)
         if len(question.single_choice_answers) > 1:
             return JsonResponse({'error': 'Only one answer is allowed for a single-choice question.'}, status=400)
+        # Check if the number of options exceeds max - 4
+        if len(question.single_choice_option) > 4:
+            return JsonResponse({'error': f'You can only add up to 4 options for a single-choice question.'}, status=400)
         return None
 
     @staticmethod
@@ -61,6 +68,9 @@ class QuestionManager:
             return JsonResponse({'error': 'At least one answer is required for a match question.'}, status=400)
         if len(question.match_options) != len(question.match_answers):
             return JsonResponse({'error': 'The number of options must match the number of answers.'}, status=400)
+        # Check if the number of options exceeds max - 4
+        if len(question.match_options) > 4:
+            return JsonResponse({'error': f'You can only add up to 4 options for a match question.'}, status=400)
         return None
 
     @staticmethod

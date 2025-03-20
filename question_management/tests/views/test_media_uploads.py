@@ -131,7 +131,7 @@ class QuestionFileUploadTestCase(TestCase):
         question = questions[0]
         self.assertEqual(question.single_choice_question, 'What is an apple?')
         self.assertEqual(question.single_choice_option, ['a fruit'])
-        self.assertEqual(question.single_choice_answers, 'a fruit')
+        self.assertEqual(question.single_choice_answers, ['a fruit'])
         self.assertIsNotNone(question.audio_file)
         self.assertIsNotNone(question.video_file)
         self.assertIsNotNone(question.image_file)

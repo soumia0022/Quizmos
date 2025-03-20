@@ -3,53 +3,48 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0c0c2b, #1a1a3a) fixed;
-  color: #e0e0ff;
-  font-family: 'Arial', sans-serif;
+  background: #02192F; 
+  color: #fff; 
+  font-family: 'Palanquin', sans-serif; 
   overflow-x: hidden;
   position: relative;
 }
 
+/* Base container with a height variable */
+.container-base {
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+}
+
+/* Additional font reset for common text elements */
+h1, h2, h3, h4, h5, h6, p, span, a, div, li {
+  font-family: inherit; 
+  color: inherit; 
+  letter-spacing: 0.05em; 
+}
+
 /* Navigation */
 .navbar {
-  position: absolute;
-  top: 20px;
+  width: 100%;
+  height: 70px; 
+  background: rgba(255, 255, 255, 0.10);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 40px;
+  border: 2px solid white;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  padding: 0 20px; 
+  position: fixed; 
+  top: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-}
-
-.nav-button {
-  background-color: rgba(50, 50, 100, 0.7);
-  border: 1px solid #6666ff;
-  color: #9999ff;
-  margin: 5px;
-  padding: 8px 15px;
-  border-radius: 20px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.nav-button:hover {
-  background-color: #6666ff;
-  color: white;
-  transform: scale(1.05);
-}
-
-.nav-buttons-left, .nav-buttons-right {
-  display: flex;
-  align-items: center;
-}
-
-.nav-buttons-left {
-  justify-content: flex-start;
-}
-
-.nav-buttons-right {
-  justify-content: flex-end;
 }
 
 /* Footer */
@@ -75,15 +70,6 @@ html, body {
   backdrop-filter: blur(10px);
   width: 800px;
   max-width: 90%;
-}
-
-/* Headings */
-.about-heading, .faq-heading {
-  font-family: 'Space Mono', monospace;
-  color: #9999ff;
-  text-shadow: 0 0 10px #6666ff;
-  font-size: 2.5rem;
-  margin-bottom: 20px;
 }
 
 /* Alert Styles */

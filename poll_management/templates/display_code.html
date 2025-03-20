@@ -4,6 +4,8 @@
 {% block content %}
     {% noscript_warning %}
     {% return_button %}
+    {% tts_button %}
+    {% tts_selected_button %}
 
         <!-- CodeMirror Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
@@ -90,6 +92,8 @@
 <script type="module" src="{% static 'js/show_answer.js' %}"></script>
 <script type="module">
   import { ws } from "{% static 'js/websocket.js' %}";
+  import { initializeCodeEditor } from "{% static 'js/code_executor.js' %}";
+  let answerCodeEditor = null;
   ws.addEventListener('message', function(event) {
     const data = JSON.parse(event.data);
     if (data.type === 'answers' && data.question_id === window.questions[window.currentQuestionIndex].id) {
@@ -112,6 +116,23 @@
           case 'wordcloud':
             answerHtml += 'No correct answer for word cloud.';
             break;
+          case 'code_question':
+             answerHtml += '<div id="answer-code-display"></div>';
+             questionContainer.insertAdjacentHTML('beforeend', answerHtml);
+             answerHtml = ''
+
+            let language = currentQuestion && currentQuestion.code_language ?
+                currentQuestion.code_language : "python";
+
+            const codeTextarea = document.createElement('textarea');
+            codeTextarea.id = 'answer-code-editor';
+            document.getElementById('answer-code-display').appendChild(codeTextarea);
+
+            answerCodeEditor = initializeCodeEditor(codeTextarea, language);
+
+            answerCodeEditor.setValue(data.answers);
+            answerCodeEditor.setOption('readOnly', true);
+              break;
         }
         answerHtml += '</div>';
         questionContainer.insertAdjacentHTML('beforeend', answerHtml);

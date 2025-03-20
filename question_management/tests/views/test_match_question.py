@@ -21,7 +21,6 @@ class MatchQuestionTestCase(TestCase):
         # Create a sample poll
         self.poll = Poll.objects.create(
             title="Sample Poll",
-            status="active",  # Setting default status
             user=self.user,  # Linking to the created user
             locked=False  # Default locked state
         )
@@ -32,7 +31,6 @@ class MatchQuestionTestCase(TestCase):
     def test_poll_creation(self):
         # Ensure the poll was created correctly
         self.assertEqual(self.poll.title, "Sample Poll")
-        self.assertEqual(self.poll.status, "active")
         self.assertFalse(self.poll.locked)
         self.assertEqual(self.poll.user, self.user)
 
@@ -113,3 +111,22 @@ class MatchQuestionTestCase(TestCase):
         # Check response status and error message
         self.assertEqual(response.status_code, 400)
         self.assertIn('At least one option is required', response.json().get('error'))
+
+    def test_exceeding_option_limit_match_question(self):
+        """
+        Test that adding more than 4 options to a match question results in an error.
+        """
+        data = {
+            'question_type': 'match_question',
+            'match_question': 'Match the items in column A with column B.',
+            'match_question_options[]': ['A1', 'A2', 'A3', 'A4', 'A5'],  # 5 options (exceeds limit)
+            'match_question_answers[]': ['B1', 'B2', 'B3', 'B4', 'B5']
+        }
+
+        # Send a POST request
+        response = self.client.post(self.create_question_url, data)
+
+        # Ensure it returns a 400 status with the correct error message
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('You can only add up to 4 options for a match_question question.', response.json().get('error'))
+

@@ -87,7 +87,7 @@ class QuestionManager:
         """Handle the creation of a single choice question."""
         question_text = self.request.POST.get('single_choice_question')
         single_choice_option = self.request.POST.getlist('single_choice_options[]')
-        single_choice_answers = self.request.POST.get('single_choice_answers[]')
+        single_choice_answers = self.request.POST.getlist('single_choice_answers[]')
 
         validation_response = validate_question_options_and_answers(single_choice_option, single_choice_answers, "single_choice")
         if validation_response:

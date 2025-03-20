@@ -182,6 +182,17 @@ def add_question(request, poll_id):
         if text_content.strip():
             generated_questions = generate_questions_from_text(text_content)
 
+    if request.method == 'POST':
+        #set max limit of questions to 20
+        if (poll.questions.count() == 20):
+            return JsonResponse({'error': f'Only 20 questions are allowed per poll'}, status=400)
+
+        # Update Poll Title
+        new_title = request.POST.get('poll_title') or request.POST.get('poll_title_hidden')
+        if new_title and new_title != poll.title:
+            poll.title = new_title
+            poll.save()
+
         if generated_questions:
             return JsonResponse({"questions": generated_questions})
         else:
@@ -189,6 +200,8 @@ def add_question(request, poll_id):
 
     if request.method == 'POST' and not 'file' in request.FILES:
         manager = QuestionManager(request, poll_id, request.POST.get('youtube_link'), get_timer(request))
+
+        response = None #if a manager is not created then there is no response. a manager isn't created if you're just changing the poll title
 
         if manager.question_type == 'text_fill':
             response = manager.handle_text_fill()

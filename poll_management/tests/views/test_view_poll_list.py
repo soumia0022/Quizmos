@@ -7,8 +7,8 @@ class PollListViewTest(TestCase):
     def setUp(self):
 
         self.user = User.objects.create_user(username='testuser', password='password', role='Lecturer')
-        Poll.objects.create(title='Poll 1', user=self.user, status='active')
-        Poll.objects.create(title='Poll 2', user=self.user, status='closed')
+        Poll.objects.create(title='Poll 1', user=self.user)
+        Poll.objects.create(title='Poll 2', user=self.user)
 
     def test_poll_list_view(self):
         self.client.login(username='testuser', password='password')

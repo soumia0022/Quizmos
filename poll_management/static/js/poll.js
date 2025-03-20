@@ -5,6 +5,7 @@ import {renderWordCloud} from "./word_cloud_display.js";
 import {renderMatch} from "./match_question_display.js";
 import {getFormattedTime, startCountdownTimer} from "./timer.js";
 import { renderCodeQuestion } from "./code_question_display.js";
+import {unlock} from "./lock_poll.js";
 
 
 
@@ -22,6 +23,7 @@ window.previousQuestion = function() {
         window.currentQuestionIndex--;
         updateQuestionDisplay();
         resetShowAnswerState();
+        lock();
         fetchResponseCounts(window.questions[window.currentQuestionIndex].id);
     }
 };
@@ -31,6 +33,7 @@ window.nextQuestion = function() {
         window.currentQuestionIndex++;
         updateQuestionDisplay();
         resetShowAnswerState();
+        lock();
         fetchResponseCounts(window.questions[window.currentQuestionIndex].id);
     }
 };
@@ -38,11 +41,17 @@ window.nextQuestion = function() {
 function resetShowAnswerState() {
     const closedEyeButton = document.getElementById('show-answer-closed');
     const openEyeButton = document.getElementById('show-answer-open');
+    const currentQuestion = window.questions[window.currentQuestionIndex];
+
+  // hide eye icon for wordcloud questions
+  if (currentQuestion.type === 'wordcloud') {
+    closedEyeButton.style.display = 'none';
+    openEyeButton.style.display = 'none';
+  } else {
     closedEyeButton.style.display = 'inline';
     openEyeButton.style.display = 'none';
 
-    // notify the server to hide answers and show the closed eye icon 
-    const questionId = window.questions[window.currentQuestionIndex].id;
+    const questionId = currentQuestion.id;
     if (ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({
             type: 'show_answers',
@@ -50,7 +59,8 @@ function resetShowAnswerState() {
             action: 'hide_answer'
         }));
     }
-}
+  }
+  }
 
 function createQuestionHTML(question) {
   let html = '<div class="question-title">';//this will store the final html content needed to display the question
@@ -146,6 +156,17 @@ function updateQuestionDisplay() {
     // Update the question display (only set innerHTML once)
     questionContainer.innerHTML = createQuestionHTML(currentQuestion);
 
+  // Hide eye icons for word cloud questions
+  const closedEyeButton = document.getElementById('show-answer-closed');
+  const openEyeButton = document.getElementById('show-answer-open');
+  if (currentQuestion.type === 'wordcloud') {
+      closedEyeButton.style.display = 'none';
+      openEyeButton.style.display = 'none';
+  } else {
+    
+      closedEyeButton.style.display = 'inline'; 
+      openEyeButton.style.display = 'none';
+  }
 
     if (window.currentTimerInterval) {
         clearInterval(window.currentTimerInterval);
@@ -169,4 +190,4 @@ function updateQuestionDisplay() {
         question_timer: currentQuestion.question_timer,
       }));
     }
-}
+  }
