@@ -97,3 +97,14 @@
     .planet:nth-child(even) {
         animation-delay: 0.5s;
     }
+
+    @media (max-width: 768px) {
+        .cover-card {
+            padding: 20px; 
+            width: 90%; 
+        }
+
+        .cover-card h1 {
+            font-size: 1.8rem; 
+        }
+    }
