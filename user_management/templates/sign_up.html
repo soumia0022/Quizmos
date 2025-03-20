@@ -12,11 +12,11 @@
         {% csrf_token %}
         {% include 'partials/bootstrap_form.html' with form=form %}
         <input id="id_sign_up_button" type="submit" value="Sign up" class="btn btn-primary">
+        
+        <div class="prompt">
+          Already have an account? <a href="{% url 'user_management:log_in' %}">Log in</a>
+        </div>
       </form>
-
-      <div class="prompt">
-        Already have an account? <a href="{% url 'user_management:log_in' %}">Log in</a>
-      </div>
 
   </div>
 </div>
