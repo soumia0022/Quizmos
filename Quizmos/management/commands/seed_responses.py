@@ -47,7 +47,7 @@ class Command(BaseCommand):
                 user = random.choice(users)
 
                 # Generate a new session code every 3 responses
-                if i % 3 == 0:
+                if i % 6 == 0:
                     session_code = random.randint(100000, 999999)
 
                 response_data = {
