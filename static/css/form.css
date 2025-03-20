@@ -72,18 +72,13 @@
     border: 2px solid #fff;
     font-size: 24px;
     color: white;
-    transition: all 0.3s ease;
     width: 270px; 
     max-width: 90%; 
     height: 71px; 
     max-height: 90%;
 }
 
-.btn-primary:hover {
-    background-color: #6666ff;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 102, 255, 0.3);
-}
+
 
 .btn-primary:active {
     transform: translateY(0);
