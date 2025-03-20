@@ -127,3 +127,22 @@ class EditSingleChoiceQuestionTestCase(TestCase):
         self.assertEqual(self.question.question_text, "Original Single Choice Question")
         self.assertEqual(self.question.single_choice_option, ['Option1', 'Option2', 'Option3'])
         self.assertEqual(self.question.single_choice_answers, ['Option1'])
+
+    def test_edit_single_choice_question_exceeding_option_limit(self):
+        """
+        Test that editing a single-choice question to have more than 4 options results in an error.
+        """
+        data = {
+            'question_id': self.question.id,
+            'question_text': 'Updated Single Choice Question?',
+            'single_choice_options[]': ['Option1', 'Option2', 'Option3', 'Option4', 'Option5'],  # 5 options (exceeds limit)
+            'single_choice_answers[]': ['Option1']
+        }
+
+        response = self.client.post(self.edit_question_url + f"?question_id={self.question.id}", data)
+
+        # Ensure it returns a 400 status with the correct error message
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response["Content-Type"], "application/json")
+        self.assertIn('You can only add up to 4 options for a single-choice question.', response.json().get('error'))
+
