@@ -108,3 +108,13 @@
             font-size: 1.8rem; 
         }
     }
+    
+    @media (max-width: 768px) {
+        .btn-secondary {
+            font-size: 18px; 
+            width: 220px;
+            max-width: 270px; 
+            height: 50px; 
+        }
+    }
+    
