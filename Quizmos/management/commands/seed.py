@@ -20,4 +20,7 @@ class Command(BaseCommand):
         self.stdout.write('Seeding questions...')
         call_command('seed_questions')
 
+        self.stdout.write('Seeding responses...')
+        call_command('seed_responses')
+
         self.stdout.write(self.style.SUCCESS('Database seeding completed successfully!                                                        '))
