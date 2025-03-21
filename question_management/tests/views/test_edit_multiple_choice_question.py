@@ -107,3 +107,22 @@ class EditQuestionTestCase(TestCase):
         self.assertEqual(self.question.question_text, "Original Question")
         self.assertEqual(self.question.multiple_choice_options, ['Option1', 'Option2'])
         self.assertEqual(self.question.multiple_choice_answers, ['Option1'])
+
+    def test_edit_multiple_choice_question_exceeding_option_limit(self):
+        """
+        Test that editing a multiple-choice question to have more than 4 options results in an error.
+        """
+        data = {
+            'question_id': self.question.id,
+            'question_text': 'Updated Question?',
+            'multiple_choice_options[]': ['Option1', 'Option2', 'Option3', 'Option4', 'Option5'],  # 5 options (exceeds limit)
+            'multiple_choice_answers[]': ['Option1']
+        }
+
+        response = self.client.post(self.edit_question_url + f"?question_id={self.question.id}", data)
+
+        # Ensure it returns a 400 status with the correct error message
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response["Content-Type"], "application/json")
+        self.assertIn('You can only add up to 4 options for a multiple-choice question.', response.json().get('error'))
+

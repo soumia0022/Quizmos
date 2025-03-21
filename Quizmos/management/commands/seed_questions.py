@@ -350,7 +350,6 @@ class ComputingQuestionProvider(BaseProvider):
             ("The fastest type of memory in a computer is ____.", ["Cache", "RAM", "Hard Drive", "SSD"], "Cache"),
             ("A ____ is a set of rules for data communication.", ["Protocol", "Algorithm", "Function", "Database"], "Protocol"),
             ("The ____ controls how memory and processes are managed in a computer.", ["Operating System", "Router", "Compiler", "Cloud"], "Operating System"),
-            ("The binary number system uses only ____ and ____.", ["0, 1", "1, 2", "0, 9", "A, B"], "0, 1"),
             ("An ____ converts human-readable code into machine code.", ["Compiler", "Debugger", "Firewall", "Cache"], "Compiler"),
             ("The programming language primarily used for web development is ____.", ["JavaScript", "C", "Python", "Swift"], "JavaScript"),
             ("A ____ is a placeholder for storing values in programming.", ["Variable", "Function", "Loop", "Class"], "Variable"),

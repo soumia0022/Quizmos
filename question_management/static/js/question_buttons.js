@@ -1,4 +1,7 @@
 function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
+    if (!canAddMoreOptions("multiple-choice")){
+        displayErrorMessage("You can only add 4 options");
+    }
     const optionElement = addChoiceOptionComponents('multiple_choice', McOptionCount);
     if (optionElement) { // Only append if the element is not null
         multipleChoiceOptionsSection.appendChild(optionElement);
@@ -8,6 +11,9 @@ function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
 }
 
 function addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection) {
+    if (!canAddMoreOptions("single-choice")){
+        displayErrorMessage("You can only add 4 options");
+    }
     const optionElement = addChoiceOptionComponents('single_choice', ScOptionCount);
     if (optionElement) { // Only append if the element is not null
         singleChoiceOptionsSection.appendChild(optionElement);
@@ -16,7 +22,18 @@ function addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection) {
     return ScOptionCount;
 }
 
+function canAddMoreOptions(question_type, maxOptions = 4) { //move to question_constraints in refactoring
+    const optionsContainer = document.getElementById(`${question_type}-options-container`);
+    if (optionsContainer){
+        return optionsContainer.children.length < maxOptions;
+    }
+    else{
+        return true;
+    }
+}
+
 function addChoiceOptionComponents(question_type, optionCount){
+
     const optionText = prompt('Enter a new Option');
     if (!optionText) return;
 
@@ -61,6 +78,9 @@ function addChoiceOptionComponents(question_type, optionCount){
 }
 
 function addMatchOptionComponents(matchQuestionOptionSection, matchOptionCount){
+    if (!canAddMoreOptions("match")){
+        displayErrorMessage("You can only add 4 options");
+    }
     const inputRow = document.createElement("div");
 
     const option = document.createElement("input");
