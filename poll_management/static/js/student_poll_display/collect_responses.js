@@ -1,6 +1,7 @@
 import {showFeedback} from "./show_feedback.js";
+import {pollState} from "../poll_state.js";
 
-export function collectResponse(pollState) {
+export function collectResponse() {
     switch (pollState.currentQuestionType) {
         case 'multiple_choice':
             return Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))

@@ -5,17 +5,9 @@ import {displayCorrectAnswer, hideCorrectAnswer} from "../display_correct_answer
 import {clean_up_code_mirror} from "../clean_up_code_mirror.js";
 import {showFeedback} from "./show_feedback.js";
 import {collectResponse} from "./collect_responses.js";
+import {pollState} from "../poll_state.js";
+import {createLockOverlay} from "./student_lock.js";
 
-const pollState = {
-    currentQuestionId: null,
-    currentQuestionType: null,
-    currentTimerInterval: null,
-    currentQuestion: null,
-    answerCodeEditor: null,
-    totalQuestions: 0,
-    currentQuestionNumber: 0,
-    webSocket: null
-};
 // WebSocket message handlers
 function handlePollStatus(data) {
     if (data.action === 'lock') {
@@ -28,9 +20,9 @@ function handlePollStatus(data) {
 function handleAnswers(data) {
     const correctAnswersDiv = document.getElementById('correct-answers');
     if (data.action === 'show_answer') {
-        displayCorrectAnswer(data, correctAnswersDiv, pollState);
+        displayCorrectAnswer(data, correctAnswersDiv);
     } else if (data.action === 'hide_answer') {
-        hideCorrectAnswer(correctAnswersDiv, pollState);
+        hideCorrectAnswer(correctAnswersDiv);
     }
 }
 
@@ -45,7 +37,7 @@ function handleQuestionDisplay(data) {
     correctAnswersDiv.style.display = 'none';
     correctAnswersDiv.innerHTML = '';
 
-   clean_up_code_mirror(pollState);
+    clean_up_code_mirror();
 
     const questionElement = document.getElementById('question');
     questionElement.innerHTML = data.question.text + '<div class="question-timer"></div>';
@@ -82,8 +74,7 @@ function handleResponseStatus(data) {
 }
 // Event handlers
 function handleSubmitResponse() {
-    const responseData = collectResponse(pollState);
-
+    const responseData = collectResponse();
     if (responseData && responseData.length !== 0) {
         pollState.webSocket.send(JSON.stringify({
             type: 'response',
@@ -130,11 +121,6 @@ function initializeEventListeners() {
 function initialize() {
     const pollCodeElement = document.getElementById('poll-container');
     const pollCode = pollCodeElement ? pollCodeElement.dataset.pollCode : null;
-
-    if (!pollCode) {
-        console.error("Poll code not found");
-        return;
-    }
 
     pollState.webSocket = initializeWebSocket(pollCode);
     initializeEventListeners();

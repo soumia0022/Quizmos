@@ -1,7 +1,8 @@
 import {initializeCodeEditor} from "./code_executor.js";
 import {clean_up_code_mirror} from "./clean_up_code_mirror.js";
+import {pollState} from "./poll_state.js";
 
-export function displayCorrectAnswer(data, correctAnswersDiv, pollState) {
+export function displayCorrectAnswer(data, correctAnswersDiv) {
     let answerHtml = '<strong>Correct Answer(s):</strong> ';
 
     switch (pollState.currentQuestionType) {
@@ -52,9 +53,9 @@ export function displayCorrectAnswer(data, correctAnswersDiv, pollState) {
     correctAnswersDiv.style.display = 'block';
 }
 
-export function hideCorrectAnswer(correctAnswersDiv, pollState) {
+export function hideCorrectAnswer(correctAnswersDiv) {
     correctAnswersDiv.style.display = 'none';
     correctAnswersDiv.innerHTML = '';
 
-    clean_up_code_mirror(pollState);
+    clean_up_code_mirror();
 }
