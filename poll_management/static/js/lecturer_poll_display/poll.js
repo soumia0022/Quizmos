@@ -6,6 +6,8 @@ import {renderMatch} from "./questions/match_question_display.js";
 import {getFormattedTime, startCountdownTimer} from "../timer.js";
 import { renderCodeQuestion } from "./questions/code_question_display.js";
 import {pollState} from "../poll_state.js";
+import {video_file_display} from "./questions/video_file_display.js";
+import {audio_file_display} from "./questions/audio_file_display";
 
 
 window.startPoll = function() {
@@ -83,34 +85,11 @@ function createQuestionHTML(question) {
     }
 
   if (question.video_file != null) {
-    html += `
-      <div class="video-container mb-3">
-        <video 
-          controls
-          width="100%" 
-          style="max-width: 640px;"
-          class="rounded"
-        >
-          <source src="${question.video_file}" type="video/mp4">
-          Your browser does not support the video element.
-        </video>
-      </div>
-    `;
+    html += video_file_display(question);
   }
 
   if (question.audio_file != null) {
-  html += `
-    <div class="audio-container mb-3">
-      <audio 
-        controls
-        class="w-100"
-        style="max-width: 640px;"
-      >
-        <source src="${question.audio_file}" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio>
-    </div>
-    `;
+    audio_file_display(question);
     }
 
   if (question.question_timer != null) {
