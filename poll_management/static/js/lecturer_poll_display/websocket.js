@@ -1,5 +1,6 @@
 // websocket.js
 import {updateMatchResponseUI, updateResponseUI, updateTextResponseUI, updateWordCloudUI, updateCodeResponseUI} from './response_ui.js';
+import {displayCorrectAnswer,hideCorrectAnswer} from '../display_correct_answer.js';
 import {pollState} from "../poll_state.js";
 
 const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
@@ -19,6 +20,15 @@ ws.onmessage = function(event) {
         // When we receive a response update, fetch the latest counts
         fetchResponseCounts(data.question_id);
     }
+
+    const correctAnswersDiv = document.getElementById('correct-answers');
+    if (data.type === 'answers' && data.action === 'show_answer') {
+        displayCorrectAnswer(data, correctAnswersDiv);
+
+    } else if (data.action === 'hide_answer') {
+        hideCorrectAnswer(correctAnswersDiv);
+    }
+
 };
 
 // Function to fetch response counts for a specific question

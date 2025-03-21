@@ -91,20 +91,5 @@
 <script type="module" src="{% static 'js/lecturer_poll_display/websocket.js' %}"></script>
 <script type="module" src="{% static 'js/lecturer_poll_display/poll.js' %}"></script>
 <script type="module" src="{% static 'js/lecturer_poll_display/show_answer.js' %}"></script>
-<script type="module">
-  import { pollState } from "{% static 'js/poll_state.js' %}";
-  import {displayCorrectAnswer,hideCorrectAnswer} from "{% static 'js/display_correct_answer.js'  %}";
-
-  pollState.lecturer_webSocket.addEventListener('message', function(event) {
-    const data = JSON.parse(event.data);
-    const correctAnswersDiv = document.getElementById('correct-answers');
-    if (data.type === 'answers' && data.action === 'show_answer') {
-        displayCorrectAnswer(data, correctAnswersDiv);
-
-    } else if (data.action === 'hide_answer') {
-        hideCorrectAnswer(correctAnswersDiv);
-    }
-  });
-</script>
 <link rel="stylesheet" href="{% static 'css/response_styles.css' %}">
 {% endblock %}

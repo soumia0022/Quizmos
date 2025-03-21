@@ -40,6 +40,7 @@ window.nextQuestion = function() {
 function resetShowAnswerState() {
     const closedEyeButton = document.getElementById('show-answer-closed');
     const openEyeButton = document.getElementById('show-answer-open');
+    document.getElementById('correct-answers').style.display = 'none';;
     const currentQuestion = window.questions[window.currentQuestionIndex];
 
   // hide eye icon for wordcloud questions
