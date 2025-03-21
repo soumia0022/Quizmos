@@ -7,7 +7,8 @@ import {getFormattedTime, startCountdownTimer} from "../timer.js";
 import { renderCodeQuestion } from "./questions/code_question_display.js";
 import {pollState} from "../poll_state.js";
 import {video_file_display} from "./questions/video_file_display.js";
-import {audio_file_display} from "./questions/audio_file_display";
+import {audio_file_display} from "./questions/audio_file_display.js";
+import {youtube_video_display} from "./questions/youtube_video_display.js";
 
 
 window.startPoll = function() {
@@ -70,18 +71,7 @@ function createQuestionHTML(question) {
 
   if (question.youtube_link != null) {
     const embedURL = question.youtube_link.replace("youtu.be/", "www.youtube.com/embed/");
-    html += `
-       <div class="video-container">
-        <iframe 
-            width="560" 
-            height="315" 
-            src="${embedURL}" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
-    </div>
-    `;
+    html += youtube_video_display(embedURL);
     }
 
   if (question.video_file != null) {
@@ -89,7 +79,7 @@ function createQuestionHTML(question) {
   }
 
   if (question.audio_file != null) {
-    audio_file_display(question);
+    html += audio_file_display(question);
     }
 
   if (question.question_timer != null) {
