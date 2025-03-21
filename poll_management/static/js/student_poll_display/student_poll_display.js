@@ -76,7 +76,7 @@ function handleResponseStatus(data) {
 function handleSubmitResponse() {
     const responseData = collectResponse();
     if (responseData && responseData.length !== 0) {
-        pollState.webSocket.send(JSON.stringify({
+        pollState.student_webSocket.send(JSON.stringify({
             type: 'response',
             question_id: pollState.currentQuestionId,
             response_type: pollState.currentQuestionType,
@@ -122,7 +122,7 @@ function initialize() {
     const pollCodeElement = document.getElementById('poll-container');
     const pollCode = pollCodeElement ? pollCodeElement.dataset.pollCode : null;
 
-    pollState.webSocket = initializeWebSocket(pollCode);
+    pollState.student_webSocket = initializeWebSocket(pollCode);
     initializeEventListeners();
     createLockOverlay();
 }

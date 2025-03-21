@@ -1,10 +1,11 @@
 // websocket.js
 import {updateMatchResponseUI, updateResponseUI, updateTextResponseUI, updateWordCloudUI, updateCodeResponseUI} from './response_ui.js';
+import {pollState} from "../poll_state.js";
 
 const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${window.pollCode}/`;
-export const ws = new WebSocket(wsUrl);
-
+//export const ws = new WebSocket(wsUrl);
+const ws = pollState.lecturer_webSocket = new WebSocket(wsUrl);
 ws.onmessage = function(event) {
     const data = JSON.parse(event.data);
 
@@ -14,17 +15,9 @@ ws.onmessage = function(event) {
             studentCount.textContent = data.message;
         }
     }
-
     if (data.type === 'response_update') {
         // When we receive a response update, fetch the latest counts
         fetchResponseCounts(data.question_id);
-    }
-
-    if (data.type === 'question') {
-        if (data.question) {  
-            const currentQuestionNumber = data.question.question_number;
-            const totalQuestions = data.question.total_questions;
-        } 
     }
 };
 
