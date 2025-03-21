@@ -1,11 +1,11 @@
-import {fetchResponseCounts, ws} from './websocket.js';
+import {fetchResponseCounts} from './websocket.js';
 import {renderChoice} from "./questions/choice_display.js";
 import {renderText} from "./questions/text_question_display.js";
 import {renderWordCloud} from "./questions/word_cloud_display.js";
 import {renderMatch} from "./questions/match_question_display.js";
 import {getFormattedTime, startCountdownTimer} from "../timer.js";
 import { renderCodeQuestion } from "./questions/code_question_display.js";
-
+import {pollState} from "../poll_state.js";
 
 
 window.startPoll = function() {
@@ -51,8 +51,8 @@ function resetShowAnswerState() {
     openEyeButton.style.display = 'none';
 
     const questionId = currentQuestion.id;
-    if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
+    if (pollState.lecturer_webSocket.readyState === WebSocket.OPEN) {
+        pollState.lecturer_webSocket.send(JSON.stringify({
             type: 'show_answers',
             question_id: questionId,
             action: 'hide_answer'
@@ -182,8 +182,8 @@ function updateQuestionDisplay() {
     nextBtn.disabled = window.currentQuestionIndex === window.questions.length - 1;
 
     // Send question update to WebSocket
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
+    if (pollState.lecturer_webSocket.readyState === WebSocket.OPEN) {
+      pollState.lecturer_webSocket.send(JSON.stringify({
         type: 'question',
         question_id: currentQuestion.id,
         question_timer: currentQuestion.question_timer,

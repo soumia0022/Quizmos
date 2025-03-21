@@ -4,8 +4,8 @@ import {pollState} from "../poll_state.js";
 
 const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 const wsUrl = `${wsScheme}${window.location.host}/ws/poll/${window.pollCode}/`;
-//export const ws = new WebSocket(wsUrl);
 const ws = pollState.lecturer_webSocket = new WebSocket(wsUrl);
+
 ws.onmessage = function(event) {
     const data = JSON.parse(event.data);
 

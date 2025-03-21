@@ -91,10 +91,10 @@
 <script type="module" src="{% static 'js/lecturer_poll_display/poll.js' %}"></script>
 <script type="module" src="{% static 'js/lecturer_poll_display/show_answer.js' %}"></script>
 <script type="module">
-  import { ws } from "{% static 'js/lecturer_poll_display/websocket.js' %}";
+  import { pollState } from "{% static 'js/poll_state.js' %}";
   import { initializeCodeEditor } from "{% static 'js/code_executor.js' %}";
   let answerCodeEditor = null;
-  ws.addEventListener('message', function(event) {
+  pollState.lecturer_webSocket.addEventListener('message', function(event) {
     const data = JSON.parse(event.data);
     if (data.type === 'answers' && data.question_id === window.questions[window.currentQuestionIndex].id) {
       const questionContainer = document.getElementById('question-container');
