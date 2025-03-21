@@ -150,7 +150,9 @@ break;
 
 function updateQuestionDisplay() {
     const questionContainer = document.getElementById('question-container');
-    const currentQuestion = window.questions[window.currentQuestionIndex];
+    const currentQuestion = pollState.currentQuestion= window.questions[window.currentQuestionIndex];
+    pollState.currentQuestionId=currentQuestion.id;
+    pollState.currentQuestionType= currentQuestion.type;
 
     // Update the question display (only set innerHTML once)
     questionContainer.innerHTML = createQuestionHTML(currentQuestion);

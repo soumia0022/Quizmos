@@ -4,7 +4,6 @@ import {pollState} from "./poll_state.js";
 
 export function displayCorrectAnswer(data, correctAnswersDiv) {
     let answerHtml = '<strong>Correct Answer(s):</strong> ';
-
     switch (pollState.currentQuestionType) {
         case 'multiple_choice':
         case 'single_choice':
@@ -15,12 +14,17 @@ export function displayCorrectAnswer(data, correctAnswersDiv) {
             answerHtml += data.answers;
             break;
         case 'match_question':
-            if (Array.isArray(data.answers) && pollState.currentQuestion && pollState.currentQuestion.match_options) {
-                answerHtml += data.answers.map((ans, idx) =>
-                    `${pollState.currentQuestion.match_options[idx]} → ${ans}`).join(', ');
-            } else {
-                answerHtml += 'Matching pairs are shown.';
-            }
+             const optionsArray = pollState.currentQuestion.match_options ||
+                                     pollState.currentQuestion.options ||
+                                     [];
+                const answersArray = data.answers || data.match_answers || [];
+
+                if (Array.isArray(answersArray) && pollState.currentQuestion && optionsArray.length > 0) {
+                    answerHtml += answersArray.map((ans, idx) =>
+                        `${optionsArray[idx] || ''} → ${ans}`).join(', ');
+                } else {
+                    answerHtml += 'Matching pairs are shown.';
+                }
             break;
         case 'wordcloud':
             answerHtml += 'No correct answer for word cloud.';

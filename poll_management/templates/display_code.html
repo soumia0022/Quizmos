@@ -29,6 +29,7 @@
           <button id="start-poll-btn" onclick="startPoll()" class="btn btn-primary mb-3">Start Poll</button>
           {% include 'poll_components/questions.html' %}
         </div>
+        <div id="correct-answers" class="correct-answers" style="display: none;"></div>
       </div>
     </div>
 
@@ -92,54 +93,16 @@
 <script type="module" src="{% static 'js/lecturer_poll_display/show_answer.js' %}"></script>
 <script type="module">
   import { pollState } from "{% static 'js/poll_state.js' %}";
-  import { initializeCodeEditor } from "{% static 'js/code_executor.js' %}";
-  let answerCodeEditor = null;
+  import {displayCorrectAnswer,hideCorrectAnswer} from "{% static 'js/display_correct_answer.js'  %}";
+
   pollState.lecturer_webSocket.addEventListener('message', function(event) {
     const data = JSON.parse(event.data);
-    if (data.type === 'answers' && data.question_id === window.questions[window.currentQuestionIndex].id) {
-      const questionContainer = document.getElementById('question-container');
-      if (data.action === 'show_answer' && data.answers !== null) {
-        let answerHtml = '<div class="correct-answers mt-3"><strong>Correct Answer(s):</strong> ';
-        const currentQuestion = window.questions[window.currentQuestionIndex];
-        switch (currentQuestion.type) {
-          case 'multiple_choice':
-          case 'single_choice':
-            answerHtml += Array.isArray(data.answers) ? data.answers.join(', ') : data.answers;
-            break;
-          case 'dropdown_fill':
-          case 'text_fill':
-            answerHtml += data.answers;
-            break;
-          case 'match_question':
-            answerHtml += Array.isArray(data.answers) ? data.answers.map((ans, idx) => `${currentQuestion.options[idx]} → ${ans}`).join(', ') : '';
-            break;
-          case 'wordcloud':
-            answerHtml += 'No correct answer for word cloud.';
-            break;
-          case 'code_question':
-             answerHtml += '<div id="answer-code-display"></div>';
-             questionContainer.insertAdjacentHTML('beforeend', answerHtml);
-             answerHtml = ''
+    const correctAnswersDiv = document.getElementById('correct-answers');
+    if (data.type === 'answers' && data.action === 'show_answer') {
+        displayCorrectAnswer(data, correctAnswersDiv);
 
-            let language = currentQuestion && currentQuestion.code_language ?
-                currentQuestion.code_language : "python";
-
-            const codeTextarea = document.createElement('textarea');
-            codeTextarea.id = 'answer-code-editor';
-            document.getElementById('answer-code-display').appendChild(codeTextarea);
-
-            answerCodeEditor = initializeCodeEditor(codeTextarea, language);
-
-            answerCodeEditor.setValue(data.answers);
-            answerCodeEditor.setOption('readOnly', true);
-              break;
-        }
-        answerHtml += '</div>';
-        questionContainer.insertAdjacentHTML('beforeend', answerHtml);
-      } else if (data.action === 'hide_answer') {
-        const answerDiv = document.getElementById('question-container').querySelector('.correct-answers');
-        if (answerDiv) answerDiv.remove();
-      }
+    } else if (data.action === 'hide_answer') {
+        hideCorrectAnswer(correctAnswersDiv);
     }
   });
 </script>
