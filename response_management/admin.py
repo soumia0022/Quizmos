@@ -3,42 +3,42 @@ from response_management.models.response_model import MultipleChoiceResponse, Si
 
 @admin.register(MultipleChoiceResponse)
 class MultipleChoiceResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_options', 'question')
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_options', 'question', 'is_correct')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
 @admin.register(SingleChoiceResponse)
 class SingleChoiceResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_option')
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_option', 'question', 'is_correct')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
 @admin.register(TextFillResponse)
 class TextFillResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'answer_text')
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'answer_text', 'is_correct')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
 @admin.register(DropdownFillResponse)
 class DropdownFillResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_option')
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_option', 'is_correct')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
 @admin.register(MatchQuestionResponse)
 class MatchQuestionResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'match_responses')
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'match_responses', 'is_correct')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
 @admin.register(WordCloudResponse)
 class WordCloudResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'word_cloud_response')
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'word_cloud_response', 'is_correct')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
 @admin.register(CodeQuestionResponse)
 class CodeQuestionResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'submitted_code')
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'submitted_code', 'is_correct')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
