@@ -64,9 +64,8 @@ def student_view_poll(request, poll_id):
             elif response_type == 'match':
                 user_responses = [pair['right'] for pair in student_answer or []]
                 is_correct = user_responses == question.match_answers or []
-            # elif response_type == 'code':
-            #    is_correct = student_answer.strip() == (question.correct_code or "").strip()
-            # word cloud
+            else:
+                is_correct = False
 
             responses_by_question[question.id] = {
                 'type': response_type,

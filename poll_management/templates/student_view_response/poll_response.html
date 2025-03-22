@@ -28,8 +28,6 @@
                                 <!-- Question Section -->
                                 {% include 'student_view_response/question_section.html' with response=response %}
 
-
-
                                 <!-- Answer Section -->
                                 <div class="answer-section p-3 rounded
                                     {% if response.question.question_type == 'single_choice' or response.question.question_type == 'multiple_choice' or response.question.question_type == 'dropdown_fill' or response.question.question_type == 'text_fill' or response.question.question_type == 'match_question' %}
