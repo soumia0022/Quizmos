@@ -56,7 +56,11 @@
         {% endif %}
 
         {% if response.type != "word_cloud" %}
-            <h5 class="mt-3 mb-2">Correct Answer:</h5>
+            {% if response.type == 'code' %}
+                <h5 class="mt-3 mb-2">Example Answer:</h5>
+            {% else %}
+                <h5 class="mt-3 mb-2">Correct Answer:</h5>
+            {% endif %}
             <div id="correct-answer-{{ response.question.id }}" class="correct-answer-container">
                 {% if response.type == 'match' %}
                     <table class="table table-bordered">
