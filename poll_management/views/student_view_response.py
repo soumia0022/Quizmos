@@ -54,7 +54,7 @@ def student_view_poll(request, poll_id):
             value_field = config['value_field']
             responses_by_question[question.id][value_field] = getattr(response, value_field)
 
-            print(f"Question ID: {question.id}, Response Type: {response_type}, Answer: {getattr(response, value_field, 'No Answer Found')}")
+            # print(f"Question ID: {question.id}, Response Type: {response_type}, Answer: {getattr(response, value_field, 'No Answer Found')}")
 
     return render(request, 'student_view_response/poll_response.html', {
         'poll': poll,
