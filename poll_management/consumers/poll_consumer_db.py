@@ -107,35 +107,6 @@ class DatabaseHandler:
                 field_name: response_data
             }
 
-            # Correct or incorrect
-            if response_type == 'multiple_choice':
-                response_data_dict['is_correct'] = set(response_data) == set(question.multiple_choice_answers)
-                print(f"Checking if {set(response_data)} == {set(question.multiple_choice_answers)}")
-
-            elif response_type == 'single_choice':
-                response_data_dict['is_correct'] = response_data in question.single_choice_answers
-                print(f"Checking if {response_data} is in {question.single_choice_answers}")
-
-            elif response_type == 'dropdown_fill':
-                response_data_dict['is_correct'] = response_data.strip().lower() == question.dropdown_correct_answer.strip().lower()
-                print(f"Dropdown Correctness: Comparing '{response_data.strip().lower()}' with '{question.dropdown_correct_answer.strip().lower()}'")
-
-            elif response_type == 'text_fill':
-                response_data_dict[
-                    'is_correct'] = response_data.strip().lower() == question.text_fill_answer.strip().lower()
-                print(f"Checking if {response_data.strip().lower()} == {question.text_fill_answer.strip().lower()}")
-
-            elif response_type == 'match_question':
-                user_responses = [pair['right'] for pair in response_data]  # Extract 'right' column values
-                response_data_dict['is_correct'] = user_responses == question.match_answers
-                print(f"Match Correctness: Comparing {user_responses} with {question.match_answers}")
-
-
-            # elif response_type == 'code_question':
-            #    response_data_dict['is_correct'] = evaluate_code_submission(response_data, question.correct_code)
-            else:
-                response_data_dict['is_correct'] = False  # Default for unsupported types/wordcloud
-
             # Check if response already exists
             existing_response = ResponseModel.objects.filter(
                 user=user,
