@@ -1,5 +1,3 @@
-# from distutils.command.install import value
-
 from poll_management.helpers import format_youtube_link
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse, CodeQuestionResponse
 from django.shortcuts import render, get_object_or_404
@@ -20,7 +18,6 @@ def student_view_poll(request, poll_id):
     """
     poll = get_object_or_404(Poll, id=poll_id)
     student = request.user
-
 
     response_types = {
         'multiple_choice': {'model': MultipleChoiceResponse,'value_field': 'selected_options'},
