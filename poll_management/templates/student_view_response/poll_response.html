@@ -30,7 +30,17 @@
 
                                 <!-- Answer Section -->
                                 <div class="answer-section p-3 rounded {% if response.is_correct %}bg-success-box{% else %}bg-danger-box{% endif %}">
-                                    <h5 class="mb-2">Answer Review:</h5>
+                                    <h5 class="mb-2 d-flex align-items-center">
+                                        {% if response.is_correct %}
+                                            <i class="bi bi-check-lg text-white me-2" aria-hidden="true"></i>
+                                            <span class="sr-only">Correct</span>
+                                            Correct
+                                        {% else %}
+                                            <i class="bi bi-x-lg text-white me-2" aria-hidden="true"></i>
+                                            <span class="sr-only">Incorrect</span>
+                                            Incorrect
+                                        {% endif %}
+                                    </h5>
                                     {% include 'student_view_response/answer_section.html' with response=response %}
                                 </div>
 
