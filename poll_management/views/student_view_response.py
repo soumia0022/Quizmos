@@ -1,3 +1,5 @@
+# from distutils.command.install import value
+
 from poll_management.helpers import format_youtube_link
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse, CodeQuestionResponse
 from django.shortcuts import render, get_object_or_404
@@ -45,10 +47,33 @@ def student_view_poll(request, poll_id):
             if question.youtube_link:
                 question.youtube_link = format_youtube_link(question.youtube_link)
 
+            # Calculate correctness
+            is_correct = False
+            value_field = config['value_field']
+            student_answer = getattr(response, value_field)
+
+            if response_type == 'multiple_choice':
+                is_correct = set(student_answer) == set(question.multiple_choice_answers or [])
+            elif response_type == 'single_choice':
+                is_correct = student_answer in question.single_choice_answers or []
+            elif response_type == 'dropdown':
+                is_correct = student_answer.strip().lower() == (
+                            question.dropdown_correct_answer or "").strip().lower()
+            elif response_type == 'text_fill':
+                is_correct = student_answer.strip().lower() == (question.text_fill_answer or "").strip().lower()
+            elif response_type == 'match':
+                user_responses = [pair['right'] for pair in student_answer or []]
+                is_correct = user_responses == question.match_answers or []
+            # elif response_type == 'code':
+            #    is_correct = student_answer.strip() == (question.correct_code or "").strip()
+            # word cloud
+
             responses_by_question[question.id] = {
                 'type': response_type,
                 'question': question,
-                'submitted_on': response.submitted_on
+                'submitted_on': response.submitted_on,
+                value_field: student_answer,
+                'is_correct': is_correct,
             }
 
             value_field = config['value_field']
