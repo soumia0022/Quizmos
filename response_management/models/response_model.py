@@ -16,21 +16,28 @@ class Response(models.Model):
 
 class MultipleChoiceResponse(Response):
     selected_options = models.JSONField()
+    is_correct = models.BooleanField(default=False)
 
 class SingleChoiceResponse(Response):
     selected_option = models.TextField()
-    
+    is_correct = models.BooleanField(default=False)
+
 class TextFillResponse(Response):
     answer_text = models.TextField()
+    is_correct = models.BooleanField(default=False)
 
 class DropdownFillResponse(Response):
     selected_option = models.TextField()
+    is_correct = models.BooleanField(default=False)
 
 class MatchQuestionResponse(Response):
-    match_responses = models.JSONField()  
+    match_responses = models.JSONField()
+    is_correct = models.BooleanField(default=False)
 
 class WordCloudResponse(Response):
     word_cloud_response = models.JSONField(default=dict)
+    is_correct = models.BooleanField(default=False)
 
 class CodeQuestionResponse(Response):
     submitted_code = models.TextField()
+    is_correct = models.BooleanField(default=False)
