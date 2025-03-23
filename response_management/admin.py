@@ -9,7 +9,7 @@ class MultipleChoiceResponseAdmin(admin.ModelAdmin):
 
 @admin.register(SingleChoiceResponse)
 class SingleChoiceResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_options', 'question', 'session_code', 'is_correct')
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_option', 'question', 'session_code', 'is_correct')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
