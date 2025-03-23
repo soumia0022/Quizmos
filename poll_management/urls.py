@@ -7,12 +7,11 @@ from poll_management.views.get_responses import get_question_response_counts
 from poll_management.views.student_view_response import student_view_poll
 
 app_name = 'poll_management'
-from poll_management.views.poll_operation import poll_edit, poll_delete
+from poll_management.views.poll_operation import poll_delete
 
 urlpatterns = [
     path('create/', create_poll, name='create_poll'), 
     path('polls/create/', create_poll, name='create_poll'),
-    path('<int:poll_id>/edit/', poll_edit, name='poll_edit'),
     path('<int:poll_id>/delete/', poll_delete, name='poll_delete'),
     path('present/<int:pk>/', display_code, name= 'display_code'),
     path('join/<int:code>/', join_poll, name='join_poll'),

@@ -108,3 +108,22 @@ class EditMatchQuestionTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response["Content-Type"], "application/json")
         self.assertIn('The number of options must match the number of answers.', response.json().get('error'))
+
+    def test_edit_match_question_exceeding_option_limit(self):
+        """
+        Test that editing a match question to have more than 4 options results in an error.
+        """
+        data = {
+            'question_id': self.question.id,
+            'question_text': 'Updated Match Question?',
+            'match_question_options[]': ['Option1', 'Option2', 'Option3', 'Option4', 'Option5'],  # 5 options (exceeds limit)
+            'match_question_answers[]': ['Answer1', 'Answer2', 'Answer3', 'Answer4', 'Answer5']
+        }
+
+        response = self.client.post(self.edit_question_url + f"?question_id={self.question.id}", data)
+
+        # Ensure it returns a 400 status with the correct error message
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response["Content-Type"], "application/json")
+        self.assertIn('You can only add up to 4 options for a match question.', response.json().get('error'))
+

@@ -5,15 +5,6 @@ from django.contrib.auth.decorators import login_required
 from poll_management.models.poll_model import Poll
 
 @login_required
-def poll_edit(request, poll_id):
-    poll = get_object_or_404(Poll, id=poll_id, user=request.user)
-    if request.method == 'POST':
-        poll.title = request.POST.get('title', poll.title)
-        poll.save()
-        return redirect('user_management:dashboard')
-    return render(request, 'poll_edit.html', {'poll': poll})
-
-@login_required
 def poll_delete(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id)
     if request.method == 'POST':
