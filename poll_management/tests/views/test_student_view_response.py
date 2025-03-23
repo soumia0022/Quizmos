@@ -104,8 +104,8 @@ class StudentViewResponseTest(TestCase):
             question_type='match'
         )
         match_responses = [
-            {"item1": "A", "item2": "1"},
-            {"item1": "B", "item2": "2"}
+            {"left": "A", "right": "1"},
+            {"left": "B", "right": "2"}
         ]
         MatchQuestionResponse.objects.create(
             user=self.user,
