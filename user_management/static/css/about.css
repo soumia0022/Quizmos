@@ -10,65 +10,49 @@ html, body {
   font-family: 'Palanquin', sans-serif;
 }
 
-/* About Page Container */
 .about-card {
-  margin: 300px auto 200px; 
+  margin: 300px auto 200px;
   border-radius: 30px;
   background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid #fff; 
-  padding: 2rem; 
-  backdrop-filter: blur(10px); 
-  -webkit-backdrop-filter: blur(10px); 
+  border: 2px solid #fff;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   max-width: 700px;
-  width: 90%; 
-  text-align: center; 
-  gap: 40px; 
-  overflow: visible; 
+  width: 90%;
+  text-align: center;
+  gap: 40px;
+  overflow: hidden; 
+  box-sizing: border-box; 
 }
 
-.about-heading {
-  font-family: 'Palanquin Dark', sans-serif; 
-  font-size: 50px; 
-  font-weight: bold; 
-  color: #fff; 
-  text-decoration: none; 
-  text-align: center; 
-}
-
-.about-subheading {
-  font-family: 'Palanquin', sans-serif; 
-  font-size: 30px; 
-  font-weight: bold; 
-  color: #fff; 
-  text-decoration: none; 
-  text-align: center; 
-}
-
-/* Reviews Section */
 .reviews-container {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px; 
+  gap: 20px;
+  box-sizing: border-box; 
+  max-width: 100%; 
+  overflow-wrap: break-word; 
 }
 
 .review-card {
-  background-color: rgba(40, 40, 80, 0.5);
-  border: 1px solid #5555aa;
-  border-radius: 10px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: 700px;
+  border: 2px solid #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 15px;
+  background-color: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 700px; 
   box-sizing: border-box;
-  height: 150px;
-  margin: 0 auto; 
+  height: auto; 
+  margin: 0 auto;
 }
 
 .review-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(102, 102, 255, 0.2);
+  box-shadow: 0px 4px 15px white;
 }
 
 .review-content {
@@ -84,30 +68,27 @@ html, body {
   margin-bottom: 8px;
 }
 
-/* Core Values Section */
 .mb-4 li {
-  border: 2px solid #ffffff; 
-  border-radius: 20px; 
-  padding: 20px; 
-  margin-bottom: 15px; 
-  background-color: rgba(255, 255, 255, 0.15); 
-  transition: all 0.3s ease; 
-  list-style: none; 
+  border: 2px solid #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 15px;
+  background-color: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+  list-style: none;
 }
 
 .mb-4 li:hover {
-  transform: translateY(-2px); 
-  box-shadow: 0px 4px 15px white 
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 15px white;
 }
 
 .mb-4 li i {
-  color: #ffffff; 
+  color: #ffffff;
   margin-right: 10px;
   font-size: 1.2rem;
 }
 
-
-/* Key Features List */
 .about-content ul:not(.mb-4) {
   list-style: none;
   padding-left: 0;
@@ -127,19 +108,20 @@ html, body {
   background: rgba(50, 50, 100, 0.6);
 }
 
-/* Team Section */
 .team-member {
-  background: rgba(40, 40, 80, 0.5);
-  border: 1px solid #5555aa;
-  border-radius: 10px;
+  border: 2px solid #ffffff;
+  border-radius: 20px;
   padding: 20px;
+  margin-bottom: 15px;
+  background-color: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
   height: 100%;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  list-style: none;
 }
 
 .team-member:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(102, 102, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 15px white;
 }
 
 @media (max-width: 768px) {
@@ -157,14 +139,14 @@ html, body {
 
   .review-card {
       width: 100%; 
-      height: auto; 
+      height: auto;
   }
 
-  .about-heading{
-    font-size: 2.5rem; 
+  .about-heading {
+      font-size: 2.5rem;
   }
 
-  .about-subheading{
-    font-size: 24px; 
+  .about-subheading {
+      font-size: 24px;
   }
 }
