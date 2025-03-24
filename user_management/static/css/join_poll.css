@@ -64,6 +64,7 @@
         opacity: 1;
     }
 
+    /* Drop-and-Bounce Animation */
     @keyframes drop-and-bounce {
         0% {
             transform: translateY(-200vh); 
@@ -82,20 +83,40 @@
         }
     }
 
+    /* Floating Animation */
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    .star, .planet {
+        position: absolute;
+        object-fit: contain;
+        transform: translateY(-200vh); 
+        animation: drop-and-bounce 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards, 
+                float 6s ease-in-out infinite;
+        opacity: 1;
+    }
+
+    /* Staggered Animation Delays */
     .star:nth-child(odd) {
-        animation-delay: 0.2s;
+        animation-delay: 0.2s, 2s; 
     }
 
     .star:nth-child(even) {
-        animation-delay: 0.4s;
+        animation-delay: 0.4s, 2s;
     }
 
     .planet:nth-child(odd) {
-        animation-delay: 0.3s;
+        animation-delay: 0.3s, 2s;
     }
 
     .planet:nth-child(even) {
-        animation-delay: 0.5s;
+        animation-delay: 0.5s, 2s;
     }
 
     @media (max-width: 768px) {
