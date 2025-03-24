@@ -18,12 +18,14 @@
     padding: 2rem;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    margin: 15rem auto;
+    margin: 25rem auto;
     max-width: 700px;
     width: 90%;
     text-align: center;
-
+    gap: 40px;
 }
+
+
 
 
 
@@ -140,22 +142,22 @@
 /* Login Link Container */
 .prompt {
     text-align: center;
-    margin-top: 1rem;
+    margin-top: 2rem; 
     margin-bottom: 2rem;
     font-family: 'Arial', sans-serif;
     color: #e0e0ff;
 }
 
 .prompt a {
-    color: #9999ff;
+    color: #9999ff; 
     text-decoration: none;
     margin-left: 0.5rem;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; 
 }
 
 .prompt a:hover {
     color: #6666ff;
-    text-shadow: 0 0 8px rgba(102, 102, 255, 0.5);
+    text-shadow: 0 0 8px rgba(102, 102, 255, 0.5); 
 }
 }
 @media (max-width: 768px) {

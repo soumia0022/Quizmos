@@ -207,4 +207,13 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   align-items: center;
 }
 
+.prompt {
+  text-align: center; 
+  margin-top: 1rem; 
+  font-family: 'Palanquin', sans-serif; 
+  font-size: 16px; 
+  color: #e0e0ff;
+}
+
+
 
