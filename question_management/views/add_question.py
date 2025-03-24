@@ -1,8 +1,11 @@
-from transformers import T5ForConditionalGeneration, T5Tokenizer
-import torch
+import requests
+import json
 import random
 import pdfplumber
 import docx
+import re
+import nltk
+import time
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -10,198 +13,445 @@ from question_management.views import QuestionManager
 from poll_management.models.poll_model import Poll
 from question_management.helpers import get_timer
 from user_management.helpers import role_required
-import nltk
 
 nltk.download('punkt')
 
 
-model_name = "google/flan-t5-base"
-model = T5ForConditionalGeneration.from_pretrained(model_name)
-tokenizer = T5Tokenizer.from_pretrained(model_name)
-
-
-
-
+OLLAMA_URL = 'http://localhost:11434/api/generate'
+DEFAULT_MODEL = 'llama3.2'
+MAX_PROMPT_LENGTH = 2000
+TIMEOUT_SECONDS = 60
 
 
 def extract_text_from_pdf(uploaded_file):
+    """Extract text content from a PDF file"""
+    print("Extracting text from PDF...")
     text = ""
-    with pdfplumber.open(uploaded_file) as pdf:
-        for page in pdf.pages:
-            text += page.extract_text() or ""
-    return text.strip() if text.strip() else ""
-
+    try:
+        with pdfplumber.open(uploaded_file) as pdf:
+            for page in pdf.pages:
+                text += page.extract_text() or ""
+        print(f"Successfully extracted {len(text)} characters from PDF")
+        return text.strip() if text.strip() else ""
+    except Exception as e:
+        print(f"Error extracting PDF text: {e}")
+        return ""
 
 
 def extract_text_from_docx(uploaded_file):
+    """Extract text content from a Word document"""
+    print("Extracting text from DOCX...")
     text = ""
-    doc = docx.Document(uploaded_file)
-    for para in doc.paragraphs:
-        text += para.text + "\n"
-    return text.strip() if text.strip() else ""
+    try:
+        doc = docx.Document(uploaded_file)
+        for para in doc.paragraphs:
+            text += para.text + "\n"
+        print(f"Successfully extracted {len(text)} characters from DOCX")
+        return text.strip() if text.strip() else ""
+    except Exception as e:
+        print(f"Error extracting DOCX text: {e}")
+        return ""
 
 
-def generate_questions_from_text(text):
+def generate_with_ollama(prompt, model=DEFAULT_MODEL, temperature=0.7):
     """
-    Generate multiple-choice questions from text.
+    Generate text using the Ollama API.
 
     Args:
-        text (str): The input text to generate questions from
+        prompt (str): The prompt to send to Ollama
+        model (str): The model to use
+        temperature (float): Temperature for generation
 
     Returns:
-        list: List of dictionaries containing questions, options and answers
+        str: The generated response
     """
-    import random
 
-    cleaned_text = " ".join(text.split())
-    sentences = nltk.sent_tokenize(cleaned_text)
+    if len(prompt) > MAX_PROMPT_LENGTH:
+        print(f"Prompt too long ({len(prompt)} chars), truncating to {MAX_PROMPT_LENGTH}")
+        prompt = prompt[:MAX_PROMPT_LENGTH]
+
+    print(f"Sending request to Ollama API (prompt length: {len(prompt)} chars)")
+    start_time = time.time()
+
+    try:
+        response = requests.post(
+            OLLAMA_URL,
+            json={
+                "model": model,
+                "prompt": prompt,
+                "stream": False,
+                "temperature": temperature
+            },
+            timeout=TIMEOUT_SECONDS
+        )
+
+        elapsed_time = time.time() - start_time
+        print(f"Ollama API responded in {elapsed_time:.2f} seconds")
+
+        if response.status_code == 200:
+            response_json = json.loads(response.text)
+            return response_json["response"]
+        else:
+            print(f"Error from Ollama API: Status code {response.status_code}")
+            print(f"Response content: {response.text[:200]}...")
+            return ""
+    except requests.exceptions.Timeout:
+        print(f"Timeout error: Ollama API call exceeded {TIMEOUT_SECONDS} seconds")
+        return ""
+    except Exception as e:
+        print(f"Exception when calling Ollama API: {e}")
+        return ""
+
+
+def parse_multiple_choice_questions(text):
+    """Extract complete multiple choice questions from text with improved robustness"""
+    print("Parsing multiple choice questions...")
     questions = []
 
 
-    valid_sentences = [s for s in sentences if len(s.split()) >= 6]
+    full_q_pattern = r'(?:Question\s*(\d+):|Q(\d+):)\s*(.*?)(?=(?:Question\s*\d+:|Q\d+:|$))'
+    question_matches = re.finditer(full_q_pattern, text, re.DOTALL)
+
+    for q_match in question_matches:
+        try:
+            q_num = q_match.group(1) or q_match.group(2)
+            q_content = q_match.group(3).strip()
 
 
-    for sentence in valid_sentences[:5]:
-        if not sentence.strip():
+            q_text_match = re.search(r'^(.*?)(?=\s*A[\.\)])', q_content, re.DOTALL)
+            if not q_text_match:
+                continue
+
+            question_text = q_text_match.group(1).strip()
+            if not question_text.endswith('?'):
+                question_text += '?'
+
+
+            options_text = q_content[q_text_match.end():].strip()
+
+
+            options = []
+            correct_answer = None
+
+
+            option_pattern = r'([A-D])[\.\)]\s*(.*?)(?=\s*[A-D][\.\)]|\s*Correct Answer:|\s*$)'
+            option_matches = re.finditer(option_pattern, options_text, re.DOTALL)
+
+            for opt_match in option_matches:
+                letter = opt_match.group(1)
+                content = opt_match.group(2).strip()
+
+
+                if content:
+                    option = f"{letter}) {content}"
+                    options.append(option)
+
+
+            while len(options) < 4:
+                letter = chr(65 + len(options))
+                options.append(f"{letter}) Additional option")
+
+
+            answer_match = re.search(r'Correct Answer:\s*([A-D])', q_content, re.DOTALL)
+            if answer_match:
+                letter = answer_match.group(1)
+                for option in options:
+                    if option.startswith(letter):
+                        correct_answer = option
+                        break
+
+
+            if not correct_answer and options:
+                correct_answer = options[0]
+
+
+            questions.append({
+                "question": question_text,
+                "options": options[:4],
+                "answer": correct_answer,
+                "question_type": "multiple_choice"
+            })
+        except Exception as e:
+            print(f"Error parsing question: {e}")
             continue
 
-        words = sentence.split()
-        for i, word in enumerate(words):
 
-            if len(word) >= 4 and i > 0 and i < len(words) - 1:
+    if not questions:
+        try:
 
-                question_text = " ".join(words[:i] + ["_____"] + words[i + 1:]) + "?"
+            question_blocks = []
+            current_block = ""
+
+            lines = text.split('\n')
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
 
 
-                if word[0].isupper():
-                    distractors = ["Paris", "London", "Berlin", "Madrid", "Rome", "Dublin",
-                                   "England", "France", "Germany", "Spain", "Italy", "Scotland"]
-
-                    distractors = [d for d in distractors if d != word]
-
-                    distractors = random.sample(distractors, min(3, len(distractors)))
+                if re.match(r'^(?:Question\s*\d+:|Q\d+:|\d+\.)', line):
+                    if current_block:
+                        question_blocks.append(current_block)
+                    current_block = line
                 else:
-
-                    similar_words = [w for w in set(words) if len(w) >= 4 and w != word]
-                    if len(similar_words) >= 3:
-                        distractors = random.sample(similar_words, 3)
-                    else:
-                        distractors = ["option", "choice", "alternative"]
+                    current_block += "\n" + line
 
 
-                options = [f"A. {word}"]
+            if current_block:
+                question_blocks.append(current_block)
 
 
-                for j, distractor in enumerate(distractors[:3]):
-                    options.append(f"{chr(66 + j)}. {distractor}")
+            for block in question_blocks:
+                try:
+
+                    q_match = re.search(r'^(?:Question\s*\d+:|Q\d+:|\d+\.)\s*(.*?)(?=\s*A[\.\)])', block, re.DOTALL)
+                    if not q_match:
+                        continue
+
+                    question_text = q_match.group(1).strip()
+                    if not question_text.endswith('?'):
+                        question_text += '?'
 
 
-                while len(options) < 4:
-                    options.append(f"{chr(65 + len(options))}. Additional option")
-
-                questions.append({
-                    "question": question_text,
-                    "options": options,
-                    "answer": options[0]
-                })
+                    options_text = block[q_match.end():].strip()
+                    options = []
 
 
-                break
+                    option_matches = re.finditer(r'([A-D])[\.\)]\s*(.*?)(?=\s*[A-D][\.\)]|\s*Correct|$)', options_text,
+                                                 re.DOTALL)
+                    for match in option_matches:
+                        letter = match.group(1)
+                        content = match.group(2).strip()
+                        if content:
+                            options.append(f"{letter}) {content}")
 
-    return questions
+
+                    while len(options) < 4:
+                        letter = chr(65 + len(options))
+                        options.append(f"{letter}) Additional option")
 
 
-def parse_generated_question(text, original_sentence):
-    """
-    This function is kept for compatibility but no longer used.
-    Our question generation now handles everything directly.
-    """
-    try:
-        lines = [line.strip() for line in text.split('\n') if line.strip()]
-
-        question = lines[0].strip()
-        if not question.endswith('?'):
-            question += '?'
-
-        options = []
-        correct_answer = None
-
-        for line in lines[1:]:
-            if line.startswith(('A.', 'B.', 'C.', 'D.', 'A)', 'B)', 'C)', 'D)')):
-                option = line.strip()
-                options.append(option)
-
-                if 'CORRECT' in line.upper():
-                    correct_answer = option
-
-        if not correct_answer and options:
-            last_line = lines[-1].upper()
-            if "CORRECT" in last_line or "ANSWER" in last_line:
-                for opt in "ABCD":
-                    if opt in last_line:
+                    correct_answer = None
+                    answer_match = re.search(r'Correct Answer:\s*([A-D])', block, re.DOTALL)
+                    if answer_match:
+                        letter = answer_match.group(1)
                         for option in options:
-                            if option.startswith(f"{opt}.") or option.startswith(f"{opt})"):
+                            if option.startswith(letter):
                                 correct_answer = option
                                 break
 
-        if not correct_answer and options:
-            correct_answer = options[0]
 
-        while len(options) < 4:
-            options.append(f"Option {chr(65 + len(options))}. Additional choice")
+                    if not correct_answer and options:
+                        correct_answer = options[0]
 
-        return {
-            "question": question,
-            "options": options,
-            "answer": correct_answer
+                    questions.append({
+                        "question": question_text,
+                        "options": options[:4],
+                        "answer": correct_answer,
+                        "question_type": "multiple_choice"
+                    })
+                except Exception as e:
+                    print(f"Error in alternative parsing: {e}")
+                    continue
+        except Exception as e:
+            print(f"Error in fallback parsing: {e}")
+
+    print(f"Successfully parsed {len(questions)} questions")
+    return questions
+
+
+def generate_simple_questions(text, num_questions=5):
+    """
+    Generate simple multiple choice questions using Ollama.
+    Simplified version with better error handling and improved prompts.
+    """
+    print(f"Generating {num_questions} questions from text ({len(text)} chars)")
+
+
+    if len(text) < 1000:
+        prompt = f"""
+Generate {num_questions} multiple-choice quiz questions based on this text:
+{text}
+
+CRITICAL INSTRUCTIONS:
+1. Each option MUST be COMPLETE in itself - DO NOT split information across options!
+2. Make sure options are properly formatted with A), B), C), D) at the beginning
+3. NEVER continue one option into another option
+4. DO NOT split long distances or measurements
+
+Example of CORRECT formatting:
+Question 1: How far can a tiger's roar be heard?
+A) Up to 3 kilometers (2 miles)
+B) Up to 5 kilometers (3 miles)
+C) Up to 8 kilometers (5 miles)
+D) More than 10 kilometers (6 miles)
+Correct Answer: B
+
+Example of INCORRECT formatting (DO NOT DO THIS):
+Question 1: How far can a tiger's roar be heard?
+A) Up to 3 kilometers
+B) (2 miles)
+C) Up to 5 kilometers
+D) (3 miles)
+
+Format each question EXACTLY as shown in the correct example.
+"""
+
+        generated_text = generate_with_ollama(prompt, temperature=0.7)
+        if generated_text:
+            questions = parse_multiple_choice_questions(generated_text)
+            if questions:
+                return questions
+
+
+    if len(text) > 1000:
+        print("Text is long, using first 1000 characters")
+        prompt = f"""
+Generate {num_questions} multiple-choice quiz questions based on this text:
+{text[:1000]}
+
+CRITICAL INSTRUCTIONS:
+1. Each option MUST be COMPLETE in itself - DO NOT split information across options!
+2. Make sure options are properly formatted with A), B), C), D) at the beginning
+3. NEVER continue one option into another option
+4. DO NOT split long distances or measurements
+
+Example of CORRECT formatting:
+Question 1: How far can a tiger's roar be heard?
+A) Up to 3 kilometers (2 miles)
+B) Up to 5 kilometers (3 miles)
+C) Up to 8 kilometers (5 miles)
+D) More than 10 kilometers (6 miles)
+Correct Answer: B
+
+Example of INCORRECT formatting (DO NOT DO THIS):
+Question 1: How far can a tiger's roar be heard?
+A) Up to 3 kilometers
+B) (2 miles)
+C) Up to 5 kilometers
+D) (3 miles)
+
+Format each question EXACTLY as shown in the correct example.
+"""
+
+
+        generated_text = generate_with_ollama(prompt, temperature=0.7)
+        if generated_text:
+            questions = parse_multiple_choice_questions(generated_text)
+            if questions:
+                return questions
+
+
+    print("Using fallback questions")
+    return fallback_questions(num_questions)
+
+
+def fallback_questions(num_questions=5):
+    """Provide fallback questions when generation fails"""
+    questions = [
+        {
+            "question": "What is the main topic of this document?",
+            "options": [
+                "A) Historical events and figures",
+                "B) Scientific concepts and discoveries",
+                "C) Literary analysis and criticism",
+                "D) Technical instructions and guidelines"
+            ],
+            "answer": "A) Historical events and figures",
+            "question_type": "multiple_choice"
+        },
+        {
+            "question": "Which category would this document most likely belong to?",
+            "options": [
+                "A) Academic textbook",
+                "B) News article",
+                "C) Informational guide",
+                "D) Research paper"
+            ],
+            "answer": "C) Informational guide",
+            "question_type": "multiple_choice"
+        },
+        {
+            "question": "What is the primary purpose of this document?",
+            "options": [
+                "A) To inform about a specific topic",
+                "B) To persuade the reader to take action",
+                "C) To entertain through storytelling",
+                "D) To analyze complex data"
+            ],
+            "answer": "A) To inform about a specific topic",
+            "question_type": "multiple_choice"
+        },
+        {
+            "question": "What reading level would this document be appropriate for?",
+            "options": [
+                "A) Elementary school",
+                "B) Middle school",
+                "C) High school",
+                "D) College level"
+            ],
+            "answer": "C) High school",
+            "question_type": "multiple_choice"
+        },
+        {
+            "question": "How would you best describe the writing style of this document?",
+            "options": [
+                "A) Formal and academic",
+                "B) Casual and conversational",
+                "C) Technical and specialized",
+                "D) Narrative and descriptive"
+            ],
+            "answer": "A) Formal and academic",
+            "question_type": "multiple_choice"
         }
-    except Exception as e:
-        print(f"Error parsing generated question: {e}")
-        return None
+    ]
+
+    return questions[:num_questions]
 
 
 @login_required
 @role_required('Lecturer')
 def add_question(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user)
-    generated_questions = []
 
     if request.method == 'POST' and 'file' in request.FILES:
+        print("File upload detected")
         uploaded_file = request.FILES['file']
         text_content = ""
 
+
+        print("Testing Ollama API connection...")
+        test_response = generate_with_ollama("Generate one simple question about tigers.", temperature=0.5)
+        print(f"Ollama test response received: {len(test_response)} chars")
+
+
         if uploaded_file.name.endswith('.pdf'):
             text_content = extract_text_from_pdf(uploaded_file)
-            print(f"Extracted PDF content (first 500 chars): {text_content[:500]}")
+            print(f"Extracted PDF content length: {len(text_content)} characters")
         elif uploaded_file.name.endswith(('.docx', '.doc')):
             text_content = extract_text_from_docx(uploaded_file)
-            print(f"Extracted DOCX content (first 500 chars): {text_content[:500]}")
+            print(f"Extracted document content length: {len(text_content)} characters")
         else:
+            print(f"Unsupported file format: {uploaded_file.name}")
             return JsonResponse({"error": "Unsupported file format."})
 
         if text_content.strip():
-            generated_questions = generate_questions_from_text(text_content)
+            print("Generating questions from extracted text...")
 
-    if request.method == 'POST':
-        #set max limit of questions to 20
-        if (poll.questions.count() == 20):
-            return JsonResponse({'error': f'Only 20 questions are allowed per poll'}, status=400)
+            generated_questions = generate_simple_questions(text_content)
 
-        # Update Poll Title
-        new_title = request.POST.get('poll_title') or request.POST.get('poll_title_hidden')
-        if new_title and new_title != poll.title:
-            poll.title = new_title
-            poll.save()
-
-        if generated_questions:
-            return JsonResponse({"questions": generated_questions})
+            if generated_questions:
+                print(f"Successfully generated {len(generated_questions)} questions")
+                return JsonResponse({"questions": generated_questions})
+            else:
+                print("Failed to generate questions")
+                return JsonResponse({"error": "Failed to generate questions. Please try again."})
         else:
-            return JsonResponse({"error": "No questions could be generated from the document."})
+            print("No text content extracted from file")
+            return JsonResponse({"error": "No text could be extracted from the file."})
 
-    if request.method == 'POST' and not 'file' in request.FILES:
+    if request.method == 'POST' and 'file' not in request.FILES:
         manager = QuestionManager(request, poll_id, request.POST.get('youtube_link'), get_timer(request))
-
-        response = None #if a manager is not created then there is no response. a manager isn't created if you're just changing the poll title
 
         if manager.question_type == 'text_fill':
             response = manager.handle_text_fill()
