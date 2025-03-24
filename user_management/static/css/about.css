@@ -86,24 +86,26 @@ html, body {
 
 /* Core Values Section */
 .mb-4 li {
-  background: rgba(40, 40, 80, 0.5);
-  margin-bottom: 10px;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #5555aa;
-  transition: transform 0.3s ease;
-  list-style: none;
+  border: 2px solid #ffffff; 
+  border-radius: 20px; 
+  padding: 20px; 
+  margin-bottom: 15px; 
+  background-color: rgba(255, 255, 255, 0.15); 
+  transition: all 0.3s ease; 
+  list-style: none; 
 }
 
 .mb-4 li:hover {
-  transform: translateX(10px);
+  transform: translateY(-2px); 
+  box-shadow: 0px 4px 15px white 
 }
 
 .mb-4 li i {
-  color: #6666ff;
+  color: #ffffff; 
   margin-right: 10px;
   font-size: 1.2rem;
 }
+
 
 /* Key Features List */
 .about-content ul:not(.mb-4) {
