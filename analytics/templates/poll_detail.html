@@ -18,8 +18,17 @@
         <!-- Sidebar for Questions -->
         <div class="sidebar">
             <h3 class="text-center">Questions</h3>
+            <form method="get" id="filter-form">
+                <input type="text" name="search" placeholder="Search questions..." value="{{ search_query }}">
+                <select name="sort_by" onchange="document.getElementById('filter-form').submit();">
+                    <option value="question_text_asc" {% if sort_by == 'question_text_asc' %}selected{% endif %}>Question Text A-Z</option>
+                    <option value="question_text_desc" {% if sort_by == 'question_text_desc' %}selected{% endif %}>Question Text Z-A</option>
+                    <option value="type_asc" {% if sort_by == 'type_asc' %}selected{% endif %}>Type A-Z</option>
+                    <option value="type_desc" {% if sort_by == 'type_desc' %}selected{% endif %}>Type Z-A</option>
+                </select>
+            </form>
             <div id="questions-list">
-                {% for question in poll.questions.all %}
+                {% for question in questions %}
                     <div class="question-item" data-question-id="{{ question.id }}">
                         <strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}
                         <button class="view-analytics-btn" data-question-id="{{ question.id }}">View Analytics</button>
