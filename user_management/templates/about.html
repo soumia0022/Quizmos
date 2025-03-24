@@ -6,13 +6,13 @@
 <link rel="stylesheet" href="{% static 'css/about.css' %}">
 
 {% include 'partials/home_navbuttons.html' %}
-<div class="container vh-100 d-flex align-items-center justify-content-center">
-    <div class="row w-100">
-        <div class="col-12 d-flex justify-content-center">
+
+<div class="about-container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
             <div class="card about-card shadow-lg">
                 <h1 class="about-heading mb-4">About Quizmos</h1>
                 <div class="about-content text-start">
-
                     <p class="lead mb-4">{{ summary }}</p>
 
                     <h3 class="h4 mb-3">Our Mission</h3>
@@ -65,7 +65,6 @@
                             </div>
                         {% endfor %}
                     </div>
-
                 </div>
             </div>
         </div>

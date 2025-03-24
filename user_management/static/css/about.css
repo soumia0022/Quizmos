@@ -1,4 +1,32 @@
-/* Reviews section styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto; 
+  background: #02192F;
+  color: #fff;
+  font-family: 'Palanquin', sans-serif;
+}
+
+/* About Page Container */
+.about-card {
+  margin: 300px auto 200px; 
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid #fff; 
+  padding: 2rem; 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); 
+  max-width: 700px;
+  width: 90%; 
+  text-align: center; 
+  gap: 40px; 
+  overflow: visible; 
+}
+
+/* Reviews Section */
 .reviews-container {
   margin-top: 20px;
   display: flex;
@@ -16,7 +44,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 700px;
   box-sizing: border-box;
-  height: 150px; 
+  height: 150px;
   margin: 0 auto; 
 }
 
@@ -29,7 +57,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%; 
+  height: 100%;
 }
 
 .review-stars {
@@ -38,118 +66,77 @@
   margin-bottom: 8px;
 }
 
+/* Core Values Section */
+.mb-4 li {
+  background: rgba(40, 40, 80, 0.5);
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #5555aa;
+  transition: transform 0.3s ease;
+  list-style: none;
+}
 
+.mb-4 li:hover {
+  transform: translateX(10px);
+}
+
+.mb-4 li i {
+  color: #6666ff;
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+/* Key Features List */
+.about-content ul:not(.mb-4) {
+  list-style: none;
+  padding-left: 0;
+}
+
+.about-content ul:not(.mb-4) li {
+  background: rgba(40, 40, 80, 0.5);
+  margin-bottom: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid #5555aa;
+  transition: transform 0.3s ease;
+}
+
+.about-content ul:not(.mb-4) li:hover {
+  transform: translateX(10px);
+  background: rgba(50, 50, 100, 0.6);
+}
+
+/* Team Section */
+.team-member {
+  background: rgba(40, 40, 80, 0.5);
+  border: 1px solid #5555aa;
+  border-radius: 10px;
+  padding: 20px;
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(102, 102, 255, 0.3);
+}
 
 @media (max-width: 768px) {
-  .reviews-container {
-    flex-direction: column; 
-    gap: 20px;
+  .about-content .lead {
+      font-size: 1.1rem;
+  }
+
+  .team-member {
+      margin-bottom: 15px;
+  }
+
+  .mb-4 li, .about-content ul:not(.mb-4) li {
+      padding: 10px;
   }
 
   .review-card {
-    width: 100%; 
-    height: auto; 
+      width: 100%; 
+      height: auto; 
   }
 }
-
-.about-card {
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  
-  /* Scrollbar styling */
-  .about-card::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .about-card::-webkit-scrollbar-track {
-    background: rgba(30, 30, 70, 0.3);
-  }
-  
-  .about-card::-webkit-scrollbar-thumb {
-    background: #6666ff;
-    border-radius: 4px;
-  }
-  
-  .about-card::-webkit-scrollbar-thumb:hover {
-    background: #7777ff;
-  }
-    
-  /* Journey Section */
-  .journey-section {
-    background-color: rgba(40, 40, 80, 0.5);
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px 0;
-    border: 1px solid #5555aa;
-  }
-  
-  /* Team Section */
-  .team-member {
-    background: rgba(40, 40, 80, 0.5);
-    border: 1px solid #5555aa;
-    border-radius: 10px;
-    padding: 20px;
-    height: 100%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .team-member:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(102, 102, 255, 0.3);
-  }
-  
-  /* Core Values Section */
-  .mb-4 li {
-    background: rgba(40, 40, 80, 0.5);
-    margin-bottom: 10px;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #5555aa;
-    transition: transform 0.3s ease;
-    list-style: none;
-  }
-  
-  .mb-4 li:hover {
-    transform: translateX(10px);
-  }
-  
-  .mb-4 li i {
-    color: #6666ff;
-    margin-right: 10px;
-    font-size: 1.2rem;
-  }
-  
-  /* Key Features List */
-  .about-content ul:not(.mb-4) {
-    list-style: none;
-    padding-left: 0;
-  }
-  
-  .about-content ul:not(.mb-4) li {
-    background: rgba(40, 40, 80, 0.5);
-    margin-bottom: 10px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    border: 1px solid #5555aa;
-    transition: transform 0.3s ease;
-  }
-  
-  .about-content ul:not(.mb-4) li:hover {
-    transform: translateX(10px);
-    background: rgba(50, 50, 100, 0.6);
-  }
-  
-  @media (max-width: 768px) {
-    .about-content .lead {
-      font-size: 1.1rem;
-    }
-    
-    .team-member {
-      margin-bottom: 15px;
-    }
-    
-    .mb-4 li, .about-content ul:not(.mb-4) li {
-      padding: 10px;
-    }
-  }
