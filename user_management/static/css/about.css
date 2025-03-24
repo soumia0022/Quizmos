@@ -26,6 +26,24 @@ html, body {
   box-sizing: border-box; 
 }
 
+.about-heading {
+  font-family: 'Palanquin Dark', sans-serif; 
+  font-size: 50px; 
+  font-weight: bold; 
+  color: #fff; 
+  text-decoration: none; 
+  text-align: center; 
+}
+
+.about-subheading {
+  font-family: 'Palanquin', sans-serif; 
+  font-size: 30px; 
+  font-weight: bold; 
+  color: #fff; 
+  text-decoration: none; 
+  text-align: center; 
+}
+
 .reviews-container {
   margin-top: 20px;
   display: flex;
