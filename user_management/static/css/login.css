@@ -1,0 +1,108 @@
+/* Login Page Container */
+.login-page {
+    width: 100%;
+    position: relative;
+    background-color: #02192f;
+    height: 1102px;
+    overflow: hidden;
+}
+
+/* Shared Styling for Stars */
+.star {
+    position: absolute;
+    object-fit: contain;
+    animation: 
+        drop-and-bounce 3s ease-out forwards, 
+        float 8s ease-in-out infinite; 
+    opacity: 0.8;
+}
+
+/* Planets */
+.planet1-icon {
+    position: absolute;
+    top: 158px;
+    left: 714px;
+    width: 149.5px;
+    height: 148px;
+    object-fit: cover;
+    animation: 
+        drop-and-bounce 3s ease-out forwards, 
+        float 12s infinite ease-in-out;
+}
+
+.planet2-icon {
+    position: absolute;
+    top: 367.15px;
+    left: 270px;
+    width: 203.7px;
+    height: 184px;
+    object-fit: cover;
+    animation: 
+        drop-and-bounce 3s ease-out forwards, 
+        float 14s infinite ease-in-out;
+}
+
+.planet3-icon {
+    position: absolute;
+    top: 761px;
+    left: 46px;
+    width: 145px;
+    height: 145px;
+    object-fit: cover;
+    animation: 
+        drop-and-bounce 3s ease-out forwards, 
+        float 10s infinite ease-in-out;
+}
+
+.planet4-icon {
+    position: absolute;
+    top: 547px;
+    left: 1407px;
+    width: 138.4px;
+    height: 137px;
+    object-fit: cover;
+    animation: 
+        drop-and-bounce 3s ease-out forwards, 
+        float 11s infinite ease-in-out;
+}
+
+/* Astronaut */
+.astronaut3-icon {
+    position: absolute;
+    top: 849px;
+    left: 1443px;
+    width: 175px;
+    height: 197px;
+    object-fit: cover;
+    animation: float 13s infinite ease-in-out; 
+}
+
+/* Animations */
+@keyframes drop-and-bounce {
+    0% { transform: translateY(-200vh); }
+    50% { transform: translateY(20px); }
+    70% { transform: translateY(-10px); }
+    90% { transform: translateY(5px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Staggered Animation Delays */
+.star:nth-child(odd) {
+    animation-delay: 0.2s, 3.2s;
+}
+
+.star:nth-child(even) {
+    animation-delay: 0.4s, 3.4s;
+}
+
+.planet1-icon:nth-child(odd),
+.planet2-icon:nth-child(even),
+.planet3-icon:nth-child(odd),
+.planet4-icon:nth-child(even) {
+    animation-delay: 0.3s, 3.3s;
+}
