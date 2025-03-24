@@ -108,3 +108,54 @@
         transform: translateY(-20px);
     }
 }
+
+
+/* Drop-and-Bounce Animation */
+@keyframes drop-and-bounce {
+    0% {
+        transform: translateY(-200vh); 
+    }
+    50% {
+        transform: translateY(20px); 
+    }
+    70% {
+        transform: translateY(-10px); 
+    }
+    90% {
+        transform: translateY(5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Apply Animation to Stars */
+.star {
+    animation: drop-and-bounce 3s ease-out forwards; 
+}
+
+.star:nth-child(odd) {
+    animation-delay: 0.2s; /
+}
+
+.star:nth-child(even) {
+    animation-delay: 0.4s; 
+}
+
+/* Apply Animation to Planets */
+.planet1-icon, .planet2-icon, .planet3-icon, .planet4-icon, .planet5-icon, .sun-icon {
+    animation: drop-and-bounce 3s ease-out forwards; 
+}
+
+.planet1-icon:nth-child(odd),
+.sun-icon:nth-child(odd) {
+    animation-delay: 0.3s; 
+}
+
+.planet2-icon:nth-child(even),
+.planet3-icon:nth-child(even),
+.planet4-icon:nth-child(even),
+.planet5-icon:nth-child(even) {
+    animation-delay: 0.5s; 
+}
+
