@@ -90,8 +90,9 @@ def delete_account(request):
     if request.method == "POST":
         user.delete()
         logout(request)
-        messages.success(request, "Your account has been deleted successfully.")
+        
         return redirect("user_management:home")  # Redirect to home after deletion
+        
 
     return HttpResponse("Are you sure you want to delete your account? Send a POST request to confirm.", status=400)
 
