@@ -14,7 +14,7 @@ html, body {
 /* FAQ Container */
 .faq-container {
   margin: 100px auto 80px; 
-  padding: 20px;
+  padding: 30px;
   max-width: 1200px;
 }
 
@@ -59,13 +59,12 @@ html, body {
 /* FAQ Items */
 .faq-item {
   border: 2px solid #ffffff;
-  border-radius: 10px;
+  border-radius: 30px;
   padding: 20px;
   margin-bottom: 15px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: rgba(255, 255, 255, 0.15); 
-  transition: all 0.3s ease;
-  
+  transition: all 0.3s ease; 
 }
 
 
