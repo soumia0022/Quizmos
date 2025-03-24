@@ -39,17 +39,16 @@ html, body {
 
 /* FAQ Items */
 .faq-item {
-  border: 1px solid #5555aa;
+  border: 2px solid #ffffff;
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 15px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.15); 
+  transition: all 0.3s ease;
+  
 }
 
-.faq-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0px 4px 15px rgba(102, 102, 255, 0.2);
-}
 
 /* FAQ Navigation Buttons */
 .faq-nav {
@@ -60,22 +59,23 @@ html, body {
 }
 
 .faq-nav-btn {
-  padding: 10px 20px;
-  border-radius: 20px;
-  background-color: rgba(50, 50, 100, 0.7);
-  border: 1px solid #6666ff;
-  color: #9999ff;
-  transition: all 0.3s ease;
-  cursor: pointer;
+  background-color: #02192f; 
+  border-radius: 25px; 
+  border: 2px solid #fff;
+  font-size: 24px; 
+  color: white; 
+  transition: all 0.3s ease; 
+  max-width: 90%; 
+  height: 60px; 
+  max-height: 90%; 
+  text-align: center;
+  cursor: pointer; 
 }
 
-.faq-nav-btn:hover {
-  background-color: rgba(102, 102, 255, 0.3);
-}
 
 .faq-nav-btn.active {
-  background-color: #6666ff;
-  color: white;
+  background-color: rgba(255, 255, 255, 0.15); 
+  transition: all 0.3s ease;
 }
 
 /* FAQ Sections */
