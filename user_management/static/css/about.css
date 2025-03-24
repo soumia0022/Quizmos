@@ -26,6 +26,24 @@ html, body {
   overflow: visible; 
 }
 
+.about-heading {
+  font-family: 'Palanquin Dark', sans-serif; 
+  font-size: 50px; 
+  font-weight: bold; 
+  color: #fff; 
+  text-decoration: none; 
+  text-align: center; 
+}
+
+.about-subheading {
+  font-family: 'Palanquin', sans-serif; 
+  font-size: 30px; 
+  font-weight: bold; 
+  color: #fff; 
+  text-decoration: none; 
+  text-align: center; 
+}
+
 /* Reviews Section */
 .reviews-container {
   margin-top: 20px;
@@ -138,5 +156,13 @@ html, body {
   .review-card {
       width: 100%; 
       height: auto; 
+  }
+
+  .about-heading{
+    font-size: 2.5rem; 
+  }
+
+  .about-subheading{
+    font-size: 24px; 
   }
 }
