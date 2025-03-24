@@ -28,6 +28,16 @@ html, body {
   max-width: 800px; 
 }
 
+/* Heading Style for FAQ Page */
+.faq-heading {
+  font-family: 'Palanquin Dark', sans-serif; 
+  font-size: 50px; 
+  font-weight: bold; 
+  color: #fff; 
+  text-decoration: none; 
+  text-align: center; 
+}
+
 /* FAQ Items */
 .faq-item {
   background-color: rgba(40, 40, 80, 0.5);
@@ -235,7 +245,6 @@ html, body {
   animation-delay: 0s, 3s; 
 }
 
-
 /* Media Queries */
 @media (max-width: 768px) {
   .faq-nav {
@@ -249,5 +258,9 @@ html, body {
 
   .faq-card {
       padding: 20px;
+  }
+
+  .faq-heading {
+    font-size: 1.8rem; 
   }
 }
