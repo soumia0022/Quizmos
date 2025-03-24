@@ -261,4 +261,11 @@ html, body {
   .faq-heading {
     font-size: 1.8rem; 
   }
+
+  .faq-nav-btn {
+    font-size: 18px; 
+    width: 220px;
+    max-width: 270px; 
+    height: 50px; 
+}
 }
