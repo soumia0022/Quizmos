@@ -1,4 +1,4 @@
-function createLockOverlay() {
+export function createLockOverlay() {
     if (document.getElementById('poll-lock-overlay')) {
         return; // Already exists
     }
@@ -74,7 +74,6 @@ function hideLockOverlay() {
     }
 }
 
-window.createLockOverlay = createLockOverlay;
 window.showLockOverlay = showLockOverlay;
 window.hideLockOverlay = hideLockOverlay;
 

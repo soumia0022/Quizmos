@@ -1,4 +1,4 @@
-import { ws } from './websocket.js';
+import { pollState } from '../poll_state.js'
 
 function showAnswer() {
     const closedEyeButton = document.getElementById("show-answer-closed");
@@ -17,7 +17,7 @@ function showAnswer() {
         closedEyeButton.style.display = "none";
         openEyeButton.style.display = "inline";
 
-        ws.send(JSON.stringify({
+        pollState.lecturer_webSocket.send(JSON.stringify({
             type: 'show_answers',
             question_id: questionId,
             action: 'show_answer'
@@ -26,7 +26,7 @@ function showAnswer() {
         closedEyeButton.style.display = "inline";
         openEyeButton.style.display = "none";
 
-        ws.send(JSON.stringify({
+        pollState.lecturer_webSocket.send(JSON.stringify({
             type: 'show_answers',
             question_id: questionId,
             action: 'hide_answer'

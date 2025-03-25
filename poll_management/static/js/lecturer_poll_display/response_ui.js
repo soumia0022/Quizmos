@@ -1,4 +1,4 @@
-import {WordCloudGenerator} from "./word_could_generator.js";
+import {WordCloudGenerator} from "./questions/word_could_generator.js";
 
 function updateProgressElements(element, count, totalResponses) {
     const percentage = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
@@ -24,13 +24,12 @@ function updateProgressElements(element, count, totalResponses) {
     return percentage;
 }
 
-export function updateResponseUI(questionId, optionCounts, questionType) {
+export function updateResponseUI(questionId, optionCounts) {
     //for single, multiple choice and drop down questions
     const questionContainer = document.querySelector(`[data-question="${questionId}"]`);
     const cards = questionContainer.querySelectorAll('.response-card');
 
     const totalResponses = Object.values(optionCounts).reduce((a, b) => a + b, 0);
-
 
     cards.forEach((card, index) => {
         const count = optionCounts[index] || 0;
@@ -169,7 +168,6 @@ function displayCodeInEditor(code, language) {
     // Set the retrieved code
     editor.setValue(code);
 }
-
 
 export function updateMatchResponseUI(questionId, matchData) {
     const questionContainer = document.querySelector(`[data-question="${questionId}"]`);
