@@ -1,8 +1,6 @@
 import requests
 import json
 import random
-import pdfplumber
-import docx
 import re
 import nltk
 import time
@@ -21,36 +19,6 @@ OLLAMA_URL = 'http://localhost:11434/api/generate'
 DEFAULT_MODEL = 'llama3.2'
 MAX_PROMPT_LENGTH = 2000
 TIMEOUT_SECONDS = 60
-
-
-def extract_text_from_pdf(uploaded_file):
-    """Extract text content from a PDF file"""
-    print("Extracting text from PDF...")
-    text = ""
-    try:
-        with pdfplumber.open(uploaded_file) as pdf:
-            for page in pdf.pages:
-                text += page.extract_text() or ""
-        print(f"Successfully extracted {len(text)} characters from PDF")
-        return text.strip() if text.strip() else ""
-    except Exception as e:
-        print(f"Error extracting PDF text: {e}")
-        return ""
-
-
-def extract_text_from_docx(uploaded_file):
-    """Extract text content from a Word document"""
-    print("Extracting text from DOCX...")
-    text = ""
-    try:
-        doc = docx.Document(uploaded_file)
-        for para in doc.paragraphs:
-            text += para.text + "\n"
-        print(f"Successfully extracted {len(text)} characters from DOCX")
-        return text.strip() if text.strip() else ""
-    except Exception as e:
-        print(f"Error extracting DOCX text: {e}")
-        return ""
 
 
 def generate_with_ollama(prompt, model=DEFAULT_MODEL, temperature=0.7):
@@ -225,7 +193,6 @@ def parse_multiple_choice_questions(text):
                         if content:
                             options.append(f"{letter}) {content}")
 
-
                     while len(options) < 4:
                         letter = chr(65 + len(options))
                         options.append(f"{letter}) Additional option")
@@ -334,7 +301,6 @@ D) (3 miles)
 Format each question EXACTLY as shown in the correct example.
 """
 
-
         generated_text = generate_with_ollama(prompt, temperature=0.7)
         if generated_text:
             questions = parse_multiple_choice_questions(generated_text)
@@ -414,10 +380,27 @@ def fallback_questions(num_questions=5):
 def add_question(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id, user=request.user)
 
-    if request.method == 'POST' and 'file' in request.FILES:
-        print("File upload detected")
-        uploaded_file = request.FILES['file']
-        text_content = ""
+
+
+    if request.method == 'POST' and 'text' in request.POST:
+        print("Text input detected")
+
+
+        raw_text = request.POST.get('text', '')
+        print(f"Raw text length: {len(raw_text)} characters")
+
+
+        text_content = raw_text.strip()
+
+
+        if not text_content:
+            print("No text content provided")
+            return JsonResponse({"error": "Please provide some text to generate questions."})
+
+
+
+
+        print(f"Processing text: {len(text_content)} characters")
 
 
         print("Testing Ollama API connection...")
@@ -425,32 +408,24 @@ def add_question(request, poll_id):
         print(f"Ollama test response received: {len(test_response)} chars")
 
 
-        if uploaded_file.name.endswith('.pdf'):
-            text_content = extract_text_from_pdf(uploaded_file)
-            print(f"Extracted PDF content length: {len(text_content)} characters")
-        elif uploaded_file.name.endswith(('.docx', '.doc')):
-            text_content = extract_text_from_docx(uploaded_file)
-            print(f"Extracted document content length: {len(text_content)} characters")
+        print(f"Generating questions from text input ({len(text_content)} characters)")
+        generated_questions = generate_simple_questions(text_content)
+
+        if generated_questions:
+            print(f"Successfully generated {len(generated_questions)} questions")
+            return JsonResponse({"questions": generated_questions})
         else:
-            print(f"Unsupported file format: {uploaded_file.name}")
-            return JsonResponse({"error": "Unsupported file format."})
+            print("Failed to generate questions")
+            return JsonResponse({"error": "Failed to generate questions. Please try again."})
 
-        if text_content.strip():
-            print("Generating questions from extracted text...")
 
-            generated_questions = generate_simple_questions(text_content)
 
-            if generated_questions:
-                print(f"Successfully generated {len(generated_questions)} questions")
-                return JsonResponse({"questions": generated_questions})
-            else:
-                print("Failed to generate questions")
-                return JsonResponse({"error": "Failed to generate questions. Please try again."})
-        else:
-            print("No text content extracted from file")
-            return JsonResponse({"error": "No text could be extracted from the file."})
+    elif request.method == 'POST' and 'file' in request.FILES:
+        print("File upload detected - this method is deprecated")
+        return JsonResponse({"error": "File upload is no longer supported. Please paste text directly."})
 
-    if request.method == 'POST' and 'file' not in request.FILES:
+
+    elif request.method == 'POST':
         manager = QuestionManager(request, poll_id, request.POST.get('youtube_link'), get_timer(request))
 
         if manager.question_type == 'text_fill':
