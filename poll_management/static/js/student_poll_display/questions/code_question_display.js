@@ -12,7 +12,7 @@ export function code_question_display(data){
         let language = data.question.code_language || "python"; // Default to Python if null
         let textarea = document.getElementById('code-editor');
 
-        let editor = initializeCodeEditor(textarea, language);
+        let editor = initializeCodeEditor(textarea, language, true);
 
         document.getElementById('run-button').addEventListener('click', function () {
             executeCode(editor, language, 'output');
