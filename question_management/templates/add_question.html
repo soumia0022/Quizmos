@@ -34,33 +34,24 @@
 
     {% noscript_warning %}
 
-    {% include 'partials/background_stars.html' %}
-
-
     <div class="ai-question-generator">
         <h3>Generate AI Based Questions</h3>
-        <div style="text-align: center;">
-
-            <button id="import-pdf-btn">Import PDF</button>
-
-            <button id="import-doc-btn">Import Document</button>
+        <div class="text-input-container">
+            <textarea id="text-input" class="form-control" placeholder="Paste text here (max 1000 characters)" maxlength="1000" rows="5"></textarea>
+            <div id="char-counter">0/1000 characters</div>
+            <button id="generate-questions-btn" class="btn btn-primary mt-2">Generate Questions</button>
         </div>
         <div class="ai-generated-content">
             <div id="ai-questions-area">
-
                 <span style="color: #FFD700; display: block; text-align: center; margin-top: 50px;">
                     AI-generated questions will appear here
                     <br><br>
-                    Click "Import PDF" or "Import Document" to get started
+                    Paste your text and click "Generate Questions" to get started
                 </span>
             </div>
         </div>
-
-
-        <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;">
-        <input type="file" id="doc-file-input" accept=".doc,.docx" style="display: none;">
     </div>
-
+    
     <div class="container">
 
         <h1>Edit Poll: {{ poll.title }}</h1>
