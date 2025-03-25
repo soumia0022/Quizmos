@@ -1,5 +1,5 @@
 export function renderCodeQuestion(question) {
-    console.log("code_question_display.js is loaded");
+
     return `
             <div class="question-container" data-question="${question.id}">
             <p>${question.text}</p>
