@@ -5,10 +5,27 @@
 
 {% block content %}
 <div class="container mt-4">
-    <header>
-        <h2 class="mb-4">{{ poll.title }}</h2>
+    <header class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">{{ poll.title }}</h2>
+         <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>All {{ poll.title }} Responses
+        </a>
+
     </header>
 
+{%if session_codes|length > 1%}
+    <form method="get">
+        <select name="session_code" class="form-control" onchange="this.form.submit()">
+            <option>Select Session</option>
+            {% for code in session_codes %}
+            <option value="{{ code }}" {% if code == selected_session_code %}selected{% endif %}>
+                Session {{ code }}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+
+{%else%}
     {% if responses_by_question %}
         <div id="pollResponsesSlideshow" class="carousel slide mt-4" data-bs-interval="false" data-bs-ride="false" data-poll-id="{{ poll.id }}" aria-roledescription="carousel" aria-label="Poll responses slideshow">
             {% include 'student_view_response/indicators.html' with responses=responses_by_question %}
