@@ -19,7 +19,6 @@ def student_view_poll(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id)
     student = request.user
 
-
     response_types = {
         'multiple_choice': {'model': MultipleChoiceResponse,'value_field': 'selected_options'},
         'single_choice': {'model': SingleChoiceResponse,'value_field': 'selected_option'},
@@ -45,16 +44,38 @@ def student_view_poll(request, poll_id):
             if question.youtube_link:
                 question.youtube_link = format_youtube_link(question.youtube_link)
 
+            # Calculate correctness
+            is_correct = False
+            value_field = config['value_field']
+            student_answer = getattr(response, value_field)
+
+            if response_type == 'multiple_choice':
+                is_correct = set(student_answer) == set(question.multiple_choice_answers or [])
+            elif response_type == 'single_choice':
+                is_correct = student_answer in question.single_choice_answers or []
+            elif response_type == 'dropdown':
+                is_correct = student_answer.strip().lower() == (
+                            question.dropdown_correct_answer or "").strip().lower()
+            elif response_type == 'text_fill':
+                is_correct = student_answer.strip().lower() == (question.text_fill_answer or "").strip().lower()
+            elif response_type == 'match':
+                user_responses = [pair['right'] for pair in student_answer or []]
+                is_correct = user_responses == question.match_answers or []
+            else:
+                is_correct = False
+
             responses_by_question[question.id] = {
                 'type': response_type,
                 'question': question,
-                'submitted_on': response.submitted_on
+                'submitted_on': response.submitted_on,
+                value_field: student_answer,
+                'is_correct': is_correct,
             }
 
             value_field = config['value_field']
             responses_by_question[question.id][value_field] = getattr(response, value_field)
 
-            print(f"Question ID: {question.id}, Response Type: {response_type}, Answer: {getattr(response, value_field, 'No Answer Found')}")
+            # print(f"Question ID: {question.id}, Response Type: {response_type}, Answer: {getattr(response, value_field, 'No Answer Found')}")
 
     return render(request, 'student_view_response/poll_response.html', {
         'poll': poll,

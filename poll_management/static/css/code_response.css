@@ -60,3 +60,14 @@
     font-size: 14px;
     line-height: 1;
 }
+
+.bg-success-box {
+    background-color: #64b164 !important;
+
+}
+
+.bg-danger-box {
+    background-color: #da4949 !important;
+
+}
+

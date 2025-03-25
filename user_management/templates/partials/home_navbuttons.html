@@ -1,11 +1,14 @@
-<div class="navbar">
-    <div class="nav-buttons-left">
-        <a href='{% url 'user_management:home' %}'class="nav-button">Home</a> 
-        <a href='{% url 'user_management:about' %}' class="nav-button">About</a>
-        <a href='{% url 'user_management:faq' %}' class="nav-button">FAQ</a>
+<div class="navbar-container">
+    <div class="left-links">
+        <a href="{% url 'user_management:home' %}" class="quizmos">QUIZMOS</a>
+        <div class="left-links-child"></div>
+        <a href="{% url 'user_management:about' %}" class="about">ABOUT</a>
+        <a href="{% url 'user_management:faq' %}" class="faq">FAQ</a>
+        <a href="{% url 'user_management:home' %}" class="join-poll">JOIN POLL</a>
     </div>
-    <div class="nav-buttons-right">
-        <a href='{% url 'user_management:sign_up' %}'class="nav-button">Sign up</a>
-        <a id="id_login_home_page_button" href='{% url 'user_management:log_in' %}' class="nav-button">Log in</a>
+    <div class="right-links">
+        <div class="left-links-child"></div>
+        <a href="{% url 'user_management:sign_up' %}" class="sign-up">SIGN UP</a>
+        <a id="id_login_home_page_button" href="{% url 'user_management:log_in' %}" class="log-in">LOGIN</a>
     </div>
-  </div>
+</div>

@@ -1,6 +1,7 @@
 {% extends 'base_content.html' %}
 {% load system_extras %}
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/code_response.css' %}">
 
 {% block content %}
 <div class="container mt-4">
@@ -24,10 +25,40 @@
                             
                             <!-- Card Body -->
                             <div class="card-body">
+                                <!-- Question Section -->
                                 {% include 'student_view_response/question_section.html' with response=response %}
-                                {% include 'student_view_response/answer_section.html' with response=response %}
+
+                                <!-- Answer Section -->
+                                <div class="answer-section p-3 rounded
+                                    {% if response.question.question_type == 'single_choice' or response.question.question_type == 'multiple_choice' or response.question.question_type == 'dropdown_fill' or response.question.question_type == 'text_fill' or response.question.question_type == 'match_question' %}
+                                        {% if response.is_correct %}
+                                            bg-success-box
+                                        {% else %}
+                                            bg-danger-box
+                                        {% endif %}
+                                    {% else %}
+                                        bg-light
+                                    {% endif %}">
+                                    <h5 class="mb-2 d-flex align-items-center">
+                                        {% if response.question.question_type == 'single_choice' or response.question.question_type == 'multiple_choice' or response.question.question_type == 'dropdown_fill' or response.question.question_type == 'text_fill' or response.question.question_type == 'match_question' %}
+                                            {% if response.is_correct %}
+                                                <i class="bi bi-check-lg text-white me-2" aria-hidden="true"></i>
+                                                <span class="sr-only">Correct</span>
+                                                Correct
+                                            {% else %}
+                                                <i class="bi bi-x-lg text-white me-2" aria-hidden="true"></i>
+                                                <span class="sr-only">Incorrect</span>
+                                                Incorrect
+                                            {% endif %}
+                                        {% endif %}
+                                    </h5>
+
+                                    {% include 'student_view_response/answer_section.html' with response=response %}
+                                </div>
+
+                                <!-- Media Section -->
                                 {% include 'student_view_response/media_section.html' with question=response.question %}
-                                
+
                                 <!-- Timer Info -->
                                 {% if response.question.timer %}
                                     <div class="timer-info mt-3 text-muted">

@@ -1,12 +1,14 @@
-import {fetchResponseCounts, ws} from './websocket.js';
-import {renderChoice} from "./choice_display.js";
-import {renderText} from "./text_question_display.js";
-import {renderWordCloud} from "./word_cloud_display.js";
-import {renderMatch} from "./match_question_display.js";
-import {getFormattedTime, startCountdownTimer} from "./timer.js";
-import { renderCodeQuestion } from "./code_question_display.js";
-import {unlock} from "./lock_poll.js";
-
+import {fetchResponseCounts} from './websocket.js';
+import {renderChoice} from "./questions/choice_display.js";
+import {renderText} from "./questions/text_question_display.js";
+import {renderWordCloud} from "./questions/word_cloud_display.js";
+import {renderMatch} from "./questions/match_question_display.js";
+import {getFormattedTime, startCountdownTimer} from "../timer.js";
+import { renderCodeQuestion } from "./questions/code_question_display.js";
+import {pollState} from "../poll_state.js";
+import {video_file_display} from "./questions/video_file_display.js";
+import {audio_file_display} from "./questions/audio_file_display.js";
+import {youtube_video_display} from "./questions/youtube_video_display.js";
 
 
 window.startPoll = function() {
@@ -41,6 +43,7 @@ window.nextQuestion = function() {
 function resetShowAnswerState() {
     const closedEyeButton = document.getElementById('show-answer-closed');
     const openEyeButton = document.getElementById('show-answer-open');
+    document.getElementById('correct-answers').style.display = 'none';;
     const currentQuestion = window.questions[window.currentQuestionIndex];
 
   // hide eye icon for wordcloud questions
@@ -52,8 +55,8 @@ function resetShowAnswerState() {
     openEyeButton.style.display = 'none';
 
     const questionId = currentQuestion.id;
-    if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
+    if (pollState.lecturer_webSocket.readyState === WebSocket.OPEN) {
+        pollState.lecturer_webSocket.send(JSON.stringify({
             type: 'show_answers',
             question_id: questionId,
             action: 'hide_answer'
@@ -68,49 +71,15 @@ function createQuestionHTML(question) {
 
   if (question.youtube_link != null) {
     const embedURL = question.youtube_link.replace("youtu.be/", "www.youtube.com/embed/");
-    html += `
-       <div class="video-container">
-        <iframe 
-            width="560" 
-            height="315" 
-            src="${embedURL}" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
-    </div>
-    `;
+    html += youtube_video_display(embedURL);
     }
 
   if (question.video_file != null) {
-    html += `
-      <div class="video-container mb-3">
-        <video 
-          controls
-          width="100%" 
-          style="max-width: 640px;"
-          class="rounded"
-        >
-          <source src="${question.video_file}" type="video/mp4">
-          Your browser does not support the video element.
-        </video>
-      </div>
-    `;
+    html += video_file_display(question);
   }
 
   if (question.audio_file != null) {
-  html += `
-    <div class="audio-container mb-3">
-      <audio 
-        controls
-        class="w-100"
-        style="max-width: 640px;"
-      >
-        <source src="${question.audio_file}" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio>
-    </div>
-    `;
+    html += audio_file_display(question);
     }
 
   if (question.question_timer != null) {
@@ -151,7 +120,9 @@ break;
 
 function updateQuestionDisplay() {
     const questionContainer = document.getElementById('question-container');
-    const currentQuestion = window.questions[window.currentQuestionIndex];
+    const currentQuestion = pollState.currentQuestion= window.questions[window.currentQuestionIndex];
+    pollState.currentQuestionId=currentQuestion.id;
+    pollState.currentQuestionType= currentQuestion.type;
 
     // Update the question display (only set innerHTML once)
     questionContainer.innerHTML = createQuestionHTML(currentQuestion);
@@ -183,8 +154,8 @@ function updateQuestionDisplay() {
     nextBtn.disabled = window.currentQuestionIndex === window.questions.length - 1;
 
     // Send question update to WebSocket
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
+    if (pollState.lecturer_webSocket.readyState === WebSocket.OPEN) {
+      pollState.lecturer_webSocket.send(JSON.stringify({
         type: 'question',
         question_id: currentQuestion.id,
         question_timer: currentQuestion.question_timer,
