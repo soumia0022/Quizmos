@@ -170,7 +170,7 @@ body #questions-sidebar {
 #question-form .text-center {
     position: sticky;
     bottom: 0;
-    background: rgba(30, 30, 70, 0.8); /* Match card-body background */
+    background: rgba(30, 30, 70, 0.8);
     padding: 10px;
     text-align: center;
     z-index: 10;
@@ -240,6 +240,56 @@ body #questions-sidebar {
 .generated-question ul li.correct-answer {
   background-color: rgba(76, 175, 80, 0.3);
   border-left: 3px solid #4CAF50;
+}
+
+
+.text-input-container {
+    width: 100%;
+    margin: 15px auto;
+    text-align: center;
+}
+
+#text-input {
+    width: 100%;
+    background-color: #1e2747;
+    color: white;
+    border: 1px solid #3a4562;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    resize: vertical;
+}
+
+#text-input::placeholder {
+    color: #8d91a0;
+}
+
+#char-counter {
+    text-align: right;
+    color: #FFD700;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+#generate-questions-btn {
+    background-color: #3a4562;
+    color: #FFD700;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#generate-questions-btn:hover {
+    background-color: #4d5880;
+}
+
+.warning-message {
+    color: #ff6b6b;
+    font-size: 14px;
+    margin-top: 5px;
+    text-align: center;
 }
 
 @media (max-width: 992px) {
