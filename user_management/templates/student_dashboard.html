@@ -1,4 +1,4 @@
-{% extends 'base_content.html' %}
+{% extends 'student_base.html' %}
 {% load static %}
 {% load system_extras %}
 {% block content %}
@@ -6,13 +6,16 @@
 {% tts_button %}
 {% tts_selected_button %}
 
-<div class="container">
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+<div class="container" style="margin-top: 100px;">
     <div class="row">
         <div class="col-12">
             <h1>Welcome to your student dashboard {{ user.username }}</h1>
         </div>
     </div>
-     
+
+
     <div class="row mt-4">
         <div class="col-md-6">
             <div class="card">
