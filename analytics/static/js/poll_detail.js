@@ -44,13 +44,17 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch(url)
             .then(response => response.json())
             .then(data => {
+                const colourMap = {
+                    'Correct Responses': '#64b164',   // Bright green
+                    'Incorrect Responses': '#da4949', // Bright red
+                };
                 chartInstance = new Chart(ctx, {
                     type: 'pie',
                     data: {
                         labels: data.labels,
                         datasets: [{
                             data: data.data,
-                            backgroundColor: data.labels.map(() => generateRandomColor()),
+                            backgroundColor: data.labels.map(label => colourMap[label] || generateRandomColor()),
                             borderColor: '#3d073e',
                             borderWidth: 2
                         }]
