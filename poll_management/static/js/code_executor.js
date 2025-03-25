@@ -1,5 +1,5 @@
 // Initializes the CodeMirror editor
-export function initializeCodeEditor(textarea, language = "python", displayLanguage) {
+export function initializeCodeEditor(textarea, language = "python", displayLanguage = false) {
     if (!textarea) {
         console.error(`Textarea with ID '${textareaId}' not found.`);
         return null;
@@ -52,11 +52,14 @@ export function executeCode(editor, language, outputId) {
 
     // Language ID mapping for Judge0 API
     let languageIdMap = {
-        python: 71,       // Python 3
-        javascript: 63,   // JavaScript
-        java: 62,         // Java
-        cpp: 54           // C++
+        python: 71,        // Python 3
+        javascript: 63,    // JavaScript
+        java: 62,          // Java
+        "text/x-java": 62, // Java (alternative key)
+        cpp: 54,           // C++
+        "text/x-c++src": 54 // C++ (alternative key)
     };
+
 
     const data = JSON.stringify({
         source_code: btoa(code),
