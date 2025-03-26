@@ -232,7 +232,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: {
                         labels: data.labels,
                         datasets: [{
-                            label: 'Responses',
                             data: data.data,
                             backgroundColor: "#800080",
                             borderColor: '#3d073e',
@@ -252,6 +251,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             }
                         },
                         plugins: {
+                            legend: {
+                                display: false // Remove legend
+                            },
                             title: {
                                 display: true,
                                 text: selectedQuestionId
