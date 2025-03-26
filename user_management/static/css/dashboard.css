@@ -85,3 +85,27 @@ h1, h2 {
     flex: 1 1 calc(33.333% - 15px);
     margin-bottom: 15px;
 }
+
+/* Dropdown container styling */
+.dropdown-menu {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid #fff !important;
+    border-radius: 30px !important;
+    text-align: center !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
+    font-family: 'Palanquin', sans-serif !important;
+  }
+  
+  
+  
+
+  .dropdown-item:focus,
+  .dropdown-item:active,
+  .dropdown-item:hover {
+    background-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  

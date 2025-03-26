@@ -85,7 +85,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   color: #F1F1F1; /* Default link color (light gray) */
   position: relative;
   text-decoration: none;
-  transition: color 0.3s ease; /* Smooth color change */
+  transition: color 0.3s ease; 
 }
 
 .navbar-container a::after {
@@ -95,12 +95,12 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   bottom: -2px;
   width: 0;
   height: 2px;
-  background-color: #1F778D; /* Aqua border color */
-  transition: width 0.3s ease; /* Animate the border */
+  background-color: #1F778D; 
+  transition: width 0.3s ease;
 }
 
 .navbar-container a:hover::after {
-  width: 100%; /* Expand the border on hover */
+  width: 100%; 
 }
 
 @media (max-width: 1200px) {
