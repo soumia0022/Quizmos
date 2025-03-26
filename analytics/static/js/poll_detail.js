@@ -54,8 +54,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         labels: data.labels,
                         datasets: [{
                             data: data.data,
-                            backgroundColor: data.labels.map(label => colourMap[label] || generateRandomColor()),
-                            borderColor: '#3d073e',
+                            backgroundColor: data.labels.map(label => colourMap[label]),
+                            borderColor: '#171717',
                             borderWidth: 2
                         }]
                     },
@@ -102,6 +102,10 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch(url)
             .then(response => response.json())
             .then(data => {
+                const colourMap = {
+                    'Correct Responses': '#64b164',
+                    'Incorrect Responses': '#da4949',
+                };
                 chartInstance = new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -109,9 +113,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         datasets: [{
                             label: 'Responses',
                             data: data.data,
-                            backgroundColor: "#800080",
-                            borderColor: '#3d073e',
-                            borderWidth: 2
+                            backgroundColor: data.labels.map(label => colourMap[label]),
+                            borderColor: '#171717',
+                            borderWidth: 3
                         }]
                     },
                     options: {
