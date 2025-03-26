@@ -10,17 +10,6 @@ html, body {
   position: relative;
 }
 
-/* Base container with a height variable */
-.container-base {
-  width: 100%;
-  max-width: 350px;
-  margin: 0 auto;
-  border-radius: 40px;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  padding: 20px;
-}
-
 /* Additional font reset for common text elements */
 h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   font-family: inherit; 
@@ -29,47 +18,163 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
 }
 
 /* Navigation */
-.navbar {
-  width: 100%;
-  height: 70px; 
-  background: rgba(255, 255, 255, 0.10);
+.navbar-container {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(90vw);
+  max-width: 1500px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid #fff;
+  border-radius: 30px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 40px;
-  border: 2px solid white;
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  padding: 0 20px; 
-  position: fixed; 
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
+  padding: 10px 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: visible;
+  z-index: 10;
+  pointer-events: auto;
 }
+
+.left-links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 28px;
+  pointer-events: auto;
+}
+
+.right-links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  pointer-events: auto;
+}
+
+.quizmos {
+  font-family: 'Palanquin Dark', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.left-links-child {
+  width: 1px;
+  height: 36px;
+  border-right: 1px solid #fff;
+  box-sizing: border-box;
+}
+
+.about, .faq, .join-poll, .sign-up, .log-in {
+  font-family: 'Palanquin', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+  pointer-events: auto;
+}
+
+.navbar-container a {
+  color: #F1F1F1; /* Default link color (light gray) */
+  position: relative;
+  text-decoration: none;
+  transition: color 0.3s ease; /* Smooth color change */
+}
+
+.navbar-container a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: #1F778D; /* Aqua border color */
+  transition: width 0.3s ease; /* Animate the border */
+}
+
+.navbar-container a:hover::after {
+  width: 100%; /* Expand the border on hover */
+}
+
+@media (max-width: 1200px) {
+  .navbar-container {
+    width: calc(85vw);
+    padding: 8px 20px;
+  }
+
+  .quizmos {
+    font-size: 18px;
+  }
+
+  .about, .faq, .join-poll, .sign-up, .log-in {
+    font-size: 16px;
+  }
+
+  .left-links, .right-links {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 675px) {
+  .navbar-container {
+    width: calc(95vw);
+    padding: 6px 16px;
+    border-radius: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .quizmos {
+    font-size: 16px;
+  }
+
+  .about, .faq, .join-poll, .sign-up, .log-in {
+    font-size: 14px;
+  }
+
+  .left-links, .right-links {
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .left-links-child {
+    width: 0.5px;
+    height: 28px;
+  }
+}
+
 
 /* Footer */
 .footer {
-  background-color: rgba(30, 30, 70, 0.6);
+  background-color: #1B3044;
   padding: 20px 0;
   text-align: center;
   position: fixed;
   bottom: 0;
   width: 100%;
   z-index: 3;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
 }
 
 /* Card Styles */
 .about-card, .faq-card {
-  background-color: rgba(30, 30, 70, 0.8);
-  border: 2px solid #4a4a8a;
-  border-radius: 15px;
-  padding: 40px;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  width: 800px;
-  max-width: 90%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid #fff; 
+  border-radius: 30px; 
+  padding: 2rem; 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); 
+  margin: 25rem auto; 
+  max-width: 700px; 
+  width: 90%; 
+  text-align: center; 
+  gap: 40px; 
 }
 
 /* Alert Styles */
@@ -93,5 +198,14 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   display: flex;
   align-items: center;
 }
+
+.prompt {
+  text-align: center; 
+  margin-top: 1rem; 
+  font-family: 'Palanquin', sans-serif; 
+  font-size: 16px; 
+  color: #e0e0ff;
+}
+
 
 

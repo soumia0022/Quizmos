@@ -7,11 +7,38 @@ from poll_management.models.poll_model import Poll
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, \
     DropdownFillResponse, MatchQuestionResponse, WordCloudResponse, CodeQuestionResponse
 from question_management.models.question_models import Question
+from analytics.helpers import apply_search_and_sort
+from django.db.models.functions import Lower
 
 def poll_analytics(request, poll_id):
     """To do with analytics for the whole poll."""
     poll = get_object_or_404(Poll, id=poll_id)
-    return render(request, 'poll_detail.html', {'poll': poll})
+    search_query = request.GET.get('search', '')
+    sort_by = request.GET.get('sort_by', 'question_text_asc')
+
+    questions = poll.questions.all()
+
+    sort_options = {
+        'question_text_asc': Lower('question_text'),
+        'question_text_desc': Lower('question_text').desc(),
+        'type_asc': 'question_type',
+        'type_desc': '-question_type'
+    }
+
+    questions = apply_search_and_sort(
+        questions,
+        search_query=search_query,
+        sort_by=sort_by,
+        sort_options=sort_options,
+        default_sort='question_text'
+    )
+
+    return render(request, 'poll_detail.html', {
+        'poll': poll,
+        'questions': questions,
+        'search_query': search_query,
+        'sort_by': sort_by
+    })
 
 
 def get_response_count(poll, question):
