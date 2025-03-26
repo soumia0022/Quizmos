@@ -27,13 +27,17 @@ class FaqView(TemplateView):
             ],
 
             "lecturers": [
-                {"question": "How do I create a Poll?", "answer": "Log in to your account, and click the 'Create Poll' button. You can then select the type of questions you want and add them to your Poll."},
-                {"question": "Can I reuse my Polls?", "answer": "Yes, all your Polls are saved in your dashboard and can be reused."},
-                {"question": "How do I share my Poll with students?", "answer": "After creating your Poll, you will have the option to start the Poll. Once the Poll is started, you can display a Poll code and QR code that students can use to join."},
-                {"question": "Can I export Poll results?", "answer": "Yes, you can export the results to a CSV file for further analysis or record-keeping."},
+                {"question": "How do I create a Quiz?", "answer": "Log in to your account, and click the 'Create Quiz' button. You can then select the type of questions you want and add them to your Quiz."},
+                {"question": "How many questions can be added to a Quiz?", "answer": "A maximum of 20 questions per Quiz."},
+                {"question": "Can I reuse my Quiz?", "answer": "Yes, all your Quizzes are saved in your dashboard and can be reused."},
+                {"question": "Can I preview my Quiz before sharing it?", "answer": "Yes, in the edit page of a particular Quiz, you can preview how each question will be displayed to the student"},
+                {"question": "How do I share my Quiz with students?", "answer": "After creating your Quiz, you will have the option to start the Quiz. Once the Quiz is started, you can display a numerical code and QR code that students can use to join."},
+                {"question": "Can I export Quiz results?", "answer": "Yes, you can export the results to a CSV file for further analysis or record-keeping."},
                 {"question": "Can I embed media into the questions?", "answer": "Yes, you can add video, audio, and pictures into your questions."},
-                {"question": "Can I set a time limit for my Poll?", "answer": "Yes, you can incorporate a timer into the questions."},
-                {"question": "How do I view Poll analytics?", "answer": "Access detailed analytics for each Poll from your dashboard."},
+                {"question": "How do I view Quiz analytics?", "answer": "Access detailed analytics for each Quiz from your dashboard."},
+                {"question": "How to temporarily stop response submission when hosting a Quiz?", "answer": "You can lock the Quiz to prevent further submissions from students. You can then unlock the Quiz to allow responses once again"},
+                {"question": "Can I set a time limit for my Quiz?", "answer": "Yes, you can incorporate a timer into the questions. Once the timer runs out during a question, the Quiz will automatically lock."},
+                {"question": "How can I show the correct answer to the students during the Quiz?", "answer": "When hosting a Quiz, there is an eye icon above each question. When clicked, it displays the correct answer options to the students."},
             ],
         }
 
