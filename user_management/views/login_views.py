@@ -144,14 +144,13 @@ def dashboard(request):
         if search_query:
             polls = polls.filter(title__icontains=search_query)
 
-        sort_by = request.GET.get('sort_by', 'created_at_desc')
+        
+        sort_by = request.GET.get('sort_by', 'title_asc')  
         sort_options = {
             'title_asc': Lower('title'),
-            'title_desc': Lower('title').desc(),
-            'created_at_asc': 'created_at',
-            'created_at_desc': '-created_at'
+            'title_desc': Lower('title').desc()
         }
-        polls = polls.order_by(sort_options.get(sort_by, '-created_at'))
+        polls = polls.order_by(sort_options.get(sort_by, Lower('title')))
 
         # Paginate
         paginator = Paginator(polls, 10)
