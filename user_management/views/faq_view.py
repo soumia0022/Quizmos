@@ -8,12 +8,12 @@ class FaqView(TemplateView):
         
         context["faqs"] = {
             "general": [
-                {"question": "How do Polls work?", "answer": "Polls are interactive questions that can be answered in real-time. Participants can submit their responses, and results are displayed instantly."},
+                {"question": "How do Quizzes work?", "answer": "Quizzes have interactive questions that can be answered in real-time. Participants can submit their responses, and results are displayed instantly."},
                 {"question": "Is the platform free?", "answer": "It is completely free to use."},
-                {"question": "Do Polls work on all devices?", "answer": "Polls are designed to be responsive and work seamlessly across all devices, including smartphones, tablets, and desktops via the web browser."},
-                {"question": "What should I do if I forget my account password?", "answer": "If you forget your password, you can use the 'Forgot Password' link on the login page to reset it. Follow the instructions sent to your email."},
+                {"question": "Can I use the platform without an internet connection?", "answer": "No, an active internet connection is required to access and participate in Quizzes."},
+                {"question": "Do Quizzes work on all devices?", "answer": "Quizzes are designed to be responsive and work seamlessly across all devices, including smartphones, tablets, and desktops via the web browser."},
                 {"question": "How secure is my data?", "answer": "We take data security seriously. We never share your personal information with third parties."},
-                {"question": "What types of questions are there?", "answer": "We support multiple question types including multiple choice, drag and drop, matching, and word clouds."},
+                {"question": "What types of questions are there?", "answer": "We support a variety of question types including single choice, multiple choice, dropdown, matching, coding and word cloud."},
             ],
             "students": [
                 {"question": "How do I join a Poll?", "answer": "Enter the Poll code or scan the QR code shared with you."},
