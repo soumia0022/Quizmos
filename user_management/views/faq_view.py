@@ -15,13 +15,17 @@ class FaqView(TemplateView):
                 {"question": "How secure is my data?", "answer": "We take data security seriously. We never share your personal information with third parties."},
                 {"question": "What types of questions are there?", "answer": "We support a variety of question types including single choice, multiple choice, dropdown, matching, coding and word cloud."},
             ],
+            
             "students": [
-                {"question": "How do I join a Poll?", "answer": "Enter the Poll code or scan the QR code shared with you."},
-                {"question": "Do I need an account to participate?", "answer": "No, you can participate as a guest using just the Poll code or scanning the QR code. However, creating an account helps track your progress."},
-                {"question": "Can I participate in a Poll at any time?", "answer": "No, you can only participate when the Poll has been started by the lecturer."},
-                {"question": "How do I access Polls on my mobile device?", "answer": "You can access Polls via the web browser on your mobile device. Just enter the Poll code or scan the QR code."},
-                {"question": "Can I see my past Poll results?", "answer": "Yes, if you have an account, all your Poll attempts and scores are saved in your dashboard."},
+                {"question": "How do I join a Quiz?", "answer": "Enter the numerical 6 digit code or scan the QR code shared with you."},
+                {"question": "Do I need an account to participate?", "answer": "No, you can participate as a guest using just the numerical code or scanning the QR code. However, creating an account helps track your progress."},
+                {"question": "Can I participate in a Quiz at any time?", "answer": "No, you can only participate when the Quiz has been started by the lecturer."},
+                {"question": "How do I access Quizzes on my mobile device?", "answer": "You can access Quizzes via the web browser on your mobile device. Just enter the numerical code or scan the QR code."},
+                {"question": "Can I change my answers after submitting them?", "answer": "You can continue to submit answers to change your response to a question until the time limit is reached, or the lecturer locks the question."},
+                {"question": "Can I see my past Quiz results?", "answer": "Yes, if you have an account, all your Quiz attempts are saved in your dashboard."},
+                {"question": "Can I view all my attempts to the same Quiz?", "answer": "Yes, simply select the 'view responses' button, and if you answered the same Quiz more than once you will be prompted to select the session code to view a specific attempt."},
             ],
+
             "lecturers": [
                 {"question": "How do I create a Poll?", "answer": "Log in to your account, and click the 'Create Poll' button. You can then select the type of questions you want and add them to your Poll."},
                 {"question": "Can I reuse my Polls?", "answer": "Yes, all your Polls are saved in your dashboard and can be reused."},
