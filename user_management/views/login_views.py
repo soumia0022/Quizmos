@@ -108,7 +108,7 @@ def dashboard(request):
                 p.match_question_responses_count
             )
 
-        paginator = Paginator(polls, 10)
+        paginator = Paginator(polls, 12)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
@@ -153,7 +153,7 @@ def dashboard(request):
         polls = polls.order_by(sort_options.get(sort_by, Lower('title')))
 
         # Paginate
-        paginator = Paginator(polls, 10)
+        paginator = Paginator(polls, 12)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
