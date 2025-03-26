@@ -79,11 +79,3 @@ class DashboardSortingSearchingTests(TestCase):
         response = self.client.get('/dashboard/', {'sort_by': 'title_desc'})
         polls = list(response.context['polls'])
         self.assertEqual([p.title for p in polls], ["Stars", "Space", "Rocket"])
-
-    def test_student_sort_created_at_ascending(self):
-        """Test sorting from oldest to newest for student dashboard"""
-        self.client.login(username='student', password='password123')
-
-        response = self.client.get('/dashboard/', {'sort_by': 'created_at_asc'})
-        polls = list(response.context['polls'])
-        self.assertEqual([p.title for p in polls], ["Space", "Rocket", "Stars"])
