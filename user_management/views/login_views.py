@@ -73,7 +73,7 @@ def dashboard(request):
         new_poll_title = title if title not in existing_titles else generate_suggested_title(title, existing_titles)
         new_poll = Poll.objects.create(user=request.user, title=new_poll_title)
         new_poll.save()
-        return redirect('user_management:dashboard')  
+        return redirect('question_management:add_question', poll_id=new_poll.id)
 
     sort_by = request.GET.get('sort_by', 'created_at_desc')
     search_query = request.GET.get('search', '')
