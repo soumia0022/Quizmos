@@ -1,5 +1,5 @@
 from django.urls.conf import path
-from analytics.views.poll_detail import poll_analytics, piechart_data, bargraph_data, linegraph_data, question_analytics, question_correct_analytics, poll_correct_analytics, poll_correct_linegraph_data, poll_correct_bargraph_data, poll_correct_piechart_data
+from analytics.views.poll_detail import poll_analytics, piechart_data, bargraph_data, linegraph_data, question_analytics, question_correct_analytics, poll_correct_analytics, poll_correct_bargraph_data, poll_correct_piechart_data
 from analytics.views.download_csv import download_csv
 
 urlpatterns = [
