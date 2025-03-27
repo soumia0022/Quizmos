@@ -285,7 +285,5 @@ def join_poll_page(request):
             valid, poll = form.validate_and_redirect()
             if valid:
                 return redirect('poll_management:join_poll', code=poll.number_code)
-        else:
-            print(form.errors)  
             
     return render(request, 'join_poll_page.html', {'form': form})
