@@ -26,23 +26,7 @@
     <div class="join-poll-page d-flex align-items-center justify-content-center" style="margin-top: 60px;">
         <div class="row w-100">
             <div class="col-12 d-flex justify-content-center">
-                <div class="card cover-card">
-                    <h1 class="cover-heading">Join Poll</h1>
-                    <div class="poll-code">
-                        <form id="joinPollForm" method="post" onsubmit="handlePollSubmit(event)">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="pollCode" placeholder="Enter poll code" required>
-                            </div>
-                            {% if form.errors %}
-                            <div class="alert alert-danger mt-2">
-                                {{ form.errors.poll_code|striptags }}
-                            </div>
-                            {% endif %}
-                            <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
-                        </form>
-                    </div>
-                </div>
+                {% include 'partials/join_poll_form.html' %}
             </div>
         </div>
     </div>
