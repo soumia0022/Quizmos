@@ -274,3 +274,18 @@ def student_polls_page(request):
         'search_query': search_query,
         'sort_by': sort_by,
     })
+
+@login_required(login_url='user_management:log_in')
+def join_poll_page(request):
+    """View for the standalone Join Poll page."""
+    form = PollCodeForm()
+    if request.method == 'POST':
+        form = PollCodeForm(request.POST)  
+        if form.is_valid():
+            valid, poll = form.validate_and_redirect()
+            if valid:
+                return redirect('poll_management:join_poll', code=poll.number_code)
+        else:
+            print(form.errors)  
+            
+    return render(request, 'join_poll_page.html', {'form': form})
