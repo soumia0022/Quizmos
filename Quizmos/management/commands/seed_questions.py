@@ -40,7 +40,7 @@ class ComputingQuestionProvider(BaseProvider):
             ("Which of these is a cybersecurity attack?", ["Phishing", "Compiling", "Rendering", "Encoding"], "Phishing"),
             ("Which protocol is used for secure web browsing?", ["HTTPS", "FTP", "SMTP", "TCP"], "HTTPS"),
             ("Which of the following is an example of an AI chatbot?", ["ChatGPT", "Microsoft Word", "Photoshop", "Excel"], "ChatGPT"),
-            ("What is the purpose of a firewall?", ["Block unauthorized access", "Boost internet speed", "Store data", "Create backups"], "Block unauthorized access"),
+            ("What is the purpose of a firewall?", ["Block unauthorised access", "Boost internet speed", "Store data", "Create backups"], "Block unauthorised access"),
             ("Which of these is not a cloud computing service?", ["RAM", "AWS", "Google Cloud", "Microsoft Azure"], "RAM"),
             ("What does IoT stand for?", ["Internet of Things", "Integrated Object Technology", "Internet of Transfers", "Interactive Online Tools"], "Internet of Things"),
             ("Which of these is not an operating system?", ["Oracle", "Linux", "Windows", "MacOS"], "Oracle"),
@@ -136,7 +136,7 @@ class ComputingQuestionProvider(BaseProvider):
             ("What does IoT stand for?", "Internet of Things"),
             ("Which programming language is mainly used for iOS app development?", "Swift"),
             ("Which protocol is used for secure web browsing?", "HTTPS"),
-            ("What is the purpose of a firewall?", "Block unauthorized access"),
+            ("What is the purpose of a firewall?", "Block unauthorised access"),
             ("What does ASCII stand for?", "American Standard Code for Information Interchange"),
             ("What programming paradigm is based on objects and classes?", "Object-Oriented Programming"),
             ("Which programming language is widely used in AI development?", "Python"),
@@ -175,7 +175,7 @@ class ComputingQuestionProvider(BaseProvider):
             ("Which programming language is most commonly used for game development?", "C++"),
             ("What does the term 'Big Data' refer to?", "Large and complex data sets that require advanced processing techniques"),
             ("Which component is responsible for executing instructions in a computer?", "Processor"),
-            ("Which AI technique involves training computers to recognize patterns?", "Machine Learning"),
+            ("Which AI technique involves training computers to recognise patterns?", "Machine Learning"),
             ("What is the primary function of a web server?", "Serve web pages"),
             ("Which programming language is often used for statistical computing?", "R"),
             ("What is the default port number for HTTP?", "80"),
@@ -255,7 +255,7 @@ class ComputingQuestionProvider(BaseProvider):
             {
                 "prompt": "Match the definitions",
                 "options": ['Frontend', 'Backend', 'API', 'Database'],
-                "answers": ['User-facing part of an application', 'Server-side processing and logic of an application', 'Interface for interaction between software applications', 'Collection of organized data for easy access, management, and updating']
+                "answers": ['User-facing part of an application', 'Server-side processing and logic of an application', 'Interface for interaction between software applications', 'Collection of organised data for easy access, management, and updating']
             },
             {
                 "prompt": "Match the definitions",
@@ -270,7 +270,7 @@ class ComputingQuestionProvider(BaseProvider):
             {
                 "prompt": "Match the definitions",
                 "options": ['Data Structure', 'Stack', 'Queue', 'Linked List'],
-                "answers": ['A way to organize and store data for efficient access', 'A collection of elements with Last In First Out order', 'A collection of elements with First In First Out order', 'A linear data structure where elements are connected using pointers']
+                "answers": ['A way to organise and store data for efficient access', 'A collection of elements with Last In First Out order', 'A collection of elements with First In First Out order', 'A linear data structure where elements are connected using pointers']
             },
             {
                 "prompt": "Match the definitions",
@@ -290,7 +290,7 @@ class ComputingQuestionProvider(BaseProvider):
             {
                 "prompt": "Match the definitions",
                 "options": ['Data Mining', 'IoT', 'Cloud Storage', 'Blockchain'],
-                "answers": ['Process of analyzing large datasets to uncover hidden patterns', 'Interconnected network of devices exchanging data', 'Remote data storage accessible over the internet', 'A decentralized ledger for securely recording transactions']
+                "answers": ['Process of analyzing large datasets to uncover hidden patterns', 'Interconnected network of devices exchanging data', 'Remote data storage accessible over the internet', 'A decentralised ledger for securely recording transactions']
             },
             {
                 "prompt": "Match the definitions",
@@ -300,7 +300,7 @@ class ComputingQuestionProvider(BaseProvider):
             {
                 "prompt": "Match the definitions",
                 "options": ['Algorithm', 'Protocol', 'Cryptography', 'Firewall'],
-                "answers": ['A set of rules for solving a problem or performing a task', 'A set of rules for communication between systems', 'The process of encoding information for secure transmission', 'A system for preventing unauthorized access to or from a network']
+                "answers": ['A set of rules for solving a problem or performing a task', 'A set of rules for communication between systems', 'The process of encoding information for secure transmission', 'A system for preventing unauthorised access to or from a network']
             },
             {
                 "prompt": "Match the definitions",
@@ -315,7 +315,7 @@ class ComputingQuestionProvider(BaseProvider):
             {
                 "prompt": "Match the definitions",
                 "options": ['Software', 'Hardware', 'Firmware', 'Middleware'],
-                "answers": ['Programs and applications that run on a computer', 'Physical components of a computer system', 'Specialized software embedded in hardware', 'Software that connects different applications and systems']
+                "answers": ['Programs and applications that run on a computer', 'Physical components of a computer system', 'Specialised software embedded in hardware', 'Software that connects different applications and systems']
             },
             {
                 "prompt": "Match the definitions",
@@ -360,7 +360,7 @@ class ComputingQuestionProvider(BaseProvider):
             ("The term ____ refers to hiding implementation details in OOP.", ["Encapsulation", "Abstraction", "Inheritance", "Polymorphism"], "Encapsulation"),
             ("The main function in a C program is called ____.", ["main", "start", "execute", "run"], "main"),
             ("____ is a type of attack where data is intercepted during transmission.", ["Man-in-the-Middle", "Phishing", "DDoS", "Trojan"], "Man-in-the-Middle"),
-            ("____ is used to prevent unauthorized access to or from a private network.", ["Firewall", "Malware", "Compiler", "Cache"], "Firewall")
+            ("____ is used to prevent unauthorised access to or from a private network.", ["Firewall", "Malware", "Compiler", "Cache"], "Firewall")
         ]
 
         sentence, options, correct_answer = self.random_element(questions)  # Pick a random question
