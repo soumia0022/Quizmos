@@ -3,6 +3,9 @@ import {clean_up_code_mirror} from "./clean_up_code_mirror.js";
 import {pollState} from "./poll_state.js";
 
 export function displayCorrectAnswer(data, correctAnswersDiv) {
+    const submitButton = document.getElementById("submitResponse");
+    if (submitButton){
+    submitButton.disabled = true;}
     let answerHtml = '<strong>Correct Answer(s):</strong> ';
     switch (pollState.currentQuestionType) {
         case 'multiple_choice':
@@ -30,12 +33,12 @@ export function displayCorrectAnswer(data, correctAnswersDiv) {
             answerHtml += 'No correct answer for word cloud.';
             break;
         case 'code_question':
-            answerHtml = '<strong>Correct Answer:</strong><div id="answer-code-display"></div>';
+            answerHtml = '<strong>Example Answer:</strong><div id="answer-code-display"></div>';
             correctAnswersDiv.innerHTML = answerHtml;
 
             // Get the code language from the current question
-            let language = pollState.currentQuestion && pollState.currentQuestion.code_language ?
-                pollState.currentQuestion.code_language : "python";
+            let language =  pollState.currentQuestion.code_language;
+
 
             // Create a textarea for the code editor
             const codeTextarea = document.createElement('textarea');
@@ -60,6 +63,9 @@ export function displayCorrectAnswer(data, correctAnswersDiv) {
 export function hideCorrectAnswer(correctAnswersDiv) {
     correctAnswersDiv.style.display = 'none';
     correctAnswersDiv.innerHTML = '';
+    const submitButton = document.getElementById("submitResponse");
+    if (submitButton){
+    submitButton.disabled = false;}
 
     clean_up_code_mirror();
 }

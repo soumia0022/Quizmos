@@ -9,6 +9,8 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 
 
@@ -42,7 +44,7 @@ class PasswordView(LoginRequiredMixin, FormView):
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
 
-    model = UserForm
+    model = get_user_model()
     template_name = "profile.html"
     form_class = UserForm
 
@@ -79,5 +81,19 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         """Return redirect URL after successful update."""
         messages.add_message(self.request, messages.SUCCESS, "Profile updated!")
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
+    
+@login_required
+def delete_account(request):
+    """Handle account deletion."""
+    user = request.user
+
+    if request.method == "POST":
+        user.delete()
+        logout(request)
+        
+        return redirect("user_management:home")  # Redirect to home after deletion
+        
+
+    return HttpResponse("Are you sure you want to delete your account? Send a POST request to confirm.", status=400)
 
 

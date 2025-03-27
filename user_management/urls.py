@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth_views
 from user_management.views.about_view import AboutView
 from user_management.views.faq_view import FaqView
 from user_management.forms.forgot_password_forms import CustomPasswordResetForm
+from user_management.views.profile_update_views import delete_account
 from user_management.views import (
     guest_logout,
     login_views,
@@ -35,6 +36,7 @@ urlpatterns = [
     path('guest_logout/', guest_logout.logout_and_login, name='guest_logout'),
     path('about/', AboutView.as_view(), name='about'),
     path("faq/", FaqView.as_view(), name="faq"),
+    path('delete-account/', delete_account, name='delete_account'),
 
 ]
 

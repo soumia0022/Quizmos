@@ -77,7 +77,7 @@
 
         {% elif question.question_type == 'code_question' %}
             text: "{{ question.code_question_text|default:'' }}",
-            language: "{{ question.coding_language|default:'python' }}",
+            code_language: "{{ question.code_language|default:'python' }}",
 
 
         {% endif %}
