@@ -3,8 +3,11 @@
 {% load system_extras %}
 {% block content %}
 
-{% tts_button %}
-{% tts_selected_button %}
+<div class="tts-buttons">
+    {% tts_button %}
+    {% tts_selected_button %}
+</div>
+
 
 <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
