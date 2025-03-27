@@ -287,6 +287,7 @@ class PollAnalyticsTestCase(TestCase):
         self.assertEqual(question_texts, expected_sorted)
 
     def test_question_correct_analytics(self):
+        """Test that correct/incorrect analytics show for each question."""
         url = reverse("question_correct_analytics", args=[self.multiple_choice_question.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -297,6 +298,7 @@ class PollAnalyticsTestCase(TestCase):
         self.assertEqual(json_response["data"], [0, 1]) # 0 correct and 1 incorrect MCQ
 
     def test_poll_correct_analytics(self):
+        """Test that correct/incorrect analytics show for the whole poll"""
         url = reverse("poll_correct_analytics", args=[self.poll.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -304,3 +306,33 @@ class PollAnalyticsTestCase(TestCase):
 
         self.assertEqual(json_response["labels"], ["Correct Responses", "Incorrect Responses"])
         self.assertEqual(json_response["data"], [0, 6]) # 0 correct and 6 incorrect for whole poll
+
+    def test_pie_chart_correct_answers_view(self):
+        """Test pie chart data returns correct labels and correct response counts."""
+        url = reverse("poll_correct_piechart_data", args=[self.poll.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200, "Graph data view did not return a 200 status code")
+        self.assertTrue(response.headers.get("Content-Type", "").startswith("application/json"),
+                        f"Expected JSON response but got: {response.headers.get('Content-Type')}")
+        json_response = response.json()
+        self.assertEqual(set(json_response.keys()), {"labels", "data"})
+        expected_labels = ['Correct Responses', 'Incorrect Responses']
+        self.assertListEqual(json_response["labels"], expected_labels)
+        self.assertEqual(json_response["data"], [0, 6])
+
+    def test_bar_graph_correct_answers_view(self):
+        """Test bar graph data returns correct labels and correct response counts."""
+        url = reverse("poll_correct_bargraph_data", args=[self.poll.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200, "Graph data view did not return a 200 status code")
+        self.assertTrue(response.headers.get("Content-Type", "").startswith("application/json"),
+                        f"Expected JSON response but got: {response.headers.get('Content-Type')}")
+        json_response = response.json()
+        self.assertEqual(set(json_response.keys()), {"labels", "data"})
+        expected_labels = ['Correct Responses', 'Incorrect Responses']
+        self.assertListEqual(json_response["labels"], expected_labels)
+        self.assertEqual(json_response["data"], [0, 6])
+
+
