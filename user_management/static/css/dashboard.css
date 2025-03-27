@@ -31,60 +31,6 @@
     background-color: #ddd;
 }
 
-.card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-    background-color: #f7f7f7;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.card-body {
-    padding: 15px;
-}
-
-.card-footer {
-    padding: 10px;
-    background-color: #f9f9f9;
-    text-align: center;
-}
-
-.card-title {
-    font-size: 18px;
-    margin-bottom: 0;
-}
-
-.poll-emoji {
-    font-size: 24px;
-    margin-right: 10px;
-}
-
-h1, h2 {
-    color: #333;
-}
-
-.container {
-    padding: 20px;
-}
-
-.btn-sm {
-    margin-right: 5px;
-}
-
-.poll-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.poll-card {
-    flex: 1 1 calc(33.333% - 15px);
-    margin-bottom: 15px;
-}
 
 .dashboard-heading {
     color: white;
