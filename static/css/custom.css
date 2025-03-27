@@ -68,7 +68,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   box-sizing: border-box;
 }
 
-.about, .faq, .join-poll, .sign-up, .log-in {
+.about, .faq, .join-poll, .sign-up, .log-in, .polls{
   font-family: 'Palanquin', sans-serif;
   font-size: 18px;
   letter-spacing: 0.05em;
@@ -110,7 +110,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
     font-size: 18px;
   }
 
-  .about, .faq, .join-poll, .sign-up, .log-in {
+  .about, .faq, .join-poll, .sign-up, .log-in, .polls{
     font-size: 16px;
   }
 
@@ -132,7 +132,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
     font-size: 16px;
   }
 
-  .about, .faq, .join-poll, .sign-up, .log-in {
+  .about, .faq, .join-poll, .sign-up, .log-in, .polls {
     font-size: 14px;
   }
 

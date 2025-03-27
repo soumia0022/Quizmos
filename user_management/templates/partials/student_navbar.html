@@ -2,10 +2,11 @@
     <!-- Left Links -->
     <div class="left-links">
         <a href="{% if user.is_authenticated %}{% url 'user_management:dashboard' %}{% else %}{% url 'user_management:home' %}{% endif %}" class="navbar-brand quizmos">
-        QUIZMOS
+            QUIZMOS
         </a>
         <div class="left-links-child"></div>
         <a href="{% url 'user_management:home' %}" class="join-poll">JOIN POLL</a>
+        <a href="{% url 'user_management:student_polls_page' %}" class="polls">POLLS</a>
     </div>
     <!-- Right Links -->
     <div class="right-links">
@@ -15,4 +16,3 @@
         {% endif %}
     </div>
 </div>
-  
