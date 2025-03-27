@@ -8,36 +8,74 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1000; 
 }
 
 .popup-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     text-align: center;
-    width: 300px;
+    width: 350px;
+    border: 2px solid #fff;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .popup-button {
-    margin: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+    margin: 15px;
+    padding: 12px 25px;
+    border: 2px solid white;
+    border-radius: 30px;
     cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
 
 .popup-button:hover {
-    background-color: #ddd;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #02192f;
 }
-
 
 .dashboard-heading {
     color: white;
     font-family: 'Palanquin Dark', sans-serif;
-    text-align: center; 
+    text-align: center;
+    margin-bottom: 20px;
 }
 
+.card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #02192f;
+    padding: 15px;
+    color: white;
+    font-family: 'Palanquin Dark', sans-serif;
+    border-bottom: 2px solid #fff;
+}
+
+.card-body {
+    padding: 20px;
+    color: white;
+    font-size: 16px;
+}
+
+.card-footer {
+    background-color: transparent;
+    text-align: center;
+    padding: 15px;
+}
 
 /* Dropdown container styling */
 .dropdown-menu {
@@ -49,17 +87,83 @@
     -webkit-backdrop-filter: blur(10px) !important;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
     font-family: 'Palanquin', sans-serif !important;
-  }
-  
-  
-  
+}
 
-  .dropdown-item:focus,
-  .dropdown-item:active,
-  .dropdown-item:hover {
+.dropdown-item:focus,
+.dropdown-item:active,
+.dropdown-item:hover {
     background-color: transparent !important;
     outline: none !important;
     box-shadow: none !important;
-  }
+}
 
-  
+/* Poll Section Specific Styles */
+.poll-card {
+    flex: 1 1 calc(33.333% - 15px);
+    margin-bottom: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.main-container {
+    width: 90%; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 20px; 
+}
+
+
+.poll-card .card-header {
+    background-color: #02192f;
+    color: white;
+    padding: 15px;
+    font-family: 'Palanquin Dark', sans-serif;
+}
+
+.poll-card .card-title {
+    font-size: 20px;
+    margin: 0;
+    color: white;
+}
+
+.poll-card .poll-emoji {
+    font-size: 30px;
+    margin-right: 10px;
+}
+
+.poll-card .btn-secondary {
+    background-color: #02192f;
+    border: 2px solid #fff;
+    color: white;
+    border-radius: 20px;
+    font-size: 16px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.poll-card .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #02192f;
+}
+
+.wide-cover-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 30px;
+    padding: 40px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    width: 90%; 
+    max-width: 1400px; 
+    margin: 0 auto;
+}
+
+.container {
+    padding: 20px;
+}
+
