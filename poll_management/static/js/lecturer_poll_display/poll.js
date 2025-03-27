@@ -123,6 +123,7 @@ function updateQuestionDisplay() {
     const currentQuestion = pollState.currentQuestion= window.questions[window.currentQuestionIndex];
     pollState.currentQuestionId=currentQuestion.id;
     pollState.currentQuestionType= currentQuestion.type;
+    pollState.code_language = currentQuestion.code_language;
 
     // Update the question display (only set innerHTML once)
     questionContainer.innerHTML = createQuestionHTML(currentQuestion);

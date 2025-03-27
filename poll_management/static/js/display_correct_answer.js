@@ -30,12 +30,12 @@ export function displayCorrectAnswer(data, correctAnswersDiv) {
             answerHtml += 'No correct answer for word cloud.';
             break;
         case 'code_question':
-            answerHtml = '<strong>Correct Answer:</strong><div id="answer-code-display"></div>';
+            answerHtml = '<strong>Example Answer:</strong><div id="answer-code-display"></div>';
             correctAnswersDiv.innerHTML = answerHtml;
 
             // Get the code language from the current question
-            let language = pollState.currentQuestion && pollState.currentQuestion.code_language ?
-                pollState.currentQuestion.code_language : "python";
+            let language =  pollState.currentQuestion.code_language;
+
 
             // Create a textarea for the code editor
             const codeTextarea = document.createElement('textarea');
