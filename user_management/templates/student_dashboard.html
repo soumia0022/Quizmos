@@ -47,20 +47,14 @@
                     <div class="poll-card card">
                         <div class="card-header">
                             <span class="poll-emoji">🚀</span>
-                            <h5 class="card-title d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">
                                 {{ poll.title }}
-                                {% if poll.session_code is not None and poll.session_code != 0 %}
-                                    <small class="text-muted text-end">{{ poll.session_code }}</small>
-                                {% else %}
-                                    <small class="text-muted text-end">N/A</small>
-                                {% endif %}
                             </h5>
                         </div>
                         <div class="card-body">
-                            <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
                         </div>
                         <div class="card-footer text-muted">
-                            <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="btn btn-primary btn-sm">View</a>
+                            <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="btn btn-primary btn-sm">View Responses</a>
                         </div>
                     </div>
                 </div>
@@ -70,7 +64,7 @@
             </div>
         </div>
     </div>
-    
+
     {% include 'partials/pagination.html' %}
     {% endif %}
 </div>

@@ -1,5 +1,5 @@
 // Initializes the CodeMirror editor
-export function initializeCodeEditor(textarea, language = "python") {
+export function initializeCodeEditor(textarea, language = "python", displayLanguage = false) {
     if (!textarea) {
         console.error(`Textarea with ID '${textareaId}' not found.`);
         return null;
@@ -12,11 +12,25 @@ export function initializeCodeEditor(textarea, language = "python") {
         cpp: "text/x-c++src"
     };
 
-    return CodeMirror.fromTextArea(textarea, {
+    let commentMap = {
+        python: "# This is a Python editor",
+        javascript: "// This is a JavaScript editor",
+        java: "// This is a Java editor",
+        cpp: "// This is a C++ editor"
+    };
+
+    let editor = CodeMirror.fromTextArea(textarea, {
         mode: modeMap[language] || "python",
         theme: "default",
         lineNumbers: true
     });
+
+    if (displayLanguage){
+        // Set initial comment text
+        editor.setValue(commentMap[language] || "# This is a Python editor");
+    }
+
+    return editor;
 }
 
 // Executes the code and displays the result in the specified output element
@@ -38,11 +52,14 @@ export function executeCode(editor, language, outputId) {
 
     // Language ID mapping for Judge0 API
     let languageIdMap = {
-        python: 71,       // Python 3
-        javascript: 63,   // JavaScript
-        java: 62,         // Java
-        cpp: 54           // C++
+        python: 71,        // Python 3
+        javascript: 63,    // JavaScript
+        java: 62,          // Java
+        "text/x-java": 62, // Java (alternative key)
+        cpp: 54,           // C++
+        "text/x-c++src": 54 // C++ (alternative key)
     };
+
 
     const data = JSON.stringify({
         source_code: btoa(code),

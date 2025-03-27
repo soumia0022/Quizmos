@@ -108,7 +108,7 @@ def dashboard(request):
                 p.match_question_responses_count
             )
 
-        paginator = Paginator(polls, 10)
+        paginator = Paginator(polls, 12)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
@@ -130,56 +130,30 @@ def dashboard(request):
             CodeQuestionResponse
         ]
 
-        # Fetch all responses for the user, grouped by poll_id and session_code
-        response_data = []
+        poll_ids = set()
         for response_type in response_types:
-            responses = response_type.objects.filter(user=current_user).values(
-                'poll_id', 'session_code', 'submitted_on'
-            ).distinct()
-            response_data.extend(responses)
+            poll_ids.update(
+                response_type.objects.filter(user=current_user)
+                .values_list('poll_id', flat=True)
+                .distinct()
+            )
 
-        # Deduplicate and prepare poll-session pairs
-        poll_session_pairs = {}
-        for response in response_data:
-            key = (response['poll_id'], response['session_code'])
-            if key not in poll_session_pairs or response['submitted_on'] > poll_session_pairs[key]['submitted_on']:
-                poll_session_pairs[key] = {
-                    'poll_id': response['poll_id'],
-                    'session_code': response['session_code'],
-                    'submitted_on': response['submitted_on']
-                }
+        polls = Poll.objects.filter(id__in=poll_ids)
 
-        # Fetch poll details for these poll_ids
-        poll_ids = {pair['poll_id'] for pair in poll_session_pairs.values()}
-        polls = Poll.objects.filter(id__in=poll_ids).values('id', 'title', 'created_at')
-
-        # Build poll objects with session codes
-        poll_list = []
-        for poll in polls:
-            for key, pair in poll_session_pairs.items():
-                if pair['poll_id'] == poll['id']:
-                    poll_list.append({
-                        'id': poll['id'],
-                        'title': poll['title'],
-                        'created_at': poll['created_at'],
-                        'session_code': pair['session_code'],
-                        'submitted_on': pair['submitted_on']
-                    })
-
-        # Apply search and sort
+        search_query = request.GET.get('search', '')
         if search_query:
-            poll_list = [p for p in poll_list if search_query.lower() in p['title'].lower()]
+            polls = polls.filter(title__icontains=search_query)
 
+        
+        sort_by = request.GET.get('sort_by', 'title_asc')  
         sort_options = {
-            'title_asc': lambda p: p['title'].lower(),
-            'title_desc': lambda p: p['title'].lower(),
-            'created_at_asc': lambda p: p['created_at'],
-            'created_at_desc': lambda p: p['created_at']
+            'title_asc': Lower('title'),
+            'title_desc': Lower('title').desc()
         }
-        reverse_flag = sort_by.endswith('desc')  
-        poll_list.sort(key=sort_options.get(sort_by, lambda p: p['created_at']), reverse=reverse_flag)
+        polls = polls.order_by(sort_options.get(sort_by, Lower('title')))
 
-        paginator = Paginator(poll_list, 10)  
+        # Paginate
+        paginator = Paginator(polls, 12)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
@@ -189,7 +163,6 @@ def dashboard(request):
             'search_query': search_query,
             'sort_by': sort_by,
         })
-
     else:
         return redirect(reverse('user_management:dashboard'))
     

@@ -26,11 +26,40 @@
             <button type="submit" class="btn btn-primary w-100">Update Profile</button>
           </div>
         </form>
+        <hr> <!-- Adds a visual separator -->
+        <div class="text-center mt-3">
+          <!-- Button to Open Confirmation Modal -->
+          <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+            Delete My Account
+          </button>
+        </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger" id="deleteAccountModalLabel">Confirm Account Deletion</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p>Are you sure you want to delete your account? </p>
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <form action="{% url 'user_management:delete_account' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete My Account</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 
-</div>
 
 <script src="{% static 'js/profile_picture_preview.js' %}"></script>
 {% endblock %}
