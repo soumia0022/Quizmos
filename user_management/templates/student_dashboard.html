@@ -8,6 +8,8 @@
 
 <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/join_poll.css' %}">
+
 
 <div class="container" style="margin-top: 100px;">
     <div class="row">
@@ -17,22 +19,30 @@
     </div>    
 
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">Join Poll</h2>
-                    <form id="joinPollForm" onsubmit="handlePollSubmit(event)">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="pollCode" placeholder="Enter poll code" required>
-                        </div>
-                        <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
-                    </form>
+    <div class="join-poll-page d-flex align-items-center justify-content-center" style="margin-top: 40px;">
+        <div class="row w-100">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="card cover-card">
+                    <h1 class="cover-heading">Join Poll</h1>
+                    <div class="poll-code">
+                        <form id="joinPollForm" method="post" onsubmit="handlePollSubmit(event)">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="pollCode" placeholder="Enter poll code" required>
+                            </div>
+                            {% if form.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ form.errors.poll_code|striptags }}
+                            </div>
+                            {% endif %}
+                            <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
 
     <br/>
     {% include 'partials/search_sort_form.html' %}
