@@ -1,0 +1,17 @@
+<div class="card cover-card">
+    <h1 class="cover-heading">Join Poll</h1>
+    <div class="poll-code">
+        <form method="post" action="{% url 'user_management:join_poll_page' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" class="form-control" id="pollCode" name="poll_code" placeholder="Enter poll code" required>
+            </div>
+            {% if form.errors %}
+            <div class="alert alert-danger mt-2">
+                {{ form.errors.poll_code|striptags }}
+            </div>
+            {% endif %}
+            <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
+        </form>
+    </div>
+</div>
