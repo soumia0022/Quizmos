@@ -28,6 +28,9 @@ function handleAnswers(data) {
 
 function handleQuestionDisplay(data) {
     // clear any existing timer
+    const submitButton = document.getElementById("submitResponse");
+    if (submitButton.disabled === true){
+        submitButton.disabled = false;}
     if (pollState.currentTimerInterval) {
         clearInterval(pollState.currentTimerInterval);
     }

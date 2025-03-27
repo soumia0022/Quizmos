@@ -3,6 +3,9 @@ import {clean_up_code_mirror} from "./clean_up_code_mirror.js";
 import {pollState} from "./poll_state.js";
 
 export function displayCorrectAnswer(data, correctAnswersDiv) {
+    const submitButton = document.getElementById("submitResponse");
+    if (submitButton){
+    submitButton.disabled = true;}
     let answerHtml = '<strong>Correct Answer(s):</strong> ';
     switch (pollState.currentQuestionType) {
         case 'multiple_choice':
@@ -60,6 +63,9 @@ export function displayCorrectAnswer(data, correctAnswersDiv) {
 export function hideCorrectAnswer(correctAnswersDiv) {
     correctAnswersDiv.style.display = 'none';
     correctAnswersDiv.innerHTML = '';
+    const submitButton = document.getElementById("submitResponse");
+    if (submitButton){
+    submitButton.disabled = false;}
 
     clean_up_code_mirror();
 }
