@@ -135,17 +135,6 @@ def question_analytics(request, question_id):
         labels = ['Total Number of Code Submissions']
         data = [responses_count]
 
-        # For each code response count
-        # responses = CodeQuestionResponse.objects.filter(question=question)
-        # code_snippets = [response.submitted_code for response in responses]
-        # code_counts = Counter(code_snippets)
-        # if code_counts:
-        #     labels, data = zip(*code_counts.items())
-        # else:
-        #     labels = []
-        #     data = []
-
-
     return JsonResponse({'question': question.question_text, 'labels': labels, 'data': data})
 
 
