@@ -1,0 +1,27 @@
+<div class="poll-section">
+    <div class="card wide-cover-card">        
+        <div class="main-container">
+            <div class="row">
+                {% for poll in polls %}
+                <div class="col-md-4 mb-4">
+                    <div class="poll-card card">
+                        <div class="card-header">
+                            <span class="poll-emoji">🚀</span>
+                            <h5 class="card-title">{{ poll.title }}</h5>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="btn btn-secondary btn-sm">View Responses</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No polls found.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="pagination-wrapper d-flex justify-content-center">
+            {% include 'partials/pagination.html' %}
+        </div>                
+    </div>
+</div>
