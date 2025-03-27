@@ -1,3 +1,4 @@
+from django.http import HttpResponseForbidden
 from django.shortcuts import  render, get_object_or_404
 from django.urls import reverse
 
@@ -26,6 +27,10 @@ def generate_number_code():
 #------------------------------------
 def display_code(request, pk):
     poll = get_object_or_404(Poll, pk=pk)
+
+    if poll.questions.count() == 0:
+        return HttpResponseForbidden("This poll has no questions and cannot be started.")
+
     poll.status = 'active'
     poll.save()
     delete_old_qr_codes(poll)

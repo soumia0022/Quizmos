@@ -170,7 +170,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById("form");
     form.addEventListener('submit', function (event) {
         const questionType = questionTypeDropdown.value;
+        const youTubeLinkInput = document.getElementById('youtube-link'); // Adjust the ID as needed
+        if (youTubeLinkInput) {
 
+            if(!validateYouTubeLink(youTubeLinkInput.value.trim())){
+                            displayErrorMessage('Invalid YouTube link. Please use one of these formats:\n' +
+                                '- Embed link: https://www.youtube.com/embed/videoID\n' +
+                                '- Short link: https://youtu.be/videoID', event);
+            }
+
+        }
          if (questionType === 'multiple_choice'){
             const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
             const answers = document.querySelectorAll('[name="multiple_choice_answers[]"]:checked'); //only the checked ones count as answers
@@ -241,3 +250,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }); */
 
 });
+
+
+
