@@ -79,21 +79,36 @@
 
 
 /* Poll Section Specific Styles */
+.main-container {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center; 
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
 .poll-card {
-    flex: 1 1 calc(33.333% - 15px);
-    margin-bottom: 15px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1); 
     border: 2px solid #fff;
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     overflow: hidden;
+    flex: 1 1 100%; 
+    text-align: center; 
 }
 
-.main-container {
-    width: 90%; 
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 20px; 
+@media (min-width: 770px) and (max-width: 900px) {
+    .poll-card {
+        flex: 1 1 calc(50% - 15px); 
+    }
+}
+
+@media (min-width: 901px) {
+    .poll-card {
+        flex: 1 1 calc(33.333% - 15px);
+    }
 }
 
 
