@@ -15,4 +15,3 @@ urlpatterns = [
     path('polls/<int:poll_id>/correct_bargraph_data/', poll_correct_bargraph_data, name='poll_correct_bargraph_data'),
 ]
 
-# No correct line graph as it would not make sense
