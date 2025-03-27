@@ -19,10 +19,8 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
 
 /* Navigation */
 .navbar-container {
-  position: absolute;
-  top: 35px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  margin: 35px auto;
   width: calc(90vw);
   max-width: 1500px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -37,7 +35,6 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   box-sizing: border-box;
   overflow: visible;
   z-index: 10;
-  pointer-events: auto;
 }
 
 .left-links {
