@@ -44,7 +44,7 @@ class PasswordView(LoginRequiredMixin, FormView):
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
 
-    model = UserForm
+    model = get_user_model()
     template_name = "profile.html"
     form_class = UserForm
 
