@@ -21,9 +21,15 @@ function choiceQuestionConstraints(options, answers, questionType){
             displayErrorMessage(`Please add at least one right answer for the ${questionType} question.`, event);
     }
 }
-function validateYouTubeLink(youtubeLink) {
-            const regex = /^https:\/\/youtu\.be\/[A-Za-z0-9_-]+$/;
-            if (!regex.test(youtubeLink)){
-                displayErrorMessage('Invalid YouTube link format. It should start with "https://youtu.be/"', event)
-            }
-        }
+
+function validateYouTubeLink(linkInput) {
+    const link = typeof linkInput === 'string' ? linkInput : linkInput.value;
+
+    const trimmedLink = link.trim().toLowerCase();
+
+    const embedLinkRegex = /^(https?:\/\/)?(www\.)?youtube\.com\/embed\/[a-zA-Z0-9_-]+$/;
+    const shortLinkRegex = /^(https?:\/\/)?(www\.)?youtu\.be\/[a-zA-Z0-9_-]+$/;
+
+    return embedLinkRegex.test(trimmedLink) ||
+           shortLinkRegex.test(trimmedLink);
+}
