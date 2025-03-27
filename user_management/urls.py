@@ -37,6 +37,8 @@ urlpatterns = [
     path('about/', AboutView.as_view(), name='about'),
     path("faq/", FaqView.as_view(), name="faq"),
     path('delete-account/', delete_account, name='delete_account'),
+    path('polls/', login_views.student_polls_page, name='student_polls_page'),
+
 
 ]
 
