@@ -83,28 +83,32 @@ class PollAnalyticsTestCase(TestCase):
             poll=self.poll,
             question=self.multiple_choice_question,
             user=self.user,
-            selected_options=["Red"]
+            selected_options=["Red"],
+            is_correct=False
         )
 
         SingleChoiceResponse.objects.create(
             poll=self.poll,
             question=self.single_choice_question,
             user=self.user,
-            selected_option="Python"
+            selected_option="Python",
+            is_correct=False
         )
 
         TextFillResponse.objects.create(
             poll=self.poll,
             question=self.text_fill_question,
             user=self.user,
-            answer_text="Great!"
+            answer_text="Great!",
+            is_correct=False
         )
 
         DropdownFillResponse.objects.create(
             poll=self.poll,
             question=self.dropdown_question,
             user=self.user,
-            selected_option="USA"
+            selected_option="USA",
+            is_correct=False
         )
 
         MatchQuestionResponse.objects.create(
@@ -115,7 +119,8 @@ class PollAnalyticsTestCase(TestCase):
                 {"France": "Paris"},
                 {"Germany": "Berlin"},
                 {"Italy": "Rome"}
-            ]
+            ],
+            is_correct=False
         )
 
         WordCloudResponse.objects.create(
@@ -281,3 +286,21 @@ class PollAnalyticsTestCase(TestCase):
         expected_sorted = sorted(question_texts, reverse=True)
         self.assertEqual(question_texts, expected_sorted)
 
+    def test_question_correct_analytics(self):
+        url = reverse("question_correct_analytics", args=[self.multiple_choice_question.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        json_response = response.json()
+
+        self.assertEqual(json_response["question"], "Favorite Colour?")
+        self.assertEqual(json_response["labels"], ["Correct Responses", "Incorrect Responses"])
+        self.assertEqual(json_response["data"], [0, 1]) # 0 correct and 1 incorrect MCQ
+
+    def test_poll_correct_analytics(self):
+        url = reverse("poll_correct_analytics", args=[self.poll.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        json_response = response.json()
+
+        self.assertEqual(json_response["labels"], ["Correct Responses", "Incorrect Responses"])
+        self.assertEqual(json_response["data"], [0, 6]) # 0 correct and 6 incorrect for whole poll
