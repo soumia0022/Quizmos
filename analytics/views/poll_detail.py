@@ -228,6 +228,3 @@ def poll_correct_piechart_data(request, poll_id):
 
 def poll_correct_bargraph_data(request, poll_id):
     return poll_correct_analytics(request, poll_id)
-
-def poll_correct_linegraph_data(request, poll_id):
-    return poll_correct_analytics(request, poll_id)
