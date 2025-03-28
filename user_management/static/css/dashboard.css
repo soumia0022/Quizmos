@@ -185,23 +185,6 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* Apply Button */
-.apply-btn {
-    background-color: #02192f;
-    border: 2px solid #fff;
-    color: white;
-    border-radius: 25px;
-    font-size: 16px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.apply-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: #02192f;
-}
-
 /* Sort Dropdown */
 .sort-select {
     background-color: rgba(255, 255, 255, 0.1);
