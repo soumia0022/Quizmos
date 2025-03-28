@@ -1,0 +1,18 @@
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.carousel-indicators button {
+    width: 15px;
+    height: 15px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.carousel-indicators button.active {
+    background-color: rgba(255, 255, 255, 0.9);
+}
