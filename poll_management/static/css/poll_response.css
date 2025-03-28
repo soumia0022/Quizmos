@@ -1,0 +1,106 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 20px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+    border: 2px solid rgba(255, 255, 255, 0.2); 
+    z-index: 1; 
+}
+
+
+.header {
+    position: relative; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    margin-bottom: 20px;
+    background: #02192f; 
+    padding: 20px;
+    border-radius: 25px; 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid white;
+    color: white; 
+    text-align: center;
+}
+
+
+.header h2 {
+    font-family: 'Palanquin Dark', sans-serif;
+    font-size: 2rem;
+    margin: 0;
+    color: #fff; 
+}
+
+.header a {
+    font-family: 'Palanquin', sans-serif;
+    text-decoration: none;
+    border: 2px solid #fff; 
+    padding: 10px 20px; 
+    border-radius: 25px; 
+    background: rgba(255, 255, 255, 0.05); 
+    transition: all 0.3s ease; 
+
+}
+
+.header a:hover {
+    background: rgba(255, 255, 255, 0.2); 
+    color: #02192f; 
+}
+
+/* Cards */
+.card {
+    background: rgba(255, 255, 255, 0.1); 
+    border: 2px solid #fff; 
+    border-radius: 20px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+    overflow: hidden; 
+}
+
+.card-header {
+    background: #02192f;
+    padding: 15px;
+    color: white;
+    font-family: 'Palanquin Dark', sans-serif;
+    border-bottom: 2px solid #fff; 
+}
+
+.card-body {
+    padding: 20px;
+    color: white;
+    font-size: 16px;
+    text-align: center; 
+}
+
+/* Alerts */
+.alert {
+    background-color: rgba(30, 30, 70, 0.8); 
+    border: 1px solid #4a4a8a;
+    color: #e0e0ff;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 8px;
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    z-index: 1001;
+}
+
+.alert-danger {
+    background-color: rgba(255, 107, 107, 0.1);
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.alert-success {
+    background-color: rgba(72, 187, 120, 0.1); 
+    border-color: #48bb78;
+    color: #48bb78;
+}
