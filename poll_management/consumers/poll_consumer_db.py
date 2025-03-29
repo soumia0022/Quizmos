@@ -109,41 +109,17 @@ class DatabaseHandler:
             elif response_type == 'text_fill':
                 is_correct = response_data.strip().lower() == (question.text_fill_answer or "").strip().lower()
             elif response_type == 'match_question':
-                # Process match questions based on input format
                 match_options = question.match_options or []
                 match_answers = question.match_answers or []
-
                 if isinstance(response_data, dict):
-                    # Format from test: {'A': '1', 'B': '2', 'C': '3'}
-                    # Using index
-                    is_correct = True
-                    for i, option in enumerate(match_options):
-                        if i >= len(match_answers) or option not in response_data or response_data[option] != \
-                                match_answers[i]:
-                            is_correct = False
-                            break
-                else:
-                    # Handle the case where response_data might be a list
-                    # This is for backward compatibility with any existing code
-                    try:
-                        if isinstance(response_data, list):
-                            # Pairs like [{'left': 'A', 'right': '1'}, ...]
-                            if all(isinstance(item, dict) for item in response_data):
-                                # Try to extract responses from each format
-                                if 'right' in response_data[0]:
-                                    user_answers = [item['right'] for item in response_data]
-                                    is_correct = user_answers == match_answers
-                                elif 'left' in response_data[0] and 'right' in response_data[0]:
-                                    # Build a dictionary from the list of pairs
-                                    response_dict = {item['left']: item['right'] for item in response_data}
-                                    is_correct = True
-                                    for i, option in enumerate(match_options):
-                                        if i >= len(match_answers) or option not in response_dict or response_dict[
-                                            option] != match_answers[i]:
-                                            is_correct = False
-                                            break
-                    except (IndexError, KeyError, TypeError):
-                        is_correct = False
+                    is_correct = all(
+                        i < len(match_answers) and option in response_data and response_data[option] == match_answers[i]
+                        for i, option in enumerate(match_options))
+                elif isinstance(response_data, list) and response_data and isinstance(response_data[0], dict):
+                    if 'right' in response_data[0]:
+                        is_correct = [item['right'] for item in response_data] == match_answers
+            elif response_type == 'code_question':
+                is_correct = response_data.strip() == (question.correct_code or "").strip()
 
             # Prepare response data
             response_data_dict = {
