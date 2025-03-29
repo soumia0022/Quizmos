@@ -62,6 +62,7 @@ def student_view_poll(request, poll_id):
                 question.youtube_link = format_youtube_link(question.youtube_link)
 
             config = response_type_config.get(type(response), {})
+
             # Get correctness
             is_correct = response.is_correct
             value_field = config['value_field']
