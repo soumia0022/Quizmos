@@ -3,6 +3,16 @@ function displayErrorMessage(message, event){
     event.preventDefault(); //don't allow the submission to go through
 }
 
+function canAddMoreOptions(question_type, maxOptions = 4) { //move to question_constraints in refactoring
+    const optionsContainer = document.getElementById(`${question_type}-options-container`);
+    if (optionsContainer){
+        return optionsContainer.children.length < maxOptions;
+    }
+    else{
+        return true;
+    }
+}
+
 function McConstraints(options, answers, questionType){
     choiceQuestionConstraints(options, answers, questionType);
 }
