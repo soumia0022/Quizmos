@@ -43,9 +43,7 @@ urlpatterns = [
     path('poll/<int:poll_id>/toggle_archive/', archive_view.toggle_archive_poll, name='toggle_archive_poll'),
     path('polls/archived/', archive_view.view_archived_polls, name='view_archived_polls'),
 
-    # Archive URLs for students
-    path('response/<str:response_type>/<int:response_id>/archive/',
-         archive_view.student_archive_response, name='student_archive_response'),
+
 
 ]
 
