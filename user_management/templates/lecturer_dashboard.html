@@ -79,11 +79,23 @@
                             <button id="id_poll_delete_button" type="button" onclick="confirmDelete({{ poll.id }})" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
                         </form>
 
+                        {% if not poll.archived %}
                         <a id="id_poll_start_button"
                            href="{% url 'poll_management:display_code' poll.id %}"
                            class="btn btn-success btn-sm {% if poll.questions.count == 0 %}disabled{% endif %}">
                            Start
                         </a>
+
+                        <form action="{% url 'user_management:toggle_archive_poll' poll.id %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary btn-sm">Archive</button>
+                        </form>
+                        {% else %}
+                        <form action="{% url 'user_management:toggle_archive_poll' poll.id %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-info btn-sm">Unarchive</button>
+                        </form>
+                        {% endif %}
                     </div>
 
                 </div>
