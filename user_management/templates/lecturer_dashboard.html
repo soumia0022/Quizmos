@@ -15,12 +15,26 @@
   <!-- Section for creating a poll -->
   {% include 'create_poll.html' %}
   <br/>
+
+  <div class="row mb-3">
+    <div class="col-12">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link {% if not view_type or view_type == 'active' %}active{% endif %}" href="{% url 'user_management:dashboard' %}">Active Polls</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_type == 'archived' %}active{% endif %}" href="{% url 'user_management:view_archived_polls' %}">Archived Polls</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
   {% include 'partials/search_sort_form.html' %}
 
   <!-- Section for listing polls -->
   <div class="row mt-4">
     <div class="col-12">
-        <h2>Your Polls</h2>
+        <h2>{% if view_type == 'archived' %}Your Archived Polls{% else %}Your Active Polls{% endif %}</h2>
         <div class="poll-container row">
             {% for poll in polls %}
             <div class="col-md-4 mb-4">
@@ -35,6 +49,9 @@
                     <div class="card-body">
                         <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
                         <p><strong>Questions:</strong> {{ poll.questions.count }}</p>
+                        {% if poll.archived %}
+                        <p><strong>Archived:</strong> {{ poll.archived_at|date:"Y-m-d H:i" }}</p>
+                        {% endif %}
 
                         {% if poll.questions.count == 0 %}
                         <div class="alert alert-warning d-flex align-items-center" role="alert">
