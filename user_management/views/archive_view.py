@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from poll_management.models.poll_model import Poll
 from django.contrib import messages
-
+from django.core.paginator import Paginator
 @login_required
 def archive_poll(request, poll_id):
     """Archive a poll"""
@@ -47,7 +47,37 @@ def toggle_archive_poll(request, poll_id):
 
 @login_required
 def view_archived_polls(request):
-    """View archived polls"""
-    archived_polls = Poll.objects.filter(user=request.user, archived=True).order_by('-archived_at')
-    return render(request, 'archived_polls.html', {'polls': archived_polls, 'view_type': 'archived'})
+    """View archived polls with pagination and filtering"""
+    search_query = request.GET.get('search', '')
+    sort_by = request.GET.get('sort_by', '-archived_at')  # Default sort by archive date
 
+    archived_polls = Poll.objects.filter(user=request.user, archived=True)
+
+    if search_query:
+        archived_polls = archived_polls.filter(title__icontains=search_query)
+    order_field = 'created_at'
+    if sort_by == 'title_asc':
+        order_field = 'title'
+    elif sort_by == 'title_desc':
+        order_field = '-title'
+    elif sort_by == 'created_at_asc':
+        order_field = 'created_at'
+    elif sort_by == 'created_at_desc':
+        order_field = '-created_at'
+
+
+
+    archived_polls = archived_polls.order_by(order_field)
+
+    paginator = Paginator(archived_polls, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'polls': page_obj,
+        'search_query': search_query,
+        'sort_by': sort_by,
+        'view_type': 'archived'
+    }
+
+    return render(request, 'archived_polls.html', context)
