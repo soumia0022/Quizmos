@@ -55,7 +55,7 @@
                         
                         <form action="{% url 'user_management:toggle_archive_poll' poll.id %}" method="POST" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-info btn-sm">Unarchive</button>
+                            <button type="submit" class="btn btn-primary bi bi-box-arrow-left"></button>
                         </form>
                     </div>
                 </div>
