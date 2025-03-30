@@ -1,4 +1,4 @@
-from django.shortcuts import  redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.utils import timezone
@@ -44,4 +44,10 @@ def toggle_archive_poll(request, poll_id):
         return redirect('user_management:dashboard')
     return JsonResponse({"status": "error", "message": "Invalid request method"})
 
+
+@login_required
+def view_archived_polls(request):
+    """View archived polls"""
+    archived_polls = Poll.objects.filter(user=request.user, archived=True).order_by('-archived_at')
+    return render(request, 'archived_polls.html', {'polls': archived_polls, 'view_type': 'archived'})
 
