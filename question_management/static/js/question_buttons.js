@@ -1,3 +1,5 @@
+const { canAddMoreOptions } = require('./question_constraints');
+
 function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
     if (!canAddMoreOptions("multiple-choice")){
         displayErrorMessage("You can only add 4 options");
