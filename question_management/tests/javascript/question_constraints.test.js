@@ -2,13 +2,12 @@
  * @jest-environment jsdom
  */
 
+const questionConstraints = require('../../static/js/question_constraints');
 const {
     displayErrorMessage,
-    canAddMoreOptions,
     McConstraints,
     ScConstraints,
-    choiceQuestionConstraints,
-    validateYouTubeLink
+    choiceQuestionConstraints
 } = require('../../static/js/question_constraints');
 
 describe('displayErrorMessage', () => {
@@ -26,48 +25,37 @@ describe('displayErrorMessage', () => {
     });
 });
 
-describe('canAddMoreOptions', () => {
-    beforeEach(() => {
-        document.body.innerHTML = `
-            <div id="multiple-choice-options-container">
-                <div class="option"></div>
-                <div class="option"></div>
-            </div>
-        `;
-    });
+test('McConstraints should enforce constraints correctly', () => {
+    const spy = jest.spyOn(questionConstraints, 'displayErrorMessage').mockImplementation(() => {});
+    // Call McConstraints with valid options and answers
+    McConstraints(['option1'], ['answer1'], 'multiple-choice');
 
-    test('should return true if options are less than max limit', () => {
-        expect(canAddMoreOptions('multiple-choice', 4)).toBe(true);
-    });
-
-    test('should return false if options reach the max limit', () => {
-        document.getElementById('multiple-choice-options-container').innerHTML += `
-            <div class="option"></div>
-            <div class="option"></div>
-        `;
-        expect(canAddMoreOptions('multiple-choice', 4)).toBe(false);
-    });
-
-    test('should return true if container does not exist', () => {
-        expect(canAddMoreOptions('non-existing-container', 4)).toBe(true);
-    });
+    // Ensure displayErrorMessage was NOT called since valid input was provided
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore(); // Restore original function after test
 });
 
-describe('McConstraints', () => {
-    let choiceQuestionConstraintsMock;
+test('McConstraints should show an error when no options are provided', () => {
+    // Mock the alert function to check if it's called
+    const alertMock = jest.spyOn(global, 'alert').mockImplementation(() => {});
 
-    beforeEach(() => {
-        choiceQuestionConstraintsMock = jest.spyOn(global, 'choiceQuestionConstraints').mockImplementation(() => {});
-    });
+    McConstraints([], ['answer1'], 'multiple-choice'); // No options
 
-    afterEach(() => {
-        choiceQuestionConstraintsMock.mockRestore();
-    });
+    // Ensure the alert was triggered with the expected message
+    expect(alertMock).toHaveBeenCalledWith('Please add at least one option for the multiple-choice question.');
 
-    test('should call choiceQuestionConstraints', () => {
-        McConstraints(['option1'], ['answer1'], 'multiple-choice');
-        expect(choiceQuestionConstraintsMock).toHaveBeenCalledWith(['option1'], ['answer1'], 'multiple-choice');
-    });
+    alertMock.mockRestore(); // Clean up after the test
+});
+
+test('McConstraints should show an error when no answers are provided', () => {
+    // Mock the alert function to check if it's called
+    const alertMock = jest.spyOn(global, 'alert').mockImplementation(() => {});
+
+    McConstraints(['option1'], [], 'multiple-choice'); // No answers
+
+    expect(alertMock).toHaveBeenCalledWith('Please add at least one right answer for the multiple-choice question.');
+
+    alertMock.mockRestore();
 });
 
 describe('ScConstraints', () => {
@@ -75,48 +63,37 @@ describe('ScConstraints', () => {
         global.alert = jest.fn(); // Mock alert
     });
 
-    test('should call choiceQuestionConstraints', () => {
-        const choiceQuestionConstraintsMock = jest.spyOn(global, 'choiceQuestionConstraints').mockImplementation(() => {});
+    test('should NOT show an error when a single answer is selected', () => {
         ScConstraints(['option1'], ['answer1'], 'single-choice');
-        expect(choiceQuestionConstraintsMock).toHaveBeenCalledWith(['option1'], ['answer1'], 'single-choice');
-        choiceQuestionConstraintsMock.mockRestore();
-    });
 
-    test('should show error message when multiple answers are selected for single-choice', () => {
-        const mockEvent = { preventDefault: jest.fn() };
-
-        ScConstraints(['option1', 'option2'], ['answer1', 'answer2'], 'single-choice', mockEvent);
-
-        expect(global.alert).toHaveBeenCalledWith('You can only choose one right answer for single-choice question.');
-    });
-});
-
-describe('choiceQuestionConstraints', () => {
-    beforeEach(() => {
-        global.alert = jest.fn(); // Mock alert
-    });
-
-    test('should show error when no options are provided', () => {
-        const mockEvent = { preventDefault: jest.fn() };
-
-        choiceQuestionConstraints([], ['answer1'], 'multiple-choice', mockEvent);
-
-        expect(global.alert).toHaveBeenCalledWith('Please add at least one option for the multiple-choice question.');
-    });
-
-    test('should show error when no answers are provided', () => {
-        const mockEvent = { preventDefault: jest.fn() };
-
-        choiceQuestionConstraints(['option1'], [], 'multiple-choice', mockEvent);
-
-        expect(global.alert).toHaveBeenCalledWith('Please add at least one right answer for the multiple-choice question.');
-    });
-
-    test('should not show error when valid options and answers are provided', () => {
-        const mockEvent = { preventDefault: jest.fn() };
-
-        choiceQuestionConstraints(['option1'], ['answer1'], 'multiple-choice', mockEvent);
-
+        // Ensure no alert message is displayed
         expect(global.alert).not.toHaveBeenCalled();
+    });
+
+    test('should show an error message when multiple answers are selected for single-choice', () => {
+
+        ScConstraints(['option1', 'option2'], ['answer1', 'answer2'], 'single-choice');
+
+        // Ensure the correct alert message is displayed
+        expect(global.alert).toHaveBeenCalledWith('You can only choose one right answer for single-choice question.');
+
+    });
+
+    test('should show an error message when no answers are selected for single-choice', () => {
+
+        ScConstraints(['option1', 'option2'], [], 'single-choice');
+
+        // Ensure the correct alert message is displayed
+        expect(global.alert).toHaveBeenCalledWith('Please add at least one right answer for the single-choice question.');
+
+    });
+
+    test('should show an error message when no options are selected for single-choice', () => {
+
+        ScConstraints([], ['answer1'], 'single-choice');
+
+        // Ensure the correct alert message is displayed
+        expect(global.alert).toHaveBeenCalledWith('Please add at least one option for the single-choice question.');
+
     });
 });
