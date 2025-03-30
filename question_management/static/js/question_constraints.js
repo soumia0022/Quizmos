@@ -43,3 +43,5 @@ function validateYouTubeLink(linkInput) {
     return embedLinkRegex.test(trimmedLink) ||
            shortLinkRegex.test(trimmedLink);
 }
+
+module.exports = { displayErrorMessage, canAddMoreOptions, McConstraints, ScConstraints, choiceQuestionConstraints };
