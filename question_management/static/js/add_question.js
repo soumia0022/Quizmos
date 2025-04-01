@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function (event) {
         const questionType = questionTypeDropdown.value;
         const youTubeLinkInput = document.getElementById('youtube-link'); // Adjust the ID as needed
-        if (youTubeLinkInput) {
+        if (youTubeLinkInput.value) {
 
             if(!validateYouTubeLink(youTubeLinkInput.value.trim())){
                             displayErrorMessage('Invalid YouTube link. Please use one of these formats:\n' +
