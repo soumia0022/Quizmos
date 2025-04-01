@@ -9,8 +9,6 @@ class Response(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
     poll = models.ForeignKey(Poll, on_delete=models.SET_NULL, null=True, default=1)
     submitted_on = models.DateTimeField(auto_now_add=True)
-    archived = models.BooleanField(default=False)
-    archived_at = models.DateTimeField(null=True, blank=True)
     session_code = models.IntegerField(default=0)
 
     class Meta:
