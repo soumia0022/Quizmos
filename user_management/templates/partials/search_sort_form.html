@@ -1,6 +1,6 @@
-<form method="GET">
-    <input type="text" name="search" placeholder="Search polls..." value="{{ search_query }}">
-    <select name="sort_by" onchange="this.form.submit()">
+<form method="GET" class="search-sort-form">
+    <input type="text" name="search" placeholder="Search polls..." value="{{ search_query }}" class="form-control search-input">
+    <select name="sort_by" onchange="this.form.submit()" class="form-control sort-select">
         <option value="title_asc" {% if sort_by == "title_asc" %}selected{% endif %}>A-Z</option>
         <option value="title_desc" {% if sort_by == "title_desc" %}selected{% endif %}>Z-A</option>
         {% if user.role == "Lecturer" %}
@@ -8,5 +8,4 @@
             <option value="created_at_desc" {% if sort_by == "created_at_desc" %}selected{% endif %}>Newest First</option>
         {% endif %}
     </select>
-    <button type="submit">Apply</button>
 </form>
