@@ -1,0 +1,74 @@
+{% extends 'base_content.html' %}
+{% load static %}
+{% load system_extras %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1>Your Archived Polls</h1>
+    </div>
+  </div>
+
+  {% tts_button %}
+  {% tts_selected_button %}
+  
+  <!-- Archive/Active toggle navigation -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'user_management:dashboard' %}">Active Polls</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'user_management:view_archived_polls' %}">Archived Polls</a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+  
+  {% include 'partials/search_sort_form.html' %}
+
+  <!-- Section for listing archived polls -->
+  <div class="row mt-4">
+    <div class="col-12">
+        <div class="poll-container row">
+            {% for poll in polls %}
+            <div class="col-md-4 mb-4">
+                <div class="poll-card card">
+                    <!-- Poll Header -->
+                    <div class="card-header">
+                        <span class="poll-emoji">📁</span>
+                        <h5 class="card-title">{{ poll.title }}</h5>
+                    </div>
+
+                    <!-- Poll Body -->
+                    <div class="card-body">
+                        <p><strong>Created:</strong> {{ poll.created_at|date:"Y-m-d H:i" }}</p>
+                        <p><strong>Archived:</strong> {{ poll.archived_at|date:"Y-m-d H:i" }}</p>
+                        <p><strong>Questions:</strong> {{ poll.questions.count }}</p>
+                    </div>
+
+                    <div class="card-footer text-muted">
+
+                        <a href="{% url 'poll_analytics' poll.id %}" class="btn btn-primary btn-sm">View Analytics</a>
+                        
+                        <form action="{% url 'user_management:toggle_archive_poll' poll.id %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary bi bi-box-arrow-left"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No archived polls found.</p>
+            {% endfor %}
+        </div>
+    </div>
+  </div>
+
+  {% include 'partials/pagination.html' %}
+</div>
+
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
