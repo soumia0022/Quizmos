@@ -98,17 +98,26 @@ export function updateCodeResponseUI(questionId, responses, language) {
         });
 
         renderPaginationControls();
-}
+    }
 
     function renderPaginationControls() {
-        let paginationContainer = questionContainer.querySelector('.pagination-controls');
+        const totalPages = Math.ceil(responses.length / pageSize);
+
+        let existingContainer = questionContainer.querySelector('.pagination-controls');
+        if (totalPages <= 1) {
+            if (existingContainer) {
+                existingContainer.remove();
+            }
+            return;
+        }
+
+        let paginationContainer = existingContainer
         if (!paginationContainer) {
             paginationContainer = document.createElement('div');
             paginationContainer.className = 'pagination-controls mt-2';
             questionContainer.appendChild(paginationContainer);
         }
 
-        const totalPages = Math.ceil(responses.length / pageSize);
         paginationContainer.innerHTML = `
             <button class="btn btn-sm btn-outline-primary me-2" ${currentPage === 1 ? 'disabled' : ''} id="prevPage">Previous</button>
             <span>Page ${currentPage} of ${totalPages}</span>
@@ -120,15 +129,15 @@ export function updateCodeResponseUI(questionId, responses, language) {
                 currentPage--;
                 renderPage(currentPage);
         }
-    });
+        });
 
-    paginationContainer.querySelector('#nextPage').addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderPage(currentPage);
-        }
-    });
-}
+        paginationContainer.querySelector('#nextPage').addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+    }
 
 
     // Show or hide response list container
