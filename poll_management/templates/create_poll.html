@@ -2,12 +2,13 @@
 <html lang="en">
 {% load system_extras %}
 
-<head>
-    <title>Create Poll</title>
-</head>
+<div class="row">
+    <div class="col-12">
+        <h1 class="dashboard-heading">Create Poll</h1>
+    </div>
+</div>
 <body>
     {% noscript_warning %}
-    <h1>Create a New Poll</h1>
     <form method="post">
         {% csrf_token %}
         <label for="title">Poll Title:</label>
