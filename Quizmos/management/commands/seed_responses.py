@@ -59,31 +59,38 @@ class Command(BaseCommand):
 
                 # Determine response type based on question type
                 question_type = question.question_type
+                is_correct = False  # Default
                 if question_type == "multiple_choice":
                     options = question.multiple_choice_options or []
                     selected_options = random.sample(options, min(2, len(options))) if options else ["Option A", "Option B"]
                     response_data['selected_options'] = selected_options
+                    is_correct = set(selected_options) == set(question.multiple_choice_answers or [])
                     response_type = MultipleChoiceResponse
 
                 elif question_type == "single_choice":
                     options = question.single_choice_option or []
                     selected_option = random.choice(options) if options else "Option A"
                     response_data['selected_option'] = selected_option
+                    is_correct = selected_option in (question.single_choice_answers or [])
                     response_type = SingleChoiceResponse
 
                 elif question_type == "text_fill":
                     response_data['answer_text'] = random.choice(SAMPLE_TEXTS)
+                    is_correct = response_data['answer_text'].strip().lower() == (question.text_fill_answer or "").strip().lower()
                     response_type = TextFillResponse
 
                 elif question_type == "dropdown_fill":
                     options = question.get_dropdown_options()
                     selected_option = random.choice(options) if options else "Dropdown Option"
                     response_data['selected_option'] = selected_option
+                    is_correct = selected_option.strip().lower() == (question.dropdown_correct_answer or "").strip().lower()
                     response_type = DropdownFillResponse
 
                 elif question_type == "match_question":
                     match_pairs = [{"left": opt, "right": ans} for opt, ans in zip(question.match_options, question.match_answers)]
                     response_data['match_responses'] = match_pairs
+                    user_responses = [pair['right'] for pair in match_pairs]
+                    is_correct = user_responses == (question.match_answers or [])
                     response_type = MatchQuestionResponse
 
                 elif question_type == "wordcloud":
@@ -99,6 +106,8 @@ class Command(BaseCommand):
 
                 else:
                     continue  # Skip unsupported question types
+
+                response_data['is_correct'] = is_correct
 
                 # Create the response instance
                 response_type.objects.create(**response_data)

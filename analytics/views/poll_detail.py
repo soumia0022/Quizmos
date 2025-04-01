@@ -1,3 +1,5 @@
+# Needs refactoring
+
 from collections import Counter
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
@@ -133,15 +135,85 @@ def question_analytics(request, question_id):
         labels = ['Total Number of Code Submissions']
         data = [responses_count]
 
-        # For each code response count
-        # responses = CodeQuestionResponse.objects.filter(question=question)
-        # code_snippets = [response.submitted_code for response in responses]
-        # code_counts = Counter(code_snippets)
-        # if code_counts:
-        #     labels, data = zip(*code_counts.items())
-        # else:
-        #     labels = []
-        #     data = []
-
-
     return JsonResponse({'question': question.question_text, 'labels': labels, 'data': data})
+
+
+def question_correct_analytics(request, question_id):
+    """Calculate the number of correct and incorrect responses for a given question.
+    Uses the is_correct field across all response models."""
+    question = get_object_or_404(Question, id=question_id)
+
+    # Mapping of question types to their corresponding response models
+    response_models = {
+        'multiple_choice': MultipleChoiceResponse,
+        'single_choice': SingleChoiceResponse,
+        'text_fill': TextFillResponse,
+        'dropdown_fill': DropdownFillResponse,
+        'match_question': MatchQuestionResponse,
+        'wordcloud': WordCloudResponse,
+        'code_question': CodeQuestionResponse
+    }
+
+    # Get the appropriate response model
+    response_model = response_models.get(question.question_type)
+
+    if not response_model:
+        return JsonResponse({
+            'question': question.question_text,
+            'labels': ['No analytics available'],
+            'data': [0]
+        })
+
+    # Count correct and incorrect responses
+    total_responses = response_model.objects.filter(question=question).count()
+    correct_responses = response_model.objects.filter(question=question, is_correct=True).count()
+    incorrect_responses = total_responses - correct_responses
+
+    labels = ['Correct Responses', 'Incorrect Responses']
+    data = [correct_responses, incorrect_responses]
+
+    return JsonResponse({
+        'question': question.question_text,
+        'labels': labels,
+        'data': data
+    })
+
+
+def poll_correct_analytics(request, poll_id):
+    """Calculate total correct and incorrect responses for an entire poll."""
+    poll = get_object_or_404(Poll, id=poll_id)
+    questions = poll.questions.all()
+
+    # Combine responses from all response models
+    response_models = [
+        MultipleChoiceResponse,
+        SingleChoiceResponse,
+        TextFillResponse,
+        DropdownFillResponse,
+        MatchQuestionResponse,
+        WordCloudResponse,
+        CodeQuestionResponse
+    ]
+
+    total_correct = 0
+    total_incorrect = 0
+
+    for model in response_models:
+        # Filter responses for this poll
+        poll_responses = model.objects.filter(poll=poll)
+        total_correct += poll_responses.filter(is_correct=True).count()
+        total_incorrect += poll_responses.filter(is_correct=False).count()
+
+    labels = ['Correct Responses', 'Incorrect Responses']
+    data = [total_correct, total_incorrect]
+
+    return JsonResponse({
+        'labels': labels,
+        'data': data
+    })
+
+def poll_correct_piechart_data(request, poll_id):
+    return poll_correct_analytics(request, poll_id)
+
+def poll_correct_bargraph_data(request, poll_id):
+    return poll_correct_analytics(request, poll_id)
