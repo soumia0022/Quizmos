@@ -76,7 +76,7 @@
 
                         <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
                             {% csrf_token %}
-                            <button id="id_poll_delete_button" type="button" onclick="confirmDelete({{ poll.id }})" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
+                            <button id="id_poll_delete_button" type="button" onclick="confirmDelete( poll.id )" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
                         </form>
 
                         <a id="id_poll_start_button"
