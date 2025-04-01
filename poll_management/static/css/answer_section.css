@@ -95,42 +95,41 @@
 }
 
 .correct-match-table {
-    width: 100% !important;
-    border-collapse: collapse !important;
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    border: 2px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 10px !important;
-    overflow: hidden !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+    width: 100% ;
+    border-collapse: collapse ;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2) ;
+    border-radius: 10px ;
+    overflow: hidden ;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) ;
 }
 
-
-
 .correct-match-table tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    transition: background-color 0.3s ease !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) ;
+    transition: background-color 0.3s ease ;
 }
 
 .correct-match-table tr:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.1) ;
 }
 
 .correct-match-table td {
-    padding: 12px 15px !important;
-    text-align: center !important;
-    background-color: rgba(0, 0, 0, 0.3) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 5px !important;
-    color: white !important;
+    padding: 12px 15px ;
+    text-align: center ;
+    background-color: rgba(0, 0, 0, 0.3) ;
+    border: 1px solid rgba(255, 255, 255, 0.2) ;
+    border-radius: 5px ;
+    color: white ;
 }
 
 .correct-match-box {
-    background-color: rgba(64, 177, 100, 0.9) !important;
-    padding: 10px !important;
-    border-radius: 10px !important;
-    border: 2px solid rgba(64, 177, 100, 1) !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    text-align: center !important;
-    color: white !important;
+    background-color: rgba(64, 177, 100, 0.9) ;
+    padding: 10px ;
+    border-radius: 10px ;
+    border: 2px solid rgba(64, 177, 100, 1) ;
+    font-size: 16px ;
+    font-weight: bold ;
+    text-align: center ;
+    color: white ;
 }
+
