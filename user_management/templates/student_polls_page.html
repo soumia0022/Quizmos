@@ -1,0 +1,30 @@
+{% extends 'student_base.html' %}
+{% load static %}
+{% load system_extras %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<div class="tts-buttons">
+    {% tts_button %}
+    {% tts_selected_button %}
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="dashboard-heading">Your Polls</h1>
+        </div>
+    </div>
+
+    <br/>
+    {% include 'partials/search_sort_form.html' %}
+
+    {% if polls %}
+        {% include 'partials/polls_section.html' %}
+    {% else %}
+        <p>No polls found.</p>
+    {% endif %}
+</div>
+{% endblock %}

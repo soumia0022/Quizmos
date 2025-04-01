@@ -4,98 +4,102 @@
 <link rel="stylesheet" href="{% static 'css/code_response.css' %}">
 
 {% block content %}
-<div class="container mt-4">
-    <header class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">{{ poll.title }}</h2>
-         <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-2"></i>All {{ poll.title }} Responses
-        </a>
-
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/poll_response.css' %}">
+<link rel="stylesheet" href="{% static 'css/question_section.css' %}">
+<link rel="stylesheet" href="{% static 'css/indicators.css' %}">
+<link rel="stylesheet" href="{% static 'css/controls.css' %}">
+<div class="container ">
+    <header class="header ">
+        <h2>{{ poll.title }}</h2>
     </header>
 
-{%if session_codes|length > 1%}
-    <form method="get">
-        <select name="session_code" class="form-control" onchange="this.form.submit()">
-            <option>Select Session</option>
+    {% if session_codes|length > 1 and not selected_session_code %}
+    <!-- Session Selection -->
+    <form method="get" class="session-selection">
+        <select name="session_code" class="form-control" onchange="this.form.submit()"> 
+            <option disabled selected>Choose a Session</option>
             {% for code in session_codes %}
-            <option value="{{ code }}" {% if code == selected_session_code %}selected{% endif %}>
-                Session {{ code }}
-            </option>
+            <option value="{{ code }}">Session {{ code }}</option>
             {% endfor %}
         </select>
     </form>
-
-{%else%}
-    {% if responses_by_question %}
-        <div id="pollResponsesSlideshow" class="carousel slide mt-4" data-bs-interval="false" data-bs-ride="false" data-poll-id="{{ poll.id }}" aria-roledescription="carousel" aria-label="Poll responses slideshow">
+    {% else %}
+        {% if responses_by_question %}
+        <div id="pollResponsesSlideshow" class="carousel slide mt-4 custom-carousel" data-bs-interval="false" data-bs-ride="false" data-poll-id="{{ poll.id }}" aria-roledescription="carousel" aria-label="Poll responses slideshow">
             {% include 'student_view_response/indicators.html' with responses=responses_by_question %}
 
             <div class="carousel-inner">
                 {% for question_id, response in responses_by_question.items %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <div class="card shadow-sm">
-                            <!-- Card Header -->
-                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                                <h3 class="h5 mb-0">Question {{ forloop.counter }}</h3>
-                                <span class="badge bg-light text-primary">{{ response.question.question_type|title }}</span>
-                            </div>
-                            
-                            <!-- Card Body -->
-                            <div class="card-body">
-                                <!-- Question Section -->
-                                {% include 'student_view_response/question_section.html' with response=response %}
+                {% if response.session_code == selected_session_code or not session_codes|length > 1 %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="card shadow-sm"> 
+                        <!-- Card Header -->
+                        <div class="card-header"> 
+                            <h3 class="title">Question {{ forloop.counter }}</h3> 
+                            <span class="badge">{{ response.question.question_type|title }}</span> 
+                        </div>
+                        
+                        <!-- Card Body -->
+                        <div class="card-body"> 
+                            <!-- Question Section -->
+                            {% include 'student_view_response/question_section.html' with response=response %}
 
-                                <!-- Answer Section -->
-                                <div class="answer-section p-3 rounded
+                            <!-- Answer Section -->
+                            <div class="answer-section ">
+                                <h5 class="answer-title mb-2 d-flex align-items-center">
                                     {% if response.question.question_type == 'single_choice' or response.question.question_type == 'multiple_choice' or response.question.question_type == 'dropdown_fill' or response.question.question_type == 'text_fill' or response.question.question_type == 'match_question' %}
                                         {% if response.is_correct %}
-                                            bg-success-box
+                                            <i class="bi bi-check-lg me-2"></i>Correct
                                         {% else %}
-                                            bg-danger-box
+                                            <i class="bi bi-x-lg me-2"></i>Incorrect
                                         {% endif %}
-                                    {% else %}
-                                        bg-light
-                                    {% endif %}">
-                                    <h5 class="mb-2 d-flex align-items-center">
-                                        {% if response.question.question_type == 'single_choice' or response.question.question_type == 'multiple_choice' or response.question.question_type == 'dropdown_fill' or response.question.question_type == 'text_fill' or response.question.question_type == 'match_question' %}
-                                            {% if response.is_correct %}
-                                                <i class="bi bi-check-lg text-white me-2" aria-hidden="true"></i>
-                                                <span class="sr-only">Correct</span>
-                                                Correct
-                                            {% else %}
-                                                <i class="bi bi-x-lg text-white me-2" aria-hidden="true"></i>
-                                                <span class="sr-only">Incorrect</span>
-                                                Incorrect
-                                            {% endif %}
-                                        {% endif %}
-                                    </h5>
+                                    {% endif %}
+                                </h5>
 
-                                    {% include 'student_view_response/answer_section.html' with response=response %}
-                                </div>
-
-                                <!-- Media Section -->
-                                {% include 'student_view_response/media_section.html' with question=response.question %}
-
-                                <!-- Timer Info -->
-                                {% if response.question.timer %}
-                                    <div class="timer-info mt-3 text-muted">
-                                        <small><i class="bi bi-clock"></i> Time limit: {{ response.question.timer }} seconds</small>
-                                    </div>
-                                {% endif %}
+                                {% include 'student_view_response/answer_section.html' with response=response %}
                             </div>
+
+                            <!-- Media Section -->
+                            {% include 'student_view_response/media_section.html' with question=response.question %}
+
+                            <!-- Timer Info -->
+                            {% if response.question.timer %}
+                            <div class="custom-timer-info mt-3">
+                                <small><i class="bi bi-clock"></i> Time limit: {{ response.question.timer }} seconds</small>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
+                </div>
+                {% endif %}
                 {% endfor %}
             </div>
 
             {% include 'student_view_response/controls.html' %}
         </div>
-    {% else %}
-        <div class="alert alert-info mt-4">
+        {% else %}
+        <div class="alert mt-4"> 
             <p class="mb-0">You haven't responded to this poll yet.</p>
         </div>
+        {% endif %}
+
     {% endif %}
+
 </div>
-{% endif %}
+    <!-- Buttons Section -->
+    <div class="text-center mt-4">
+        {% if session_codes|length == 1 and selected_session_code %}
+        <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="custom-back-button">
+            <i class="bi bi-arrow-left me-2"></i>All {{ poll.title }} Responses
+        </a>
+        {% elif session_codes|length == 1 and not selected_session_code %}
+        <a href="javascript:history.back()" class="go-back-btn mt-2">Go Back</a>
+        {% else %}
+        <a href="{% url 'user_management:student_polls_page' %}" class="go-back-btn mt-2">Go Back to Polls</a>
+        {% endif %}
+    </div>
+
 <script src="{% static 'js/fetch_correct_answers.js' %}"></script>
+
 {% endblock %}
