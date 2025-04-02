@@ -70,33 +70,82 @@ export function updateCodeResponseUI(questionId, responses, language) {
 
     responseList.innerHTML = '';
 
-    responses.forEach((response) => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
+    let currentPage = 1;
+    const pageSize = 10;
 
-        // Display user’s name and make it clickable to show code in the editor
-        listItem.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="response-user" style="cursor: pointer; color: blue;" data-code="${encodeURIComponent(response.code)}">
-                    ${response.username}
-                </span>
-            </div>
+    function renderPage(page) {
+        responseList.innerHTML = '';
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const paginatedResponses = responses.slice(start, end);
+
+        paginatedResponses.forEach((response) => {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item';
+            
+            listItem.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="response-user" style="cursor: pointer; color: blue;" data-code="${encodeURIComponent(response.code)}">
+                        ${response.username}
+                    </span>
+                </div>
+            `;
+            listItem.querySelector('.response-user').addEventListener('click', function () {
+                const code = decodeURIComponent(this.getAttribute('data-code'));
+                displayCodeInEditor(code, language);
+            });
+            responseList.appendChild(listItem);
+        });
+
+        renderPaginationControls();
+    }
+
+    function renderPaginationControls() {
+        const totalPages = Math.ceil(responses.length / pageSize);
+
+        let existingContainer = questionContainer.querySelector('.pagination-controls');
+        if (totalPages <= 1) {
+            if (existingContainer) {
+                existingContainer.remove();
+            }
+            return;
+        }
+
+        let paginationContainer = existingContainer
+        if (!paginationContainer) {
+            paginationContainer = document.createElement('div');
+            paginationContainer.className = 'pagination-controls mt-2';
+            questionContainer.appendChild(paginationContainer);
+        }
+
+        paginationContainer.innerHTML = `
+            <button class="btn btn-sm btn-outline-primary me-2" ${currentPage === 1 ? 'disabled' : ''} id="prevPage">Previous</button>
+            <span>Page ${currentPage} of ${totalPages}</span>
+            <button class="btn btn-sm btn-outline-primary ms-2" ${currentPage === totalPages ? 'disabled' : ''} id="nextPage">Next</button>
         `;
 
-        responseList.appendChild(listItem);
-
-        // Add event listener to show code in CodeMirror when user clicks on their name
-        listItem.querySelector('.response-user').addEventListener('click', function () {
-            const code = decodeURIComponent(this.getAttribute('data-code'));
-            displayCodeInEditor(code, language);
+        paginationContainer.querySelector('#prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+        }
         });
-    });
+
+        paginationContainer.querySelector('#nextPage').addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+    }
+
 
     // Show or hide response list container
     const responseListContainer = questionContainer.querySelector('.response-list-container');
     if (responseListContainer) {
         responseListContainer.style.display = responses.length > 0 ? 'block' : 'none';
     }
+    renderPage(currentPage);
 }
 
 // Function to display code inside a popup(modal) with CodeMirror
