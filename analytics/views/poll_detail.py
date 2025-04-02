@@ -12,8 +12,11 @@ from response_management.models.response_model import MultipleChoiceResponse, Si
 from question_management.models.question_models import Question
 from analytics.helpers import apply_search_and_sort
 from django.db.models.functions import Lower
+from user_management.helpers import role_required
 
 
+@login_required
+@role_required('Lecturer')
 def poll_analytics(request, poll_id):
     """To do with analytics for the whole poll."""
     poll = get_object_or_404(Poll, id=poll_id)
