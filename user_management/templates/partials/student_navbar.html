@@ -1,0 +1,18 @@
+<div class="navbar-container">
+    <!-- Left Links -->
+    <div class="left-links">
+        <a href="{% if user.is_authenticated %}{% url 'user_management:dashboard' %}{% else %}{% url 'user_management:home' %}{% endif %}" class="navbar-brand quizmos">
+            QUIZMOS
+        </a>
+        <div class="left-links-child"></div>
+        <a href="{% url 'user_management:join_poll_page' %}" class="join-poll">JOIN POLL</a>
+        <a href="{% url 'user_management:student_polls_page' %}" class="polls">POLLS</a>
+    </div>
+    <!-- Right Links -->
+    <div class="right-links">
+        <div class="left-links-child"></div>
+        {% if user.is_authenticated %}
+        {% include 'partials/menu.html' %}
+        {% endif %}
+    </div>
+</div>

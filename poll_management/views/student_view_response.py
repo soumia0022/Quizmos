@@ -34,13 +34,13 @@ def student_view_poll(request, poll_id):
     responses_by_question = {}
 
     response_type_config = {
-        MultipleChoiceResponse: {'value_field': 'selected_options', 'correct_check': lambda answer, correct: set(answer) == set(correct or [])},
-        SingleChoiceResponse: {'value_field': 'selected_option', 'correct_check': lambda answer, correct: answer in (correct or [])},
-        TextFillResponse: {'value_field': 'answer_text', 'correct_check': lambda answer, correct: answer.strip().lower() == (correct or "").strip().lower()},
-        DropdownFillResponse: {'value_field': 'selected_option', 'correct_check': lambda answer, correct: answer.strip().lower() == (correct or "").strip().lower()},
-        MatchQuestionResponse: {'value_field': 'match_responses', 'correct_check': lambda answer, correct: [pair['right'] for pair in (answer or [])] == (correct or [])},
-        WordCloudResponse: {'value_field': 'word_cloud_response', 'correct_check': lambda answer, correct: False},
-        CodeQuestionResponse: {'value_field': 'submitted_code', 'correct_check': lambda answer, correct: False}
+        MultipleChoiceResponse: {'value_field': 'selected_options'},
+        SingleChoiceResponse: {'value_field': 'selected_option'},
+        TextFillResponse: {'value_field': 'answer_text'},
+        DropdownFillResponse: {'value_field': 'selected_option'},
+        MatchQuestionResponse: {'value_field': 'match_responses'},
+        WordCloudResponse: {'value_field': 'word_cloud_response'},
+        CodeQuestionResponse: {'value_field': 'submitted_code'}
     }
 
     for response_type in response_types:
@@ -62,22 +62,11 @@ def student_view_poll(request, poll_id):
                 question.youtube_link = format_youtube_link(question.youtube_link)
 
             config = response_type_config.get(type(response), {})
-            value_field = config.get('value_field', 'submitted_answer')
-            correct_check = config.get('correct_check', lambda a, b: False)
 
-            # Get student's answer
+            # Get correctness
+            is_correct = response.is_correct
+            value_field = config['value_field']
             student_answer = getattr(response, value_field)
-
-            if isinstance(response, (MultipleChoiceResponse, SingleChoiceResponse)):
-                is_correct = correct_check(student_answer, question.multiple_choice_answers or question.single_choice_answers)
-            elif isinstance(response, DropdownFillResponse):
-                is_correct = correct_check(student_answer, question.dropdown_correct_answer)
-            elif isinstance(response, TextFillResponse):
-                is_correct = correct_check(student_answer, question.text_fill_answer)
-            elif isinstance(response, MatchQuestionResponse):
-                is_correct = correct_check(student_answer, question.match_answers)
-            else:
-                is_correct = False
 
             responses_by_question[question.id] = {
                 'type': response_type.__name__.lower().replace('response', ''),
@@ -87,9 +76,6 @@ def student_view_poll(request, poll_id):
                 value_field: student_answer,
                 'session_code': response.session_code
             }
-
-
-
 
     return render(request, 'student_view_response/poll_response.html', {
         'poll': poll,

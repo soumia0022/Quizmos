@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block body %}
-  {% include 'partials/navbar.html' %}
+  {% if user.role == "Lecturer" %}
+    {% include 'partials/navbar.html' %}
+  {% else %}
+    {% include 'partials/student_navbar.html' %}
+  {% endif %}
   {% include 'partials/messages.html' %}
   {% block content %}
   {% endblock %}

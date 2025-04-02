@@ -1,67 +1,51 @@
-{% extends 'base_content.html' %}
+{% extends 'student_base.html' %}
 {% load static %}
 {% load system_extras %}
 {% block content %}
 
-{% tts_button %}
-{% tts_selected_button %}
+<div class="tts-buttons">
+    {% tts_button %}
+    {% tts_selected_button %}
+</div>
+
+
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/join_poll.css' %}">
+
 
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h1>Welcome to your student dashboard {{ user.username }}</h1>
+            <h1 class="dashboard-heading">Welcome to your student dashboard {{ user.username }}!</h1>
         </div>
-    </div>
-     
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">Join Poll</h2>
-                    <form id="joinPollForm" onsubmit="handlePollSubmit(event)">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="pollCode" placeholder="Enter poll code" required>
-                        </div>
-                        <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
-                    </form>
-                </div>
+    </div>    
+
+    <hr style="border: 1px solid #fff; margin: 30px 0;"> 
+
+    <div class="join-poll-page d-flex align-items-center justify-content-center" style="margin-top: 60px;">
+        <div class="row w-100">
+            <div class="col-12 d-flex justify-content-center">
+                {% include 'partials/join_poll_form.html' %}
             </div>
         </div>
     </div>
+    
+    <hr style="border: 1px solid #fff; margin: 60px 0;"> 
+
+    <div class="row">
+        <div class="col-12">
+            <h1 class="dashboard-heading">Your Polls</h1>
+        </div>
+    </div>  
 
     <br/>
     {% include 'partials/search_sort_form.html' %}
-       
-    {% if polls %}
-    <div class="row mt-4">
-        <div class="col-12">
-            <h2>Your Polls</h2>
-            <div class="poll-container row">
-                {% for poll in polls %}
-                <div class="col-md-4 mb-4">
-                    <div class="poll-card card">
-                        <div class="card-header">
-                            <span class="poll-emoji">🚀</span>
-                            <h5 class="card-title">
-                                {{ poll.title }}
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                        </div>
-                        <div class="card-footer text-muted">
-                            <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="btn btn-primary btn-sm">View Responses</a>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <p>No polls found.</p>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
 
-    {% include 'partials/pagination.html' %}
+    {% if polls %}
+        {% include 'partials/polls_section.html' %}
+    {% else %}
+        <p>No polls found.</p>
     {% endif %}
 </div>
 

@@ -69,15 +69,13 @@ environ.Env.read_env()
 
 SITE_ID = 1
 
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
-
-if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
-    EMAIL_HOST = 'smtp.example.com'
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = 'your-email@example.com'
-    EMAIL_HOST_PASSWORD = 'your-email-password'
-    DEFAULT_FROM_EMAIL = 'webmaster@example.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'quizmos.help@gmail.com'  
+EMAIL_HOST_PASSWORD = 'REMOVED_EMAIL_PASSWORD' 
+DEFAULT_FROM_EMAIL = 'quizmos.help@gmail.com'
 
 ACCOUNT_EMAIL_VERIFICATION = 'none' 
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email' 

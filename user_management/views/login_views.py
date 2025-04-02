@@ -10,7 +10,7 @@ from django.views import View
 from user_management.forms import LogInForm, PollCodeForm
 from user_management.helpers import login_prohibited
 from poll_management.models.poll_model import Poll
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 from poll_management.views.create_poll import create_poll
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
@@ -79,7 +79,7 @@ def dashboard(request):
     search_query = request.GET.get('search', '')
 
     if current_user.role == "Lecturer":
-        polls = Poll.objects.filter(user=request.user).annotate(
+        polls = Poll.objects.filter(user=request.user, archived=False).annotate(
             multiple_choice_responses_count=Count('multiplechoiceresponse'),
             single_choice_responses_count=Count('singlechoiceresponse'),
             dropdown_fill_responses_count=Count('dropdownfillresponse'),
@@ -232,3 +232,58 @@ def log_out(request):
 
     logout(request)
     return redirect(reverse('user_management:home'))
+
+@login_required(login_url='user_management:log_in')
+def student_polls_page(request):
+    """View to display only the polls section for students."""
+    current_user = request.user
+
+    response_types = [
+        MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse,
+        DropdownFillResponse, MatchQuestionResponse, WordCloudResponse,
+        CodeQuestionResponse
+    ]
+
+    poll_ids = set()
+    for response_type in response_types:
+        poll_ids.update(
+            response_type.objects.filter(user=current_user)
+            .values_list('poll_id', flat=True)
+            .distinct()
+        )
+
+    polls = Poll.objects.filter(id__in=poll_ids)
+
+    search_query = request.GET.get('search', '')
+    if search_query:
+        polls = polls.filter(title__icontains=search_query)
+
+    sort_by = request.GET.get('sort_by', 'title_asc')
+    sort_options = {
+        'title_asc': F('title').asc(),
+        'title_desc': F('title').desc()
+    }
+    polls = polls.order_by(sort_options.get(sort_by, F('title').asc()))
+
+    paginator = Paginator(polls, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'student_polls_page.html', {
+        'polls': page_obj,
+        'search_query': search_query,
+        'sort_by': sort_by,
+    })
+
+@login_required(login_url='user_management:log_in')
+def join_poll_page(request):
+    """View for the standalone Join Poll page."""
+    form = PollCodeForm()
+    if request.method == 'POST':
+        form = PollCodeForm(request.POST)  
+        if form.is_valid():
+            valid, poll = form.validate_and_redirect()
+            if valid:
+                return redirect('poll_management:join_poll', code=poll.number_code)
+            
+    return render(request, 'join_poll_page.html', {'form': form})

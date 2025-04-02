@@ -1,0 +1,30 @@
+.media-section {
+    background-color: rgba(0, 0, 0, 0.2); 
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.media-section h4 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.media-section img {
+    max-width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+}
+
+.media-section audio,
+.media-section video {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.media-section .ratio {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+}

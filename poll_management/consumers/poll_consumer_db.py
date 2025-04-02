@@ -98,13 +98,37 @@ class DatabaseHandler:
 
             ResponseModel, field_name = response_models[response_type]
 
+            # Determine correctness
+            is_correct = False
+            if response_type == 'multiple_choice':
+                is_correct = set(response_data) == set(question.multiple_choice_answers or [])
+            elif response_type == 'single_choice':
+                is_correct = response_data in (question.single_choice_answers or [])
+            elif response_type == 'dropdown_fill':
+                is_correct = response_data.strip().lower() == (question.dropdown_correct_answer or "").strip().lower()
+            elif response_type == 'text_fill':
+                is_correct = response_data.strip().lower() == (question.text_fill_answer or "").strip().lower()
+            elif response_type == 'match_question':
+                match_options = question.match_options or []
+                match_answers = question.match_answers or []
+                if isinstance(response_data, dict):
+                    is_correct = all(
+                        i < len(match_answers) and option in response_data and response_data[option] == match_answers[i]
+                        for i, option in enumerate(match_options))
+                elif isinstance(response_data, list) and response_data and isinstance(response_data[0], dict):
+                    if 'right' in response_data[0]:
+                        is_correct = [item['right'] for item in response_data] == match_answers
+            elif response_type == 'code_question':
+                is_correct = response_data.strip() == (question.correct_code or "").strip()
+
             # Prepare response data
             response_data_dict = {
                 'user': user,
                 'poll': poll,
                 'question': question,
                 'session_code': session_code,
-                field_name: response_data
+                field_name: response_data,
+                'is_correct': is_correct
             }
 
             # Check if response already exists
@@ -118,6 +142,7 @@ class DatabaseHandler:
             if existing_response:
                 # Update existing response
                 setattr(existing_response, field_name, response_data_dict[field_name])
+                existing_response.is_correct = is_correct
                 existing_response.save()
             else:
                 # Create new response

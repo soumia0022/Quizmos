@@ -7,6 +7,8 @@ class Poll(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='polls')
     locked = models.BooleanField(default=False)
     number_code = models.IntegerField(default=0)
+    archived = models.BooleanField(default=False)
+    archived_at = models.DateTimeField(null=True, blank=True)
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
