@@ -20,7 +20,7 @@ class StudentViewResponseTest(TestCase):
         self.user = User.objects.get(username='johndoe')
         self.poll = Poll.objects.create(title='Poll 1', user=self.user, number_code=111111)
 
-        self.view_url = reverse('response_management:get_student_answer', kwargs={'poll_id': self.poll.id})
+        self.view_url = reverse('response_management:student_view_poll', kwargs={'poll_id': self.poll.id})
 
     def test_student_response_view(self):
         self.client.force_login(self.user)
