@@ -1,7 +1,7 @@
 // Define `html` globally before importing the function
 global.html = '';
 
-import { video_file_display } from "../../static/js/lecturer_poll_display/questions/video_file_display";
+import { video_file_display } from "../../../../static/js/lecturer_poll_display/questions/video_file_display";
 
 describe('video_file_display', () => {
 

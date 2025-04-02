@@ -1,4 +1,4 @@
-import {renderText} from "../../static/js/lecturer_poll_display/questions/text_question_display";
+import {renderText} from "../../../../static/js/lecturer_poll_display/questions/text_question_display";
 
 describe('renderText', () => {
   it('should render HTML with the correct question data', () => {

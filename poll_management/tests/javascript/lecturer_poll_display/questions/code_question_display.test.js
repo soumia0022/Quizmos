@@ -1,4 +1,4 @@
-import {renderCodeQuestion} from "../../static/js/lecturer_poll_display/questions/code_question_display";
+import {renderCodeQuestion} from "../../../../static/js/lecturer_poll_display/questions/code_question_display";
 
 describe('renderCodeQuestion', () => {
   it('should render HTML structure with question data', () => {

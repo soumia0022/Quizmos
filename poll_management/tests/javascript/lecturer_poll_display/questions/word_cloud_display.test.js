@@ -1,4 +1,4 @@
-import {renderWordCloud} from "../../static/js/lecturer_poll_display/questions/word_cloud_display";
+import {renderWordCloud} from "../../../../static/js/lecturer_poll_display/questions/word_cloud_display";
 
 describe("renderWordCloud", () => {
   it("should generate the correct HTML for a given question", () => {

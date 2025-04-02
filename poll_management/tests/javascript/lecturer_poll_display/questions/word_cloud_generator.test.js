@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { WordCloudGenerator } from "../../static/js/lecturer_poll_display/questions/word_cloud_generator.js";
+import { WordCloudGenerator } from "../../../../static/js/lecturer_poll_display/questions/word_cloud_generator.js";
 
 // Mock getBBox globally to prevent Jest errors
 SVGElement.prototype.getBBox = function () {

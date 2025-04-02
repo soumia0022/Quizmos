@@ -1,4 +1,4 @@
-import { audio_file_display } from "../../static/js/lecturer_poll_display/questions/audio_file_display";
+import { audio_file_display } from "../../../../static/js/lecturer_poll_display/questions/audio_file_display";
 
 describe("audio_file_display", () => {
   it("should return the correct audio HTML with a valid audio file", () => {

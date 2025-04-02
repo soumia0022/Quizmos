@@ -1,4 +1,4 @@
-import {renderChoice} from "../../static/js/lecturer_poll_display/questions/choice_display";
+import {renderChoice} from "../../../../static/js/lecturer_poll_display/questions/choice_display";
 
 test("renderChoice should generate correct HTML for a question", () => {
     const question = {

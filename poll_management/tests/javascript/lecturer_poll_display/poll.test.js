@@ -2,15 +2,15 @@
  * @jest-environment jsdom
  */
 
-import "../../static/js/lecturer_poll_display/poll"; // Ensure script runs
-import { renderChoice } from "../../static/js/lecturer_poll_display/questions/choice_display";
-import { pollState } from "../../static/js/lecturer_poll_display/../poll_state";
+import "../../../static/js/lecturer_poll_display/poll"; // Ensure script runs
+import { renderChoice } from "../../../static/js/lecturer_poll_display/questions/choice_display";
+import { pollState } from "../../../static/js/poll_state";
 
-jest.mock("../../static/js/lecturer_poll_display/questions/choice_display", () => ({
+jest.mock("../../../static/js/lecturer_poll_display/questions/choice_display", () => ({
   renderChoice: jest.fn(() => "<div>Mocked Choice</div>"),
 }));
 
-jest.mock("../../static/js/lecturer_poll_display/../poll_state", () => ({
+jest.mock("../../../static/js/poll_state", () => ({
   pollState: {
     lecturer_webSocket: { readyState: 1, send: jest.fn() }, // Mock WebSocket
     currentQuestion: null,
@@ -48,7 +48,7 @@ describe("startPoll", () => {
   });
 });
 
-import { updateQuestionDisplay } from "../../static/js/lecturer_poll_display/poll";
+import { updateQuestionDisplay } from "../../../static/js/lecturer_poll_display/poll";
 
 describe("updateQuestionDisplay", () => {
   it("should render the correct question HTML", () => {

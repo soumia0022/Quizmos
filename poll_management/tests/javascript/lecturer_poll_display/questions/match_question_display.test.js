@@ -1,4 +1,4 @@
-import {renderMatch} from "../../static/js/lecturer_poll_display/questions/match_question_display";
+import {renderMatch} from "../../../../static/js/lecturer_poll_display/questions/match_question_display";
 
 describe('renderMatch', () => {
   it('should render HTML with question data and match options', () => {

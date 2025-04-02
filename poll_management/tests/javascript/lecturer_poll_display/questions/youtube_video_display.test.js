@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { youtube_video_display } from "../../static/js/lecturer_poll_display/questions/youtube_video_display.js";
+import { youtube_video_display } from "../../../../static/js/lecturer_poll_display/questions/youtube_video_display.js";
 
 describe("youtube_video_display", () => {
   it("should return a valid HTML string containing an iframe", () => {
