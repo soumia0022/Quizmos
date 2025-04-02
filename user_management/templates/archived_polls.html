@@ -67,7 +67,9 @@
     </div>
   </div>
 
+  {% if polls %}
   {% include 'partials/pagination.html' %}
+    {% endif %}
 </div>
 
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
