@@ -163,3 +163,5 @@ function updateQuestionDisplay() {
       }));
     }
   }
+
+module.exports = {updateQuestionDisplay};
