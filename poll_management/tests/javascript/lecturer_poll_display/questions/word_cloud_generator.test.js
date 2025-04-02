@@ -9,9 +9,6 @@ SVGElement.prototype.getBBox = function () {
   return { width: 100, height: 20 };
 };
 
-// Debugging: Log the class
-console.log(WordCloudGenerator);  // Should log the class or `undefined` if it's not exported correctly
-
 describe("WordCloudGenerator", () => {
   let container;
 
