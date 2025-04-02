@@ -390,15 +390,10 @@ class PollAnalyticsTestCase(TestCase):
         # Create another user and poll
         other_user = User.objects.create_user(username='otheruser', password='password', role='Lecturer')
         other_poll = Poll.objects.create(title="Other Poll", user=other_user)
-
-        # Log in as a different user
         self.client.login(username='johndoe', password='password')
-
-        # Try to access the other user's poll analytics
         url = reverse("poll_analytics", args=[other_poll.id])
         response = self.client.get(url)
 
-        # Update with the correct assertion for 403 Forbidden
         self.assertEqual(response.status_code, 403)  # Permission Denied
 
     def test_permission_denied_for_non_owner(self):
