@@ -123,7 +123,7 @@ class GetStudentAnswerViewTest(TestCase):
     def test_api_returns_correct_answer_for_mcq(self):
         """Test if the API correctly returns MCQ correct answer"""
         self.client.login(username="teststudent", password="testpass")
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.mcq_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, self.mcq_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], ["4"])
@@ -133,7 +133,7 @@ class GetStudentAnswerViewTest(TestCase):
     def test_api_returns_correct_answer_for_single_choice(self):
         """Test if the API correctly returns Single Choice correct answer"""
         self.client.login(username="teststudent", password="testpass")
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.single_choice_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, self.single_choice_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], ["Paris"])
@@ -142,7 +142,7 @@ class GetStudentAnswerViewTest(TestCase):
     def test_api_returns_correct_answer_for_text_fill(self):
         """Test if the API correctly returns Text Fill correct answer"""
         self.client.login(username="teststudent", password="testpass")
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.text_fill_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, self.text_fill_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], "World")
@@ -151,7 +151,7 @@ class GetStudentAnswerViewTest(TestCase):
     def test_api_returns_correct_answer_for_dropdown(self):
         """Test if the API correctly returns Dropdown correct answer"""
         self.client.login(username="teststudent", password="testpass")
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.dropdown_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, self.dropdown_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], "CorrectOption")
@@ -167,7 +167,7 @@ class GetStudentAnswerViewTest(TestCase):
             match_options=["A", "B", "C"], 
             match_answers=["1", "2"]  
         )
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, mismatched_match_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, mismatched_match_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], "Mismatch between options and answers")
@@ -182,7 +182,7 @@ class GetStudentAnswerViewTest(TestCase):
             match_options=["X", "Y"],
             match_answers=["Alpha", "Beta"]
         )
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, well_formed_match_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, well_formed_match_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], [
@@ -195,7 +195,7 @@ class GetStudentAnswerViewTest(TestCase):
         self.client.login(username="teststudent", password="testpass")
         # Using a non-existent question ID
         nonexistent_id = 9999
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, nonexistent_id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, nonexistent_id]))
         self.assertEqual(response.status_code, 404)
 
     def test_api_handles_unsupported_question_type(self):
@@ -207,7 +207,7 @@ class GetStudentAnswerViewTest(TestCase):
             question_type="unsupported_type",  
             question_text="Unsupported Question Type"
         )
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, unsupported_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, unsupported_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], "No correct answer available")
@@ -215,14 +215,14 @@ class GetStudentAnswerViewTest(TestCase):
     def test_api_handles_post_method(self):
         """Test if API correctly rejects POST method"""
         self.client.login(username="teststudent", password="testpass")
-        response = self.client.post(reverse('get_student_answer', args=[self.poll.id, self.mcq_question.id]))
+        response = self.client.post(reverse('response_management:get_student_answer', args=[self.poll.id, self.mcq_question.id]))
         self.assertEqual(response.status_code, 400)
 
 
     def test_api_returns_correct_answer_for_word_cloud(self):
         """Test if the API correctly returns Word Cloud response"""
         self.client.login(username="teststudent", password="testpass")
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.word_cloud_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, self.word_cloud_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertIn(data["selected_answer"], [None, ['Einstein', 'Tesla']]) 
@@ -238,7 +238,7 @@ class GetStudentAnswerViewTest(TestCase):
     )
 
         self.client.login(username="teststudent", password="testpass")
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, new_word_cloud.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, new_word_cloud.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["selected_answer"], None) 
@@ -246,7 +246,7 @@ class GetStudentAnswerViewTest(TestCase):
 
     def test_api_handles_string_multiple_choice_answer(self):
         self.client.login(username="teststudent", password="testpass")
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.mcq_string_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, self.mcq_string_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], ["6"])
@@ -254,7 +254,7 @@ class GetStudentAnswerViewTest(TestCase):
 
     def test_api_returns_correct_answer_for_code_question(self):
         self.client.login(username="teststudent", password="testpass")
-        response = self.client.get(reverse('get_student_answer', args=[self.poll.id, self.code_question.id]))
+        response = self.client.get(reverse('response_management:get_student_answer', args=[self.poll.id, self.code_question.id]))
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["correct_answer"], "print('Hello')")
