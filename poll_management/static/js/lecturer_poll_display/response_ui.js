@@ -1,4 +1,4 @@
-import {WordCloudGenerator} from "./questions/word_could_generator.js";
+import {WordCloudGenerator} from "./questions/./word_cloud_generator.js";
 
 function updateProgressElements(element, count, totalResponses) {
     const percentage = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
@@ -246,3 +246,5 @@ export function updateWordCloudUI(containerID, wordData, options = {}) {
     const wordCloud = new WordCloudGenerator(containerID, options);
     wordCloud.generate(wordData);
 }
+
+module.exports = {updateProgressElements, updateResponseUI, updateCodeResponseUI, updateTextResponseUI, updateWordCloudUI}
