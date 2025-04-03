@@ -1,12 +1,21 @@
 import csv
+
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from poll_management.models.poll_model import Poll
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
+from user_management.helpers import role_required
 
+@login_required
+@role_required('Lecturer')
 def download_csv(request, poll_id):
     poll = get_object_or_404(Poll, id=poll_id)
+
+    if poll.user != request.user:
+        raise PermissionDenied("You do not have permission to access this poll's analytics") # Message in terminal
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="{poll.title}_responses.csv"'
