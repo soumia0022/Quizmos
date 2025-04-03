@@ -10,13 +10,13 @@ class Response(models.Model):
     poll = models.ForeignKey(Poll, on_delete=models.SET_NULL, null=True, default=1)
     submitted_on = models.DateTimeField(auto_now_add=True)
     session_code = models.IntegerField(default=0)
-
     class Meta:
         abstract = True
 
 class MultipleChoiceResponse(Response):
     selected_options = models.JSONField()
     is_correct = models.BooleanField(default=False)
+    is_partially_correct = models.BooleanField(default=False)
 
 class SingleChoiceResponse(Response):
     selected_option = models.TextField()
@@ -32,6 +32,7 @@ class DropdownFillResponse(Response):
 
 class MatchQuestionResponse(Response):
     match_responses = models.JSONField()
+    is_partially_correct = models.BooleanField(default=False)
     is_correct = models.BooleanField(default=False)
 
 class WordCloudResponse(Response):
