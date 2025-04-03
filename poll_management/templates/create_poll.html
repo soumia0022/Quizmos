@@ -2,18 +2,19 @@
 <html lang="en">
 {% load system_extras %}
 
-<div class="row">
-    <div class="col-12">
-        <h1 class="dashboard-heading">Create Poll</h1>
+<div class="container mt-5">
+    <div class="row w-100">
+        <div class="col-12 d-flex justify-content-center">
+            <div class="card cover-card">
+                <h1 class="cover-heading">Create Poll</h1>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" name="title" id="title" class="form-control" placeholder="Poll Title" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-block mt-3">Create Poll</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
-<body>
-    {% noscript_warning %}
-    <form method="post">
-        {% csrf_token %}
-        <label for="title">Poll Title:</label>
-        <input type="text" name="title" required>
-        <button type="submit">Create Poll</button>
-    </form>
-</body>
-</html>
