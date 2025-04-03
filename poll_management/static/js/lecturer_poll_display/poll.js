@@ -164,4 +164,4 @@ function updateQuestionDisplay() {
     }
   }
 
-module.exports = {updateQuestionDisplay};
+export {updateQuestionDisplay};
