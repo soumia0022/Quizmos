@@ -91,7 +91,7 @@
     <!-- Buttons Section -->
     <div class="text-center mt-4">
         {% if session_codes|length == 1 and selected_session_code %}
-        <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="custom-back-button">
+        <a href="{% url 'response_management:student_view_poll' poll.id %}" class="custom-back-button">
             <i class="bi bi-arrow-left me-2"></i>All {{ poll.title }} Responses
         </a>
         {% elif session_codes|length == 1 and not selected_session_code %}
