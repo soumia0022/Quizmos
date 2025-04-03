@@ -79,7 +79,14 @@ def dashboard(request):
     search_query = request.GET.get('search', '')
 
     if current_user.role == "Lecturer":
-        polls = Poll.objects.filter(user=request.user, archived=False).annotate(
+        active_polls = Poll.objects.filter(user=request.user, archived=False).annotate(
+            multiple_choice_responses_count=Count('multiplechoiceresponse'),
+            single_choice_responses_count=Count('singlechoiceresponse'),
+            dropdown_fill_responses_count=Count('dropdownfillresponse'),
+            text_fill_responses_count=Count('textfillresponse'),
+            match_question_responses_count=Count('matchquestionresponse')
+        )
+        archived_polls = Poll.objects.filter(user=request.user, archived=True).annotate(
             multiple_choice_responses_count=Count('multiplechoiceresponse'),
             single_choice_responses_count=Count('singlechoiceresponse'),
             dropdown_fill_responses_count=Count('dropdownfillresponse'),
@@ -88,7 +95,8 @@ def dashboard(request):
         )
 
         if search_query:
-            polls = polls.filter(Q(title__icontains=search_query))
+            active_polls = active_polls.filter(title__icontains=search_query)
+            archived_polls = archived_polls.filter(title__icontains=search_query)
 
         sort_options = {
             'title_asc': Lower('title'),
@@ -96,25 +104,40 @@ def dashboard(request):
             'created_at_asc': 'created_at',
             'created_at_desc': '-created_at'
         }
+        active_polls = active_polls.order_by(sort_options.get(sort_by, '-created_at'))
+        archived_polls = archived_polls.order_by(sort_options.get(sort_by, '-created_at'))
 
-        polls = polls.order_by(sort_options.get(sort_by, '-created_at'))
-
-        for p in polls:
-            p.total_responses_count = (
-                p.multiple_choice_responses_count +
-                p.single_choice_responses_count +
-                p.dropdown_fill_responses_count +
-                p.text_fill_responses_count +
-                p.match_question_responses_count
+        for poll in active_polls:
+            poll.total_responses_count = (
+                poll.multiple_choice_responses_count +
+                poll.single_choice_responses_count +
+                poll.dropdown_fill_responses_count +
+                poll.text_fill_responses_count +
+                poll.match_question_responses_count
+            )
+        for poll in archived_polls:
+            poll.total_responses_count = (
+                poll.multiple_choice_responses_count +
+                poll.single_choice_responses_count +
+                poll.dropdown_fill_responses_count +
+                poll.text_fill_responses_count +
+                poll.match_question_responses_count
             )
 
-        paginator = Paginator(polls, 12)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+    
+        active_page_number = request.GET.get('active_page')  
+        archived_page_number = request.GET.get('archived_page') 
+
+        paginator_active = Paginator(active_polls, 12)
+        paginator_archived = Paginator(archived_polls, 12)
+
+        page_obj_active = paginator_active.get_page(active_page_number)
+        page_obj_archived = paginator_archived.get_page(archived_page_number)
 
         return render(request, 'lecturer_dashboard.html', {
             'user': current_user,
-            'polls': page_obj,
+            'active_polls': page_obj_active,
+            'archived_polls': page_obj_archived,
             'sort_by': sort_by,
             'search_query': search_query,
             'show_confirmation_popup': show_confirmation_popup,
