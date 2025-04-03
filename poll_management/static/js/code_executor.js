@@ -1,7 +1,7 @@
 // Initializes the CodeMirror editor
 export function initializeCodeEditor(textarea, language = "python", displayLanguage = false) {
     if (!textarea) {
-        console.error(`Textarea with ID '${textareaId}' not found.`);
+        console.error(`Textarea not found.`);
         return null;
     }
 
@@ -107,3 +107,5 @@ export function executeCode(editor, language, outputId) {
     console.log("Sending request to API...");
     xhr.send(data);
 }
+
+module.exports = { initializeCodeEditor, executeCode };
