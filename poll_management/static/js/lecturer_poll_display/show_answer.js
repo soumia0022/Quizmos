@@ -36,4 +36,4 @@ function showAnswer() {
 
 window.showAnswer = showAnswer;
 
-module.exports = {showAnswer}
+export {showAnswer}

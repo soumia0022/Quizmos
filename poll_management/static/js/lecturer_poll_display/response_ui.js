@@ -247,4 +247,4 @@ export function updateWordCloudUI(containerID, wordData, options = {}) {
     wordCloud.generate(wordData);
 }
 
-module.exports = {updateProgressElements, updateResponseUI, updateCodeResponseUI, updateTextResponseUI, updateWordCloudUI}
+export {updateProgressElements}

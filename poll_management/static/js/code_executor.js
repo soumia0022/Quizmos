@@ -108,4 +108,4 @@ export function executeCode(editor, language, outputId) {
     xhr.send(data);
 }
 
-module.exports = { initializeCodeEditor, executeCode };
+

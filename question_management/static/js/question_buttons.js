@@ -167,4 +167,4 @@ function clickTextPreview(dropdownCorrectAnswerField, dropdownInput, textPreview
         .join(' ');
 }
 
-module.exports = { addMultipleChoiceOption, addSingleChoiceOption, addMatchOptionComponents };
+export { addMultipleChoiceOption, addSingleChoiceOption, addMatchOptionComponents };
