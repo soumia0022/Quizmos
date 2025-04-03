@@ -79,7 +79,7 @@ def dashboard(request):
     search_query = request.GET.get('search', '')
 
     if current_user.role == "Lecturer":
-        polls = Poll.objects.filter(user=request.user).annotate(
+        polls = Poll.objects.filter(user=request.user, archived=False).annotate(
             multiple_choice_responses_count=Count('multiplechoiceresponse'),
             single_choice_responses_count=Count('singlechoiceresponse'),
             dropdown_fill_responses_count=Count('dropdownfillresponse'),

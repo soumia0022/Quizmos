@@ -12,6 +12,7 @@ from user_management.views import (
     profile_update_views,
     signup_views,
     forgot_password_views,
+    archive_view
 )
 
 app_name = 'user_management'
@@ -37,8 +38,15 @@ urlpatterns = [
     path('about/', AboutView.as_view(), name='about'),
     path("faq/", FaqView.as_view(), name="faq"),
     path('delete-account/', delete_account, name='delete_account'),
+
+    path('poll/<int:poll_id>/archive/', archive_view.archive_poll, name='archive_poll'),
+    path('poll/<int:poll_id>/unarchive/', archive_view.unarchive_poll, name='unarchive_poll'),
+    path('poll/<int:poll_id>/toggle_archive/', archive_view.toggle_archive_poll, name='toggle_archive_poll'),
+    path('polls/archived/', archive_view.view_archived_polls, name='view_archived_polls'),
+
     path('polls/', login_views.student_polls_page, name='student_polls_page'),
     path('join-poll/', login_views.join_poll_page, name='join_poll_page'),
+
 
 
 ]

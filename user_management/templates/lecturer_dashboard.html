@@ -33,12 +33,27 @@
     </div>
   </div>
 
+
+  <div class="row mb-3">
+    <div class="col-12">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link {% if not view_type or view_type == 'active' %}active{% endif %}" href="{% url 'user_management:dashboard' %}">Active Polls</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_type == 'archived' %}active{% endif %}" href="{% url 'user_management:view_archived_polls' %}">Archived Polls</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
   {% include 'partials/search_sort_form.html' %}
 
 
   <!-- Section for listing polls -->
   <div class="row mt-4">
     <div class="col-12">
+        <h2>{% if view_type == 'archived' %}Your Archived Polls{% else %}Your Active Polls{% endif %}</h2>
         <div class="poll-container row">
             {% for poll in polls %}
             <div class="col-md-4 mb-4">
@@ -46,6 +61,12 @@
                     <!-- Poll Header -->
                     <div class="card-header">
                         <h5 class="card-title">{{ poll.title }}</h5>
+                        <div class="archive-container" style="position: absolute; top: 10px; right: 10px;">
+                            <form action="{% url 'user_management:toggle_archive_poll' poll.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary bi bi-archive"></button>
+                            </form>
+                        </div>
                     </div>
 
                     <!-- Poll Body -->
@@ -79,11 +100,14 @@
                             <button id="id_poll_delete_button" type="button" onclick="confirmDelete( poll.id )" data-id="{{ poll.id }}" class="btn btn-danger btn-sm">Delete</button>
                         </form>
 
+
                         <a id="id_poll_start_button"
                            href="{% url 'poll_management:display_code' poll.id %}"
                            class="btn btn-success btn-sm {% if poll.questions.count == 0 %}disabled{% endif %}">
                            Start
                         </a>
+
+
                     </div>
 
                 </div>
