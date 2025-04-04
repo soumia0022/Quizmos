@@ -36,4 +36,4 @@ function validateYouTubeLink(linkInput) {
            shortLinkRegex.test(trimmedLink);
 }
 
-export { displayErrorMessage, McConstraints, ScConstraints, choiceQuestionConstraints };
+export { displayErrorMessage, McConstraints, ScConstraints, choiceQuestionConstraints, validateYouTubeLink };
