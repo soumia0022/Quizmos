@@ -1,4 +1,11 @@
 import { initializeCodeEditor, executeCode } from "./code_executor.js";
+import {
+    addMatchOptionComponents,
+    addMultipleChoiceOption,
+    addSingleChoiceOption, clickTextPreview,
+    dropdownInputChanged, resetButtonChanged
+} from "./question_buttons.js";
+import {displayErrorMessage, McConstraints, ScConstraints} from "./question_constraints.js";
 
 document.addEventListener('DOMContentLoaded', function () {
     const questionType = document.getElementById("question-type").value
