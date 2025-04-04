@@ -1,4 +1,5 @@
 import { initializeCodeEditor, executeCode } from "./code_executor.js";
+import { addMatchOptionComponents, addMultipleChoiceOption, addSingleChoiceOption, dropdownInputChanged, resetButtonChanged, clickTextPreview } from "./question_buttons.js";
 
 document.addEventListener('DOMContentLoaded', function() {
     // DOM elements
