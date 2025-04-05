@@ -40,27 +40,45 @@ export function updateResponseUI(questionId, optionCounts) {
 export function updateTextResponseUI(questionId, responses) {
     //for text answered questions
     const questionContainer = document.querySelector(`[data-question="${questionId}"]`);
+    const responseListContainer = questionContainer.querySelector('.response-list-container');
     const responseList = questionContainer.querySelector(`#responseList-${questionId}`);
 
 
     responseList.innerHTML = '';
 
-    // add the responses as a list on the screen maybe update later to be able to delete
-    responses.forEach((response) => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="response-text">${response}</span>
-            </div>
-        `;
-        responseList.appendChild(listItem);
-    });
-
-
-    const responseListContainer = questionContainer.querySelector('.response-list-container');
     if (responseListContainer) {
         responseListContainer.style.display = responses.length > 0 ? 'block' : 'none';
+    }
+
+    // add the responses as a list on the screen maybe update later to be able to delete
+    if (responses.length <= 10) {
+        responses.forEach((response) => {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item';
+            listItem.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="response-text">${response}</span>
+                </div>
+            `;
+            responseList.appendChild(listItem);
+        });
+
+    }else {
+        paginateResponses({
+            container: questionContainer,
+            responses,
+            listSelector: `#responseList-${questionId}`,
+            renderItem: (response) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="response-text">${response}</span>
+                </div>
+            `;
+            responseList.appendChild(listItem);
+            }
+        });
     }
 }
 
@@ -248,3 +266,65 @@ export function updateWordCloudUI(containerID, wordData, options = {}) {
 }
 
 export {updateProgressElements}
+
+function paginateResponses({ 
+    container, 
+    responses, 
+    pageSize = 10, 
+    renderItem, 
+    listSelector, 
+    paginationClass = '.pagination-controls' 
+}) {
+    let currentPage = 1;
+    const totalPages = Math.ceil(responses.length / pageSize);
+
+    const list = container.querySelector(listSelector);
+    const paginationContainerSelector = container.querySelector(paginationClass);
+
+    function renderPage(page) {
+        list.innerHTML = '';
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const pageItems = responses.slice(start, end);
+
+        pageItems.forEach(renderItem);
+
+        renderPaginationControls();
+    }
+
+    function renderPaginationControls() {
+        if (totalPages <= 1) {
+            if (paginationContainerSelector) paginationContainerSelector.remove();
+            return;
+        }
+
+        let paginationContainer = paginationContainerSelector;
+        if (!paginationContainer) {
+            paginationContainer = document.createElement('div');
+            paginationContainer.className = paginationClass.replace('.', '') + ' mt-2';
+            container.appendChild(paginationContainer);
+        }
+
+        paginationContainer.innerHTML = `
+            <button class="btn btn-sm btn-outline-primary me-2" ${currentPage === 1 ? 'disabled' : ''} id="prevPage">Previous</button>
+            <span>Page ${currentPage} of ${totalPages}</span>
+            <button class="btn btn-sm btn-outline-primary ms-2" ${currentPage === totalPages ? 'disabled' : ''} id="nextPage">Next</button>
+        `;
+
+        paginationContainer.querySelector('#prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        });
+
+        paginationContainer.querySelector('#nextPage').addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+    }
+
+    renderPage(currentPage);
+}
