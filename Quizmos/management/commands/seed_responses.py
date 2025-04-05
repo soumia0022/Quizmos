@@ -101,8 +101,14 @@ class Command(BaseCommand):
                         response_type = SingleChoiceResponse
 
                     elif question_type == "text_fill":
-                        response_data['answer_text'] = random.choice(SAMPLE_TEXTS)
-                        is_correct = response_data['answer_text'].strip().lower() == (question.text_fill_answer or "").strip().lower()
+                        # Randomly decide whether to submit a correct or random answer
+                        use_correct_answer = random.random() < 0.4  # ~40% chance of being correct
+                        if use_correct_answer and question.text_fill_answer:
+                            answer_text = question.text_fill_answer.strip()
+                        else:
+                            answer_text = random.choice(SAMPLE_TEXTS)
+                        response_data['answer_text'] = answer_text
+                        is_correct = answer_text.strip().lower() == (question.text_fill_answer or "").strip().lower()
                         response_type = TextFillResponse
 
                     elif question_type == "dropdown_fill":
