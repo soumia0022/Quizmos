@@ -42,6 +42,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("No users or polls found."))
             return
 
+        # Dictionary to track which poll IDs a student has already responded to
+        student_poll_names = {user: set() for user in users}
+
         for poll in polls:
             questions = list(Question.objects.filter(poll=poll))
             if not questions:
@@ -53,17 +56,24 @@ class Command(BaseCommand):
             # Generate TWO session codes for each student per poll
             student_session_codes = {user: (random.randint(100000, 999999), random.randint(100000, 999999)) for user in users}
 
-            # Keep track of responses per student
-            student_response_count = {user: 0 for user in users}
-            max_responses_per_student = len(questions)  # Each student should answer more questions
+            # Each user can answer each poll name only once
+            for user in users:
+                if poll.title in student_poll_names[user]:
+                    continue  # Skip this poll for this user
 
-            for index, question in enumerate(questions):  # Loop with index to alternate session codes
+                # Mark this poll name as answered for this user
+                student_poll_names[user].add(poll.title)
 
-                for user in users:
-                    if student_response_count[user] >= max_responses_per_student:
-                        continue  # Skip if student already answered enough questions
+                # Count how many questions the user has answered
+                student_response_count = 0
+                max_responses = len(questions)
+
+                for index, question in enumerate(questions):
+                    if student_response_count >= max_responses:
+                        break
+
                     # Alternate session codes
-                    session_code = student_session_codes[user][index % 2]  # Toggle between the two session codes
+                    session_code = student_session_codes[user][index % 2]
 
                     response_data = {
                         'question': question,
@@ -129,7 +139,7 @@ class Command(BaseCommand):
                     response_type.objects.create(**response_data)
 
                     # Increment response count for the user
-                    student_response_count[user] += 1
+                    student_response_count += 1
 
             self.stdout.write(self.style.SUCCESS(f"Successfully seeded responses for poll {poll.id}"))
 
