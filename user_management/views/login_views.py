@@ -77,6 +77,7 @@ def dashboard(request):
 
     sort_by = request.GET.get('sort_by', 'created_at_desc')
     search_query = request.GET.get('search', '')
+    view_value = request.GET.get('view', 'active')  
 
     if current_user.role == "Lecturer":
         active_polls = Poll.objects.filter(user=request.user, archived=False).annotate(
@@ -124,12 +125,11 @@ def dashboard(request):
                 poll.match_question_responses_count
             )
 
+        paginator_active = Paginator(active_polls, 12)
+        paginator_archived = Paginator(archived_polls, 12)
     
         active_page_number = request.GET.get('active_page')  
         archived_page_number = request.GET.get('archived_page') 
-
-        paginator_active = Paginator(active_polls, 12)
-        paginator_archived = Paginator(archived_polls, 12)
 
         page_obj_active = paginator_active.get_page(active_page_number)
         page_obj_archived = paginator_archived.get_page(archived_page_number)
@@ -140,6 +140,7 @@ def dashboard(request):
             'archived_polls': page_obj_archived,
             'sort_by': sort_by,
             'search_query': search_query,
+            'view': view_value,
             'show_confirmation_popup': show_confirmation_popup,
             'original_title': original_title,
             'suggested_title': suggested_title,

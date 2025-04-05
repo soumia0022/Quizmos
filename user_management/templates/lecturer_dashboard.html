@@ -39,10 +39,10 @@
     <div class="col-12">
       <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link active" id="active-tab" href="javascript:void(0);" onclick="togglePolls('active')">Active Polls</a>
+          <a class="nav-link {% if view == 'active' %}active{% endif %}" id="active-tab" href="javascript:void(0);" onclick="togglePolls('active')">Active Polls</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="archived-tab" href="javascript:void(0);" onclick="togglePolls('archived')">Archived Polls</a>
+          <a class="nav-link {% if view == 'archived' %}active{% endif %}" id="archived-tab" href="javascript:void(0);" onclick="togglePolls('archived')">Archived Polls</a>
         </li>
       </ul>
     </div>
@@ -51,7 +51,7 @@
   {% include 'partials/search_sort_form.html' %}
 
   <!-- Active Polls Section -->
-  <div id="active-polls" class="poll-container row mt-4">
+  <div id="active-polls" class="poll-container row mt-4" style="display:{% if view == 'active' %}flex{% else %}none{% endif %};">
     {% for poll in active_polls %}
     <div class="col-md-4 mb-4">
       <div class="poll-card card">
@@ -102,10 +102,13 @@
     {% empty %}
     <p>No active polls found.</p>
     {% endfor %}
+    <div class="pagination-wrapper d-flex justify-content-center">
+      {% include 'partials/pagination.html' with polls=active_polls page_param="active_page" %}
+    </div>
   </div>
 
   <!-- Archived Polls Section -->
-  <div id="archived-polls" class="poll-container row mt-4" style="display: none;">
+  <div id="archived-polls" class="poll-container row mt-4" style="display:{% if view == 'archived' %}flex{% else %}none{% endif %};">
     {% for poll in archived_polls %}
     <div class="col-md-4 mb-4">
       <div class="poll-card card">
@@ -151,11 +154,11 @@
     {% empty %}
     <p>No archived polls found.</p>
     {% endfor %}
+    <div class="pagination-wrapper d-flex justify-content-center">
+      {% include 'partials/pagination.html' with polls=archived_polls page_param="archived_page" %}
+    </div>
   </div>
-
-  <div class="pagination-wrapper d-flex justify-content-center">
-    {% include 'partials/pagination.html' %}
-</div> 
+      
   {% include 'partials/confirm_delete.html' %}
 
   {% if show_confirmation_popup %}
@@ -187,6 +190,8 @@
 
     document.getElementById('active-tab').classList.remove('active');
     document.getElementById('archived-tab').classList.remove('active');
+
+    document.getElementById('view-tab').value = type;
 
     if (type === 'active') {
       document.getElementById('active-polls').style.display = 'flex';
