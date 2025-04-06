@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/join_create_poll.css' %}">
+    <link rel="stylesheet" href="{% static 'css/add_question.css' %}">
 
     
     <!-- CodeMirror Styles & Scripts -->
@@ -220,7 +221,7 @@
 
             <!-- Sidebar for Created Questions -->
             <div class="col-lg-4 col-md-5 position-relative">
-                <div id="questions-sidebar" class="border rounded bg-light p-3">
+                <div id="questions-sidebar" class="custom-sidebar p-3">
                     <h3 class="text-center">Questions Created:</h3>
                     <div id="questions-list">
                         {% for question in poll.questions.all %}
