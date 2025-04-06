@@ -1,0 +1,28 @@
+  .custom-sidebar {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;                     
+    border-radius: 20px;                        
+    padding: 15px;                               
+    color: #fff;                                 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);     
+  }
+  
+  .custom-sidebar .question-item {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .custom-sidebar .question-item:last-child {
+    border-bottom: none;
+  }
+  
+  .custom-sidebar a {
+    color: #F1F1F1;  
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .custom-sidebar a:hover {
+    color: #1F778D;  
+  }
+ 
