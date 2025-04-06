@@ -36,23 +36,22 @@
     {% go_back_button %}
 
     <!-- Main Content for Adding a Question -->
-    <div class="container-fluid mt-2 text-center">
-        <div class="row justify-content-center align-items-center mb-3">
-            <div class="col-auto">
-                <form  method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input type="text" name="poll_title" id="id_poll_title" class="form-control d-inline border border-0 p-1 text-center"
-                           value="{{ poll.title }}" style="font-size: 2rem; text-align: center;">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-pencil"></i> Save Title
-                    </button>
-                </form>
+    <div class="container custom-form-container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8">
+            <div class="form-card">
+              <h3 class="form-title">Edit Poll Title</h3>
+              <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" name="poll_title" id="id_poll_title" class="form-control custom-input"
+                       value="{{ poll.title }}" placeholder="Enter Poll Title">
+                <button type="submit" class="custom-btn">Save Title</button>
+              </form>
+              <button id="add-question-btn" class="custom-btn secondary">Add Question</button>
             </div>
-            <div class="col-auto">
-                <button id="add-question-btn" class="btn btn-primary">Add Question</button>
-            </div>
+         </div>
         </div>
-    </div>
+    </div>  
 
     <div class="container-fluid">
         <div class="row">
