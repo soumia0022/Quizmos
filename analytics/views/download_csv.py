@@ -21,7 +21,7 @@ def download_csv(request, poll_id):
     response['Content-Disposition'] = f'attachment; filename="{poll.title}_responses.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['User', 'Question', 'Question Type', 'Options', 'Correct Answer', 'Number of Responses'])
+    writer.writerow(['Question', 'Question Type', 'Options', 'Correct Answer', 'Number of Responses'])
 
     for question in poll.questions.all():
         options = ""
@@ -53,14 +53,12 @@ def download_csv(request, poll_id):
 
         response_count = responses.count()
 
-        for response_obj in responses:
-            writer.writerow([
-                response_obj.user.username if response_obj.user else "Anonymous",
-                question.question_text,
-                question_type,
-                options,
-                correct_answer,
-                response_count
-            ])
+        writer.writerow([
+            question.question_text,
+            question_type,
+            options,
+            correct_answer,
+            response_count
+        ])
 
     return response
