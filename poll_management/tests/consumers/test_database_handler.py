@@ -100,11 +100,17 @@ class TestDatabaseHandler(TransactionTestCase):
         asyncio.set_event_loop(self.loop)
         self.loop.run_until_complete(self.asyncSetUp())
 
+
+
     def tearDown(self):
+        # Close any pending Redis connections
+        from channels.layers import get_channel_layer
+        channel_layer = get_channel_layer()
+        if hasattr(channel_layer, 'connection_pool'):
+            channel_layer.connection_pool.disconnect()
+
         self.loop.close()
         super().tearDown()
-
-
 
     async def test_get_question(self):
         """Test retrieving question details"""
@@ -201,3 +207,57 @@ class TestDatabaseHandler(TransactionTestCase):
             ['Option A']
         )
         self.assertFalse(success)
+
+    async def test_save_multiple_choice_partially_correct(self):
+        """Test saving partially correct multiple choice response"""
+        # (This should be marked as partially correct)
+        response_data = ['Option A']  # one of the correct answers
+        success = await self.db_handler.save_response(
+            self.student,
+            self.poll,
+            self.poll.number_code,
+            self.mcq_question.id,
+            'multiple_choice',
+            response_data
+        )
+
+        self.assertTrue(success)
+
+        queryset = await database_sync_to_async(lambda: MultipleChoiceResponse.objects.filter(
+            user=self.student,
+            question=self.mcq_question
+        ))()
+
+        response = await database_sync_to_async(lambda: queryset.first())()
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.selected_options, response_data)
+        self.assertFalse(response.is_correct)  # not fully correct
+        self.assertTrue(response.is_partially_correct)  #  partially correct
+
+        # (Should not be marked as partially correct)
+        response_data = ['Option A', 'Option B']  # Option B is not a correct answer
+        success = await self.db_handler.save_response(
+            self.student,
+            self.poll,
+            self.poll.number_code,
+            self.mcq_question.id,
+            'multiple_choice',
+            response_data
+        )
+
+        self.assertTrue(success)
+
+
+        queryset = await database_sync_to_async(lambda: MultipleChoiceResponse.objects.filter(
+            user=self.student,
+            question=self.mcq_question
+        ))()
+
+        response = await database_sync_to_async(lambda: queryset.first())()
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.selected_options, response_data)
+        self.assertFalse(response.is_correct)
+        self.assertFalse(response.is_partially_correct)  # not partially correct due to wrong selections
+
