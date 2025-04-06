@@ -201,3 +201,55 @@ class TestDatabaseHandler(TransactionTestCase):
             ['Option A']
         )
         self.assertFalse(success)
+
+    async def test_match_question_with_list_of_dicts(self):
+        """Test handling of match question with list of dictionaries"""
+        response_data = [
+            {'left': '1'},
+            {'left': '2'},
+            {'left': '3'},
+        ]
+        is_correct = await self.db_handler.save_response(
+            self.student,
+            self.poll,
+            self.poll.number_code,
+            self.match_question.id,
+            'match_question',
+            response_data
+        )
+        self.assertTrue(is_correct)
+
+
+        wrong_response_data = [
+            {'right': '2'},
+            {'left': '3'},
+            {'left': '2'},
+        ]
+        is_correct = await self.db_handler.save_response(
+            self.student,
+            self.poll,
+            self.poll.number_code,
+            self.match_question.id,
+            'match_question',
+            wrong_response_data
+        )
+        self.assertFalse(is_correct)
+
+    async def test_code_question_response(self):
+        """Test handling of code question response"""
+        correct_code = "print('Hello, World!')"
+        incorrect_code = "print('Goodbye, World!')"
+
+
+        is_correct = await self.db_handler.save_response(
+            self.student,
+            self.poll,
+            self.poll.number_code,
+            self.code_question.id,
+            'code_question',
+            correct_code
+        )
+        self.assertTrue(is_correct)
+
+
+
