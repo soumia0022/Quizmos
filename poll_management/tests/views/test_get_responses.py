@@ -9,7 +9,7 @@ from poll_management.models.poll_model import Poll
 from user_management.models import User
 from response_management.models.response_model import (
     MatchQuestionResponse, MultipleChoiceResponse,
-    SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse
+    SingleChoiceResponse, DropdownFillResponse, TextFillResponse, WordCloudResponse, CodeQuestionResponse
 )
 from poll_management.views.get_responses import QuestionResponseCounter, get_question_response_counts
 
@@ -334,4 +334,50 @@ class QuestionResponseCounterTests(TestCase):
         self.assertEqual(response.status_code, 404)
         data = json.loads(response.content)
         self.assertIn('error', data)
+
+    def test_code_question_responses(self):
+        code_q = Question.objects.create(
+            poll=self.poll,
+            question_text="Write some Python code",
+            question_type="code_question",
+            code_language="python"
+        )
+
+        CodeQuestionResponse.objects.create(
+            user=self.test_users[0],
+            poll=self.poll,
+            question=code_q,
+            submitted_code="print('Hello')",
+            session_code=123456
+        )
+
+        counter = QuestionResponseCounter(code_q)
+        response = counter.get_counts()
+        data = json.loads(response.content)
+
+        self.assertEqual(data['question_id'], code_q.id)
+        self.assertEqual(data['question_type'], 'code_question')
+        self.assertEqual(data['code_language'], 'python')
+        self.assertEqual(len(data['responses']), 1)
+        self.assertEqual(data['responses'][0]['code'], "print('Hello')")
+
+    def test_get_question_response_counts_invalid_question(self):
+        response = self.client.get(
+            reverse('poll_management:question_response_counts', args=[123456, 9999])  # non-existent question
+        )
+        self.assertEqual(response.status_code, 404)
+        data = json.loads(response.content)
+        self.assertIn('error', data)
+        self.assertIn('Question 9999 not found', data['error'])
+
+    def test_get_question_response_counts_view(self):
+        url = reverse('poll_management:question_response_counts', args=[123456, self.mcq.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        data = json.loads(response.content)
+        self.assertIn('question_id', data)
+
+
+
 
