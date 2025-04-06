@@ -27,7 +27,6 @@
     {% else %}
         {% if responses_by_question %}
         <div id="pollResponsesSlideshow" class="carousel slide mt-4 custom-carousel" data-bs-interval="false" data-bs-ride="false" data-poll-id="{{ poll.id }}" aria-roledescription="carousel" aria-label="Poll responses slideshow">
-            {% include 'student_view_response/indicators.html' with responses=responses_by_question %}
 
             <div class="carousel-inner">
                 {% for question_id, response in responses_by_question.items %}
@@ -76,7 +75,9 @@
                 {% endfor %}
             </div>
 
+            {% if responses_by_question|length > 1 %}
             {% include 'student_view_response/controls.html' %}
+        {% endif %}
         </div>
         {% else %}
         <div class="alert mt-4"> 
@@ -90,7 +91,7 @@
     <!-- Buttons Section -->
     <div class="text-center mt-4">
         {% if session_codes|length == 1 and selected_session_code %}
-        <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="custom-back-button">
+        <a href="{% url 'response_management:student_view_poll' poll.id %}" class="custom-back-button">
             <i class="bi bi-arrow-left me-2"></i>All {{ poll.title }} Responses
         </a>
         {% elif session_codes|length == 1 and not selected_session_code %}

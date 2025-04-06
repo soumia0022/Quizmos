@@ -1,6 +1,8 @@
 function displayErrorMessage(message, event){
     alert(message);
-    event.preventDefault(); //don't allow the submission to go through
+    if (event) {
+        event.preventDefault(); //don't allow the submission to go through
+    }
 }
 
 function McConstraints(options, answers, questionType){
@@ -33,3 +35,5 @@ function validateYouTubeLink(linkInput) {
     return embedLinkRegex.test(trimmedLink) ||
            shortLinkRegex.test(trimmedLink);
 }
+
+export { displayErrorMessage, McConstraints, ScConstraints, choiceQuestionConstraints, validateYouTubeLink };

@@ -1,3 +1,5 @@
+//const { canAddMoreOptions } = require('./question_constraints');
+
 function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
     if (!canAddMoreOptions("multiple-choice")){
         displayErrorMessage("You can only add 4 options");
@@ -10,6 +12,16 @@ function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
     return McOptionCount;
 }
 
+function canAddMoreOptions(question_type, maxOptions = 4) { //move to question_constraints in refactoring
+    const optionsContainer = document.getElementById(`${question_type}-options-container`);
+    if (optionsContainer){
+        return optionsContainer.children.length < maxOptions;
+    }
+    else{
+        return true;
+    }
+}
+
 function addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection) {
     if (!canAddMoreOptions("single-choice")){
         displayErrorMessage("You can only add 4 options");
@@ -20,16 +32,6 @@ function addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection) {
         return ScOptionCount + 1;
     }
     return ScOptionCount;
-}
-
-function canAddMoreOptions(question_type, maxOptions = 4) { //move to question_constraints in refactoring
-    const optionsContainer = document.getElementById(`${question_type}-options-container`);
-    if (optionsContainer){
-        return optionsContainer.children.length < maxOptions;
-    }
-    else{
-        return true;
-    }
 }
 
 function addChoiceOptionComponents(question_type, optionCount){
@@ -165,4 +167,4 @@ function clickTextPreview(dropdownCorrectAnswerField, dropdownInput, textPreview
         .join(' ');
 }
 
-module.exports = { addMultipleChoiceOption, addSingleChoiceOption, addMatchOptionComponents };
+export { addMultipleChoiceOption, addSingleChoiceOption, addMatchOptionComponents, dropdownInputChanged, resetButtonChanged, clickTextPreview };

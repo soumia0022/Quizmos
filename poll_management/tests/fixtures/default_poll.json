@@ -4,7 +4,6 @@
         "pk": 1,
         "fields": {
             "title": "Sample Poll",
-            "status": "active",
             "user": "johndoe",
             "locked": false,
             "number_code": 12345

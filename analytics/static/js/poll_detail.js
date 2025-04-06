@@ -41,12 +41,17 @@ document.addEventListener("DOMContentLoaded", function () {
             ? `/analytics/questions/${selectedQuestionId}/correct_analytics/`
             : `/analytics/polls/${pollId}/correct_piechart_data/`;
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 const colourMap = {
-                    'Correct Responses': '#64b164',   // Bright green
-                    'Incorrect Responses': '#da4949', // Bright red
+                    'Correct Responses': '#64b164',
+                    'Incorrect Responses': '#da4949',
                 };
                 chartInstance = new Chart(ctx, {
                     type: 'pie',
@@ -99,7 +104,12 @@ document.addEventListener("DOMContentLoaded", function () {
             ? `/analytics/questions/${selectedQuestionId}/correct_analytics/`
             : `/analytics/polls/${pollId}/correct_bargraph_data/`;
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 const colourMap = {
@@ -161,7 +171,12 @@ document.addEventListener("DOMContentLoaded", function () {
             ? `/analytics/questions/${selectedQuestionId}/analytics/?type=pie`
             : `/analytics/polls/${pollId}/piechart_data/`;
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 chartInstance = new Chart(ctx, {
@@ -224,7 +239,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 : `/analytics/polls/${pollId}/bargraph_data/`;
         }
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 chartInstance = new Chart(ctx, {
@@ -274,7 +294,12 @@ document.addEventListener("DOMContentLoaded", function () {
             ? `/analytics/questions/${selectedQuestionId}/analytics/?type=line`
             : `/analytics/polls/${pollId}/linegraph_data/`;
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 chartInstance = new Chart(ctx, {

@@ -1,6 +1,9 @@
 # Needs refactoring
 
 from collections import Counter
+
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from poll_management.models.poll_model import Poll
@@ -9,10 +12,29 @@ from response_management.models.response_model import MultipleChoiceResponse, Si
 from question_management.models.question_models import Question
 from analytics.helpers import apply_search_and_sort
 from django.db.models.functions import Lower
+from user_management.helpers import role_required
 
+from functools import wraps
+from django.http import HttpResponseForbidden
+
+def ajax_required(view_func):
+    """To prevent direct URL access. """
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return HttpResponseForbidden("Access denied")
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@login_required
+@role_required('Lecturer')
 def poll_analytics(request, poll_id):
     """To do with analytics for the whole poll."""
     poll = get_object_or_404(Poll, id=poll_id)
+
+    if poll.user != request.user:
+        raise PermissionDenied("You do not have permission to access this poll's analytics") # Message in terminal
+
     search_query = request.GET.get('search', '')
     sort_by = request.GET.get('sort_by', 'question_text_asc')
 
@@ -69,17 +91,19 @@ def get_graph_data(request, poll_id):
 
     return JsonResponse({'labels': labels, 'data': data})
 
-
+@ajax_required
 def piechart_data(request, poll_id):
     return get_graph_data(request, poll_id)
 
+@ajax_required
 def bargraph_data(request, poll_id):
     return get_graph_data(request, poll_id)
 
+@ajax_required
 def linegraph_data(request, poll_id):
     return get_graph_data(request, poll_id)
 
-
+@ajax_required
 def question_analytics(request, question_id):
     """Question-specific method to handle displaying of different question types."""
     question = get_object_or_404(Question.objects, id=question_id)
@@ -137,7 +161,7 @@ def question_analytics(request, question_id):
 
     return JsonResponse({'question': question.question_text, 'labels': labels, 'data': data})
 
-
+@ajax_required
 def question_correct_analytics(request, question_id):
     """Calculate the number of correct and incorrect responses for a given question.
     Uses the is_correct field across all response models."""
@@ -178,7 +202,7 @@ def question_correct_analytics(request, question_id):
         'data': data
     })
 
-
+@ajax_required
 def poll_correct_analytics(request, poll_id):
     """Calculate total correct and incorrect responses for an entire poll."""
     poll = get_object_or_404(Poll, id=poll_id)
@@ -212,8 +236,10 @@ def poll_correct_analytics(request, poll_id):
         'data': data
     })
 
+@ajax_required
 def poll_correct_piechart_data(request, poll_id):
     return poll_correct_analytics(request, poll_id)
 
+@ajax_required
 def poll_correct_bargraph_data(request, poll_id):
     return poll_correct_analytics(request, poll_id)
