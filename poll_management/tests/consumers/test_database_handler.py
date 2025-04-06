@@ -261,3 +261,93 @@ class TestDatabaseHandler(TransactionTestCase):
         self.assertFalse(response.is_correct)
         self.assertFalse(response.is_partially_correct)  # not partially correct due to wrong selections
 
+    async def test_save_match_question_partially_correct(self):
+        """Test saving partially correct match question responses in both formats"""
+
+        match_response_data = {
+            'A': '1',  # correct match
+            'B': '1',  # incorrect match (should be '2')
+            'C': '1'  # incorrect match (should be '3')
+        }
+
+        success = await self.db_handler.save_response(
+            self.student,
+            self.poll,
+            self.poll.number_code,
+            self.match_question.id,
+            'match_question',
+            match_response_data
+        )
+
+        self.assertTrue(success)
+
+        queryset = await database_sync_to_async(lambda: MatchQuestionResponse.objects.filter(
+            user=self.student,
+            question=self.match_question
+        ))()
+
+        response = await database_sync_to_async(lambda: queryset.first())()
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.match_responses, match_response_data)
+        self.assertFalse(response.is_correct)  # not fully correct
+        self.assertTrue(response.is_partially_correct)  #  partially correct
+
+
+        match_response_data_list = [
+            {'left': 'A', 'right': '1'},  # correct
+            {'left': 'B', 'right': '1'},  # incorrect (should be '2')
+            {'left': 'C', 'right': '1'}  # incorrect (should be '3')
+        ]
+
+        success = await self.db_handler.save_response(
+            self.student,
+            self.poll,
+            self.poll.number_code,
+            self.match_question.id,
+            'match_question',
+            match_response_data_list
+        )
+
+        self.assertTrue(success)
+
+        queryset = await database_sync_to_async(lambda: MatchQuestionResponse.objects.filter(
+            user=self.student,
+            question=self.match_question
+        ))()
+
+        response = await database_sync_to_async(lambda: queryset.last())()
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.match_responses, match_response_data_list)
+        self.assertFalse(response.is_correct)  # not fully correct
+        self.assertTrue(response.is_partially_correct)  #  partially correct
+
+        # no correct matches (should not be partially correct)
+        all_wrong_response = [
+            {'left': 'A', 'right': '2'},  # incorrect
+            {'left': 'B', 'right': '3'},  # incorrect
+            {'left': 'C', 'right': '1'}  # incorrect
+        ]
+
+        success = await self.db_handler.save_response(
+            self.student,
+            self.poll,
+            self.poll.number_code,
+            self.match_question.id,
+            'match_question',
+            all_wrong_response
+        )
+
+        self.assertTrue(success)
+
+        queryset = await database_sync_to_async(lambda: MatchQuestionResponse.objects.filter(
+            user=self.student,
+            question=self.match_question
+        ))()
+
+        response = await database_sync_to_async(lambda: queryset.last())()
+
+        self.assertIsNotNone(response)
+        self.assertFalse(response.is_correct)
+        self.assertFalse(response.is_partially_correct)  # not partially correct since no matches are correct
