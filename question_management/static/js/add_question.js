@@ -1,4 +1,6 @@
 import { initializeCodeEditor, executeCode } from "./code_executor.js";
+import { addMatchOptionComponents, addMultipleChoiceOption, addSingleChoiceOption, dropdownInputChanged, resetButtonChanged, clickTextPreview } from "./question_buttons.js";
+import { displayErrorMessage, ScConstraints, McConstraints, validateYouTubeLink } from "./question_constraints.js"
 
 document.addEventListener('DOMContentLoaded', function() {
     // DOM elements

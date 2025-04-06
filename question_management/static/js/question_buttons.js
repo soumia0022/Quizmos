@@ -167,4 +167,4 @@ function clickTextPreview(dropdownCorrectAnswerField, dropdownInput, textPreview
         .join(' ');
 }
 
-export { addMultipleChoiceOption, addSingleChoiceOption, addMatchOptionComponents };
+export { addMultipleChoiceOption, addSingleChoiceOption, addMatchOptionComponents, dropdownInputChanged, resetButtonChanged, clickTextPreview };
