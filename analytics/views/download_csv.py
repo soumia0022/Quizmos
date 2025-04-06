@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from poll_management.models.poll_model import Poll
-from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse
+from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, DropdownFillResponse, MatchQuestionResponse, CodeQuestionResponse, WordCloudResponse
 from user_management.helpers import role_required
 
 @login_required
@@ -48,6 +48,12 @@ def download_csv(request, poll_id):
             options = " | ".join([f"{q} -> {a}" for q, a in zip(question.match_options, question.match_answers)])
             correct_answer = options
             responses = MatchQuestionResponse.objects.filter(question=question)
+        elif question.question_type == 'wordcloud':
+            correct_answer = ""  # Not applicable for word cloud
+            responses = WordCloudResponse.objects.filter(question=question)
+        elif question.question_type == 'code_question':
+            correct_answer = question.correct_code or ""
+            responses = CodeQuestionResponse.objects.filter(question=question)
         else:
             responses = MatchQuestionResponse.objects.none()  # Set empty QuerySet instead of list
 
