@@ -1,39 +1,39 @@
-{% extends 'base_content.html' %}
+{% extends 'lecturer_base.html' %}
 {% load static %}
-{% load system_extras %} <!-- This contains the info buttons, the go back and return to dashboard button -->
+{% load system_extras %}
 
-{% block content %}
-{% return_button %}
-{% go_back_button %}
-{% tts_button %}
-{% tts_selected_button %}
-
-<head>
+{% block extra_head %}
     <title>Add Question</title>
-    {% load static %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"> <!-- Bootstrap icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome -->
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        
     <link rel="stylesheet" type="text/css" href="{% static 'css/code_editor.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/join_create_poll.css' %}">
 
-    <!-- CodeMirror Styles -->
+    
+    <!-- CodeMirror Styles & Scripts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
-
-    <!-- CodeMirror Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script> <!-- For Java & C++ -->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
+    
+    <!-- Custom JS Files -->
     <script src="{% static 'js/question_buttons.js' %}"></script>
     <script src="{% static 'js/question_constraints.js' %}"></script>
     <script type="module" src="{% static 'js/add_question.js' %}"></script>
-</head>
+{% endblock %}
 
-    {% noscript_warning %}
+{% block content %}
+    {% return_button %}
+    {% go_back_button %}
+    {% tts_button %}
+    {% tts_selected_button %}
 
-
+    <!-- Main Content for Adding a Question -->
     <div class="container-fluid mt-2 text-center">
         <div class="row justify-content-center align-items-center mb-3">
             <div class="col-auto">
@@ -55,7 +55,7 @@
     <div class="container-fluid">
         <div class="row">
             <div id="main-content"  class="col-lg-8 col-md-7 mb-4">
-                <!-- Form to Add Question (hidden initially) -->
+                <!-- Form to Add Question (Hidden Initially) -->
                 <div class="card" id="question-form" style="display: none;">
                     <div class="card-body">
                         <form id="form" method="POST" enctype="multipart/form-data">
@@ -86,9 +86,7 @@
                                 <p>{% info_button "Allows students to type a free-form response" %}</p>
                                 <input id="id_text_question" type="text" name="text_fill_question" class="form-control mb-2" placeholder="Enter Text Question">
                                 <input id="id_text_answer" type="text" name="text_fill_answer" class="form-control" placeholder="Enter Text Answer">
-
                             </div>
-
 
                             <!-- Dropdown Fill Fields -->
                             <div id="dropdown-fill-fields" class="mb-3" style="display: none;">
@@ -174,13 +172,13 @@
                                 <pre id="code-output"></pre>
                             </div>
 
-
-                           <!-- Add Audio, Video and Image Buttons -->
+                            <!-- Media Buttons -->
                             <div id="media-buttons" class="mb-3" style="display: none;">
                                 <button type="button" id="add-audio-btn" class="btn btn-secondary mb-2">Add Audio</button>
                                 <button type="button" id="add-video-btn" class="btn btn-secondary mb-2">Add Video</button>
                                 <button type="button" id="add-image-btn" class="btn btn-secondary mb-2">Add Image</button>
-                                <button type="button" id="reset-media-btn" class="btn btn-secondary mt-2">Reset Media</button> {% info_button "You can only upload one media type" %}
+                                <button type="button" id="reset-media-btn" class="btn btn-secondary mt-2">Reset Media</button>
+                                {% info_button "You can only upload one media type" %}
                             </div>
 
                             <!-- Video Upload and YouTube Link Buttons (Initially Hidden) -->
@@ -201,14 +199,14 @@
 
                             <!-- YouTube URL Input Field -->
                             <div id="youtube-url-field" style="display: none;">
-                                <p>{% info_button "Right-click on the YouTube video, select Copy video URL, and paste it bellow" %}</p>
+                                <p>{% info_button "Right-click on the YouTube video, select Copy video URL, and paste it below" %}</p>
                                 <input id="youtube-link" type="url" name="youtube_link" class="form-control mb-2" placeholder="Enter YouTube video URL">
                             </div>
 
+                            <!-- Image Upload Field -->
                             <div id="image-upload-field" style="display: none;">
                                 <input type="file" name="image_file" class="form-control mb-2" accept="image/*">
                             </div>
-
 
                             <!-- Save Question Button -->
                             <div class="text-center">
@@ -225,7 +223,7 @@
                     <h3 class="text-center">Questions Created:</h3>
                     <div id="questions-list">
                         {% for question in poll.questions.all %}
-                           <div class="question-item mb-2 d-flex justify-content-between align-items-center" data-id="{{ question.id }}" style="position:relative;">
+                           <div class="question-item mb-2 d-flex justify-content-between align-items-center" data-id="{{ question.id }}">
                                 <div>
                                     <strong>Question {{ forloop.counter }}:</strong> {{ question.question_text }}
                                 </div>
