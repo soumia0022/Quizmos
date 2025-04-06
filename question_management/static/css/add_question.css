@@ -25,9 +25,7 @@
   .custom-sidebar a:hover {
     color: #1F778D;  
   }
- 
-
-    
+  
   #questions-sidebar a.btn {
     background-color: rgba(255, 255, 255, 0.1); 
     border: 2px solid;
@@ -95,5 +93,68 @@
     background-color: rgba(13, 202, 240, 0.3);
     color: #a8e4f0;
     box-shadow: 0 0 8px rgba(13, 202, 240, 0.6);
+  }
+  
+  .custom-form-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .form-card {
+    background-color: rgba(255, 255, 255, 0.1); 
+    border: 2px solid #fff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+  }
+  
+  .form-title {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-family: 'Palanquin Dark', sans-serif;
+    color: white;
+  }
+  
+  .custom-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 15px;
+    color: white;
+    font-size: 2rem;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .custom-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+  }
+  
+  .custom-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.03);
+  }
+  
+  .custom-btn.secondary {
+    background-color: rgba(0, 0, 0, 0);
+    border-color: #0dcaf0;
+    color: #0dcaf0;
+  }
+  
+  .custom-btn.secondary:hover {
+    background-color: rgba(13, 202, 240, 0.1);
   }
   
