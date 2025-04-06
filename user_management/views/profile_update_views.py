@@ -54,11 +54,8 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
             return redirect('user_management:home')
             
         if request.user.first_name == "Guest":
-            session_key = request.session.session_key
-            
             # Make sure message is saved
             request.session.modified = True
-            # Store user ID only once
             user_id = request.user.id
             delete_guest_user(request, user_id)
 

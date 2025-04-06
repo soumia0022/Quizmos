@@ -21,7 +21,7 @@ class PollCodeFormTest(TestCase):
         form = PollCodeForm(data={'poll_code': '0'})
         self.assertFalse(form.is_valid())
         self.assertIn('poll_code', form.errors)
-        self.assertEqual(form.errors['poll_code'], ['Ensure this value has at least 6 characters (it has 1).'])
+        self.assertEqual(form.errors['poll_code'], ['Ensure this value has at least 6 characters'])
 
     def test_form_with_empty_data(self):
         form = PollCodeForm(data={'poll_code': ''})
