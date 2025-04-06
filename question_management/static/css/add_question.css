@@ -26,3 +26,74 @@
     color: #1F778D;  
   }
  
+
+    
+  #questions-sidebar a.btn {
+    background-color: rgba(255, 255, 255, 0.1); 
+    border: 2px solid;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+  }
+
+  #questions-sidebar a.btn-danger {
+    background-color: rgba(255, 0, 0, 0.1); 
+    border-color: red;
+    color: red;
+  }
+  
+  #questions-sidebar a.btn-danger:hover {
+    background-color: rgba(255, 0, 0, 0.2); 
+    border-color: red;   
+    transform: scale(1.05);
+  }
+  
+  #questions-sidebar a.btn-danger:active {
+    background-color: rgba(255, 0, 0, 0.3);
+    color: #ff6666;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+  }
+  
+  #questions-sidebar a.btn-warning {
+    background-color: rgba(255, 193, 7, 0.1); 
+    border-color: #ffc107;
+    color: #ffc107;
+  }
+  
+  #questions-sidebar a.btn-warning:hover {
+    background-color: rgba(255, 193, 7, 0.2);
+    border-color: #ffc107; 
+    transform: scale(1.05);
+  }
+  
+  #questions-sidebar a.btn-warning:active {
+    background-color: rgba(255, 193, 7, 0.3);
+    color: #ffe066;
+    box-shadow: 0 0 8px rgba(255, 193, 7, 0.6);
+  }
+  
+  #questions-sidebar a.btn-info {
+    background-color: rgba(13, 202, 240, 0.1); 
+    border-color: #0dcaf0;
+    color: #0dcaf0;
+  }
+  
+  #questions-sidebar a.btn-info:hover {
+    background-color: rgba(13, 202, 240, 0.2);
+    border-color: #0dcaf0;
+    transform: scale(1.05);
+  }
+  
+  #questions-sidebar a.btn-info:active {
+    background-color: rgba(13, 202, 240, 0.3);
+    color: #a8e4f0;
+    box-shadow: 0 0 8px rgba(13, 202, 240, 0.6);
+  }
+  
