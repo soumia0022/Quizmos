@@ -27,10 +27,12 @@
 {% endblock %}
 
 {% block content %}
+    <div class="tts-buttons">
+        {% tts_button %}
+        {% tts_selected_button %}
+    </div>
     {% return_button %}
     {% go_back_button %}
-    {% tts_button %}
-    {% tts_selected_button %}
 
     <!-- Main Content for Adding a Question -->
     <div class="container-fluid mt-2 text-center">
