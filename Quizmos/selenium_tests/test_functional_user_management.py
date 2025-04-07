@@ -118,19 +118,19 @@ class TestFunctionalUserSystem(BaseSeleniumTest):
         time.sleep(1)
         self.assertTrue(self.lecturer.check_password("NewPassword123"))  # Verify password has been updated
 
-    # def test_user_can_edit_their_profile(self):
-    #     log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
-    #     self.driver.get(f"{self.live_server_url}{reverse('user_management:profile')}")
-    #     wait(self.driver)
-    #     self.populate_edit_profile_fields(self.get_profile_change_fields())
-    #     wait(self.driver)
-    #     self.lecturer.refresh_from_db()
-    #     self.assertTrue(User.objects.filter(username='johndoeupdated').exists())
-    #     charlie = User.objects.get(username='johndoeupdated')
-    #     self.assertEqual(charlie.first_name, "JohnUpdated")
-    #     self.assertEqual(charlie.last_name, "DoeUpdated")
-    #     self.assertEqual(charlie.username, "johndoeupdated")
-    #     self.assertEqual(charlie.email, "johndoeupdated@example.com")
+    def test_user_can_edit_their_profile(self):
+        log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
+        self.driver.get(f"{self.live_server_url}{reverse('user_management:profile')}")
+        wait(self.driver)
+        self.populate_edit_profile_fields(self.get_profile_change_fields())
+        wait(self.driver)
+        self.lecturer.refresh_from_db()
+        self.assertTrue(User.objects.filter(username='johndoeupdated').exists())
+        charlie = User.objects.get(username='johndoeupdated')
+        self.assertEqual(charlie.first_name, "JohnUpdated")
+        self.assertEqual(charlie.last_name, "DoeUpdated")
+        self.assertEqual(charlie.username, "johndoeupdated")
+        self.assertEqual(charlie.email, "johndoeupdated@example.com")
 
     def test_user_can_log_out(self):
         log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
@@ -164,11 +164,13 @@ class TestFunctionalUserSystem(BaseSeleniumTest):
             self.driver.execute_script("arguments[0].click();", submit_button)
 
     def get_profile_change_fields(self) -> tuple:
-        first_name_input = wait_for_element(self.driver, By.ID, "id_first_name")
+        first_name_input = wait_for_element(self.driver, By.ID, "id_first_name")  # Auto-generated from forms
         last_name_input = wait_for_element(self.driver, By.ID, "id_last_name")
         username_input = wait_for_element(self.driver, By.ID, "id_username")
         email_input = wait_for_element(self.driver, By.ID, "id_email")
-        submit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_update_profile"))
+
+        submit_button = wait_for_element(self.driver, By.CSS_SELECTOR, "button.update-btn[type='submit']")
+
         return first_name_input, last_name_input, username_input, email_input, submit_button
 
     def populate_edit_profile_fields(self, fields: tuple):
