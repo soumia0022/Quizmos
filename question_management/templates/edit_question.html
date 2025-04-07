@@ -60,7 +60,7 @@
         {% if question.question_type == "multiple_choice" %}
             <div>
                 <label><strong>Multiple Choice Options:</strong></label>
-
+                <div id="multiple-choice-options-container">
                 {% for option in question.multiple_choice_options %}
                     <div class="multiple-choice-option" id="option-container-{{ forloop.counter }}">
                         <input type="checkbox" name="multiple_choice_answers[]" value="{{ option }}"
@@ -75,13 +75,13 @@
                     </div>
                 {% endfor %}
 
-                <div id="multiple-choice-options-container"></div>
+                </div>
                 <!-- Option to add new option -->
                 <button type="button" id="multiple-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
             </div>
         {% elif question.question_type == "single_choice" %}
             <div>
-
+                <div id="single-choice-options-container">
                 {% for option in question.single_choice_option %}
                     <div class="single-choice-option" id="option-container-{{ forloop.counter }}">
                         <input type="checkbox" name="single_choice_answers[]" value="{{ option }}"
@@ -96,7 +96,7 @@
                     </div>
                 {% endfor %}
 
-                <div id="single-choice-options-container"></div>
+                </div>
                 <!-- Option to add new option -->
                 <button type="button" id="single-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
             </div>
@@ -111,7 +111,7 @@
         <!-- Editable Answer -->
         {% if question.question_type == "dropdown_fill" %}
             <p>{% info_button "Enter a sentence and click a word that will be missing" %}</p>
-            <textarea name="dropdown_fill_question" id="dropdown-fill-input" class="form-control mb-2" >{{ question.question_text }}</textarea>
+            <textarea name="dropdown_fill_question" id="dropdown-fill-input" class="form-control mb-2" required>{{ question.question_text }}</textarea>
             <div id="text-preview" class="mb-3 border p-2"></div> <!-- Preview area for the text -->
 
             <div>
