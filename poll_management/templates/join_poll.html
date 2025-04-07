@@ -11,7 +11,7 @@
             <h1>You are joining : {{ poll.title }}</h1>
             <form method="post">
                 {% csrf_token %}
-                <button type="submit">Join Poll</button>
+                <button type="submit" class="join-poll-btn">Join Poll</button>
             </form>
         </div>
     </div>
