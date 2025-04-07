@@ -1,4 +1,4 @@
-{% extends 'base_content.html' %}
+{% extends 'lecturer_base.html' %}
 {% load system_extras %}
 
 {% block content %}
@@ -92,4 +92,6 @@
 <script type="module" src="{% static 'js/lecturer_poll_display/poll.js' %}"></script>
 <script type="module" src="{% static 'js/lecturer_poll_display/show_answer.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/response_styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
