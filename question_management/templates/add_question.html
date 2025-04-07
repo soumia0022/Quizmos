@@ -28,12 +28,20 @@
 {% endblock %}
 
 {% block content %}
-    <div class="tts-buttons">
-        {% tts_button %}
-        {% tts_selected_button %}
+<div class="buttons-container">
+    <div class="left-section">
+      <a href="javascript:history.back()" class="go-back-btn">Go Back</a>
     </div>
-    {% return_button %}
-    {% go_back_button %}
+    <div class="center-section">
+      <div class="tts-buttons">
+            {% tts_button %}
+            {% tts_selected_button %}
+      </div>
+    </div>
+    <div class="right-section"></div>
+  </div>
+  
+  
 
   <div class="custom-main-container mx-auto" style="width: calc(90vw); max-width: 1500px;">
     <div class="row">
