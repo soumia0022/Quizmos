@@ -354,7 +354,6 @@ class ComputingQuestionProvider(BaseProvider):
             ("The programming language primarily used for web development is ____.", ["JavaScript", "C", "Python", "Swift"], "JavaScript"),
             ("A ____ is a placeholder for storing values in programming.", ["Variable", "Function", "Loop", "Class"], "Variable"),
             ("____ is used to uniquely identify devices on a network.", ["IP Address", "URL", "DNS", "MAC Address"], "IP Address"),
-            ("The ____ tag is used to define a hyperlink in HTML.", ["<a>", "<p>", "<div>", "<h1>"], "<a>"),
             ("The ____ operator is used for logical AND in Python.", ["and", "&&", "||", "=="], "and"),
             ("A ____ is a sequence of characters in programming.", ["String", "Integer", "Boolean", "Float"], "String"),
             ("The term ____ refers to hiding implementation details in OOP.", ["Encapsulation", "Abstraction", "Inheritance", "Polymorphism"], "Encapsulation"),
