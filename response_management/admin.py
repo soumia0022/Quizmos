@@ -21,7 +21,7 @@ def get_correct_answer(obj):
 
 @admin.register(MultipleChoiceResponse)
 class MultipleChoiceResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_options', 'question', 'session_code', 'is_correct', get_correct_answer)
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'selected_options', 'question', 'session_code', 'is_correct', 'is_partially_correct',get_correct_answer)
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
@@ -45,7 +45,7 @@ class DropdownFillResponseAdmin(admin.ModelAdmin):
 
 @admin.register(MatchQuestionResponse)
 class MatchQuestionResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'match_responses', 'session_code', 'is_correct', get_correct_answer)
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'match_responses', 'session_code', 'is_correct', 'is_partially_correct', get_correct_answer)
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
