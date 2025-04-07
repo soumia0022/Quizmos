@@ -1,4 +1,4 @@
-{% extends 'base_content.html' %}
+{% extends 'student_base.html' %}
 {% load system_extras %}
 {% load custom_filters %}
 {% load static %}
@@ -12,6 +12,8 @@
     <p>{{ question.question_text }}</p>
 
     <link rel="stylesheet" href="{% static 'poll_management/css/poll_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
 
     <!-- Display options based on question type -->
     {% if question.question_type == 'multiple_choice' %}
