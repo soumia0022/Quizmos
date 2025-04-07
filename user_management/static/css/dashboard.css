@@ -196,3 +196,80 @@
     width: 200px; 
     text-align: center;
 }
+
+  #id_poll_view_button {
+    background-color: rgba(0, 162, 255, 0.1);
+    border: 2px solid #00a2ff;
+    color: #00a2ff;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  #id_poll_view_button:hover {
+    background-color: rgba(0, 162, 255, 0.2);
+    transform: scale(1.05);
+  }
+  #id_poll_edit_button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    color: white;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 16px; 
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center;
+    min-width: 130px; 
+  }
+  
+  #id_poll_edit_button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+  
+  
+  #id_poll_delete_button {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 2px solid red;
+    color: red;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  #id_poll_delete_button:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    transform: scale(1.05);
+  }
+  
+  #id_poll_start_button {
+    background-color: rgba(0, 255, 0, 0.1);
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  #id_poll_start_button:hover {
+    background-color: rgba(0, 255, 0, 0.2);
+    transform: scale(1.05);
+  }
+  
