@@ -157,4 +157,27 @@
   .custom-btn.secondary:hover {
     background-color: rgba(13, 202, 240, 0.1);
   }
+  .custom-question-container {
+    margin-top: 20px;
+  }
+  
+  .form-card {
+    background-color: rgba(255, 255, 255, 0.1);  
+    border: 2px solid #fff;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .form-header {
+    margin-bottom: 15px;
+  }
+  
+  .form-card-inner {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px solid #fff;
+    border-radius: 15px;
+    margin-top: 15px;
+    padding: 20px;
+  }
   
