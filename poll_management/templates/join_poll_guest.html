@@ -1,6 +1,9 @@
-{% extends 'base_content.html' %}
+{% extends 'student_base.html' %}
 {% load system_extras %}
+{% load static %}
 {% block content %}
+
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     {% noscript_warning %}
 <div class="container">
     <div class="row">
