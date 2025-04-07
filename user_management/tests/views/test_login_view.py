@@ -161,3 +161,20 @@ class LogInViewTestCase(TestCase, LogInTester, MenuTesterMixin):
         messages_list = list(response.context['messages'])
         self.assertEqual(len(messages_list), 1)
         self.assertEqual(messages_list[0].level, messages.ERROR)
+
+    def test_student_dashboard_has_expected_context(self):
+        self.client.login(username=self.student.username, password="Password123")
+        response = self.client.get(reverse('user_management:dashboard'))
+        self.assertIn('polls', response.context)
+        self.assertEqual(response.status_code, 200)
+
+    def test_guest_user_logged_out_and_deleted(self):
+        guest_user = User.objects.create_user(
+            username='Guest',
+            password='testpass123',
+            first_name='Guest'
+        )
+        self.client.login(username='Guest', password='testpass123')
+
+        response = self.client.get(reverse('user_management:dashboard'))
+        self.assertFalse(User.objects.filter(username='Guest').exists())
