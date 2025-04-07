@@ -64,7 +64,7 @@ function addChoiceOptionComponents(question_type, optionCount){
     // Add a delete button if needed
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
-    deleteBtn.className = 'btn btn-danger btn-sm ms-2 delete-option-btn';
+    deleteBtn.className = 'custom-delete-btn';
     deleteBtn.textContent = 'X';
     deleteBtn.addEventListener('click', function () {
         optionContainer.remove(); // Remove the option container
@@ -100,7 +100,7 @@ function addMatchOptionComponents(matchQuestionOptionSection, matchOptionCount){
     // Create delete button
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
-    deleteBtn.className = 'btn btn-danger btn-sm ms-2';
+    deleteBtn.className = 'custom-delete-btn';
     deleteBtn.textContent = 'X';
     deleteBtn.addEventListener('click', function () {
         inputRow.remove(); // Remove the option container

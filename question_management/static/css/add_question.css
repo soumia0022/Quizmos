@@ -327,3 +327,27 @@
     color: rgba(255, 255, 255, 0.8);
   }
   
+  .custom-delete-btn {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 2px solid red;
+    color: red;
+    border-radius: 15px;
+    padding: 4px 8px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .custom-delete-btn:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    border-color: red;
+    transform: scale(1.05);
+  }
+  
+  .custom-delete-btn:active {
+    background-color: rgba(255, 0, 0, 0.3);
+    color: #ff6666;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+  }
+  
