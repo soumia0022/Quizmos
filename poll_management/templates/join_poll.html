@@ -5,16 +5,15 @@
 
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     {% noscript_warning %}
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <h1>You are joining : {{ poll.title }}</h1>
-            <form method="post">
+
+    <div class="container" style="display: flex; justify-content: center; text-align: center;">
+        <div>
+            <h1>You are joining: {{ poll.title }}</h1>
+            <form method="post" style="display: flex; justify-content: center;">
                 {% csrf_token %}
                 <button type="submit" class="join-poll-btn">Join Poll</button>
             </form>
         </div>
     </div>
-</div>
-{% endblock %}
 
+{% endblock %}
