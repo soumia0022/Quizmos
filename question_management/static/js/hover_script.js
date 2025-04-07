@@ -1,31 +1,38 @@
 $(document).ready(function() {
-    // DOM elements and form validation code...
+    $('#hover-popup-box').appendTo('body').css({
+        'position': 'absolute',
+        'z-index': 1000,
+        'display': 'none'
+    });
 
-    // Handle hover for preview
-    $('.question-item').hover(function() {
-        const questionId = $(this).data('id');
-        const popup = $('#hover-popup-box');
+    $('.question-text').hover(function() {
+        var questionItem = $(this).closest('.question-item');
+        var questionId = questionItem.data('id');
+        var popup = $('#hover-popup-box');
+        var questionActions = questionItem.find('.question-actions');
+        var textElement = $(this);
         $.get(`/questions/question/${questionId}/preview/`, function(data) {
             popup.html(`
-                <div class="border rounded p-3">
-                    <p>Type: ${data.question_type}</p>
-                    <p>Timer: ${data.timer || 'None'}</p>
+                <div class="popup-content">
+                    <div>Type: ${data.question_type}</div>
+                    <div>Timer: ${data.timer || 'None'}</div>
                 </div>
             `);
-            const offset = $(this).offset();
+            var actionsRect = questionActions.get(0).getBoundingClientRect();
+            var textRect = textElement.get(0).getBoundingClientRect();
             popup.css({
                 display: 'block',
-                top: offset.top + $(this).outerHeight() / 2 - popup.outerHeight(), // Center vertically relative to the question
-                left: offset.left - popup.outerWidth() - 10
+                top: textRect.top + $(window).scrollTop() + textElement.outerHeight()/2 - popup.outerHeight()/2,
+                left: actionsRect.left + $(window).scrollLeft(),
+                width: questionActions.outerWidth()
             });
-        }.bind(this));
+        });
     }, function() {
         $('#hover-popup-box').css('display', 'none');
     });
 
-    // Handle click for full page view
     $('.view-full-btn').click(function() {
-        const questionId = $(this).data('id');
+        var questionId = $(this).data('id');
         window.location.href = `/questions/question/${questionId}/`;
     });
 });
