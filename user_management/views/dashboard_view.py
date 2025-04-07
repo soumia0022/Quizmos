@@ -92,7 +92,7 @@ class DashboardView(LoginRequiredMixin, View):
         )
 
         if search_query:
-            polls = polls.filter(Q(title__icontains=search_query))
+            polls = polls.filter(Q(title__istartswith=search_query))
 
         sort_options = {
             'title_asc': Lower('title'),
@@ -136,7 +136,7 @@ class DashboardView(LoginRequiredMixin, View):
         polls = Poll.objects.filter(id__in=poll_ids)
 
         if search_query:
-            polls = polls.filter(title__icontains=search_query)
+            polls = polls.filter(title__istartswith=search_query)
 
         sort_options = {
             'title_asc': Lower('title'),

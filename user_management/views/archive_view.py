@@ -76,7 +76,7 @@ class ArchivedPollsListView(LoginRequiredMixin, ListView):
         queryset = Poll.objects.filter(user=self.request.user, archived=True)
 
         if search_query:
-            queryset = queryset.filter(title__icontains=search_query)
+            queryset = queryset.filter(title__istartswith=search_query)
 
         order_field = self._get_order_field(sort_by)
         return queryset.order_by(order_field)

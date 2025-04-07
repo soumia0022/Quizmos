@@ -125,7 +125,7 @@ def student_polls_page(request):
 
     search_query = request.GET.get('search', '')
     if search_query:
-        polls = polls.filter(title__icontains=search_query)
+        polls = polls.filter(title__istartswith=search_query)
 
     sort_by = request.GET.get('sort_by', 'title_asc')
     sort_options = {

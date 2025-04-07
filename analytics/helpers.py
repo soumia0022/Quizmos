@@ -5,7 +5,7 @@ def apply_search_and_sort(queryset, search_query=None, sort_by=None, sort_option
     Apply search and sorting logic to a queryset.
     """
     if search_query:
-        queryset = queryset.filter(question_text__icontains=search_query)
+        queryset = queryset.filter(question_text__istartswith=search_query)
 
     if sort_by and sort_options:
         sort_expression = sort_options.get(sort_by, default_sort)
