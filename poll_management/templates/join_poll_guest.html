@@ -12,7 +12,7 @@
                 <h1>You are joining: {{ poll.title }}</h1>
             </div>
             <div>
-                <p>How would you like to join this poll?</p>
+                <h5>How would you like to join this poll?</h5>
             </div>
             <div>
                 <a href="{% url 'user_management:guest_logout' %}?next={% url 'poll_management:poll_results' code=code %}" class="btn btn-primary">Login</a>
