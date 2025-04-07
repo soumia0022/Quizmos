@@ -82,10 +82,10 @@
           </a>
           <a id="id_poll_edit_button"
              href="{% url 'question_management:add_question' poll.id %}"
-             class="btn btn-secondary btn-sm">
+             class="btn btn-sm">
              Edit
           </a>
-          <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
+          <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" class="delete-form" >
             {% csrf_token %}
             <button id="id_poll_delete_button" type="button" onclick="confirmDelete(poll.id)" class="btn btn-danger btn-sm">
               Delete
@@ -139,12 +139,12 @@
           </a>
           <a id="id_poll_edit_button"
              href="{% url 'question_management:add_question' poll.id %}"
-             class="btn btn-secondary btn-sm">
+             class="btn btn-sm">
              Edit
           </a>
-          <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" style="display: inline;">
+          <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" class="delete-form">
             {% csrf_token %}
-            <button id="id_poll_delete_button" type="button" onclick="confirmDelete(poll.id)" class="btn btn-danger btn-sm">
+            <button id="id_poll_delete_button" type="button" onclick="confirmDelete(poll.id)" class="btn btn-sm">
               Delete
             </button>
           </form>

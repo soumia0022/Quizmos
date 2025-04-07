@@ -75,6 +75,10 @@
     background-color: transparent;
     text-align: center;
     padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    gap: 10px; 
 }
 
 
@@ -272,4 +276,22 @@
     background-color: rgba(0, 255, 0, 0.2);
     transform: scale(1.05);
   }
+  
+  #id_poll_view_button,
+  #id_poll_edit_button,
+  #id_poll_start_button {
+    width: 100%;
+    max-width: 250px; 
+  }
+  
+  .delete-form {
+    width: 100%;
+    max-width: 250px;
+    display: flex;
+  }
+  
+  #id_poll_delete_button {
+    flex: 1;
+  }
+  
   
