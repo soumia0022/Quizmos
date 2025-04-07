@@ -115,7 +115,7 @@ class PollArchiveTests(TestCase):
             created_at=timezone.now() - timedelta(days=2)
         )
 
-        url = reverse('user_management:view_archived_polls') + '?search=search'
+        url = reverse('user_management:view_archived_polls') + '?search=Archive'
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['polls']), 1)

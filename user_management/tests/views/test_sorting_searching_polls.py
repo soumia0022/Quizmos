@@ -4,6 +4,7 @@ from django.utils.timezone import now
 from datetime import timedelta
 from poll_management.models.poll_model import Poll
 from response_management.models.response_model import MultipleChoiceResponse  
+from question_management.models.question_models import Question
 
 class DashboardSortingSearchingTests(TestCase):
 
@@ -16,12 +17,48 @@ class DashboardSortingSearchingTests(TestCase):
             password='password123',
             role='Lecturer'
         )
-        self.client.login(username='testuser', password='password123')
+    
+        self.student = get_user_model().objects.create_user(
+            username='student',
+            email='student@example.com',
+            password='password123',
+            role='Student'
+        )
 
         # Creating test polls
-        self.poll1 = Poll.objects.create(user=self.user, title="Space", created_at=now() - timedelta(days=5))
-        self.poll2 = Poll.objects.create(user=self.user, title="Rocket", created_at=now() - timedelta(days=3))
-        self.poll3 = Poll.objects.create(user=self.user, title="Stars", created_at=now() - timedelta(days=1))
+        self.poll1 = Poll.objects.create(
+            user=self.user, 
+            title="Space", 
+            created_at=now() - timedelta(days=5)
+        )
+        self.poll2 = Poll.objects.create(
+            user=self.user, 
+            title="Rocket", 
+            created_at=now() - timedelta(days=3)
+        )
+        self.poll3 = Poll.objects.create(
+            user=self.user, 
+            title="Stars", 
+            created_at=now() - timedelta(days=1)
+        )
+
+
+        for poll in [self.poll1, self.poll2, self.poll3]:
+            question = Question.objects.create(
+                poll=poll,
+                question_type="multiple_choice",
+                multiple_choice_question="Dummy question?",
+                multiple_choice_options=["A", "B"]
+            )
+            MultipleChoiceResponse.objects.create(
+                user=self.student,
+                poll=poll,
+                question=question,
+                session_code=poll.number_code,
+                selected_options='["A"]'
+            )
+            
+        self.client.login(username='testuser', password='password123')
 
     def test_search_polls(self):
         """Test that search returns correct results"""
@@ -29,6 +66,13 @@ class DashboardSortingSearchingTests(TestCase):
         self.assertContains(response, "Space")  # Should find Space
         self.assertNotContains(response, "Rocket")  # Should not find Rocket
         self.assertNotContains(response, "Stars")  # Should not find Stars
+
+    def test_search_startswith_behavior(self):
+        """Ensure search only returns polls where title starts with query"""
+        response = self.client.get('/dashboard/', {'search': 'S'})
+        self.assertContains(response, "Space")
+        self.assertContains(response, "Stars")
+        self.assertNotContains(response, "Rocket")
 
     def test_sort_title_ascending(self):
         """Test sorting A-Z"""
