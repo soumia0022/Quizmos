@@ -49,9 +49,12 @@
                                 <h5 class="answer-title mb-2 d-flex align-items-center">
                                     {% if response.question.question_type == 'single_choice' or response.question.question_type == 'multiple_choice' or response.question.question_type == 'dropdown_fill' or response.question.question_type == 'text_fill' or response.question.question_type == 'match_question' %}
                                         {% if response.is_correct %}
-                                            <i class="bi bi-check-lg me-2"></i>Correct
+                                            <i class="bi bi-check-lg me-2"></i> Correct Answer
+
+                                        {% elif response.is_partially_correct %}
+                                            <i style="margin-right: 10px" class="bi bi-exclamation-square"></i>Partially Correct
                                         {% else %}
-                                            <i class="bi bi-x-lg me-2"></i>Incorrect
+                                            <i class="bi bi-x-lg me-2"></i> Incorrect Answer
                                         {% endif %}
                                     {% endif %}
                                 </h5>
