@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(data => {
+                if (handleNoData(data.data)) return; // If no data, stop here
                 const colourMap = {
                     'Correct Responses': '#64b164',
                     'Incorrect Responses': '#da4949',
@@ -112,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(data => {
+                if (handleNoData(data.data)) return; // If no data, stop here
                 const colourMap = {
                     'Correct Responses': '#64b164',
                     'Incorrect Responses': '#da4949',
@@ -179,6 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(data => {
+                if (handleNoData(data.data)) return; // If no data, stop here
                 chartInstance = new Chart(ctx, {
                     type: 'pie',
                     data: {
@@ -247,6 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(data => {
+                if (handleNoData(data.data)) return; // If no data, stop here
                 chartInstance = new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -302,6 +306,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(data => {
+                if (handleNoData(data.data)) return; // If no data, stop here
                 chartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -340,6 +345,22 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error("Error fetching line graph data:", error));
     }
+
+    function handleNoData(dataArray) {
+        const canvas = document.getElementById('chart');
+        const message = document.getElementById('no-data-message');
+
+        if (!dataArray || dataArray.length === 0 || dataArray.every(num => num === 0)) {
+            canvas.style.display = 'none';
+            message.style.display = 'block';
+            return true;
+        } else {
+            canvas.style.display = 'block';
+            message.style.display = 'none';
+            return false;
+        }
+    }
+
 
     function toggleLineGraphButton() {
         document.getElementById('viewLineGraph').style.display = selectedQuestionId ? 'none' : 'block';
