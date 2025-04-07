@@ -3,9 +3,11 @@
 
 {% block content %}
     {% noscript_warning %}
-    {% return_button %}
-    {% tts_button %}
-    {% tts_selected_button %}
+    <div class="tts-buttons">
+      {% tts_button %}
+      {% tts_selected_button %}
+    </div>
+    
 
         <!-- CodeMirror Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
