@@ -134,7 +134,7 @@
                     <!-- Word Cloud Fields -->
                     <div id="word-cloud-fields" style="display: none;">
                       <p>{% info_button "Add a prompt for which students will add word responses to live in the lesson" %}</p>
-                      <input id="id_word_cloud_question" type="text" name="wordcloud_question" placeholder="Enter Word Cloud Prompt">
+                      <input id="id_word_cloud_question" type="text" name="wordcloud_question" class="form-control" placeholder="Enter Word Cloud Prompt">
                       <div id="actual-wordcloud">
                         {% if wordcloud_image %}
                           <h2>Generated Word Cloud:</h2>
@@ -146,7 +146,7 @@
                     <!-- Match Question Fields -->
                     <div id="match-fields" style="display: none;">
                       <p>{% info_button "Add matching options which students will drag and drop" %}</p>
-                      <input type="text" name="match_question" placeholder="Enter Match Question e.g. Match the following">
+                      <input type="text" name="match_question" class="form-control" placeholder="Enter Match Question e.g. Match the following">
                       <div id="options-section">
                         <button type="button" id="match-add-option-btn">Add Matching Card</button>
                         <div id="match-options-container"></div>
