@@ -298,12 +298,14 @@ function paginateResponses({
             return;
         }
 
-        let paginationContainer = paginationContainerSelector;
+        let paginationContainer = container.querySelector(paginationClass);
         if (!paginationContainer) {
-            paginationContainer = document.createElement('div');
-            paginationContainer.className = paginationClass.replace('.', '') + ' mt-2';
-            container.appendChild(paginationContainer);
+            paginationContainer.remove();
         }
+
+        paginationContainer = document.createElement('div');
+        paginationContainer.className = paginationClass.replace('.', '') + ' mt-2';
+        container.appendChild(paginationContainer);
 
         paginationContainer.innerHTML = `
             <button class="btn btn-sm btn-outline-primary me-2" ${currentPage === 1 ? 'disabled' : ''} id="prevPage">Previous</button>
