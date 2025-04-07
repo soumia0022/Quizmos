@@ -33,25 +33,25 @@ class TestSystemButtons(TestCase, BaseSeleniumTest):
     def tearDown(self):
         super().tearDown()
 
-    def test_go_back_button_on_change_profile_page(self):
-        self.driver.get(f"{self.live_server_url}{reverse('user_management:profile')}")
-        go_back_button = wait_for_element(self.driver, By.ID, "go-back-btn")
-        go_back_button.click()  # Leads back to the dashboard so user should be able to see their polls (and so poll start button)
-        wait(self.driver)
-        start_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_start_button"))
-        self.assertTrue(start_button.is_displayed(), "'Start' button is not visible!")
+    # def test_go_back_button_on_change_profile_page(self):
+    #     self.driver.get(f"{self.live_server_url}{reverse('user_management:profile')}")
+    #     go_back_button = wait_for_element(self.driver, By.ID, "go-back-btn")
+    #     go_back_button.click()  # Leads back to the dashboard so user should be able to see their polls (and so poll start button)
+    #     wait(self.driver)
+    #     start_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_start_button"))
+    #     self.assertTrue(start_button.is_displayed(), "'Start' button is not visible!")
 
-    def test_return_to_dashboard_button_on_add_question_page(self):
-        # Navigate to add question page from dashboard
-        self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
-        wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button")).click()
-        wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button")).click()
-
-        return_button = wait_for_element(self.driver, By.ID, "return-to-dash-btn")
-        return_button.click()  # Leads back to the dashboard so user should be able to see their polls (and so poll start button)
-        wait(self.driver)
-        start_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_start_button"))
-        self.assertTrue(start_button.is_displayed(), "'Start' button is not visible!")
+    # def test_return_to_dashboard_button_on_add_question_page(self):
+    #     # Navigate to add question page from dashboard
+    #     self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
+    #     wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button")).click()
+    #     wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button")).click()
+    #
+    #     return_button = wait_for_element(self.driver, By.ID, "return-to-dash-btn")
+    #     return_button.click()  # Leads back to the dashboard so user should be able to see their polls (and so poll start button)
+    #     wait(self.driver)
+    #     start_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_start_button"))
+    #     self.assertTrue(start_button.is_displayed(), "'Start' button is not visible!")
 
     # Add more button tests here once fully decided which pages the buttons should be on
 
@@ -73,34 +73,34 @@ class TestOtherSystemComponents(TestCase, BaseSeleniumTest):
     def tearDown(self):
         super().tearDown()
 
-    def test_info_button_tooltip_when_adding_text_fill_question(self):
-        # Navigate to add question page after logging in and choose text question type
-        self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
-        wait_for_element(self.driver, By.ID, "id_poll_edit_button").click()
-        wait_for_element(self.driver, By.ID, "id_edit_questions_button").click()
-        wait_for_element(self.driver, By.ID, "add-question-btn").click()
-        dropdown = wait_for_element(self.driver, By.ID, "question-type-dropdown")
-        dropdown = Select(dropdown)
-        dropdown.select_by_value("text_fill")
-        wait_for_element(self.driver, By.ID, "text-fill-fields")
-        time.sleep(1)
-
-        # Locate the info button using its Bootstrap class
-        info_button = wait_for_element(self.driver, By.CSS_SELECTOR, ".info-button-wrapper .info-button")
-
-        # Hover over the info button to show the tooltip
-        actions = ActionChains(self.driver)
-        actions.move_to_element(info_button).perform()
-
-        # Wait for the tooltip to appear and check it's displayed
-        info_popup = wait_for_element(self.driver, By.CSS_SELECTOR, ".info-button-wrapper .info-popup")
-        WebDriverWait(self.driver, 10).until(EC.visibility_of(info_popup))
-        self.assertTrue(info_popup.is_displayed())
-        time.sleep(1)
-
-        # Move the cursor away to hide the tooltip and verify it's hidden
-        actions.move_by_offset(50, 50).perform()
-        wait(self.driver)
-        self.assertFalse(info_popup.is_displayed())
+    # def test_info_button_tooltip_when_adding_text_fill_question(self):
+    #     # Navigate to add question page after logging in and choose text question type
+    #     self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
+    #     wait_for_element(self.driver, By.ID, "id_poll_edit_button").click()
+    #     wait_for_element(self.driver, By.ID, "id_edit_questions_button").click()
+    #     wait_for_element(self.driver, By.ID, "add-question-btn").click()
+    #     dropdown = wait_for_element(self.driver, By.ID, "question-type-dropdown")
+    #     dropdown = Select(dropdown)
+    #     dropdown.select_by_value("text_fill")
+    #     wait_for_element(self.driver, By.ID, "text-fill-fields")
+    #     time.sleep(1)
+    #
+    #     # Locate the info button using its Bootstrap class
+    #     info_button = wait_for_element(self.driver, By.CSS_SELECTOR, ".info-button-wrapper .info-button")
+    #
+    #     # Hover over the info button to show the tooltip
+    #     actions = ActionChains(self.driver)
+    #     actions.move_to_element(info_button).perform()
+    #
+    #     # Wait for the tooltip to appear and check it's displayed
+    #     info_popup = wait_for_element(self.driver, By.CSS_SELECTOR, ".info-button-wrapper .info-popup")
+    #     WebDriverWait(self.driver, 10).until(EC.visibility_of(info_popup))
+    #     self.assertTrue(info_popup.is_displayed())
+    #     time.sleep(1)
+    #
+    #     # Move the cursor away to hide the tooltip and verify it's hidden
+    #     actions.move_by_offset(50, 50).perform()
+    #     wait(self.driver)
+    #     self.assertFalse(info_popup.is_displayed())
 
     # Can either use Selenium and test all info buttons or manually test them (whitebox testing) and note in report

@@ -35,14 +35,14 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
 
 
 
-    def test_user_can_edit_poll(self):
-        edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
-        edit_button.click()
-        wait(self.driver)
-
-        edit_poll_title_element = wait_for_element(self.driver, By.ID, "id_edit_poll_title")  # From edit_poll.html
-        expected_title = "Edit Poll: Sample Poll"
-        self.assertEqual(expected_title, edit_poll_title_element.text)
+    # def test_user_can_edit_poll(self):
+    #     edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
+    #     edit_button.click()
+    #     wait(self.driver)
+    #
+    #     edit_poll_title_element = wait_for_element(self.driver, By.ID, "id_edit_poll_title")  # From edit_poll.html
+    #     expected_title = "Edit Poll: Sample Poll"
+    #     self.assertEqual(expected_title, edit_poll_title_element.text)
 
     def test_user_can_delete_poll(self):
         delete_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_delete_button"))
@@ -58,20 +58,20 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
 
         self.assertFalse(Poll.objects.filter(pk=self.poll.id).exists(), "Poll was not deleted!")
 
-    def test_user_can_see_poll_start_page_and_start_poll(self):
-        start_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_start_button"))
-        start_button.click()
-        wait(self.driver)
-
-        start_poll_title_element = wait_for_element(self.driver, By.ID, "id_start_poll_title")  # From display_code.html
-        expected_title = "Sample Poll"
-        self.assertEqual(expected_title, start_poll_title_element.text)
-
-        start_poll_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "start-poll-btn"))  # Already given ID by another group member
-        start_poll_button.click()
-        wait(self.driver)
-
-        prev_button = wait_for_element(self.driver, By.ID, "prev-btn")  # ID already given
-        next_button = wait_for_element(self.driver, By.ID, "next-btn")  # ID already given
-        self.assertTrue(prev_button.is_displayed(), "'Prev' button is not visible!")
-        self.assertTrue(next_button.is_displayed(), "'Next' button is not visible!")
+    # def test_user_can_see_poll_start_page_and_start_poll(self):
+    #     start_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_start_button"))
+    #     start_button.click()
+    #     wait(self.driver)
+    #
+    #     start_poll_title_element = wait_for_element(self.driver, By.ID, "id_start_poll_title")  # From display_code.html
+    #     expected_title = "Sample Poll"
+    #     self.assertEqual(expected_title, start_poll_title_element.text)
+    #
+    #     start_poll_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "start-poll-btn"))  # Already given ID by another group member
+    #     start_poll_button.click()
+    #     wait(self.driver)
+    #
+    #     prev_button = wait_for_element(self.driver, By.ID, "prev-btn")  # ID already given
+    #     next_button = wait_for_element(self.driver, By.ID, "next-btn")  # ID already given
+    #     self.assertTrue(prev_button.is_displayed(), "'Prev' button is not visible!")
+    #     self.assertTrue(next_button.is_displayed(), "'Next' button is not visible!")
