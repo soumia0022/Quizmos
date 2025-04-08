@@ -1,0 +1,48 @@
+.container h2 {
+    font-family: 'Palanquin Dark', sans-serif;
+    color: #fff;
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+  }
+  
+  .container form {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin: 3rem auto;
+    max-width: 700px;
+    width: 90%;
+  }
+  
+  .container form label {
+    display: block;
+    font-family: 'Palanquin', sans-serif;
+    color: #e0e0ff;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .container form input[type="text"],
+  .container form input[type="number"],
+  .container form textarea,
+  .container form select {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 15px;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+  
+  .container form input::placeholder,
+  .container form textarea::placeholder {
+    color: rgba(224, 224, 255, 0.5);
+  }
+  
