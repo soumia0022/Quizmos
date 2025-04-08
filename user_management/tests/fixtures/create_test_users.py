@@ -1,7 +1,6 @@
 import json
 from user_management.models.user_model import User
 
-# May require refactoring (I think it can be)
 
 def create_default_test_user() -> None:
     """This function parses the default_user.json fixture and creates User objects in the database. """

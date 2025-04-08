@@ -1,0 +1,15 @@
+[
+  {
+    "model": "response_management.MultipleChoiceResponse",
+    "pk": 1,
+    "fields": {
+      "question": 1,
+      "user": "janedoe",
+      "poll": 1,
+      "session_code": 12345,
+      "selected_options": ["Paris"],
+      "is_correct": true,
+      "is_partially_correct": false
+    }
+  }
+]
