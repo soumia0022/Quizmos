@@ -13,7 +13,7 @@ function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
     return McOptionCount;
 }
 
-function canAddMoreOptions(question_type, maxOptions = 4) { //move to question_constraints in refactoring
+function canAddMoreOptions(question_type, maxOptions = 4) {
     const optionsContainer = document.getElementById(`${question_type}-options-container`);
     console.log(optionsContainer);
     if (optionsContainer) {
