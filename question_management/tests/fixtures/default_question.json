@@ -5,10 +5,79 @@
     "fields": {
       "poll": 1,
       "question_type": "multiple_choice",
-      "multiple_choice_question": "What is the capital of France?",
-      "multiple_choice_options": ["Paris", "London", "Berlin", "Madrid"],
-      "multiple_choice_answers": ["Paris"],
+      "multiple_choice_question": "Which of these are programming languages?",
+      "multiple_choice_options": ["Python", "HTML", "CSS", "JavaScript"],
+      "multiple_choice_answers": ["Python", "JavaScript"],
+      "question_text": "Which of these are programming languages?"
+    }
+  },
+  {
+    "model": "question_management.question",
+    "pk": 2,
+    "fields": {
+      "poll": 1,
+      "question_type": "single_choice",
+      "single_choice_question": "What is the capital of France?",
+      "single_choice_option": ["Paris", "London", "Berlin"],
+      "single_choice_answers": ["Paris"],
       "question_text": "What is the capital of France?"
+    }
+  },
+  {
+    "model": "question_management.question",
+    "pk": 3,
+    "fields": {
+      "poll": 1,
+      "question_type": "text_fill",
+      "text_fill_question": "Name a primary color.",
+      "text_fill_answer": "Red",
+      "question_text": "Name a primary color."
+    }
+  },
+  {
+    "model": "question_management.question",
+    "pk": 4,
+    "fields": {
+      "poll": 1,
+      "question_type": "dropdown_fill",
+      "dropdown_fill_question": "A banana is usually the colour _____",
+      "dropdown_options": "yellow, red, green, blue",
+      "dropdown_correct_answer": ".py",
+      "question_text": "A banana is usually the colour _____"
+    }
+  },
+  {
+    "model": "question_management.question",
+    "pk": 5,
+    "fields": {
+      "poll": 1,
+      "question_type": "match_question",
+      "match_question": "Match the country to its capital.",
+      "match_options": ["France", "Germany", "Spain"],
+      "match_answers": ["Paris", "Berlin", "Madrid"],
+      "question_text": "Match the country to its capital."
+    }
+  },
+  {
+    "model": "question_management.question",
+    "pk": 6,
+    "fields": {
+      "poll": 1,
+      "question_type": "wordcloud",
+      "wordcloud_question": "What word comes to mind when you think of 'ocean'?",
+      "question_text": "What word comes to mind when you think of 'ocean'?"
+    }
+  },
+  {
+    "model": "question_management.question",
+    "pk": 7,
+    "fields": {
+      "poll": 1,
+      "question_type": "code_question",
+      "code_question_text": "Write a function that returns the square of a number.",
+      "code_language": "python",
+      "correct_code": "def square(n):\n    return n * n",
+      "question_text": "Write a function that returns the square of a number."
     }
   }
 ]

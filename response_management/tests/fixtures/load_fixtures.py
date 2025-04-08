@@ -1,10 +1,10 @@
 import json
 import os
 from django.conf import settings
+from django.apps import apps
 from user_management.models.user_model import User
 from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
-from response_management.models.response_model import MultipleChoiceResponse
 
 
 def load_default_responses():
@@ -12,12 +12,16 @@ def load_default_responses():
         responses = json.load(file)
 
     for data in responses:
+        model_label = data['model']  # e.g., "response_management.MultipleChoiceResponse"
+        app_label, model_name = model_label.split('.')
+        ModelClass = apps.get_model(app_label, model_name)
+
         fields = data['fields']
         user = User.objects.get(username=fields.pop('user'))
         poll = Poll.objects.get(pk=fields.pop('poll'))
         question = Question.objects.get(pk=fields.pop('question'))
 
-        MultipleChoiceResponse.objects.get_or_create(
+        ModelClass.objects.get_or_create(
             pk=data['pk'],
             user=user,
             poll=poll,
