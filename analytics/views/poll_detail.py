@@ -1,9 +1,8 @@
-# Needs refactoring
-
 from collections import Counter
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from functools import wraps
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from poll_management.models.poll_model import Poll
@@ -13,9 +12,6 @@ from question_management.models.question_models import Question
 from analytics.helpers import apply_search_and_sort
 from django.db.models.functions import Lower
 from user_management.helpers import role_required
-
-from functools import wraps
-from django.http import HttpResponseForbidden
 
 def ajax_required(view_func):
     """To prevent direct URL access. """
@@ -72,6 +68,7 @@ def get_response_count(poll, question):
         'dropdown_fill': DropdownFillResponse,
         'match_question': MatchQuestionResponse,
         'wordcloud': WordCloudResponse,
+        'code_question': CodeQuestionResponse,
     }
 
     model = response_models.get(question.question_type)
