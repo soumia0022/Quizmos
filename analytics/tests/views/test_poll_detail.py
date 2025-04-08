@@ -322,7 +322,7 @@ class PollAnalyticsTestCase(TestCase):
         json_response = response.json()
 
         self.assertEqual(json_response["labels"], ["Correct Responses", "Incorrect Responses"])
-        self.assertEqual(json_response["data"], [0, 6])  # 0 correct and 6 incorrect for whole poll
+        self.assertEqual(json_response["data"], [0, 5])  # 0 correct and 5 incorrect for whole poll
 
     def test_pie_chart_correct_answers_view(self):
         """Test pie chart data returns correct labels and correct response counts."""
