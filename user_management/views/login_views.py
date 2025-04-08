@@ -2,23 +2,20 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.functions import Lower
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import View
 from user_management.forms import LogInForm, PollCodeForm
 from user_management.helpers import login_prohibited
 from poll_management.models.poll_model import Poll
-from django.db.models import Count, Q, F
-from poll_management.views.create_poll import create_poll
+from django.db.models import  Q, F
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect
-import re
 from django.db.models import Count
 from django.shortcuts import render
-from django.contrib.auth import get_user_model
-from user_management.helpers import generate_suggested_title
+from user_management.helpers import generate_suggested_title, delete_guest_user
 from response_management.models.response_model import (
             MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse,
             DropdownFillResponse, MatchQuestionResponse, WordCloudResponse,

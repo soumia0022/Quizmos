@@ -1,12 +1,13 @@
 from poll_management.helpers import format_youtube_link
 from response_management.models.response_model import (
     MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse,
-    DropdownFillResponse, MatchQuestionResponse, CodeQuestionResponse
+    DropdownFillResponse, MatchQuestionResponse, WordCloudResponse,
+    CodeQuestionResponse
 )
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from poll_management.models.poll_model import Poll
-from response_management.models.response_model import WordCloudResponse
+
 
 @login_required
 def student_view_poll(request, poll_id):
@@ -68,14 +69,20 @@ def student_view_poll(request, poll_id):
             value_field = config['value_field']
             student_answer = getattr(response, value_field)
 
-            responses_by_question[question.id] = {
+            response_data = {
                 'type': response_type.__name__.lower().replace('response', ''),
                 'question': question,
                 'submitted_on': response.submitted_on,
                 'is_correct': is_correct,
                 value_field: student_answer,
-                'session_code': response.session_code
+                'session_code': response.session_code,
             }
+
+
+            if response_type in [MultipleChoiceResponse, MatchQuestionResponse]:
+                response_data['is_partially_correct'] = getattr(response, 'is_partially_correct', False)
+
+            responses_by_question[question.id] = response_data
 
     return render(request, 'student_view_response/poll_response.html', {
         'poll': poll,

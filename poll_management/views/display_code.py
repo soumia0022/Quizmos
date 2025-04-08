@@ -1,11 +1,14 @@
 from django.http import HttpResponseForbidden
 from django.shortcuts import  render, get_object_or_404
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 from poll_management.models.poll_model import Poll
 from django.conf import settings
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from user_management.helpers import role_required
 import uuid
 import qrcode
 import os
@@ -25,9 +28,12 @@ def delete_old_qr_codes(poll):
 def generate_number_code():
     return str(uuid.uuid4().int)[:6]
 #------------------------------------
+@login_required
+@role_required('Lecturer')
 def display_code(request, pk):
     poll = get_object_or_404(Poll, pk=pk)
-
+    if poll.user != request.user:
+        raise PermissionDenied("You do not have permission to start this poll")
     if poll.questions.count() == 0:
         return HttpResponseForbidden("This poll has no questions and cannot be started.")
 

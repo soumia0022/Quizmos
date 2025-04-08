@@ -1,7 +1,9 @@
+from django.http import JsonResponse
 from django.test import TestCase, Client
 from django.urls import reverse
 from question_management.models.question_models import Question
 from poll_management.models.poll_model import Poll
+from question_management.views.edit_question_manager import QuestionManager
 from user_management.models.user_model import User
 
 class EditQuestionTestCase(TestCase):
@@ -27,6 +29,14 @@ class EditQuestionTestCase(TestCase):
             question_type="multiple_choice",
             multiple_choice_options=['Option1', 'Option2'],
             multiple_choice_answers=['Option1'],
+            question_timer=30
+        )
+
+        self.scq_question = Question.objects.create(
+            question_text="Single Choice Question",
+            question_type="single_choice",
+            single_choice_option=['Option1', 'Option2'],
+            single_choice_answers=['Option1', 'Option2'],  # This simulates the error (multiple answers)
             question_timer=30
         )
 
@@ -139,3 +149,9 @@ class EditQuestionTestCase(TestCase):
 
         expected_match_pairs = list(zip(["A", "B", "C"], ["1", "2", "3"]))
         self.assertEqual(list(response.context['match_pairs']), expected_match_pairs)
+
+    def test_validate_single_choice_multiple_answers(self):
+        """Test that the validation catches multiple answers for a single-choice question."""
+        validation_response = QuestionManager.validate_single_choice(self.scq_question)
+        self.assertIsInstance(validation_response, JsonResponse)
+        self.assertEqual(validation_response.status_code, 400)

@@ -406,3 +406,16 @@ class PollAnalyticsTestCase(TestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 403)  # Permission Denied
+
+    def test_empty_labels_and_data(self):
+        question = Question.objects.create(question_type="wordcloud", poll=self.poll)
+        question.save()
+
+        url = reverse("question_analytics", args=[question.id])
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        self.assertEqual(response.status_code, 200)
+
+        json_response = response.json()
+        self.assertEqual(json_response["labels"], [])
+        self.assertEqual(json_response["data"], [])

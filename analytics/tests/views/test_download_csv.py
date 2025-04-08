@@ -123,7 +123,7 @@ class CSVDownloadTestCase(TestCase):
 
         # Check the CSV headers
         headers = next(reader)
-        self.assertEqual(headers,['User', 'Question', 'Question Type', 'Options', 'Correct Answer', 'Number of Responses'])
+        self.assertEqual(headers,['Question', 'Question Type', 'Options', 'Correct Answer', 'Number of Responses'])
 
         # Check the rows in the CSV
         rows = list(reader)
@@ -131,12 +131,11 @@ class CSVDownloadTestCase(TestCase):
 
         # Check specific question response data (e.g., for multiple choice question)
         row = rows[0]
-        self.assertEqual(row[0], self.user.username)
-        self.assertEqual(row[1], "Favorite Color?")
-        self.assertEqual(row[2], "Multiple Choice")
-        self.assertEqual(row[3], "Red, Blue, Green")
-        self.assertEqual(row[4], "Red")
-        self.assertEqual(row[5], "1")
+        self.assertEqual(row[0], "Favorite Color?")
+        self.assertEqual(row[1], "Multiple Choice")
+        self.assertEqual(row[2], "Red, Blue, Green")
+        self.assertEqual(row[3], "Red")
+        self.assertEqual(row[4], "1")
 
     def test_download_csv_invalid_poll(self):
         """Test CSV download for an invalid poll (non-existent poll)."""
