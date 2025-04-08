@@ -11,27 +11,42 @@
     <h1>Welcome to {{ poll.title }}!</h1>
     <p>{{ question.question_text }}</p>
 
-    <link rel="stylesheet" href="{% static 'poll_management/css/poll_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'poll_management/css/poll_management/css/poll_styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/question_detail.css' %}">
 
 
     <!-- Display options based on question type -->
     {% if question.question_type == 'multiple_choice' %}
-        {% for option in question.multiple_choice_options %}
-            <div class="option-item">
-                <input type="checkbox" name="multiple_choice_answers" value="{{ option }}">
-                <label>{{ option }}</label>
+        <div class="card question-section">
+            <div class="card-header">
+                <h3>{{ question.question_text }}</h3>
             </div>
-        {% endfor %}
-
+            <div class="card-body">
+                {% for option in question.multiple_choice_options %}
+                <div class="option-item">
+                    <input type="checkbox" name="multiple_choice_answers" value="{{ option }}" id="option_{{ forloop.counter }}">
+                    <label for="option_{{ forloop.counter }}">{{ option }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    
     {% elif question.question_type == 'single_choice' %}
-        {% for option in question.single_choice_option %}
-            <div class="option-item">
-                <input type="radio" name="single_choice_answer" value="{{ option }}">
-                <label>{{ option }}</label>
+        <div class="card question-section">
+            <div class="card-header">
+                <h3>{{ question.question_text }}</h3>
             </div>
-        {% endfor %}
-
+            <div class="card-body">
+                {% for option in question.single_choice_option %}
+                <div class="option-item">
+                    <input type="radio" name="single_choice_answer" value="{{ option }}" id="option_{{ forloop.counter }}">
+                    <label for="option_{{ forloop.counter }}">{{ option }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    
     {% elif question.question_type == 'dropdown_fill' %}
         <select name="dropdown_answer">
             <option value="" disabled selected>Select an option</option>
