@@ -22,7 +22,7 @@ class PollArchiveBaseView(LoginRequiredMixin, View):
         return JsonResponse({"status": "error", "message": "Invalid request method"})
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.role != "Lecturer":
+        if not hasattr(request.user, 'role') or request.user.role != "Lecturer":
             return redirect('user_management:dashboard')
         return super().dispatch(request, *args, **kwargs)
 
@@ -81,7 +81,7 @@ class ArchivedPollsListView(LoginRequiredMixin, ListView):
     paginate_by = 9
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.role != "Lecturer":
+        if not hasattr(request.user, 'role') or request.user.role != "Lecturer":
             return redirect('user_management:dashboard')
         return super().dispatch(request, *args, **kwargs)
 
