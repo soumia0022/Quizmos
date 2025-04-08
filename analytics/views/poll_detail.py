@@ -170,8 +170,6 @@ RESPONSE_MODELS = {  # For correct/incorrect analytics
     'text_fill': TextFillResponse,
     'dropdown_fill': DropdownFillResponse,
     'match_question': MatchQuestionResponse,
-    'wordcloud': WordCloudResponse,
-    'code_question': CodeQuestionResponse
 }
 
 
