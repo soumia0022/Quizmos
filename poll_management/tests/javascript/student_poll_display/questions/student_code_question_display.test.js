@@ -32,7 +32,7 @@ describe("code_question_display", () => {
         code_question_display(data);
 
         expect(mockQuestionOptions.innerHTML).toContain('<textarea id="code-editor"></textarea>');
-        expect(mockQuestionOptions.innerHTML).toContain('<button id="run-button" >Run Code</button>');
+        expect(mockQuestionOptions.innerHTML).toContain('<button id="run-button">Run Code</button>');
         expect(mockQuestionOptions.innerHTML).toContain('<pre id="output"></pre>');
 
         expect(mockAnswerDiv.style.display).toBe("none");
