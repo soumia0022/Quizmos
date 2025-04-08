@@ -140,13 +140,15 @@ def _process_text_fill_question(question):
 
 def _process_dropdown_question(question):
     """Process dropdown fill questions."""
-    options = question.dropdown_options.split(',')
-    labels, data = [], []
-    for option in options:
-        count = DropdownFillResponse.objects.filter(question=question, selected_option=option).count()
-        labels.append(option)
-        data.append(count)
-    return labels, data
+    responses = DropdownFillResponse.objects.filter(question=question)  # Get all responses
+    option_counts = Counter([resp.selected_option.strip() for resp in responses])
+    expected_options = [opt.strip() for opt in question.dropdown_options.split(',')]
+
+    for option in expected_options:
+        if option not in option_counts:
+            option_counts[option] = 0
+
+    return list(option_counts.keys()), list(option_counts.values())
 
 
 def _process_wordcloud_question(question):
