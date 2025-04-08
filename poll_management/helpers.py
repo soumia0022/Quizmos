@@ -1,4 +1,8 @@
 from better_profanity import profanity
+from django.conf import settings
+import uuid
+import os
+
 def format_youtube_link(link):
     """
     Format YouTube links for proper embedding.
@@ -62,4 +66,19 @@ def apply_profanity_filter(text_data_json, message_type):
                 if isinstance(value, str):
                     response_data[key] = profanity.censor(value)
         return text_data_json
+
+
+def ensure_media_directory_exists():
+    if not os.path.exists(settings.MEDIA_ROOT):
+        os.makedirs(settings.MEDIA_ROOT)
+
+def delete_old_qr_codes(poll):
+    """Delete old QR code images for a specific poll"""
+    ensure_media_directory_exists()
+    for filename in os.listdir(settings.MEDIA_ROOT):
+        if filename.startswith(f"qr_code_{poll.title}_{poll.pk}_"):
+            os.remove(os.path.join(settings.MEDIA_ROOT, filename))
+
+def generate_number_code():
+    return str(uuid.uuid4().int)[:6]
 
