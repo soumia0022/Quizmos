@@ -1,4 +1,4 @@
-//const { canAddMoreOptions } = require('./question_constraints');
+import {displayErrorMessage} from "./question_constraints.js";
 
 function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
     if (!canAddMoreOptions("multiple-choice")) {
@@ -15,6 +15,7 @@ function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
 
 function canAddMoreOptions(question_type, maxOptions = 4) { //move to question_constraints in refactoring
     const optionsContainer = document.getElementById(`${question_type}-options-container`);
+    console.log(optionsContainer);
     if (optionsContainer) {
         return optionsContainer.children.length < maxOptions;
     } else {
