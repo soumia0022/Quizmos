@@ -13,11 +13,9 @@ from user_management.helpers import role_required
 class PollArchiveBaseView(LoginRequiredMixin, View):
     """Base class for poll archive operations"""
 
-    @role_required('Lecturer')
     def get_poll(self, request, poll_id):
         return get_object_or_404(Poll, id=poll_id, user=request.user)
 
-    @role_required('Lecturer')
     def handle_invalid_method(self):
         return JsonResponse({"status": "error", "message": "Invalid request method"})
 
