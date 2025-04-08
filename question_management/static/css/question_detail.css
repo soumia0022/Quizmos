@@ -232,3 +232,22 @@
     overflow: auto;
 }
 
+#submitResponse {
+    background-color: rgba(0, 120, 212, 0.1); 
+    border: 2px solid #0078D4;
+    color: #0078D4;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto; 
+}
+
+#submitResponse:hover {
+    background-color: rgba(0, 120, 212, 0.2);
+    transform: scale(1.05);
+}
