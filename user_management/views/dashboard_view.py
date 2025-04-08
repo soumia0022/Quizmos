@@ -68,19 +68,37 @@ class DashboardView(LoginRequiredMixin, View):
         sort_by = request.GET.get('sort_by', 'created_at_desc')
         search_query = request.GET.get('search', '')
 
-        polls = self.get_lecturer_polls(request.user, search_query, sort_by)
-        page_obj = self.paginate_polls(polls, request.GET.get('page'))
+        active_polls = Poll.objects.filter(user=request.user, archived=False).annotate(
+            multiple_choice_responses_count=Count('multiplechoiceresponse'),
+            single_choice_responses_count=Count('singlechoiceresponse'),
+            dropdown_fill_responses_count=Count('dropdownfillresponse'),
+            text_fill_responses_count=Count('textfillresponse'),
+            match_question_responses_count=Count('matchquestionresponse')
+        )
 
-        context = {
+        archived_polls = Poll.objects.filter(user=request.user, archived=True).annotate(
+            multiple_choice_responses_count=Count('multiplechoiceresponse'),
+            single_choice_responses_count=Count('singlechoiceresponse'),
+            dropdown_fill_responses_count=Count('dropdownfillresponse'),
+            text_fill_responses_count=Count('textfillresponse'),
+            match_question_responses_count=Count('matchquestionresponse')
+        )
+
+        if search_query:
+            active_polls = active_polls.filter(title__icontains=search_query)
+            archived_polls = archived_polls.filter(title__icontains=search_query)
+
+        return render(request, self.template_name_lecturer, {
             'user': request.user,
-            'polls': page_obj,
+            'active_polls': active_polls,
+            'archived_polls': archived_polls,
             'sort_by': sort_by,
             'search_query': search_query,
+            'view': request.GET.get('view', 'active'),
             'show_confirmation_popup': False,
             'original_title': "",
             'suggested_title': "",
-        }
-        return render(request, self.template_name_lecturer, context)
+        })
 
     def get_lecturer_polls(self, user, search_query, sort_by):
         polls = Poll.objects.filter(user=user, archived=False).annotate(
