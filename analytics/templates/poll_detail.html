@@ -13,7 +13,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poll Results</title>
-    {% return_button %}
+    <div class="buttons-container">
+        <div class="left-section">
+          <a href="{% url 'user_management:dashboard' %}" class="go-back-btn">Go to Dashboard</a>
+        </div>
+    
+        <div class="center-section">
+          <div class="tts-buttons">
+                {% tts_button %}
+                {% tts_selected_button %}
+          </div>
+        </div>
+        <div class="right-section"></div>
+      </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>

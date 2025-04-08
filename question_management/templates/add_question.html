@@ -30,8 +30,9 @@
 {% block content %}
 <div class="buttons-container">
     <div class="left-section">
-      <a href="javascript:history.back()" class="go-back-btn">Go Back</a>
+      <a href="{% url 'user_management:dashboard' %}" class="go-back-btn">Go to Dashboard</a>
     </div>
+
     <div class="center-section">
       <div class="tts-buttons">
             {% tts_button %}
