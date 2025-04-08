@@ -86,3 +86,29 @@
 .text-fill-input::placeholder {
     color: rgba(255, 255, 255, 0.7);
 }
+
+
+/* Word cloud */
+.wordcloud-input {
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: white;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: 16px;
+    font-family: 'Palanquin', sans-serif;
+    margin-bottom: 12px; 
+    transition: all 0.3s ease;
+}
+
+.wordcloud-input:focus {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2); 
+    color: white; 
+}
+
+.wordcloud-input::placeholder {
+    color: rgba(255, 255, 255, 0.5); 
+}
