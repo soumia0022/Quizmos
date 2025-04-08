@@ -147,4 +147,34 @@
     transform: scale(1.05);
   }
   
-  
+.multiple-choice-option, 
+.single-choice-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid #fff;
+  border-radius: 15px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.multiple-choice-option input[type="checkbox"],
+.single-choice-option input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.multiple-choice-option label, 
+.single-choice-option label {
+  flex: 1;
+  font-family: 'Palanquin', sans-serif;
+  color: #e0e0ff;
+  font-size: 16px;
+  margin: 0;
+}
+
+.multiple-choice-option button,
+.single-choice-option button {
+  margin-left: 10px;
+}
