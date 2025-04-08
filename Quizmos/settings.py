@@ -26,7 +26,7 @@ SECRET_KEY = 'REMOVED_SECRET_KEY'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'ec2-51-21-202-49.eu-north-1.compute.amazonaws.com',
