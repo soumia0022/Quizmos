@@ -89,9 +89,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleNoData(dataArray) {
-        if (!dataArray || dataArray.length === 0 || dataArray.every(num => num === 0)) {
+        const selectedElement = document.querySelector(`.question-item[data-question-id="${state.selectedQuestionId}"]`);
+        const selectedType = selectedElement?.getAttribute("data-question-type");
+
+        let message = "No responses yet.";
+        if (state.isCorrectAnalytics && (selectedType === "wordcloud" || selectedType === 'code_question')) {
+            message = "This question type does not support correct answers analytics.";
+        }
+
+        const isEmpty = !dataArray || dataArray.length === 0 || dataArray.every(num => num === 0);
+
+        if (isEmpty) {
             elements.chart.style.display = 'none';
             elements.noDataMessage.style.display = 'block';
+            elements.noDataMessage.innerText = message;
             return true;
         } else {
             elements.chart.style.display = 'block';
@@ -99,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return false;
         }
     }
+
 
     function fetchChartData(chartType) {
         let url;

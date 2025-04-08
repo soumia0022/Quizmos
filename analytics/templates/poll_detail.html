@@ -29,7 +29,7 @@
             </form>
             <div id="questions-list">
                 {% for question in questions %}
-                    <div class="question-item" data-question-id="{{ question.id }}">
+                    <div class="question-item" data-question-id="{{ question.id }}" data-question-type="{{ question.question_type }}">
                         <strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}
                         <button class="view-analytics-btn" data-question-id="{{ question.id }}">View Analytics</button>
                     </div>
