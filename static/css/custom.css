@@ -222,6 +222,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   background-color: transparent !important;
   outline: none !important;
   box-shadow: none !important;
+  color: #e0e0ff;
 }
 
 .go-back-btn, .custom-back-button, .join-poll-btn{
