@@ -50,7 +50,6 @@ export function updateTextResponseUI(questionId, responses) {
         responseListContainer.style.display = responses.length > 0 ? 'block' : 'none';
     }
 
-    // add the responses as a list on the screen maybe update later to be able to delete
     if (responses.length <= 10) {
         responses.forEach((response) => {
             const listItem = document.createElement('li');
@@ -68,16 +67,16 @@ export function updateTextResponseUI(questionId, responses) {
             container: questionContainer,
             responses,
             listSelector: `#responseList-${questionId}`,
-            renderItem: (response) => {
+            renderItem: (response, list) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.innerHTML = `
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="response-text">${response}</span>
-                </div>
-            `;
-            responseList.appendChild(listItem);
-            }
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="response-text">${response}</span>
+                    </div>
+                `;
+                list.appendChild(listItem); 
+            }   
         });
     }
 }
@@ -287,7 +286,7 @@ function paginateResponses({
         const end = start + pageSize;
         const pageItems = responses.slice(start, end);
 
-        pageItems.forEach(renderItem);
+        pageItems.forEach((item) => renderItem(item, list));
 
         renderPaginationControls();
     }
@@ -299,7 +298,7 @@ function paginateResponses({
         }
 
         let paginationContainer = container.querySelector(paginationClass);
-        if (!paginationContainer) {
+        if (paginationContainer) {
             paginationContainer.remove();
         }
 
