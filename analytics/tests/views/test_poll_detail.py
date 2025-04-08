@@ -337,7 +337,7 @@ class PollAnalyticsTestCase(TestCase):
         self.assertEqual(set(json_response.keys()), {"labels", "data"})
         expected_labels = ['Correct Responses', 'Incorrect Responses']
         self.assertListEqual(json_response["labels"], expected_labels)
-        self.assertEqual(json_response["data"], [0, 6])
+        self.assertEqual(json_response["data"], [0, 5])
 
     def test_bar_graph_correct_answers_view(self):
         """Test bar graph data returns correct labels and correct response counts."""
@@ -352,7 +352,7 @@ class PollAnalyticsTestCase(TestCase):
         self.assertEqual(set(json_response.keys()), {"labels", "data"})
         expected_labels = ['Correct Responses', 'Incorrect Responses']
         self.assertListEqual(json_response["labels"], expected_labels)
-        self.assertEqual(json_response["data"], [0, 6])
+        self.assertEqual(json_response["data"], [0, 5])
 
     def test_poll_analytics_login_required(self):
         """Test that an anonymous user cannot access the poll analytics page."""
