@@ -57,7 +57,16 @@ document.addEventListener('DOMContentLoaded', function () {
             executeCode(editor, editor.getOption("mode"), "code-output");
         });
     }
+    if (runCodeButton) {
+        runCodeButton.addEventListener("click", function () {
+            executeCode(editor, editor.getOption("mode"), "code-output");
+        });
+    }
 
+    if (codingLanguageSelector) {
+        codingLanguageSelector.addEventListener('change', function () {
+            let selectedLanguage = this.value;
+            let newMode = languageModes[selectedLanguage];
     if (codingLanguageSelector) {
         codingLanguageSelector.addEventListener('change', function () {
             let selectedLanguage = this.value;
@@ -67,6 +76,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // alert(`Mode changed to: ${newMode}`);
         });
     }
+            editor.setOption("mode", newMode);
+            // alert(`Mode changed to: ${newMode}`);
+        });
+    }
+
 
     deleteButtons.forEach((btn) => {
         btn.addEventListener('click', function () {
