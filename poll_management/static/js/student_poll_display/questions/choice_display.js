@@ -1,4 +1,4 @@
-import {pollState} from "../../poll_state";
+import {pollState} from "../../poll_state.js";
 
 export function choice_display(data, q_type) {
     const inputName = q_type === "multiple" ? "multiple_choice" : "single_choice";
