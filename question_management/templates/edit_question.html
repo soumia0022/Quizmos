@@ -109,7 +109,7 @@
         <label><strong>Correct Answer:</strong></label>
         <input type="text" id="dropdown-correct-answer" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}" readonly>
       </div>
-          <label for="dropdown-correct-answer" class="form-label">Additional Options:</label>
+          <label for="dropdown-correct-answer" class="form-label"> Options:</label>
         {% for option in dropdown_options %}
             {% if option == question.dropdown_correct_answer %}
                 <input type="text" name="dropdown_options[]" value="{{ option }}" readonly>
