@@ -1,4 +1,6 @@
+
 import {displayErrorMessage} from "./question_constraints.js";
+
 
 function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
     if (!canAddMoreOptions("multiple-choice")) {
@@ -62,7 +64,7 @@ function addChoiceOptionComponents(question_type, optionCount){
     label.htmlFor = `option${optionCount}`;
     label.textContent = optionText;
 
-    // Add a delete button if needed
+
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
     deleteBtn.className = 'btn btn-danger btn-sm delete-option-btn';

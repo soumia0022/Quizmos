@@ -108,13 +108,6 @@ class QuestionManager:
         self.question.save()
         self.save_files()
 
-        # Generate wordcloud image
-        text = ("Testing Testing the Word Cloud hello hello hello SEG SEG SEG wow amazing great yay woohoo "
-                "Hello Soumia Soumia Amina Amina Leyli Leyli Eeshal Marium Rashida Rashida Alishba Alishba Alishba")
-        font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static/fonts/RobotoMono-Regular.ttf")
-        wordcloud_image = generate_wordcloud_image(text, font_path)
-
-        return wordcloud_image
 
     def handle_match_question(self):
         """Handle the creation of a match question."""

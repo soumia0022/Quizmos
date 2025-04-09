@@ -61,12 +61,6 @@ def validate_question_options_and_answers(options, answers, question_type):
     if len(options) > 4:
         return JsonResponse({'error': f'You can only add up to 4 options for a {question_type} question.'}, status=400)
 
-    # # Check if the number of answers exceeds the number of options
-    # if len(answers) > len(options):
-    #     return JsonResponse({'error': f'There cannot be more answers than options for a {question_type} question.'}, status=400)
-    #
-    # # If it's a single-choice question, ensure there is only one answer
-    # if question_type == "single_choice" and len(answers) != 1:
-    #     return JsonResponse({'error': 'A single-choice question must have exactly one answer.'}, status=400)
+
 
     return None
