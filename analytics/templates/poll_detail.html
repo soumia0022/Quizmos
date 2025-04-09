@@ -37,7 +37,7 @@
         <div id="questions-sidebar" class="custom-sidebar p-3">
             <h3 class="form-title text-center">Questions</h3>
 
-            {% include 'partials/search_sort_form.html' %}
+            {% include 'partials/search_sort_form.html' with search_placeholder="Search Questions" %}
 
             <div id="questions-list">
                 {% for question in questions %}
