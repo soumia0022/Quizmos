@@ -70,17 +70,20 @@ class CustomSetPasswordFormTests(TestCase):
     def test_clean_passwords_do_not_match(self):
         form = CustomSetPasswordForm(data={'new_password': 'NewValidPassword123', 'new_password_confirm': 'MismatchPassword123'})
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['__all__'], ['Passwords do not match.'])
+        self.assertEqual(form.errors["new_password"], ["Passwords do not match."])
+        self.assertEqual(form.errors["new_password_confirm"], ["Passwords do not match."])
 
     def test_clean_password_too_short(self):
         form = CustomSetPasswordForm(data={'new_password': 'short', 'new_password_confirm': 'short'})
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['__all__'], ['Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter.'])
-
+        self.assertEqual(form.errors["new_password"], ["Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter."])
+        self.assertEqual(form.errors["new_password_confirm"], ["Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter."])
+    
     def test_clean_password_missing_fields(self):
         form = CustomSetPasswordForm(data={'new_password': '', 'new_password_confirm': ''})
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['__all__'], ['Both password fields are required.'])
+        self.assertEqual(form.errors["new_password"], ["This field is required.", "Both password fields are required."])
+        self.assertEqual(form.errors["new_password_confirm"], ["This field is required.", "Both password fields are required."])
 
     def test_save_valid_token(self):
         uid = urlsafe_base64_encode(force_bytes(self.user.pk))

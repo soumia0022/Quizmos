@@ -72,15 +72,16 @@ class CustomSetPasswordForm(forms.Form):
             self.add_error("new_password_confirm", "Both password fields are required.")
 
         if password != password_confirm:
+            self.add_error("new_password", "Passwords do not match.")
             self.add_error("new_password_confirm", "Passwords do not match.")
 
-        if len(password) < 8 or not re.search(r'\d', password) or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password):
-            self.add_error("new_password", "Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter.")
-            self.add_error("new_password_confirm", "Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter.")  # Ensuring the same error on confirm field
-
+        if password and (len(password) < 8 or not re.search(r'\d', password) or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password)):
+                self.add_error("new_password", "Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter.")
+                self.add_error("new_password_confirm", "Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter.")
+        
         if self.user and self.user.check_password(password):
             self.add_error("new_password", "New password cannot be the same as the old password.")
-            self.add_error("new_password_confirm", "New password cannot be the same as the old password.")  # Same error on confirm field
+            self.add_error("new_password_confirm", "New password cannot be the same as the old password.")  
 
         return cleaned_data
 
