@@ -60,6 +60,7 @@
         video_file: {% if question.video_file %}"{{ question.video_file.url }}"{% else %}null{% endif %},
         question_timer: {% if question.question_timer %}{{ question.question_timer }}{% else %}null{% endif %},        audio_file: {% if question.audio_file %}"{{ question.audio_file.url }}"{% else %}null{% endif %},
         youtube_link: {% if question.youtube_link %}"{{ question.youtube_link }}"{% else %}null{% endif %},
+          image_file: {% if question.image_file %}"{{ question.image_file.url }}"{% else %}null{% endif %},
         {% if question.question_type == 'dropdown_fill' %}
           text: "{{ question.dropdown_fill_question|default:'' }}",
           options: {{ question.get_dropdown_options|safe|default:"[]" }},
