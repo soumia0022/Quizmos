@@ -13,10 +13,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poll Results</title>
-    {% return_button %}
     <div class="buttons-container">
         <div class="left-section">
-          <a href="{% url 'user_management:dashboard' %}" class="go-back-btn">Go to Dashboard</a>
+          {% return_button %}
         </div>
 
         <div class="center-section">
@@ -83,6 +82,10 @@
                 <button id="viewLineGraph" class="custom-btn">View Line Graph</button>
             </div>
 
+            <div id="no-data-message" style="display: none; text-align: center; padding: 1rem; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
+                No responses yet.
+            </div>
+
             <div class="chart-inner">
                 <canvas id="chart"></canvas>
             </div>
@@ -94,9 +97,7 @@
             </div>
         </div>
 
-        <div id="no-data-message" style="display: none; text-align: center; padding: 1rem; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
-            No responses yet.
-        </div>
+
 
         <script src="{% static 'js/poll_detail.js' %}"></script>
     </div>
