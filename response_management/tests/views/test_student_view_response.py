@@ -17,13 +17,14 @@ class StudentViewResponseTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.get(username='johndoe')
-        self.poll = Poll.objects.create(title='Poll 1', user=self.user, number_code=111111)
+        self.lecturer = User.objects.get(username='johndoe')
+        self.student = User.objects.get(username='janedoe')
 
+        self.poll = Poll.objects.create(title='Poll 1', user=self.lecturer, number_code=111111)
         self.view_url = reverse('response_management:student_view_poll', kwargs={'poll_id': self.poll.id})
 
     def test_student_response_view(self):
-        self.client.force_login(self.user)
+        self.client.force_login(self.student)
         response = self.client.get(self.view_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'student_view_response/poll_response.html')
@@ -36,12 +37,12 @@ class StudentViewResponseTest(TestCase):
             question_type='multiple_choice'
         )
         MultipleChoiceResponse.objects.create(
-            user=self.user,
+            user=self.student,
             poll=self.poll,
             question=multiple_choice_question,
             selected_options=[1, 2]
         )
-        self.client.force_login(self.user)
+        self.client.force_login(self.student)
         response = self.client.get(self.view_url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Which of the following options do you prefer?")
@@ -53,12 +54,12 @@ class StudentViewResponseTest(TestCase):
             question_type='single_choice'
         )
         SingleChoiceResponse.objects.create(
-            user=self.user,
+            user=self.student,
             poll=self.poll,
             question=single_choice_question,
             selected_option=1
         )
-        self.client.force_login(self.user)
+        self.client.force_login(self.student)
         response = self.client.get(self.view_url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "What is your favorite color?")
@@ -70,12 +71,12 @@ class StudentViewResponseTest(TestCase):
             question_type='text_fill'
         )
         TextFillResponse.objects.create(
-            user=self.user,
+            user=self.student,
             poll=self.poll,
             question=text_fill_question,
             answer_text="A beach holiday with lots of sunshine."
         )
-        self.client.force_login(self.user)
+        self.client.force_login(self.student)
         response = self.client.get(self.view_url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Describe your ideal vacation.")
@@ -87,12 +88,12 @@ class StudentViewResponseTest(TestCase):
             question_type='dropdown'
         )
         DropdownFillResponse.objects.create(
-            user=self.user,
+            user=self.student,
             poll=self.poll,
             question=dropdown_question,
             selected_option=1
         )
-        self.client.force_login(self.user)
+        self.client.force_login(self.student)
         response = self.client.get(self.view_url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Select your preferred country.")
@@ -108,12 +109,12 @@ class StudentViewResponseTest(TestCase):
             {"left": "B", "right": "2"}
         ]
         MatchQuestionResponse.objects.create(
-            user=self.user,
+            user=self.student,
             poll=self.poll,
             question=match_question,
             match_responses=match_responses
         )
-        self.client.force_login(self.user)
+        self.client.force_login(self.student)
         response = self.client.get(self.view_url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Match the following items.")
