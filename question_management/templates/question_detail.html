@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="{% static 'css/question_detail.css' %}">
     <link rel="stylesheet" href="{% static 'css/edit_question.css' %}">
 
+        <!-- CodeMirror Styles & Scripts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script> <!-- For Java & C++ -->
+
+    <script type="module" src="{% static 'js/question_detail.js' %}"></script>
+
     <div class="buttons-container">
         <div class="left-section">
             <a href="javascript:history.back()" class="go-back-btn">Go Back</a>
@@ -112,6 +121,16 @@
 
             <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
             <script src="{% static 'poll_management/js/drag_and_drop.js' %}"></script>
+
+        {% elif question.question_type == 'code_question' %}
+            <div class="card-header">
+                <h3>{{ question.question_text }}</h3>
+                <input type="text" id="coding-language-selector" name="hidden_input" value={{ question.code_language }} hidden>
+                <textarea id="code-editor" name="correct_code">{{ question.correct_code }}</textarea>
+                  <button id="run-code-button" type="button">Run Code</button>
+                  <pre id="code-output"></pre>
+            </div>
+
         {% endif %}
     </div>
 {% endblock %}
