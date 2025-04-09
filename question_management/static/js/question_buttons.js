@@ -1,4 +1,3 @@
-//const { canAddMoreOptions } = require('./question_constraints');
 
 function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
     if (!canAddMoreOptions("multiple-choice")){
@@ -12,7 +11,7 @@ function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
     return McOptionCount;
 }
 
-function canAddMoreOptions(question_type, maxOptions = 4) { //move to question_constraints in refactoring
+function canAddMoreOptions(question_type, maxOptions = 4) {
     const optionsContainer = document.getElementById(`${question_type}-options-container`);
     if (optionsContainer){
         return optionsContainer.children.length < maxOptions;
@@ -61,7 +60,7 @@ function addChoiceOptionComponents(question_type, optionCount){
     label.htmlFor = `option${optionCount}`;
     label.textContent = optionText;
 
-    // Add a delete button if needed
+
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
     deleteBtn.className = 'btn btn-danger btn-sm ms-2 delete-option-btn';

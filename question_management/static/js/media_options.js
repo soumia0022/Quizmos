@@ -44,8 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 addYoutubeBtn.disabled = false;
             });
 
-            // Refactoring note: For below media functions, I think some lines may not be needed (e.g., some of the
-            // none ones because the fields are already set to none, check when refactoring)
+
 
             // Show audio upload field and hide other media options
             addAudioBtn.addEventListener("click", function () {
