@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const codingLanguageSelector = document.getElementById('language-selector');
     const codeEditorArea = document.getElementById('code-editor');
     const runCodeButton = document.getElementById('run-code-button')
-    let editor = initializeCodeEditor(codeEditorArea, "python");
+
     // Language Mode Mapping
     const languageModes = {
         python: "python",
@@ -51,22 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
         cpp: "text/x-c++src"
     };
 
+    let editor = initializeCodeEditor(codeEditorArea, languageModes[codingLanguageSelector.value]);
+
     /* Event listeners*/
-    if (runCodeButton) {
-        runCodeButton.addEventListener("click", function () {
-            executeCode(editor, editor.getOption("mode"), "code-output");
-        });
-    }
-    if (runCodeButton) {
-        runCodeButton.addEventListener("click", function () {
-            executeCode(editor, editor.getOption("mode"), "code-output");
-        });
-    }
-
-    if (codingLanguageSelector) {
-        codingLanguageSelector.addEventListener('change', function () {
-            let selectedLanguage = this.value;
-            let newMode = languageModes[selectedLanguage];
     if (codingLanguageSelector) {
         codingLanguageSelector.addEventListener('change', function () {
             let selectedLanguage = this.value;
@@ -76,8 +63,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // alert(`Mode changed to: ${newMode}`);
         });
     }
-            editor.setOption("mode", newMode);
-            // alert(`Mode changed to: ${newMode}`);
+
+    if (runCodeButton) {
+        runCodeButton.addEventListener("click", function () {
+            executeCode(editor, editor.getOption("mode"), "code-output");
         });
     }
 
