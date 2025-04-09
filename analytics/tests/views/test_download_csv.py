@@ -123,7 +123,7 @@ class CSVDownloadTestCase(TestCase):
 
         # Check the CSV headers
         headers = next(reader)
-        self.assertEqual(headers,['User', 'Question', 'Question Type', 'Options', 'Correct Answer', 'Number of Responses'])
+        self.assertEqual(headers,['Question', 'Question Type', 'Options', 'Correct Answer', 'Number of Responses'])
 
         # Check the rows in the CSV
         rows = list(reader)
@@ -131,15 +131,43 @@ class CSVDownloadTestCase(TestCase):
 
         # Check specific question response data (e.g., for multiple choice question)
         row = rows[0]
-        self.assertEqual(row[0], self.user.username)
-        self.assertEqual(row[1], "Favorite Color?")
-        self.assertEqual(row[2], "Multiple Choice")
-        self.assertEqual(row[3], "Red, Blue, Green")
-        self.assertEqual(row[4], "Red")
-        self.assertEqual(row[5], "1")
+        self.assertEqual(row[0], "Favorite Color?")
+        self.assertEqual(row[1], "Multiple Choice")
+        self.assertEqual(row[2], "Red, Blue, Green")
+        self.assertEqual(row[3], "Red")
+        self.assertEqual(row[4], "1")
 
     def test_download_csv_invalid_poll(self):
         """Test CSV download for an invalid poll (non-existent poll)."""
         url = reverse("download_csv", args=[99999]) # Poll ID does not exist
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
+
+    def test_download_csv_login_required(self):
+        """Test that an anonymous user cannot access the poll analytics page."""
+        self.client.logout()  # Make sure the user is logged out
+        url = reverse("download_csv", args=[self.poll.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 302)  # Should redirect to login
+        self.assertRedirects(response, '/log_in/?next=' + url)
+
+    def test_download_csv_role_required_with_student(self):
+        """Test that only users with the 'Lecturer' role can download csvs."""
+        user_non_lecturer = User.objects.create_user(username='janedoe_test', password='password', role='Student')
+        user_non_lecturer.save()
+        self.client.login(username='janedoe_test', password='password')  # Log in as non-Lecturer
+        url = reverse("download_csv", args=[self.poll.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)  # Student cannot access this page
+
+    def test_download_csv_permission_denied(self):
+        """Test that users cannot access polls they do not own."""
+        other_user = User.objects.create_user(username='otheruser', password='password', role='Lecturer')
+        other_poll = Poll.objects.create(title="Other Poll", user=other_user)
+        self.client.login(username='johndoe', password='password')
+        url = reverse("download_csv", args=[other_poll.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 403)  # Permission Denied

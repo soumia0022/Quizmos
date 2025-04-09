@@ -4,10 +4,11 @@ from django.http import Http404
 from functools import wraps
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login
+from user_management.models import User
 import uuid
 import random
 import re
-
+from django.contrib.auth import logout
 
 def generate_suggested_title(base_title, existing_titles):
     pattern = re.compile(f"^{re.escape(base_title)}(?: \\((\\d+)\\))?$")
@@ -38,7 +39,6 @@ def generate_guest_user_name():
     unique_id = str(uuid.uuid4())[:8]
     return f"{first}{second}{unique_id}"
 
-
 def custom_guest_user(view_func):
     """Decorator for view functions that creates guest users"""
     @wraps(view_func)
@@ -65,6 +65,10 @@ def custom_guest_user(view_func):
         return view_func(request, *args, **kwargs)
 
     return wrapper
+
+def delete_guest_user(request, user_id):
+    logout(request)
+    User.objects.filter(id=user_id).delete()
 
 def login_prohibited(view_function):
     """Decorator for view functions that redirect users away if they are logged in."""

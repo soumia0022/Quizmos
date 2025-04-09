@@ -7,7 +7,7 @@
                         <h5 class="card-title">{{ poll.title }}</h5>
                     </div>
                     <div class="card-footer">
-                        <a href="{% url 'poll_management:student_view_poll' poll.id %}" class="btn btn-secondary">View Responses</a>
+                        <a href="{% url 'response_management:student_view_poll' poll.id %}" class="btn btn-secondary">View Responses</a>
                     </div>
                 </div>
             {% empty %}

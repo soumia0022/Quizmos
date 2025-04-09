@@ -35,3 +35,5 @@ function showAnswer() {
 }
 
 window.showAnswer = showAnswer;
+
+export {showAnswer}

@@ -1,4 +1,4 @@
-import {WordCloudGenerator} from "./questions/word_could_generator.js";
+import {WordCloudGenerator} from "./questions/./word_cloud_generator.js";
 
 function updateProgressElements(element, count, totalResponses) {
     const percentage = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
@@ -40,27 +40,44 @@ export function updateResponseUI(questionId, optionCounts) {
 export function updateTextResponseUI(questionId, responses) {
     //for text answered questions
     const questionContainer = document.querySelector(`[data-question="${questionId}"]`);
+    const responseListContainer = questionContainer.querySelector('.response-list-container');
     const responseList = questionContainer.querySelector(`#responseList-${questionId}`);
 
 
     responseList.innerHTML = '';
 
-    // add the responses as a list on the screen maybe update later to be able to delete
-    responses.forEach((response) => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="response-text">${response}</span>
-            </div>
-        `;
-        responseList.appendChild(listItem);
-    });
-
-
-    const responseListContainer = questionContainer.querySelector('.response-list-container');
     if (responseListContainer) {
         responseListContainer.style.display = responses.length > 0 ? 'block' : 'none';
+    }
+
+    if (responses.length <= 10) {
+        responses.forEach((response) => {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item';
+            listItem.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="response-text">${response}</span>
+                </div>
+            `;
+            responseList.appendChild(listItem);
+        });
+
+    }else {
+        paginateResponses({
+            container: questionContainer,
+            responses,
+            listSelector: `#responseList-${questionId}`,
+            renderItem: (response, list) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="response-text">${response}</span>
+                    </div>
+                `;
+                list.appendChild(listItem); 
+            }   
+        });
     }
 }
 
@@ -70,33 +87,82 @@ export function updateCodeResponseUI(questionId, responses, language) {
 
     responseList.innerHTML = '';
 
-    responses.forEach((response) => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
+    let currentPage = 1;
+    const pageSize = 10;
 
-        // Display user’s name and make it clickable to show code in the editor
-        listItem.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="response-user" style="cursor: pointer; color: blue;" data-code="${encodeURIComponent(response.code)}">
-                    ${response.username}
-                </span>
-            </div>
+    function renderPage(page) {
+        responseList.innerHTML = '';
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const paginatedResponses = responses.slice(start, end);
+
+        paginatedResponses.forEach((response) => {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item';
+            
+            listItem.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="response-user" style="cursor: pointer; color: blue;" data-code="${encodeURIComponent(response.code)}">
+                        ${response.username}
+                    </span>
+                </div>
+            `;
+            listItem.querySelector('.response-user').addEventListener('click', function () {
+                const code = decodeURIComponent(this.getAttribute('data-code'));
+                displayCodeInEditor(code, language);
+            });
+            responseList.appendChild(listItem);
+        });
+
+        renderPaginationControls();
+    }
+
+    function renderPaginationControls() {
+        const totalPages = Math.ceil(responses.length / pageSize);
+
+        let existingContainer = questionContainer.querySelector('.pagination-controls');
+        if (totalPages <= 1) {
+            if (existingContainer) {
+                existingContainer.remove();
+            }
+            return;
+        }
+
+        let paginationContainer = existingContainer
+        if (!paginationContainer) {
+            paginationContainer = document.createElement('div');
+            paginationContainer.className = 'pagination-controls mt-2';
+            questionContainer.appendChild(paginationContainer);
+        }
+
+        paginationContainer.innerHTML = `
+            <button class="btn btn-sm btn-outline-primary me-2" ${currentPage === 1 ? 'disabled' : ''} id="prevPage">Previous</button>
+            <span>Page ${currentPage} of ${totalPages}</span>
+            <button class="btn btn-sm btn-outline-primary ms-2" ${currentPage === totalPages ? 'disabled' : ''} id="nextPage">Next</button>
         `;
 
-        responseList.appendChild(listItem);
-
-        // Add event listener to show code in CodeMirror when user clicks on their name
-        listItem.querySelector('.response-user').addEventListener('click', function () {
-            const code = decodeURIComponent(this.getAttribute('data-code'));
-            displayCodeInEditor(code, language);
+        paginationContainer.querySelector('#prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+        }
         });
-    });
+
+        paginationContainer.querySelector('#nextPage').addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+    }
+
 
     // Show or hide response list container
     const responseListContainer = questionContainer.querySelector('.response-list-container');
     if (responseListContainer) {
         responseListContainer.style.display = responses.length > 0 ? 'block' : 'none';
     }
+    renderPage(currentPage);
 }
 
 // Function to display code inside a popup(modal) with CodeMirror
@@ -196,4 +262,70 @@ export function updateMatchResponseUI(questionId, matchData) {
 export function updateWordCloudUI(containerID, wordData, options = {}) {
     const wordCloud = new WordCloudGenerator(containerID, options);
     wordCloud.generate(wordData);
+}
+
+export {updateProgressElements}
+
+function paginateResponses({ 
+    container, 
+    responses, 
+    pageSize = 10, 
+    renderItem, 
+    listSelector, 
+    paginationClass = '.pagination-controls' 
+}) {
+    let currentPage = 1;
+    const totalPages = Math.ceil(responses.length / pageSize);
+
+    const list = container.querySelector(listSelector);
+    const paginationContainerSelector = container.querySelector(paginationClass);
+
+    function renderPage(page) {
+        list.innerHTML = '';
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const pageItems = responses.slice(start, end);
+
+        pageItems.forEach((item) => renderItem(item, list));
+
+        renderPaginationControls();
+    }
+
+    function renderPaginationControls() {
+        if (totalPages <= 1) {
+            if (paginationContainerSelector) paginationContainerSelector.remove();
+            return;
+        }
+
+        let paginationContainer = container.querySelector(paginationClass);
+        if (paginationContainer) {
+            paginationContainer.remove();
+        }
+
+        paginationContainer = document.createElement('div');
+        paginationContainer.className = paginationClass.replace('.', '') + ' mt-2';
+        container.appendChild(paginationContainer);
+
+        paginationContainer.innerHTML = `
+            <button class="btn btn-sm btn-outline-primary me-2" ${currentPage === 1 ? 'disabled' : ''} id="prevPage">Previous</button>
+            <span>Page ${currentPage} of ${totalPages}</span>
+            <button class="btn btn-sm btn-outline-primary ms-2" ${currentPage === totalPages ? 'disabled' : ''} id="nextPage">Next</button>
+        `;
+
+        paginationContainer.querySelector('#prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        });
+
+        paginationContainer.querySelector('#nextPage').addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+    }
+
+    renderPage(currentPage);
 }

@@ -7,7 +7,7 @@ from django.urls import reverse
 from user_management.forms.update_profile import  PasswordForm, UserForm
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from django.contrib.auth.models import AnonymousUser
+from user_management.helpers import delete_guest_user
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -54,19 +54,10 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
             return redirect('user_management:home')
             
         if request.user.first_name == "Guest":
-            session_key = request.session.session_key
-            
             # Make sure message is saved
             request.session.modified = True
-            
-            # Store user ID only once
             user_id = request.user.id
-            
-            # Log out guest user
-            logout(request)
-            # Delete the guest user
-            User = get_user_model()
-            User.objects.filter(id=user_id).delete()
+            delete_guest_user(request, user_id)
 
             return redirect('user_management:home')  # Redirect guests to home
         
@@ -86,13 +77,11 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 def delete_account(request):
     """Handle account deletion."""
     user = request.user
-
     if request.method == "POST":
         user.delete()
         logout(request)
         
         return redirect("user_management:home")  # Redirect to home after deletion
-        
 
     return HttpResponse("Are you sure you want to delete your account? Send a POST request to confirm.", status=400)
 

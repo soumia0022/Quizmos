@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('questions/', include('question_management.urls', namespace='question_management')),
     path('polls/', include(('poll_management.urls', 'poll_management'), namespace='poll_management')),
-    path('responses/', include('response_management.urls')),
+    path('responses/', include('response_management.urls',  namespace='response_management')),
     path('analytics/', include('analytics.urls')),
     path('', include('user_management.urls')),
     path('system/', include('system_components.urls')),

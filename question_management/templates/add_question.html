@@ -4,7 +4,6 @@
 
 {% block content %}
 {% return_button %}
-{% go_back_button %}
 {% tts_button %}
 {% tts_selected_button %}
 
@@ -26,8 +25,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script> <!-- For Java & C++ -->
 
-    <script src="{% static 'js/question_buttons.js' %}"></script>
-    <script src="{% static 'js/question_constraints.js' %}"></script>
+    <script type="module" src="{% static 'js/question_buttons.js' %}"></script>
+    <script type="module" src="{% static 'js/question_constraints.js' %}"></script>
     <script type="module" src="{% static 'js/add_question.js' %}"></script>
 </head>
 

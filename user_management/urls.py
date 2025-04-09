@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.urls import path, include, reverse_lazy
 from django.contrib.auth import views as auth_views
 from user_management.views.about_view import AboutView
+from user_management.views.dashboard_view import dashboard
 from user_management.views.faq_view import FaqView
 from user_management.forms.forgot_password_forms import CustomPasswordResetForm
 from user_management.views.profile_update_views import delete_account
@@ -12,6 +13,7 @@ from user_management.views import (
     profile_update_views,
     signup_views,
     forgot_password_views,
+    archive_view, dashboard_view
 )
 
 app_name = 'user_management'
@@ -26,7 +28,7 @@ reset_password_patterns = [
 
 urlpatterns = [
     path('', login_views.home, name='home'),
-    path('dashboard/', login_views.dashboard, name='dashboard'),
+    path('dashboard/', dashboard_view.dashboard, name='dashboard'),
     path('log_in/', login_views.LogInView.as_view(), name='log_in'),
     path('log_out/', login_views.log_out, name='log_out'),
     path('password/', profile_update_views.PasswordView.as_view(), name='password'),
@@ -37,8 +39,15 @@ urlpatterns = [
     path('about/', AboutView.as_view(), name='about'),
     path("faq/", FaqView.as_view(), name="faq"),
     path('delete-account/', delete_account, name='delete_account'),
+
+    path('poll/<int:poll_id>/archive/', archive_view.ArchivePollView.as_view(), name='archive_poll'),
+    path('poll/<int:poll_id>/unarchive/', archive_view.UnarchivePollView.as_view(), name='unarchive_poll'),
+    path('poll/<int:poll_id>/toggle_archive/', archive_view.ToggleArchivePollView.as_view(), name='toggle_archive_poll'),
+    path('polls/archived/', archive_view.ArchivedPollsListView.as_view(), name='view_archived_polls'),
+
     path('polls/', login_views.student_polls_page, name='student_polls_page'),
     path('join-poll/', login_views.join_poll_page, name='join_poll_page'),
+
 
 
 ]

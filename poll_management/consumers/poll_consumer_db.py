@@ -98,14 +98,79 @@ class DatabaseHandler:
 
             ResponseModel, field_name = response_models[response_type]
 
+            # Determine correctness
+            is_correct = False
+            is_partially_correct = False
+
+            if response_type == 'multiple_choice':
+                correct_answers = question.multiple_choice_answers or []
+                is_correct = set(response_data) == set(correct_answers)
+
+                if not is_correct and correct_answers:
+                    # Check if any selected options are correct
+                    correct_selections = set(response_data).intersection(set(correct_answers))
+                    # Check if all selected options are among correct answers
+                    no_wrong_selections = set(response_data).issubset(set(correct_answers))
+
+                    # Partially correct if at least one correct answer and no wrong answers
+                    is_partially_correct = bool(correct_selections) and no_wrong_selections
+
+            elif response_type == 'single_choice':
+                is_correct = response_data in (question.single_choice_answers or [])
+
+            elif response_type == 'dropdown_fill':
+                is_correct = response_data.strip().lower() == (question.dropdown_correct_answer or "").strip().lower()
+
+            elif response_type == 'text_fill':
+                is_correct = response_data.strip().lower() == (question.text_fill_answer or "").strip().lower()
+
+            elif response_type == 'match_question':
+                match_options = question.match_options or []
+                match_answers = question.match_answers or []
+
+                if isinstance(response_data, dict):
+                    # Check for full correctness
+                    is_correct = all(
+                        i < len(match_answers) and option in response_data and response_data[option] == match_answers[i]
+                        for i, option in enumerate(match_options))
+
+                    # Check for partial correctness - at least one correct match but not all
+                    if not is_correct and match_options and match_answers:
+                        correct_matches = sum(
+                            1 for i, option in enumerate(match_options)
+                            if i < len(match_answers) and option in response_data and response_data[option] ==
+                            match_answers[i]
+                        )
+                        is_partially_correct = 0 < correct_matches < len(match_options)
+
+                elif isinstance(response_data, list) and response_data and isinstance(response_data[0], dict):
+                    if 'right' in response_data[0]:
+                        # Check for full correctness
+                        submitted_answers = [item['right'] for item in response_data]
+                        is_correct = submitted_answers == match_answers
+
+                        # Check for partial correctness
+                        if not is_correct and match_answers:
+                            correct_count = sum(1 for i, ans in enumerate(submitted_answers)
+                                                if i < len(match_answers) and ans == match_answers[i])
+                            is_partially_correct = 0 < correct_count < len(match_answers)
+
+            elif response_type == 'code_question':
+                is_correct = response_data.strip() == (question.correct_code or "").strip()
+
             # Prepare response data
             response_data_dict = {
                 'user': user,
                 'poll': poll,
                 'question': question,
                 'session_code': session_code,
-                field_name: response_data
+                field_name: response_data,
+                'is_correct': is_correct
             }
+
+            # Add is_partially_correct for supported response types
+            if response_type in ['multiple_choice', 'match_question']:
+                response_data_dict['is_partially_correct'] = is_partially_correct
 
             # Check if response already exists
             existing_response = ResponseModel.objects.filter(
@@ -118,6 +183,12 @@ class DatabaseHandler:
             if existing_response:
                 # Update existing response
                 setattr(existing_response, field_name, response_data_dict[field_name])
+                existing_response.is_correct = is_correct
+
+                # Update is_partially_correct for supported types
+                if response_type in ['multiple_choice', 'match_question']:
+                    existing_response.is_partially_correct = is_partially_correct
+
                 existing_response.save()
             else:
                 # Create new response

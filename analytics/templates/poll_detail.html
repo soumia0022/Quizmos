@@ -44,11 +44,25 @@
             <h2 id="selected-question-title">Select to view analytics for the whole poll or a particular question</h2>
 
             <button id="viewPollResults">Show Poll Results</button>
+            <button id="viewCorrectAnalytics">View Correct Analytics</button>
+
+            <!-- Correct Answer Analytics -->
+            <div class="correct-answer-btn-container">
+                <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
+                <button id="viewCorrectPieChart">View Pie Chart</button>
+                <button id="viewCorrectBarGraph">View Bar Graph</button>
+            </div>
+
+            <!-- Response Count Analytics -->
             <div class="button-container">
                 <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
                 <button id="viewPieChart">View Pie Chart</button>
                 <button id="viewBarGraph">View Bar Graph</button>
                 <button id="viewLineGraph">View Line Graph</button>
+            </div>
+
+            <div id="no-data-message" style="display: none; text-align: center; padding: 1rem; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
+                No responses yet.
             </div>
 
             <canvas id="chart"></canvas>

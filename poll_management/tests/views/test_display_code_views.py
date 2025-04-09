@@ -17,6 +17,7 @@ class DisplayCodeViewTest(TestCase):
 
 
     def test_display_code_with_empty_poll(self):
+        self.client.force_login(self.user)
         url = reverse('poll_management:display_code', args=[self.poll.pk])
         response = self.client.get(url)
 
@@ -24,6 +25,7 @@ class DisplayCodeViewTest(TestCase):
 
 
     def test_display_code(self):
+        self.client.force_login(self.user)
         self.mcq_question = Question.objects.create(
             poll=self.poll,
             question_type='multiple_choice',

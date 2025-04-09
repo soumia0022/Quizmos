@@ -1,4 +1,11 @@
 import { initializeCodeEditor, executeCode } from "./code_executor.js";
+import {
+    addMatchOptionComponents,
+    addMultipleChoiceOption,
+    addSingleChoiceOption, clickTextPreview,
+    dropdownInputChanged, resetButtonChanged
+} from "./question_buttons.js";
+import {displayErrorMessage, McConstraints, ScConstraints} from "./question_constraints.js";
 
 document.addEventListener('DOMContentLoaded', function () {
     const questionType = document.getElementById("question-type").value
@@ -45,17 +52,22 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     /* Event listeners*/
-    runCodeButton.addEventListener("click", function () {
-        executeCode(editor,editor.getOption("mode"), "code-output");
-    });
+    if (runCodeButton) {
+        runCodeButton.addEventListener("click", function () {
+            executeCode(editor, editor.getOption("mode"), "code-output");
+        });
+    }
 
-    codingLanguageSelector.addEventListener('change', function () {
-        let selectedLanguage = this.value;
-        let newMode = languageModes[selectedLanguage];
+    if (codingLanguageSelector) {
+        codingLanguageSelector.addEventListener('change', function () {
+            let selectedLanguage = this.value;
+            let newMode = languageModes[selectedLanguage];
 
-        editor.setOption("mode", newMode);
-        // alert(`Mode changed to: ${newMode}`);
-    });
+            editor.setOption("mode", newMode);
+            // alert(`Mode changed to: ${newMode}`);
+        });
+    }
+
 
     deleteButtons.forEach((btn) => {
         btn.addEventListener('click', function () {

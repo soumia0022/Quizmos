@@ -163,3 +163,5 @@ function updateQuestionDisplay() {
       }));
     }
   }
+
+export {updateQuestionDisplay};
