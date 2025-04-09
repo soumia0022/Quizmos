@@ -7,9 +7,11 @@ from response_management.models.response_model import (
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from poll_management.models.poll_model import Poll
+from user_management.helpers import role_required
 
 
 @login_required
+@role_required('Student')
 def student_view_poll(request, poll_id):
     """
     View function to display a student's poll responses.

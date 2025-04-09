@@ -17,8 +17,8 @@ describe("collectResponse", () => {
     it("should return selected values for multiple choice", () => {
         pollState.currentQuestionType = 'multiple_choice';
         document.body.innerHTML = `
-            <input type="checkbox" value="Option 1" checked>
-            <input type="checkbox" value="Option 2" checked>
+            <input type="checkbox" class="option-item selected-option" data-value="Option 1" checked>
+            <input type="checkbox" class="option-item selected-option" data-value="Option 2" checked>
         `;
 
         const response = collectResponse();
@@ -28,13 +28,14 @@ describe("collectResponse", () => {
     it("should return selected value for single choice", () => {
         pollState.currentQuestionType = 'single_choice';
         document.body.innerHTML = `
-            <input type="radio" name="single_choice" value="Option A">
-            <input type="radio" name="single_choice" value="Option B" checked>
+            <input type="radio" class="option-item" name="single_choice" value="Option A">
+            <input type="radio" class="option-item selected-option" name="single_choice" data-value="Option B" checked>
         `;
 
         const response = collectResponse();
         expect(response).toBe("Option B");
     });
+
 
     it("should return selected value for dropdown fill", () => {
         pollState.currentQuestionType = 'dropdown_fill';

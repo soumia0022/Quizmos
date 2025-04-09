@@ -1,3 +1,4 @@
+
 document.getElementById("confirmCreatePoll").addEventListener("click", function() {
     let button = this;
     let form = document.createElement("form");

@@ -1,0 +1,253 @@
+.question-section {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 20px;
+    color: white;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.question-section h3 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Multiple & Single Choice Options */
+.option-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.option-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+.selected-option {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-color: white;
+}
+
+/* Dropdown Question */
+.dropdown-question {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid #fff;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    outline: none;
+    box-shadow: none;
+    width: 100%;
+    max-width: 400px; 
+    text-align: center; 
+    margin: 0 auto; 
+}
+
+.dropdown-question:hover, 
+.dropdown-question:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: white;
+}
+
+.dropdown-question option {
+    background-color: #02192F;
+    color: white;
+    text-align: center;
+}
+
+
+/* Text Fill Input */
+.text-fill-input {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid white;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.text-fill-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* Word cloud */
+.wordcloud-input {
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: white;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: 16px;
+    font-family: 'Palanquin', sans-serif;
+    margin-bottom: 12px; 
+    transition: all 0.3s ease;
+}
+
+.wordcloud-input:focus {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2); 
+    color: white; 
+}
+
+.wordcloud-input::placeholder {
+    color: rgba(255, 255, 255, 0.5); 
+}
+
+
+/* Match Question */
+.match-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.match-container {
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;
+}
+
+.match-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.match-box {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    width: 45%;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.dropzone-box {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45%;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 10px; 
+    transition: all 0.3s ease; 
+}
+
+.draggable {
+    cursor: grab;
+    background-color: rgba(0, 162, 255, 0.1);
+    border: 2px solid #00a2ff;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.draggable:hover {
+    background-color: rgba(0, 162, 255, 0.2);
+    transform: scale(1.05);
+}
+
+
+/* Code Question */
+.code-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: rgba(255, 255, 255, 0.1); 
+    padding: 16px;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.code-editor-container {
+    position: relative;
+}
+
+#run-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #0078D4;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#run-button:hover {
+    background-color: #005A9E; 
+}
+
+.code-question-wrapper {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#output {
+    width: 100%;
+    min-height: 150px;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
+    overflow: auto;
+}
+
+#submitResponse {
+    background-color: rgba(0, 120, 212, 0.1); 
+    border: 2px solid #0078D4;
+    color: #0078D4;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto; 
+}
+
+#submitResponse:hover {
+    background-color: rgba(0, 120, 212, 0.2);
+    transform: scale(1.05);
+}

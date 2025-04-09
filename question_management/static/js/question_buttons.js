@@ -1,23 +1,24 @@
-//const { canAddMoreOptions } = require('./question_constraints');
+import {displayErrorMessage} from "./question_constraints.js";
 
 function addMultipleChoiceOption(McOptionCount, multipleChoiceOptionsSection) {
-    if (!canAddMoreOptions("multiple-choice")){
+    if (!canAddMoreOptions("multiple-choice")) {
         displayErrorMessage("You can only add 4 options");
+        return McOptionCount; 
     }
-    const optionElement = addChoiceOptionComponents('multiple_choice', McOptionCount);
-    if (optionElement) { // Only append if the element is not null
+    const optionElement = addChoiceOptionComponents("multiple-choice", McOptionCount);
+    if (optionElement) { 
         multipleChoiceOptionsSection.appendChild(optionElement);
         return McOptionCount + 1;
     }
     return McOptionCount;
 }
 
-function canAddMoreOptions(question_type, maxOptions = 4) { //move to question_constraints in refactoring
+function canAddMoreOptions(question_type, maxOptions = 4) {
     const optionsContainer = document.getElementById(`${question_type}-options-container`);
-    if (optionsContainer){
+    console.log(optionsContainer);
+    if (optionsContainer) {
         return optionsContainer.children.length < maxOptions;
-    }
-    else{
+    } else {
         return true;
     }
 }
@@ -26,8 +27,8 @@ function addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection) {
     if (!canAddMoreOptions("single-choice")){
         displayErrorMessage("You can only add 4 options");
     }
-    const optionElement = addChoiceOptionComponents('single_choice', ScOptionCount);
-    if (optionElement) { // Only append if the element is not null
+    const optionElement = addChoiceOptionComponents("single-choice", ScOptionCount);
+    if (optionElement) { 
         singleChoiceOptionsSection.appendChild(optionElement);
         return ScOptionCount + 1;
     }
@@ -40,20 +41,20 @@ function addChoiceOptionComponents(question_type, optionCount){
     if (!optionText) return;
 
     const optionContainer = document.createElement('div');
-    optionContainer.className = `${question_type}-option`;
+    optionContainer.className = `${question_type}-option`; 
     optionContainer.id = `option-container-${optionCount}`;
 
     // Create hidden input for options
     const hiddenInput = document.createElement('input');
     hiddenInput.type = 'hidden';
-    hiddenInput.name = `${question_type}_options[]`;
+    hiddenInput.name = `${question_type.replace('-', '_')}_options[]`;
     hiddenInput.value = optionText;
 
     // Create checkbox input
     const checkboxInput = document.createElement('input');
     checkboxInput.type = 'checkbox';
     checkboxInput.id = `option${optionCount}`;
-    checkboxInput.name = `${question_type}_answers[]`;
+    checkboxInput.name = `${question_type.replace('-', '_')}_answers[]`;
     checkboxInput.value = optionText;
 
     // Create label for the checkbox
@@ -64,7 +65,7 @@ function addChoiceOptionComponents(question_type, optionCount){
     // Add a delete button if needed
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
-    deleteBtn.className = 'btn btn-danger btn-sm ms-2 delete-option-btn';
+    deleteBtn.className = 'btn btn-danger btn-sm delete-option-btn';
     deleteBtn.textContent = 'X';
     deleteBtn.addEventListener('click', function () {
         optionContainer.remove(); // Remove the option container
@@ -100,7 +101,7 @@ function addMatchOptionComponents(matchQuestionOptionSection, matchOptionCount){
     // Create delete button
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
-    deleteBtn.className = 'btn btn-danger btn-sm ms-2';
+    deleteBtn.className = 'custom-delete-btn';
     deleteBtn.textContent = 'X';
     deleteBtn.addEventListener('click', function () {
         inputRow.remove(); // Remove the option container

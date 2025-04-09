@@ -1,12 +1,12 @@
-export function match_display(data){
+export function match_display(data) {
     let leftOptions = "";
     let rightOptions = "";
 
     data.question.match_options.forEach((option) => {
         leftOptions += `
             <div class="flex-container">
-                <div class="box left">${option}</div>
-                <div class="dropzone-box dropzone"></div>
+                <div class="match-box left">${option}</div>
+                <div class="dropzone-box dropzone" data-match-target="${option}"></div>
             </div>`;
     });
 
@@ -16,9 +16,9 @@ export function match_display(data){
     });
 
     document.getElementById('question_options').innerHTML = `
-        <div class="container">
+        <div class="match-container">
             ${leftOptions}
-           <div id="right" class="right">
+            <div id="right" class="right">
                 ${rightOptions}
             </div>
         </div>`;
