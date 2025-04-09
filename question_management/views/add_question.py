@@ -19,7 +19,9 @@ def add_question(request, poll_id):
 
         # Update Poll Title
         new_title = request.POST.get('poll_title') or request.POST.get('poll_title_hidden')
-        if new_title and new_title != poll.title:
+        existing_polls = Poll.objects.filter(user=request.user)
+        existing_titles = {poll.title for poll in existing_polls}
+        if new_title and new_title != poll.title and new_title not in existing_titles:
             poll.title = new_title
             poll.save()
 

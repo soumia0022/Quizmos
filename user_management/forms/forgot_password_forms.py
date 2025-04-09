@@ -68,18 +68,20 @@ class CustomSetPasswordForm(forms.Form):
         password_confirm = cleaned_data.get("new_password_confirm")
 
         if not password or not password_confirm:
-            raise ValidationError("Both password fields are required.")
+            self.add_error("new_password", "Both password fields are required.")
+            self.add_error("new_password_confirm", "Both password fields are required.")
 
         if password != password_confirm:
-            raise ValidationError("Passwords do not match.")
+            self.add_error("new_password", "Passwords do not match.")
+            self.add_error("new_password_confirm", "Passwords do not match.")
 
-        # Basic password validation: at least 8 characters, one number, one uppercase, one lowercase
-        if len(password) < 8 or not re.search(r'\d', password) or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password):
-            raise ValidationError("Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter.")
-
-        # Ensure the new password is not the same as the old password
+        if password and (len(password) < 8 or not re.search(r'\d', password) or not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password)):
+                self.add_error("new_password", "Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter.")
+                self.add_error("new_password_confirm", "Password must be at least 8 characters long, contain one number, one uppercase, and one lowercase letter.")
+        
         if self.user and self.user.check_password(password):
-            raise ValidationError("New password cannot be the same as the old password.")
+            self.add_error("new_password", "New password cannot be the same as the old password.")
+            self.add_error("new_password_confirm", "New password cannot be the same as the old password.")  
 
         return cleaned_data
 

@@ -33,8 +33,8 @@ describe("match_display", () => {
 
         match_display(data);
 
-        expect(mockQuestionOptions.innerHTML).toContain(`<div class="box left">Option A</div>`);
-        expect(mockQuestionOptions.innerHTML).toContain(`<div class="box left">Option B</div>`);
+        expect(mockQuestionOptions.innerHTML).toContain(`<div class=\"match-box left\">Option A</div>`);
+        expect(mockQuestionOptions.innerHTML).toContain(`<div class=\"match-box left\">Option B</div>`);
         expect(mockQuestionOptions.innerHTML).toContain(`<div class="box draggable">Answer 1</div>`);
         expect(mockQuestionOptions.innerHTML).toContain(`<div class="box draggable">Answer 2</div>`);
 
@@ -65,7 +65,7 @@ describe("match_display", () => {
 
         match_display(data);
 
-        expect(mockQuestionOptions.innerHTML).toContain(`<div class="container">`);
+        expect(mockQuestionOptions.innerHTML).toContain(`<div class="match-container">`);
         expect(mockQuestionOptions.innerHTML.replace(/\s+/g, '')).toContain('<divid="right"class="right"></div>');
         expect(mockAnswerDiv.style.display).toBe("none");
     });

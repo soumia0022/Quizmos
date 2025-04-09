@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
   {% if user.role == "Lecturer" %}
-    {% include 'partials/navbar.html' %}
+    {% include 'partials/lecturer_navbar.html' %}
   {% else %}
     {% include 'partials/student_navbar.html' %}
   {% endif %}

@@ -1,24 +1,24 @@
-{% extends 'base_content.html' %}
+{% extends 'student_base.html' %}
 {% load system_extras %}
+{% load static %}
 {% block content %}
+
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     {% noscript_warning %}
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <div>
-                <h5>Join Poll</h5>
-            </div>
-            <div>
-                <p>How would you like to join this poll?</p>
-            </div>
-            <div>
-                <a href="{% url 'user_management:guest_logout' %}?next={% url 'poll_management:poll_results' code=code %}" class="btn btn-primary">Login</a>
-                <form action="{% url 'poll_management:poll_results' code=code %}" method="post" style="display: inline;">
+
+    <div class="container" style="display: flex; justify-content: center; text-align: center;">
+        <div>
+            <h1>You are joining: {{ poll.title }}</h1>
+            <h5>How would you like to join this poll?</h5>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <a href="{% url 'user_management:guest_logout' %}?next={% url 'poll_management:poll_results' code=code %}" 
+                   class="join-poll-btn">Login</a>
+                <form action="{% url 'poll_management:poll_results' code=code %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-secondary">Continue as Guest</button>
+                    <button type="submit" class="join-poll-btn">Continue as Guest</button>
                 </form>
             </div>
         </div>
     </div>
-</div>
+
 {% endblock %}
