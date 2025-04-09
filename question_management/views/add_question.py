@@ -19,7 +19,9 @@ def add_question(request, poll_id):
 
         # Update Poll Title
         new_title = request.POST.get('poll_title') or request.POST.get('poll_title_hidden')
-        if new_title and new_title != poll.title:
+        existing_polls = Poll.objects.filter(user=request.user)
+        existing_titles = {poll.title for poll in existing_polls}
+        if new_title and new_title != poll.title and new_title not in existing_titles:
             poll.title = new_title
             poll.save()
 
@@ -36,8 +38,7 @@ def add_question(request, poll_id):
         elif manager.question_type == 'single_choice':
             response = manager.handle_single_choice()
         elif manager.question_type == 'wordcloud':
-            wordcloud_image = manager.handle_wordcloud()
-            return render(request, "add_question.html", {"poll": poll, "wordcloud_image": wordcloud_image})
+            response = manager.handle_wordcloud()
         elif manager.question_type == 'match_question':
             response = manager.handle_match_question()
         elif manager.question_type == "code_question":

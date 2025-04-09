@@ -1,0 +1,180 @@
+.container h2 {
+    font-family: 'Palanquin Dark', sans-serif;
+    color: #fff;
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+  }
+  
+  .container form {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin: 3rem auto;
+    max-width: 700px;
+    width: 90%;
+  }
+  
+  .container form label {
+    display: block;
+    font-family: 'Palanquin', sans-serif;
+    color: #e0e0ff;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .container form input[type="text"],
+  .container form input[type="number"],
+  .container form textarea,
+  .container form select {
+    background-color: #02192F;;
+    border: 2px solid #fff;
+    border-radius: 15px;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+  
+  .container form input::placeholder,
+  .container form textarea::placeholder {
+    color: rgba(224, 224, 255, 0.5);
+  }
+  
+
+  form button[type="submit"] {
+    background-color: rgba(0, 162, 255, 0.1);
+    border: 2px solid #00a2ff;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    color: #00a2ff;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  form button[type="submit"]:hover {
+    background-color: rgba(0, 162, 255, 0.2);
+    transform: scale(1.05);
+  }
+  
+  form button[type="submit"]:active {
+    background-color: rgba(0, 162, 255, 0.3);
+    color: #66c2ff;
+    box-shadow: 0 0 8px rgba(0, 162, 255, 0.6);
+  }
+  
+  form a {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 2px solid red;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    color: red;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    margin-left: 10px;
+  }
+  
+  form a:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    transform: scale(1.05);
+  }
+  
+  form a:active {
+    background-color: rgba(255, 0, 0, 0.3);
+    color: #ff6666;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+  }
+  
+  .btn-danger {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 2px solid red;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 4px 8px;
+    color: red;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .btn-danger:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    transform: scale(1.05);
+  }
+  
+  .btn-danger:active {
+    background-color: rgba(255, 0, 0, 0.3);
+    color: #ff6666;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+  }
+  
+  .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 15px;
+    font-family: 'Palanquin', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    color: #fff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+  
+.multiple-choice-option, 
+.single-choice-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid #fff;
+  border-radius: 15px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.multiple-choice-option input[type="checkbox"],
+.single-choice-option input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.multiple-choice-option label, 
+.single-choice-option label {
+  flex: 1;
+  font-family: 'Palanquin', sans-serif;
+  color: #e0e0ff;
+  font-size: 16px;
+  margin: 0;
+}
+
+.multiple-choice-option button,
+.single-choice-option button {
+  margin-left: 10px;
+}

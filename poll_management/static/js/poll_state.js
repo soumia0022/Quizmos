@@ -7,5 +7,6 @@ export const pollState = {
     currentQuestionNumber: 0,
     student_webSocket: null,
     lecturer_webSocket: null,
-    code_language: null
+    code_language: null,
+    lecturerConnected : true,
 };

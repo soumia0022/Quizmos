@@ -37,8 +37,6 @@ class MatchQuestionResponse(Response):
 
 class WordCloudResponse(Response):
     word_cloud_response = models.JSONField(default=dict)
-    is_correct = models.BooleanField(default=False)
 
 class CodeQuestionResponse(Response):
     submitted_code = models.TextField()
-    is_correct = models.BooleanField(default=False)

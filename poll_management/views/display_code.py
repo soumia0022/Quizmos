@@ -3,7 +3,7 @@ from django.shortcuts import  render, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-
+from poll_management.helpers import delete_old_qr_codes, generate_number_code
 from poll_management.models.poll_model import Poll
 from django.conf import settings
 from asgiref.sync import async_to_sync
@@ -13,21 +13,7 @@ import uuid
 import qrcode
 import os
 
-#move these to helpers.py--------
-def ensure_media_directory_exists():
-    if not os.path.exists(settings.MEDIA_ROOT):
-        os.makedirs(settings.MEDIA_ROOT)
 
-def delete_old_qr_codes(poll):
-    """Delete old QR code images for a specific poll"""
-    ensure_media_directory_exists() 
-    for filename in os.listdir(settings.MEDIA_ROOT):
-        if filename.startswith(f"qr_code_{poll.title}_{poll.pk}_"):
-            os.remove(os.path.join(settings.MEDIA_ROOT, filename))
-
-def generate_number_code():
-    return str(uuid.uuid4().int)[:6]
-#------------------------------------
 @login_required
 @role_required('Lecturer')
 def display_code(request, pk):

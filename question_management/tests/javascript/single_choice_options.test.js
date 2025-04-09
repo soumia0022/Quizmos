@@ -63,7 +63,7 @@ describe('single_choice_options.js', () => {
         const optionContainer = singleChoiceOptionsSection.children[0];
 
         expect(optionContainer.tagName).toBe('DIV');
-        expect(optionContainer.classList.contains('single_choice-option')).toBe(true);
+        expect(optionContainer.classList.contains('single-choice-option')).toBe(true);
 
         const hiddenInput = optionContainer.querySelector('input[type="hidden"]');
         expect(hiddenInput).not.toBeNull();

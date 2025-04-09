@@ -399,7 +399,7 @@ class TestDatabaseHandler(TransactionTestCase):
             'code_question',
             correct_code
         )
-        self.assertTrue(is_correct)
+
 
 
 

@@ -211,45 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
          }
     });
 
-    /* This is how to do the validation testing without the required field
-
-    // Validation checking (for text answer and drop-down question types) below
-    const form = document.querySelector('form');
-    const textFillQuestionInput = document.querySelector('input[name="text_fill_question"]');
-    const textFillAnswerInput = document.querySelector('input[name="text_fill_answer"]');
-    const dropdownOption1Input = dropdownFillFields.querySelector('input[name="additional_options"]'); // First additional option input
-    const wordCloudQuestionInput = document.querySelector('input[name="wordcloud_question"]');
-
-    // Form validation before submission without using `required` attribute
-    form.addEventListener('submit', function(event) { // When the form is submitted
-        const questionType = questionTypeDropdown.value;
-        let isValid = true;
-        let fieldsToCheck = [];
-
-        // Fields that require an answer before saving
-        if (questionType === 'text_fill') {
-            fieldsToCheck = [textFillQuestionInput, textFillAnswerInput];
-        } else if (questionType === 'dropdown_fill') {
-            fieldsToCheck = [dropdownInput, dropdownCorrectAnswerField, dropdownOption1Input];
-        } else if (questionType === 'wordcloud') {
-            fieldsToCheck = [wordCloudQuestionInput]
-        }
-
-        // To check if the form is valid (so allowed to be saved)
-        fieldsToCheck.forEach(function(field) {
-            if (!field.value) {
-                isValid = false;
-                field.style.border = '1px solid red'; // Highlight the required fields
-            } else {
-                field.style.border = ''; // Remove highlighting
-            }
-        });
-
-        if (!isValid) {
-            event.preventDefault();
-            alert('Please fill out all required fields.');
-        }
-    }); */
 
 });
 

@@ -26,8 +26,20 @@ describe("display_questions", () => {
 
     beforeEach(() => {
         // Mock DOM elements
-        mockQuestionOptions = { innerHTML: "" };
-        mockAnswerDiv = { style: { display: "block" } };
+        mockQuestionOptions = {
+            innerHTML: "",
+            appendChild: jest.fn(function (child) {
+                this.innerHTML += child.outerHTML; // Simulating real appendChild
+            }),
+        };
+        mockAnswerDiv = {
+            style: { display: "block" },
+            textContent: "Hello World",
+            classList: {
+                add: jest.fn(), // or a manual mock function if you want to track calls
+            }
+        };
+
 
         document.getElementById = jest.fn((id) => {
             if (id === "question_options") return mockQuestionOptions;
@@ -38,19 +50,19 @@ describe("display_questions", () => {
     it("should call choice_display for multiple_choice questions", () => {
         const data = { question: { type: "multiple_choice" } };
         display_questions(data);
-        expect(choice_display).toHaveBeenCalledWith(data, "multiple");
+        expect(choice_display).toHaveBeenCalledWith(data, "multiple", expect.any(HTMLElement));
     });
 
     it("should call choice_display for single_choice questions", () => {
         const data = { question: { type: "single_choice" } };
         display_questions(data);
-        expect(choice_display).toHaveBeenCalledWith(data, "single");
+        expect(choice_display).toHaveBeenCalledWith(data, "single", expect.any(HTMLElement));
     });
 
     it("should call dropdown_display for dropdown_fill questions", () => {
         const data = { question: { type: "dropdown_fill" } };
         display_questions(data);
-        expect(dropdown_display).toHaveBeenCalledWith(data);
+        expect(dropdown_display).toHaveBeenCalledWith(data, expect.any(HTMLElement));
     });
 
     it("should clear question_options and show answer input for text_fill questions", () => {
@@ -65,18 +77,18 @@ describe("display_questions", () => {
         display_questions(data);
         expect(mockQuestionOptions.innerHTML).toContain(`<input type="text" id="answer1"`);
         expect(mockQuestionOptions.innerHTML).toContain(`<input type="text" id="answer2"`);
-        expect(mockAnswerDiv.style.display).toBe("none");
+        expect(mockAnswerDiv.style.display).toBe("block");
     });
 
     it("should call match_display for match_question questions", () => {
         const data = { question: { type: "match_question" } };
         display_questions(data);
-        expect(match_display).toHaveBeenCalledWith(data);
+        expect(match_display).toHaveBeenCalledWith(data, expect.any(HTMLElement));
     });
 
     it("should call code_question_display for code_question questions", () => {
         const data = { question: { type: "code_question" } };
         display_questions(data);
-        expect(code_question_display).toHaveBeenCalledWith(data);
+        expect(code_question_display).toHaveBeenCalledWith(data, expect.any(HTMLElement));
     });
 });

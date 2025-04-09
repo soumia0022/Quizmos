@@ -70,9 +70,7 @@ describe('addMatchOptionComponents.js', () => {
         const deleteButton = inputRow.querySelector('button');
         expect(deleteButton).not.toBeNull();
         expect(deleteButton.textContent).toBe('X');
-        expect(deleteButton.classList.contains('btn')).toBe(true);
-        expect(deleteButton.classList.contains('btn-danger')).toBe(true);
-        expect(deleteButton.classList.contains('btn-sm')).toBe(true);
+        expect(deleteButton.classList.contains('custom-delete-btn')).toBe(true);
     });
 
     test('should remove a match option when the delete button is clicked', () => {

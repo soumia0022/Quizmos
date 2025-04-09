@@ -1,5 +1,5 @@
 export function video_file_display(question){
-    html += `
+    let html = `
       <div class="video-container mb-3">
         <video 
           controls

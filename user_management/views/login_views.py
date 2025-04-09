@@ -108,6 +108,10 @@ def student_polls_page(request):
     """View to display only the polls section for students."""
     current_user = request.user
 
+    if current_user.first_name == "Guest":
+        delete_guest_user(request, current_user.id)
+        return redirect('user_management:home')
+
     response_types = [
         MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse,
         DropdownFillResponse, MatchQuestionResponse, WordCloudResponse,
@@ -149,6 +153,9 @@ def student_polls_page(request):
 @role_required('Student')
 def join_poll_page(request):
     """View for the standalone Join Poll page."""
+    if request.user.first_name == "Guest":
+        delete_guest_user(request, request.user.id)
+        return redirect('user_management:home')
     form = PollCodeForm()
     if request.method == 'POST':
         form = PollCodeForm(request.POST)  
