@@ -36,7 +36,9 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   overflow: visible;
   z-index: 10;
 }
-
+.CodeMirror {
+    text-align: left !important;
+}
 .left-links {
   display: flex;
   flex-direction: row;
