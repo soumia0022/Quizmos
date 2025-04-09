@@ -78,6 +78,13 @@ function createQuestionHTML(question) {
     html += video_file_display(question);
   }
 
+  if (question.image_file!= null) {
+      html += `<img src="${question.image_file}" alt="question image" style="max-width: 100%; height: auto; display: block; margin: 1em auto;">`;
+  }
+
+
+
+
   if (question.audio_file != null) {
     html += audio_file_display(question);
     }
