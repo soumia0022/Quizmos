@@ -225,8 +225,21 @@
         <div class="inner-right mx-auto" style="max-width: 700px;">
           <div id="questions-sidebar" class="custom-sidebar p-3">
             <h3 class="form-title text-center">Questions Created:</h3>
+            <form method="get" class="d-flex gap-2 mb-3 search-sort-form">
+              <input type="text" name="search" class="form-control" placeholder="Search questions..." value="{{ search_query }}">
+            
+              <select name="sort_by" class="form-select" style="max-width: 200px;" onchange="this.form.submit()">
+                <option value="created_at_desc" {% if sort_by == 'created_at_desc' %}selected{% endif %}>Newest</option>
+                <option value="created_at_asc" {% if sort_by == 'created_at_asc' %}selected{% endif %}>Oldest</option>
+                <option value="text_asc" {% if sort_by == 'text_asc' %}selected{% endif %}>A → Z</option>
+                <option value="text_desc" {% if sort_by == 'text_desc' %}selected{% endif %}>Z → A</option>
+              </select>
+            
+              <button type="submit" class="btn btn-primary">Apply</button>
+            </form>
+            
             <div id="questions-list">
-              {% for question in poll.questions.all %}
+              {% for question in questions %}
                 <div class="question-item mb-2" data-id="{{ question.id }}">
                 <div class="question-text">
                     <strong>Question {{ forloop.counter }}:</strong> {{ question.question_text }}

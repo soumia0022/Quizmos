@@ -6,6 +6,9 @@ from question_management.views import QuestionManager
 from poll_management.models.poll_model import Poll
 from question_management.helpers import get_timer
 from user_management.helpers import role_required
+from system_components.helpers import apply_search_and_sort
+from django.db.models.functions import Lower
+from question_management.models.question_models import Question
 
 @login_required
 @role_required('Lecturer')
@@ -49,5 +52,28 @@ def add_question(request, poll_id):
             return response
 
         return redirect("question_management:add_question", poll_id=poll.id)
+    
+    search_query = request.GET.get('search', '')
+    sort_by = request.GET.get('sort_by', 'created_at_desc')
+    sort_options = {
+        'text_asc': Lower('question_text'),
+        'text_desc': Lower('question_text').desc(),
+        'created_at_asc': 'id',
+        'created_at_desc': '-id',
+    }
 
-    return render(request, "add_question.html", {"poll": poll})
+    questions = Question.objects.filter(poll=poll)
+    questions = apply_search_and_sort(
+        queryset=questions,
+        search_query=search_query,
+        sort_by=sort_by,
+        sort_options=sort_options,
+        default_sort='-id'
+    )
+
+    return render(request, "add_question.html", {
+        "poll": poll,
+        "questions": questions,
+        "search_query": search_query,
+        "sort_by": sort_by
+    })

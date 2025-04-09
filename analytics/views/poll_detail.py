@@ -10,7 +10,7 @@ from poll_management.models.poll_model import Poll
 from response_management.models.response_model import MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse, \
     DropdownFillResponse, MatchQuestionResponse, WordCloudResponse, CodeQuestionResponse
 from question_management.models.question_models import Question
-from analytics.helpers import apply_search_and_sort
+from system_components.helpers import apply_search_and_sort
 from django.db.models.functions import Lower
 from user_management.helpers import role_required
 
@@ -36,16 +36,17 @@ def poll_analytics(request, poll_id):
         raise PermissionDenied("You do not have permission to access this poll's analytics") # Message in terminal
 
     search_query = request.GET.get('search', '')
-    sort_by = request.GET.get('sort_by', 'question_text_asc')
+    sort_by = request.GET.get('sort_by', 'created_at_desc')
 
     questions = poll.questions.all()
 
     sort_options = {
-        'question_text_asc': Lower('question_text'),
-        'question_text_desc': Lower('question_text').desc(),
-        'type_asc': 'question_type',
-        'type_desc': '-question_type'
-    }
+    'title_asc': Lower('question_text'),              
+    'title_desc': Lower('question_text').desc(),      
+    'created_at_asc': 'id',                           
+    'created_at_desc': '-id',                         
+}
+
 
     questions = apply_search_and_sort(
         questions,
