@@ -36,8 +36,7 @@ def add_question(request, poll_id):
         elif manager.question_type == 'single_choice':
             response = manager.handle_single_choice()
         elif manager.question_type == 'wordcloud':
-            wordcloud_image = manager.handle_wordcloud()
-            return render(request, "add_question.html", {"poll": poll, "wordcloud_image": wordcloud_image})
+            response = manager.handle_wordcloud()
         elif manager.question_type == 'match_question':
             response = manager.handle_match_question()
         elif manager.question_type == "code_question":
