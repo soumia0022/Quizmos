@@ -67,16 +67,22 @@ class DashboardView(LoginRequiredMixin, View):
     def handle_lecturer_dashboard(self, request):
         sort_by = request.GET.get('sort_by', 'created_at_desc')
         search_query = request.GET.get('search', '')
+    
+        if request.GET.get('archived_page'):
+            view_value = 'archived'
+        elif request.GET.get('active_page'):
+            view_value = 'active'
+        else:
+            view_value = request.GET.get('view', 'active')
 
-        active_polls = Poll.objects.filter(user=request.user, archived=False).annotate(
+        active_polls_qs = Poll.objects.filter(user=request.user, archived=False).annotate(
             multiple_choice_responses_count=Count('multiplechoiceresponse'),
             single_choice_responses_count=Count('singlechoiceresponse'),
             dropdown_fill_responses_count=Count('dropdownfillresponse'),
             text_fill_responses_count=Count('textfillresponse'),
             match_question_responses_count=Count('matchquestionresponse')
         )
-
-        archived_polls = Poll.objects.filter(user=request.user, archived=True).annotate(
+        archived_polls_qs = Poll.objects.filter(user=request.user, archived=True).annotate(
             multiple_choice_responses_count=Count('multiplechoiceresponse'),
             single_choice_responses_count=Count('singlechoiceresponse'),
             dropdown_fill_responses_count=Count('dropdownfillresponse'),
@@ -85,16 +91,51 @@ class DashboardView(LoginRequiredMixin, View):
         )
 
         if search_query:
-            active_polls = active_polls.filter(title__icontains=search_query)
-            archived_polls = archived_polls.filter(title__icontains=search_query)
+            active_polls_qs = active_polls_qs.filter(title__icontains=search_query)
+            archived_polls_qs = archived_polls_qs.filter(title__icontains=search_query)
+
+        sort_options = {
+            'title_asc': Lower('title'),
+            'title_desc': Lower('title').desc(),
+            'created_at_asc': 'created_at',
+            'created_at_desc': '-created_at'
+        }
+        active_polls_qs = active_polls_qs.order_by(sort_options.get(sort_by, '-created_at'))
+        archived_polls_qs = archived_polls_qs.order_by(sort_options.get(sort_by, '-created_at'))
+
+        paginator_active = Paginator(active_polls_qs, 12)
+        paginator_archived = Paginator(archived_polls_qs, 12)
+
+        active_page_number = request.GET.get('active_page')
+        archived_page_number = request.GET.get('archived_page')
+
+        page_obj_active = paginator_active.get_page(active_page_number)
+        page_obj_archived = paginator_archived.get_page(archived_page_number)
+
+        for poll in page_obj_active:
+            poll.total_responses_count = (
+                poll.multiple_choice_responses_count +
+                poll.single_choice_responses_count +
+                poll.dropdown_fill_responses_count +
+                poll.text_fill_responses_count +
+                poll.match_question_responses_count
+            )
+        for poll in page_obj_archived:
+            poll.total_responses_count = (
+                poll.multiple_choice_responses_count +
+                poll.single_choice_responses_count +
+                poll.dropdown_fill_responses_count +
+                poll.text_fill_responses_count +
+                poll.match_question_responses_count
+            )
 
         return render(request, self.template_name_lecturer, {
             'user': request.user,
-            'active_polls': active_polls,
-            'archived_polls': archived_polls,
+            'active_polls': page_obj_active,
+            'archived_polls': page_obj_archived,
             'sort_by': sort_by,
             'search_query': search_query,
-            'view': request.GET.get('view', 'active'),
+            'view': view_value, 
             'show_confirmation_popup': False,
             'original_title': "",
             'suggested_title': "",
@@ -149,7 +190,7 @@ class DashboardView(LoginRequiredMixin, View):
         return render(request, self.template_name_student, context)
 
     def get_student_polls(self, user, search_query, sort_by):
-        # Get all poll IDs where the student has responses
+        # Get all poll IDs where the student has responses.
         poll_ids = self.get_student_response_poll_ids(user)
         polls = Poll.objects.filter(id__in=poll_ids)
 
@@ -184,6 +225,7 @@ class DashboardView(LoginRequiredMixin, View):
     def paginate_polls(self, polls, page_number):
         paginator = Paginator(polls, 12)
         return paginator.get_page(page_number)
+
 
 @login_required(login_url='user_management:log_in')
 def dashboard(request):
