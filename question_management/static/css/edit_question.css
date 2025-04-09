@@ -30,7 +30,7 @@
   .container form input[type="number"],
   .container form textarea,
   .container form select {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #02192F;;
     border: 2px solid #fff;
     border-radius: 15px;
     color: white;
