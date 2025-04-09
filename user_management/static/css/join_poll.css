@@ -1,141 +1,149 @@
-    .join-poll-page {
-        position: relative;
-        background-color: #02192f;
-        overflow: hidden;
-    }
+.join-poll-section {
+  position: relative;
+  background-color: #02192f;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-    /* Cover card styles */
-    .cover-card {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 2px solid #fff;
-        border-radius: 30px;
-        padding: 40px;
-        text-align: center;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-        position: relative;
-        z-index: 2;
-        width: 600px; 
-        max-width: 90%; 
-        margin: 0 auto; 
-    }
+.cover-container {
+  position: relative;
+  width: 600px;
+  max-width: 90%;
+}
 
-    .btn-secondary {
-        background-color: #02192f;
-        border-radius: 25px;
-        border: 2px solid #fff;
-        font-size: 24px;
-        color: white;
-        transition: all 0.3s ease;
-        width: 270px; 
-        max-width: 90%; 
-        height: 60px; 
-        max-height: 90%;
-    }
+.background-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
 
-    .cover-heading {
-        font-family: 'Palanquin Dark', sans-serif;
-        font-size: 70px;
-        font-weight: bold;
-        color: #fff;
-        text-decoration: none;
-    }
+.cover-card {
+  position: relative;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid #fff;
+  border-radius: 30px;
+  padding: 40px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  width: 600px;
+  max-width: 90%;
+}
 
+.btn-secondary {
+  background-color: #02192f;
+  border-radius: 25px;
+  border: 2px solid #fff;
+  font-size: 24px;
+  color: white;
+  transition: all 0.3s ease;
+  width: 270px;
+  max-width: 90%;
+  height: 60px;
+  max-height: 90%;
+}
 
-    .background-elements {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        pointer-events: none;
-    }
+.cover-heading {
+  font-family: "Palanquin Dark", sans-serif;
+  font-size: 70px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
 
-    .astronaut {
-        position: absolute;
-        object-fit: cover;
-    }
+.centered-background-container {
+  position: fixed;
+  width: 1728px;
+  height: 1000px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
 
-    .star, .planet {
-        position: absolute;
-        object-fit: contain;
-        transform: translateY(-200vh); 
-        animation: drop-and-bounce 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
-        opacity: 1;
-    }
+.background-elements {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
 
-    /* Drop-and-Bounce Animation */
-    @keyframes drop-and-bounce {
-        0% {
-            transform: translateY(-200vh); 
-        }
-        50% {
-            transform: translateY(20px); 
-        }
-        70% {
-            transform: translateY(-10px); 
-        }
-        90% {
-            transform: translateY(5px);
-        }
-        100% {
-            transform: translateY(0);
-        }
-    }
+.star,
+.planet,
+.astronaut {
+  position: absolute;
+  object-fit: contain;
+  transform: translateY(-200vh);
+  animation: drop-and-bounce 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+  opacity: 1;
+}
 
-    /* Floating Animation */
-    @keyframes float {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-20px);
-        }
-    }
+@keyframes drop-and-bounce {
+  0% {
+    transform: translateY(-200vh);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+  70% {
+    transform: translateY(-10px);
+  }
+  90% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
 
-    .star, .planet {
-        position: absolute;
-        object-fit: contain;
-        transform: translateY(-200vh); 
-        animation: drop-and-bounce 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards, 
-                float 6s ease-in-out infinite;
-        opacity: 1;
-    }
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
 
-    /* Staggered Animation Delays */
-    .star:nth-child(odd) {
-        animation-delay: 0.2s, 2s; 
-    }
+.star,
+.planet,
+.astronaut {
+  animation: drop-and-bounce 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards, float 6s ease-in-out infinite 2s;
+}
 
-    .star:nth-child(even) {
-        animation-delay: 0.4s, 2s;
-    }
+.star:nth-child(odd) {
+  animation-delay: 0.2s, 2.2s;
+}
+.star:nth-child(even) {
+  animation-delay: 0.4s, 2.4s;
+}
+.planet:nth-child(odd) {
+  animation-delay: 0.3s, 2.3s;
+}
+.planet:nth-child(even) {
+  animation-delay: 0.5s, 2.5s;
+}
 
-    .planet:nth-child(odd) {
-        animation-delay: 0.3s, 2s;
-    }
+@media (max-width: 1200px) {
+  .centered-background-container {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
 
-    .planet:nth-child(even) {
-        animation-delay: 0.5s, 2s;
-    }
-
-    @media (max-width: 768px) {
-        .cover-card {
-            padding: 20px; 
-            width: 90%; 
-        }
-
-        .cover-card h1 {
-            font-size: 1.8rem; 
-        }
-    }
-    
-    @media (max-width: 768px) {
-        .btn-secondary {
-            font-size: 18px; 
-            width: 220px;
-            max-width: 270px; 
-            height: 50px; 
-        }
-    }
-    
+@media (max-width: 768px) {
+  .centered-background-container {
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+}
