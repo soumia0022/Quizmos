@@ -1,5 +1,4 @@
 
-document.addEventListener("DOMContentLoaded", function () {
 document.getElementById("confirmCreatePoll").addEventListener("click", function() {
     let button = this;
     let form = document.createElement("form");
@@ -49,4 +48,3 @@ document.getElementById("cancelCreatePoll").addEventListener("click", function()
     document.body.appendChild(form);
     form.submit();
 });
-}
