@@ -229,8 +229,6 @@
               <input type="text" name="search" class="form-control" placeholder="Search questions..." value="{{ search_query }}">
             
               <select name="sort_by" class="form-select" style="max-width: 200px;" onchange="this.form.submit()">
-                <option value="created_at_desc" {% if sort_by == 'created_at_desc' %}selected{% endif %}>Newest</option>
-                <option value="created_at_asc" {% if sort_by == 'created_at_asc' %}selected{% endif %}>Oldest</option>
                 <option value="text_asc" {% if sort_by == 'text_asc' %}selected{% endif %}>A → Z</option>
                 <option value="text_desc" {% if sort_by == 'text_desc' %}selected{% endif %}>Z → A</option>
               </select>

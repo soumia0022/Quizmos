@@ -58,8 +58,6 @@ def add_question(request, poll_id):
     sort_options = {
         'text_asc': Lower('question_text'),
         'text_desc': Lower('question_text').desc(),
-        'created_at_asc': 'id',
-        'created_at_desc': '-id',
     }
 
     questions = Question.objects.filter(poll=poll)
