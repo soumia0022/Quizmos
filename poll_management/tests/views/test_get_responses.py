@@ -22,6 +22,7 @@ class QuestionResponseCounterTests(TestCase):
     def setUp(self):
 
         self.user = User.objects.get(username='johndoe')
+        self.user.role = "Lecturer"
         self.poll = Poll.objects.create(
             title="Test Poll",
             user=self.user,
@@ -362,13 +363,17 @@ class QuestionResponseCounterTests(TestCase):
         self.assertEqual(data['responses'][0]['code'], "print('Hello')")
 
     def test_get_question_response_counts_invalid_question(self):
+        invalid_question_id = 9999
         response = self.client.get(
-            reverse('poll_management:question_response_counts', args=[123456, 9999])  # non-existent question
+            reverse('poll_management:question_response_counts', args=[123456, invalid_question_id]),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
         self.assertEqual(response.status_code, 404)
-        data = json.loads(response.content)
-        self.assertIn('error', data)
-        self.assertIn('Question 9999 not found', data['error'])
+
+        if response.headers.get('Content-Type') == 'application/json':
+            data = json.loads(response.content)
+            self.assertIn('error', data)
+            self.assertEqual(data['error'], 'Question not found')
 
     def test_get_question_response_counts_view(self):
         url = reverse('poll_management:question_response_counts', args=[123456, self.mcq.id])

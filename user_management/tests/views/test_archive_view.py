@@ -5,6 +5,7 @@ from django.utils import timezone
 from poll_management.models.poll_model import Poll
 import json
 from datetime import timedelta
+from unittest.mock import patch
 
 
 class PollArchiveTests(TestCase):
@@ -17,6 +18,7 @@ class PollArchiveTests(TestCase):
         self.user = User.objects.get(
             username='johndoe',
         )
+        self.user.role = 'Lecturer'
 
         self.poll1 = Poll.objects.create(
             title='Test Poll 1',

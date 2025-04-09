@@ -27,15 +27,16 @@ function handleAnswers(data) {
 }
 
 function handleQuestionDisplay(data) {
-    // clear any existing timer
+    // Clear any existing timer
     const submitButton = document.getElementById("submitResponse");
-    if (submitButton.disabled === true){
-        submitButton.disabled = false;}
+    if (submitButton.disabled === true) {
+        submitButton.disabled = false;
+    }
     if (pollState.currentTimerInterval) {
         clearInterval(pollState.currentTimerInterval);
     }
 
-    // reset correct answers display
+    // Reset correct answers display
     const correctAnswersDiv = document.getElementById('correct-answers');
     correctAnswersDiv.style.display = 'none';
     correctAnswersDiv.innerHTML = '';
@@ -43,14 +44,18 @@ function handleQuestionDisplay(data) {
     clean_up_code_mirror();
 
     const questionElement = document.getElementById('question');
-    questionElement.innerHTML = data.question.text + '<div class="question-timer"></div>';
+    
+    questionElement.innerHTML = `<div class="card question-section">
+        <h3>${data.question.text}</h3>
+        <div class="question-timer"></div>
+    </div>`;
 
-    // start timer
+    // Start timer
     if (data.question.question_timer) {
         pollState.currentTimerInterval = startCountdownTimer(questionElement, data.question.question_timer);
     }
 
-    // update state
+    // Update state
     pollState.currentQuestionId = data.question.id;
     pollState.currentQuestionType = data.question.type;
     pollState.currentQuestion = data.question;

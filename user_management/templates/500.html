@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load system_extras %}
+
+
+{% block body %}
+<div class="error-page" style="text-align: center; margin-top: 50px;">
+    <img class="star" src="{% static 'images/Question_Astronaut.png' %}" alt="Astronaut" style="max-width: 300px; margin-bottom: 30px;">
+    <h1 style="font-size: 72px; color: #ffffff;">500</h1>
+    <h2 style="font-size: 24px; color: #ffffff;">Internal Server Error</h2>
+    <p style="font-size: 18px; color: #ebf0f1;">
+        Something went wrong on our end. We're working on it!
+    </p>
+    <a href="/" id="go-back-btn" class="btn btn-primary" style="margin-top: 20px; display: inline-block; padding: 10px 20px; text-decoration: none;">Take me Home</a>
+</div>
+
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+{% endblock %}

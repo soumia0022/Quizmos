@@ -1,71 +1,136 @@
-{% extends 'base_content.html' %}
+{% extends 'lecturer_base.html' %}
 {% load system_extras %}
 {% load custom_filters %}
 {% load static %}
 
 {% block content %}
-{% noscript_warning %}
-<div class="container" >
-    {% return_button %}
-    {% go_back_button %}
-    <h1>Welcome to {{ poll.title }}!</h1>
-    <p>{{ question.question_text }}</p>
-
     <link rel="stylesheet" href="{% static 'poll_management/css/poll_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/question_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/edit_question.css' %}">
 
-    <!-- Display options based on question type -->
-    {% if question.question_type == 'multiple_choice' %}
-        {% for option in question.multiple_choice_options %}
-            <div class="option-item">
-                <input type="checkbox" name="multiple_choice_answers" value="{{ option }}">
-                <label>{{ option }}</label>
+        <!-- CodeMirror Styles & Scripts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script> <!-- For Java & C++ -->
+
+    <script type="module" src="{% static 'js/question_detail.js' %}"></script>
+
+    <div class="buttons-container">
+        <div class="left-section">
+            <a href="javascript:history.back()" class="go-back-btn">Go Back</a>
+        </div>
+        <div class="center-section">
+            <div class="tts-buttons">
+                {% tts_button %}
+                {% tts_selected_button %}
             </div>
-        {% endfor %}
+        </div>
+        <div class="right-section"></div>
+    </div>
 
-    {% elif question.question_type == 'single_choice' %}
-        {% for option in question.single_choice_option %}
-            <div class="option-item">
-                <input type="radio" name="single_choice_answer" value="{{ option }}">
-                <label>{{ option }}</label>
-            </div>
-        {% endfor %}
+    <div class="container">
+        <h1>Welcome to {{ poll.title }}!</h1>
 
-    {% elif question.question_type == 'dropdown_fill' %}
-        <select name="dropdown_answer">
-            <option value="" disabled selected>Select an option</option>
-            {% for option in question.get_dropdown_options %}
-                <option value="{{ option }}">{{ option }}</option>
-            {% endfor %}
-        </select>
-            
-    {% elif question.question_type == 'text_fill' %}
-        <input type="text" name="text_fill_answer" placeholder="Your answer">
-
-    {% elif question.question_type == 'wordcloud' %}
-        <input type="text" name="text_fill_answer" placeholder="Your answer">
-    
-    {% elif question.question_type == 'match_question' %}
-        <div class="container">
-            {% for option in question.match_options %}
-            <div class="row">
-                <div class="flex-container">
-                    <div class="box left">{{ option }}</div>
-                    <div class="dropzone-box dropzone"></div>
+        <!-- Display options based on question type -->
+        {% if question.question_type == 'multiple_choice' %}
+            <div class="card question-section">
+                <div class="card-header">
+                    <h3>{{ question.question_text }}</h3>
                 </div>
-            </div>
-            {% endfor %}
-            <div class="row">
-                <div id="right" class="right">
-                    {% for answer in question.match_answers %}
-                        <div class="box draggable">{{ answer }}</div>
+                <div class="card-body">
+                    {% for option in question.multiple_choice_options %}
+                        <div class="option-item">
+                            <input type="checkbox" name="multiple_choice_answers" value="{{ option }}" id="option_{{ forloop.counter }}" disabled>
+                            <label for="option_{{ forloop.counter }}">{{ option }}</label>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
-        </div>
-        
-        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
-        <script src="{% static 'poll_management/js/drag_and_drop.js' %}"></script>
 
-    {% endif %}
-</div>
+        {% elif question.question_type == 'single_choice' %}
+            <div class="card question-section">
+                <div class="card-header">
+                    <h3>{{ question.question_text }}</h3>
+                </div>
+                <div class="card-body">
+                    {% for option in question.single_choice_option %}
+                        <div class="option-item">
+                            <input type="radio" name="single_choice_answer" value="{{ option }}" id="option_{{ forloop.counter }}" disabled>
+                            <label for="option_{{ forloop.counter }}">{{ option }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        {% elif question.question_type == 'dropdown_fill' %}
+            <div class="card question-section">
+                <div class="card-header">
+                    <h3>{{ question.question_text }}</h3>
+                </div>
+                <div class="card-body">
+                    <select name="dropdown_answer" class="dropdown-question" disabled>
+                        <option value="" disabled selected>Select an option</option>
+                        {% for option in question.get_dropdown_options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+        {% elif question.question_type == 'text_fill' %}
+            <div class="card question-section">
+                <div class="card-header">
+                    <h3>{{ question.question_text }}</h3>
+                </div>
+                <div class="card-body">
+                    <input type="text" name="text_fill_answer" placeholder="Your answer" class="text-fill-input" disabled>
+                </div>
+            </div>
+
+        {% elif question.question_type == 'wordcloud' %}
+            <div class="card question-section">
+                <div class="card-header">
+                    <h3>{{ question.question_text }}</h3>
+                </div>
+                <div class="card-body">
+                    <input type="text" name="text_fill_answer" placeholder="Your answer" class="wordcloud-input" disabled>
+                </div>
+            </div>
+
+        {% elif question.question_type == 'match_question' %}
+            <div class="container">
+                {% for option in question.match_options %}
+                    <div class="row">
+                        <div class="flex-container">
+                            <div class="box left">{{ option }}</div>
+                            <div class="dropzone-box dropzone"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row">
+                    <div id="right" class="right">
+                        {% for answer in question.match_answers %}
+                            <div class="box draggable">{{ answer }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+            <script src="{% static 'poll_management/js/drag_and_drop.js' %}"></script>
+
+        {% elif question.question_type == 'code_question' %}
+            <div class="card-header">
+                <h3>{{ question.question_text }}</h3>
+                <input type="text" id="coding-language-selector" name="hidden_input" value={{ question.code_language }} hidden>
+                <textarea id="code-editor" name="correct_code">{{ question.correct_code }}</textarea>
+                  <button id="run-code-button" type="button">Run Code</button>
+                  <pre id="code-output"></pre>
+            </div>
+
+        {% endif %}
+    </div>
 {% endblock %}
