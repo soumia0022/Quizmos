@@ -7,7 +7,7 @@ from poll_management.models.poll_model import Poll
 from question_management.models.question_models import Question
 from response_management.models.response_model import (
     MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse,
-    DropdownFillResponse, MatchQuestionResponse
+    DropdownFillResponse, MatchQuestionResponse, CodeQuestionResponse, WordCloudResponse
 )
 
 
@@ -106,6 +106,32 @@ class CSVDownloadTestCase(TestCase):
                 {"Italy": "Rome"}
             ]
         )
+        self.wordcloud_question = Question.objects.create(
+            poll=self.poll,
+            question_text="Describe your mood in one word.",
+            question_type="wordcloud"
+        )
+
+        self.code_question = Question.objects.create(
+            poll=self.poll,
+            question_text="Write a function to add two numbers.",
+            question_type="code_question",
+            correct_code="def add(a, b): return a + b"
+        )
+
+        WordCloudResponse.objects.create(
+            poll=self.poll,
+            question=self.wordcloud_question,
+            user=self.user,
+            word_cloud_response="happy"
+        )
+
+        CodeQuestionResponse.objects.create(
+            poll=self.poll,
+            question=self.code_question,
+            user=self.user,
+            submitted_code="def add(a, b): return a + b"
+        )
 
     def test_download_csv_valid_poll(self):
         """Test CSV download for a valid poll with responses."""
@@ -127,7 +153,7 @@ class CSVDownloadTestCase(TestCase):
 
         # Check the rows in the CSV
         rows = list(reader)
-        self.assertEqual(len(rows), 5)  # 5 questions in the poll in total
+        self.assertEqual(len(rows), 7)  # 5 questions in the poll in total
 
         # Check specific question response data (e.g., for multiple choice question)
         row = rows[0]
