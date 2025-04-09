@@ -87,7 +87,7 @@
           </a>
           <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" class="delete-form" >
             {% csrf_token %}
-            <button id="id_poll_delete_button" type="button" onclick="confirmDelete(poll.id)" class="btn btn-danger btn-sm">
+            <button button id="id_poll_delete_button" type="button" class="btn btn-sm delete-btn" data-id="{{poll.id}}">
               Delete
             </button>
           </form>
@@ -144,7 +144,7 @@
           </a>
           <form action="{% url 'poll_management:poll_delete' poll.id %}" method="POST" id="delete-form-{{ poll.id }}" class="delete-form">
             {% csrf_token %}
-            <button id="id_poll_delete_button" type="button" onclick="confirmDelete(poll.id)" class="btn btn-sm">
+            <button id="id_poll_delete_button" type="button" class="btn btn-sm delete-btn" data-id="{{poll.id}}">
               Delete
             </button>
           </form>
@@ -160,9 +160,8 @@
   </div>
       
   {% include 'partials/confirm_delete.html' %}
-
   {% if show_confirmation_popup %}
-  <div id="custom-popup" class="popup-overlay" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+  <div id="custom-popup" class="popup-overlay" style="background-color: #02192F; display: flex; align-items: center; justify-content: center; height: 100vh;">
     <div class="popup-content" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); text-align: center; width: 300px;">
       <p>You already have a poll with the name "{{ original_title }}".</p>
       <p>The new one will be named "{{ suggested_title }}". Do you want to continue?</p>
@@ -202,7 +201,8 @@
     }
   }
 </script>
-<script src="{% static 'js/confirm_delete.js' %}"></script>
+
 <script src="{% static 'js/dashboard_popup.js' %}"></script>
+<script src="{% static 'js/confirm_delete.js' %}"></script>
 
 {% endblock %}
