@@ -15,9 +15,9 @@
     <title>Poll Results</title>
     <div class="buttons-container">
         <div class="left-section">
-          <a href="{% url 'user_management:dashboard' %}" class="go-back-btn">Go to Dashboard</a>
+          {% return_button %}
         </div>
-    
+
         <div class="center-section">
           <div class="tts-buttons">
                 {% tts_button %}
@@ -41,7 +41,7 @@
 
             <div id="questions-list">
                 {% for question in questions %}
-                    <div class="question-item mb-2" data-question-id="{{ question.id }}">
+                    <div class="question-item mb-2" data-question-id="{{ question.id }}" data-question-type="{{ question.question_type }}">
                         <div class="question-text">
                             <strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}
                         </div>
@@ -54,7 +54,7 @@
                 {% endfor %}
             </div>
         </div>
-      
+
         <!-- Chart Container -->
         <div class="chart-container custom-sidebar p-3">
             <h2 id="selected-question-title" class="chart-title text-center">
@@ -65,19 +65,25 @@
                 <button id="viewPollResults" class="custom-btn">Show Poll Results</button>
                 <button id="viewCorrectAnalytics" class="custom-btn">View Correct Analytics</button>
             </div>
+            {% info_button "To see poll result or correct analytics for each question, click the relevant button at the top and then select the view analytics button next to the question you'd like to view" %}
 
             <!-- Correct Answer Analytics -->
-            <div class="correct-answer-btn-container text-center mb-3">
-                <button id="viewCorrectPieChart" class="custom-btn">View Pie Chart</button>
-                <button id="viewCorrectBarGraph" class="custom-btn">View Bar Graph</button>
+            <div class="correct-answer-btn-container">
+                <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
+                <button id="viewCorrectPieChart">View Pie Chart</button>
+                <button id="viewCorrectBarGraph">View Bar Graph</button>
             </div>
 
             <!-- Response Count Analytics -->
             <div class="button-container text-center mb-3">
-                
+
                 <button id="viewPieChart" class="custom-btn">View Pie Chart</button>
                 <button id="viewBarGraph" class="custom-btn">View Bar Graph</button>
                 <button id="viewLineGraph" class="custom-btn">View Line Graph</button>
+            </div>
+
+            <div id="no-data-message" style="display: none; text-align: center; padding: 1rem; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
+                No responses yet.
             </div>
 
             <div class="chart-inner">
@@ -91,11 +97,9 @@
             </div>
         </div>
 
-        <div id="no-data-message" style="display: none; text-align: center; padding: 1rem; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
-            No responses yet.
-        </div>
-  
-        <script src="{% static 'js/poll_detail.js' %}"></script>     
+
+
+        <script src="{% static 'js/poll_detail.js' %}"></script>
     </div>
 
 </body>

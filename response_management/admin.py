@@ -51,12 +51,12 @@ class MatchQuestionResponseAdmin(admin.ModelAdmin):
 
 @admin.register(WordCloudResponse)
 class WordCloudResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'word_cloud_response', 'session_code', 'is_correct', get_correct_answer)
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'word_cloud_response', 'session_code')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
 
 @admin.register(CodeQuestionResponse)
 class CodeQuestionResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'poll', 'submitted_on', 'submitted_code', 'session_code', 'is_correct', get_correct_answer)
+    list_display = ('id', 'user', 'poll', 'submitted_on', 'submitted_code', 'session_code')
     search_fields = ('question__text', 'user__username', 'poll__title')
     list_filter = ('submitted_on', 'poll')
