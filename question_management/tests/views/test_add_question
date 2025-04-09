@@ -1,0 +1,84 @@
+from django.test import TestCase, Client
+from django.urls import reverse
+from poll_management.models.poll_model import Poll
+from question_management.models.question_models import Question
+from user_management.models import User
+
+
+class AddQuestionViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username="lecturer", password="testpass", role="Lecturer")
+        self.client.login(username="lecturer", password="testpass")
+        self.poll = Poll.objects.create(title="Initial Poll", user=self.user)
+        self.url = reverse("question_management:add_question", args=[self.poll.id])
+
+    def test_get_add_question_view(self):
+        """GET request should render the add_question.html page"""
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "add_question.html")
+        self.assertIn("questions", response.context)
+
+    def test_post_add_text_fill_question(self):
+        """POST a valid text_fill question should create a question"""
+        data = {
+            "question_type": "text_fill",
+            "text_fill_question": "What is your name?",
+            "text_fill_answer": "Alice",
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 302)  # Redirect after successful post
+        self.assertEqual(Question.objects.filter(poll=self.poll).count(), 1)
+        question = Question.objects.get(poll=self.poll)
+        self.assertEqual(question.question_text, "What is your name?")
+        self.assertEqual(question.question_type, "text_fill")
+
+    def test_poll_title_update(self):
+        """Poll title should update if it's changed and not a duplicate"""
+        new_title = "Updated Poll Title"
+        data = {
+            "poll_title": new_title
+        }
+        response = self.client.post(self.url, data)
+        self.poll.refresh_from_db()
+        self.assertEqual(self.poll.title, new_title)
+
+    def test_poll_title_duplicate_prevention(self):
+        """Title shouldn't update if it's already taken by another poll"""
+        Poll.objects.create(title="Taken Title", user=self.user)
+        data = {
+            "poll_title": "Taken Title"
+        }
+        response = self.client.post(self.url, data)
+        self.poll.refresh_from_db()
+        self.assertNotEqual(self.poll.title, "Taken Title")  # Should stay as initial
+
+    def test_question_limit_enforced(self):
+        """Should prevent adding more than 20 questions"""
+        for i in range(20):
+            Question.objects.create(
+                poll=self.poll,
+                question_type="text_fill",
+                question_text=f"Question {i}"
+            )
+        data = {
+            "question_type": "text_fill",
+            "text_fill_question": "Exceeding Question",
+            "text_fill_answer": "Nope",
+        }
+        response = self.client.post(self.url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Only 20 questions", response.json()["error"])
+        self.assertEqual(Question.objects.filter(poll=self.poll).count(), 20)
+
+    def test_sorting_and_search_on_get(self):
+        """Should return sorted and filtered questions"""
+        Question.objects.create(poll=self.poll, question_type="text_fill", question_text="Alpha")
+        Question.objects.create(poll=self.poll, question_type="text_fill", question_text="Bravo")
+        Question.objects.create(poll=self.poll, question_type="text_fill", question_text="Charlie")
+
+        response = self.client.get(self.url, {"search": "Bravo", "sort_by": "text_desc"})
+        self.assertContains(response, "Bravo")
+        self.assertNotContains(response, "Alpha")
+        self.assertNotContains(response, "Charlie")

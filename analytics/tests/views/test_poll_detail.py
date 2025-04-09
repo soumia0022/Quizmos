@@ -277,7 +277,7 @@ class PollAnalyticsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         json_response = response.json()
         self.assertEqual(json_response["labels"], ["Total Number of Code Submissions"])
-        self.assertEqual(json_response["data"], [3])  # 3 responses submitted
+        self.assertEqual(json_response["data"], [3])  
 
     def test_question_search_in_analytics_view(self):
         """Test that the analytics view filters questions by search query."""
@@ -290,7 +290,7 @@ class PollAnalyticsTestCase(TestCase):
     def test_question_sorting_in_analytics_view(self):
         """Test that questions in analytics view are sorted by question text descending."""
         url = reverse("poll_analytics", args=[self.poll.id])
-        response = self.client.get(url, {'sort_by': 'question_text_desc'})
+        response = self.client.get(url, {'sort_by': 'title_desc'})
         self.assertEqual(response.status_code, 200)
 
         questions = list(response.context['questions'])
@@ -298,6 +298,7 @@ class PollAnalyticsTestCase(TestCase):
 
         expected_sorted = sorted(question_texts, reverse=True)
         self.assertEqual(question_texts, expected_sorted)
+
 
     def test_question_correct_analytics(self):
         """Test that correct/incorrect analytics show for each question."""
