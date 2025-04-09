@@ -1,37 +1,35 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body %}
-
 <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 <link rel="stylesheet" href="{% static 'css/join_poll.css' %}">
 
 {% include 'partials/home_navbuttons.html' %}
-{% include 'partials/join_poll_background.html' %}
 
-
-<div class="container vh-100 d-flex align-items-center justify-content-center">
-    <div class="row w-100">
-        <div class="col-12 d-flex justify-content-center">
-            <div class="card cover-card">
-                <h1 class="cover-heading">Join Poll</h1>
-                <div class="poll-code">
-                    <form method="post" action="{% url 'user_management:home' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            {{ form.poll_code }}
-                        </div>
-                        {% if form.errors %}
-                        <div class="alert alert-danger mt-2">
-                            {{ form.errors.poll_code|striptags }}
-                        </div>
-                        {% endif %}
-                        <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+<section class="join-poll-section">
+  <div class="cover-container">
+    <div class="background-wrapper">
+      {% include 'partials/join_poll_background.html' %}
     </div>
-</div>
+    <div class="card cover-card">
+      <h1 class="cover-heading">Join Poll</h1>
+      <div class="poll-code">
+        <form method="post" action="{% url 'user_management:home' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            {{ form.poll_code }}
+          </div>
+          {% if form.errors %}
+            <div class="alert alert-danger mt-2">
+              {{ form.errors.poll_code|striptags }}
+            </div>
+          {% endif %}
+          <button type="submit" class="btn btn-secondary btn-block mt-3">Join</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
 
 {% include 'partials/footer.html' %}
 
