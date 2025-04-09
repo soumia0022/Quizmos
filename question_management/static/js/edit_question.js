@@ -51,7 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
         cpp: "text/x-c++src"
     };
 
-    let editor = initializeCodeEditor(codeEditorArea, languageModes[codingLanguageSelector.value]);
+        if(codeEditorArea){
+    let editor = initializeCodeEditor(codeEditorArea, languageModes[codingLanguageSelector.value]);}
+
 
     /* Event listeners*/
     if (codingLanguageSelector) {
