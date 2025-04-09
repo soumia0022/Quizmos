@@ -15,7 +15,7 @@ $(document).ready(function() {
             popup.html(`
                 <div class="popup-content">
                     <div>Type: ${data.question_type}</div>
-                    <div>Timer: ${data.timer || 'None'}</div>
+                    <div>Timer: ${data.question_timer || 'None'}</div>
                 </div>
             `);
             var actionsRect = questionActions.get(0).getBoundingClientRect();
