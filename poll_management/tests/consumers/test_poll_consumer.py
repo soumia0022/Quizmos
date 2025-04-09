@@ -81,6 +81,7 @@ class TestPollConsumer(TransactionTestCase):
         message = {'type': 'question', 'question_id': self.question.id}
         await communicator.send_json_to(message)
         await communicator.receive_json_from()
+        await communicator.receive_json_from()
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'question')
         self.assertEqual(response['question']['id'], self.question.id)
@@ -89,12 +90,14 @@ class TestPollConsumer(TransactionTestCase):
 
         await communicator.disconnect()
 
-
     async def test_save_multiple_choice_response(self):
         """Test saving a multiple choice response"""
         communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
         communicator.scope['user'] = self.student
         await communicator.connect()
+        communicator2 = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator2.scope['user'] = self.user
+        await communicator2.connect()
 
         # Update test question to have multiple choice options
         await database_sync_to_async(setattr)(
@@ -110,6 +113,8 @@ class TestPollConsumer(TransactionTestCase):
             'response_data': ['Option A', 'Option C']
         }
         await communicator.receive_json_from()  # gets the new student message
+        await communicator.receive_json_from()
+        await communicator.receive_json_from()
         await communicator.receive_json_from()
         await communicator.send_json_to(message)
 
@@ -132,6 +137,9 @@ class TestPollConsumer(TransactionTestCase):
         communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
         communicator.scope['user'] = self.student
         await communicator.connect()
+        communicator2 = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator2.scope['user'] = self.user
+        await communicator2.connect()
 
 
         # update test question to have single choice options
@@ -150,6 +158,11 @@ class TestPollConsumer(TransactionTestCase):
             'response_type': 'single_choice',
             'response_data': 'Yes'
         }
+        await communicator.receive_json_from()
+        await communicator.receive_json_from()
+        await communicator.receive_json_from()
+
+
         await communicator.receive_json_from()  # gets the new student message
         await communicator.send_json_to(message)
 
@@ -159,12 +172,17 @@ class TestPollConsumer(TransactionTestCase):
         self.assertTrue(response['success'])
 
         await communicator.disconnect()
+        await communicator2.disconnect()
 
     async def test_update_existing_response(self):
         """Test updating an existing response"""
         communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+
         communicator.scope['user'] = self.student
         await communicator.connect()
+        communicator2 = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator2.scope['user'] = self.user
+        await communicator2.connect()
 
         # First submission
         message = {
@@ -175,6 +193,7 @@ class TestPollConsumer(TransactionTestCase):
         }
         await communicator.send_json_to(message)
         await communicator.receive_json_from()
+
         await communicator.receive_json_from()  # Response status
         await communicator.receive_json_from()  # Broadcast update
 
@@ -201,6 +220,7 @@ class TestPollConsumer(TransactionTestCase):
             'response_data': 'Some answer'
         }
         await communicator.send_json_to(message)
+        await communicator.receive_json_from()
 
         # Check response status
         await communicator.receive_json_from()
@@ -215,6 +235,9 @@ class TestPollConsumer(TransactionTestCase):
         communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
         communicator.scope['user'] = self.student
         await communicator.connect()
+        communicator2 = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator2.scope['user'] = self.user
+        await communicator2.connect()
 
         # Update test question to be a match question
         await database_sync_to_async(setattr)(
@@ -238,6 +261,8 @@ class TestPollConsumer(TransactionTestCase):
         }
         await communicator.receive_json_from() # new student
         await communicator.receive_json_from() #status
+        await communicator.receive_json_from()
+        await communicator.receive_json_from()
         await communicator.send_json_to(message)
 
         # Check response status
@@ -253,6 +278,9 @@ class TestPollConsumer(TransactionTestCase):
         communicator = WebsocketCommunicator(self.application, "/ws/poll/123456/")
         communicator.scope['user'] = self.student
         await communicator.connect()
+        communicator2 = WebsocketCommunicator(self.application, "/ws/poll/123456/")
+        communicator2.scope['user'] = self.user
+        await communicator2.connect()
 
         # Update test question to be a dropdown question
         await database_sync_to_async(setattr)(
@@ -271,6 +299,9 @@ class TestPollConsumer(TransactionTestCase):
             'response_data': 'Blue'
         }
 
+        await communicator.receive_json_from()
+        await communicator.receive_json_from()
+        await communicator.receive_json_from()
         await communicator.receive_json_from()
         await communicator.send_json_to(message)
 
@@ -325,6 +356,7 @@ class TestPollConsumer(TransactionTestCase):
 
         # Check that the message is broadcast
         await communicator2.receive_json_from()
+        await communicator2.receive_json_from()
         response = await communicator2.receive_json_from()
         self.assertEqual(response['type'], 'new_student')
         self.assertEqual(response['message'], '5')
@@ -339,6 +371,7 @@ class TestPollConsumer(TransactionTestCase):
 
         message = {'type': 'question', 'question_id': self.word_cloud_question.id}
         await communicator.send_json_to(message)
+        await communicator.receive_json_from()
         await communicator.receive_json_from()
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'question')
@@ -358,6 +391,7 @@ class TestPollConsumer(TransactionTestCase):
 
             # Connect student and check for student count message
             await student_communicator.connect()
+            await student_communicator.receive_json_from()
             await student_communicator.receive_json_from()
             response = await student_communicator.receive_json_from()
 
@@ -389,6 +423,7 @@ class TestPollConsumer(TransactionTestCase):
         await communicator.send_json_to(show_message)
         
         # Verify answers are broadcasted
+        await communicator.receive_json_from()
         await communicator.receive_json_from()
         response = await communicator.receive_json_from()
         self.assertEqual(response['type'], 'answers')

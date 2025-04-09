@@ -14,7 +14,20 @@ class PollConsumer(AsyncWebsocketConsumer):
         if not await self._setup_connection():
             await self.close()
             return
+        if not hasattr(self.__class__, 'lecturer_connected_status'):
+            self.__class__.lecturer_connected_status = {}
 
+            # If this is a lecturer connecting, set status to connected
+        if self.scope["user"].role == 'Lecturer':
+            self.__class__.lecturer_connected_status[self.poll_code] = True
+
+        await self.channel_layer.group_send(
+            self.poll_group_name,
+            {
+                'type': 'lecturer_status_update',
+                'action': 'connected'
+            }
+        )
         # Accept the WebSocket connection
         await self.accept()
 
@@ -32,12 +45,27 @@ class PollConsumer(AsyncWebsocketConsumer):
         """Handle WebSocket disconnection."""
         if self._is_student():
             await self._handle_student_leave()
+        if self.scope["user"].role == 'Lecturer':
+            if hasattr(self.__class__, 'lecturer_connected_status'):
+                self.__class__.lecturer_connected_status[self.poll_code] = False
 
+            await self.channel_layer.group_send(
+                self.poll_group_name,
+                {
+                    'type': 'lecturer_status_update',
+                    'action': 'disconnected'
+                }
+            )
         await self.channel_layer.group_discard(
             self.poll_group_name,
             self.channel_name
         )
 
+    async def lecturer_status_update(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'lecturer_status',
+            'action': event['action']
+        }))
     async def receive(self, text_data):
         """Process incoming WebSocket messages."""
         data = json.loads(text_data)
