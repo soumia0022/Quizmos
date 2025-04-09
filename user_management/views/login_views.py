@@ -9,7 +9,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import View
 from user_management.forms import LogInForm, PollCodeForm
-from user_management.helpers import login_prohibited
+from user_management.helpers import login_prohibited, role_required
 from poll_management.models.poll_model import Poll
 from django.db.models import  Q, F
 from django.core.paginator import Paginator
@@ -103,9 +103,14 @@ def log_out(request):
     return redirect(reverse('user_management:home'))
 
 @login_required(login_url='user_management:log_in')
+@role_required('Student')
 def student_polls_page(request):
     """View to display only the polls section for students."""
     current_user = request.user
+
+    if current_user.first_name == "Guest":
+        delete_guest_user(request, current_user.id)
+        return redirect('user_management:home')
 
     response_types = [
         MultipleChoiceResponse, SingleChoiceResponse, TextFillResponse,
@@ -145,8 +150,12 @@ def student_polls_page(request):
     })
 
 @login_required(login_url='user_management:log_in')
+@role_required('Student')
 def join_poll_page(request):
     """View for the standalone Join Poll page."""
+    if request.user.first_name == "Guest":
+        delete_guest_user(request, request.user.id)
+        return redirect('user_management:home')
     form = PollCodeForm()
     if request.method == 'POST':
         form = PollCodeForm(request.POST)  

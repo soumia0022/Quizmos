@@ -1,11 +1,14 @@
-{% extends 'base_content.html' %}
+{% extends 'lecturer_base.html' %}
 {% load system_extras %}
 
 {% block content %}
     {% noscript_warning %}
-    {% return_button %}
-    {% tts_button %}
-    {% tts_selected_button %}
+      {% return_button %}
+    <div class="tts-buttons">
+      {% tts_button %}
+      {% tts_selected_button %}
+    </div>
+    
 
         <!-- CodeMirror Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
@@ -57,6 +60,7 @@
         video_file: {% if question.video_file %}"{{ question.video_file.url }}"{% else %}null{% endif %},
         question_timer: {% if question.question_timer %}{{ question.question_timer }}{% else %}null{% endif %},        audio_file: {% if question.audio_file %}"{{ question.audio_file.url }}"{% else %}null{% endif %},
         youtube_link: {% if question.youtube_link %}"{{ question.youtube_link }}"{% else %}null{% endif %},
+          image_file: {% if question.image_file %}"{{ question.image_file.url }}"{% else %}null{% endif %},
         {% if question.question_type == 'dropdown_fill' %}
           text: "{{ question.dropdown_fill_question|default:'' }}",
           options: {{ question.get_dropdown_options|safe|default:"[]" }},
@@ -92,4 +96,7 @@
 <script type="module" src="{% static 'js/lecturer_poll_display/poll.js' %}"></script>
 <script type="module" src="{% static 'js/lecturer_poll_display/show_answer.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/response_styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/display_code.css' %}">
 {% endblock %}

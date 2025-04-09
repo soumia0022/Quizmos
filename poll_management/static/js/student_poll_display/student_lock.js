@@ -22,6 +22,7 @@ export function createLockOverlay() {
     // Add CSS for the lock overlay
     const style = document.createElement('style');
     style.textContent = `
+        
         .poll-lock-overlay {
             position: fixed;
             top: 0;
@@ -38,7 +39,7 @@ export function createLockOverlay() {
         }
 
         .lock-message {
-            background-color: white;
+            background-color: #0b304b;
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);

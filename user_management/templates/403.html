@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+{% load system_extras %}
+<div class="error-page" style="text-align: center; margin-top: 50px;">
+<img class="star" src="{% static 'images/Question_Astronaut.png' %}" alt="Star" style="max-width: 300px; margin-bottom: 30px;">
+    <h1 style="font-size: 72px; color: #ffffff;">403</h1>
+    <h2 style="font-size: 24px; color: #ffffff;">Forbidden</h2>
+    <p style="font-size: 18px; color: #ebf0f1;">Oops! It seems you don't have permission to access this page.</p>
+    <a href="/" id="go-back-btn" class="btn btn-primary" style="margin-top: 20px; display: inline-block; padding: 10px 20px; text-decoration: none;">Take me Home</a>
+</div>
+
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+{% endblock %}

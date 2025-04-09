@@ -1,14 +1,32 @@
+{% extends 'lecturer_base.html' %}
 {% load system_extras %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/join_create_poll.css' %}">
+<link rel="stylesheet" href="{% static 'css/poll_detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/add_question.css' %}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poll Results</title>
-    {% return_button %}
+    <div class="buttons-container">
+        <div class="left-section">
+          <a href="{% url 'user_management:dashboard' %}" class="go-back-btn">Go to Dashboard</a>
+        </div>
+    
+        <div class="center-section">
+          <div class="tts-buttons">
+                {% tts_button %}
+                {% tts_selected_button %}
+          </div>
+        </div>
+        <div class="right-section"></div>
+      </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="{% static 'css/poll_detail.css' %}">
 </head>
 <body>
     <!-- Hidden element to store poll ID for JS -->
@@ -16,60 +34,69 @@
 
     <div class="container">
         <!-- Sidebar for Questions -->
-        <div class="sidebar">
-            <h3 class="text-center">Questions</h3>
-            <form method="get" id="filter-form">
-                <input type="text" name="search" placeholder="Search questions..." value="{{ search_query }}">
-                <select name="sort_by" onchange="document.getElementById('filter-form').submit();">
-                    <option value="question_text_asc" {% if sort_by == 'question_text_asc' %}selected{% endif %}>Question Text A-Z</option>
-                    <option value="question_text_desc" {% if sort_by == 'question_text_desc' %}selected{% endif %}>Question Text Z-A</option>
-                    <option value="type_asc" {% if sort_by == 'type_asc' %}selected{% endif %}>Type A-Z</option>
-                    <option value="type_desc" {% if sort_by == 'type_desc' %}selected{% endif %}>Type Z-A</option>
-                </select>
-            </form>
+        <div id="questions-sidebar" class="custom-sidebar p-3">
+            <h3 class="form-title text-center">Questions</h3>
+
+            {% include 'partials/search_sort_form.html' %}
+
             <div id="questions-list">
                 {% for question in questions %}
-                    <div class="question-item" data-question-id="{{ question.id }}">
-                        <strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}
-                        <button class="view-analytics-btn" data-question-id="{{ question.id }}">View Analytics</button>
+                    <div class="question-item mb-2" data-question-id="{{ question.id }}">
+                        <div class="question-text">
+                            <strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}
+                        </div>
+                        <div class="question-actions">
+                            <button class="view-analytics-btn" data-question-id="{{ question.id }}">View Analytics</button>
+                        </div>
                     </div>
                 {% empty %}
                     <p class="text-muted text-center">No questions created yet.</p>
                 {% endfor %}
             </div>
         </div>
-
+      
         <!-- Chart Container -->
-        <div class="chart-container">
-            <h2 id="selected-question-title">Select to view analytics for the whole poll or a particular question</h2>
+        <div class="chart-container custom-sidebar p-3">
+            <h2 id="selected-question-title" class="chart-title text-center">
+                Select to view analytics for the whole poll or a particular question
+            </h2>
 
-            <button id="viewPollResults">Show Poll Results</button>
-            <button id="viewCorrectAnalytics">View Correct Analytics</button>
+            <div class="analytics-buttons text-center mb-3">
+                <button id="viewPollResults" class="custom-btn">Show Poll Results</button>
+                <button id="viewCorrectAnalytics" class="custom-btn">View Correct Analytics</button>
+            </div>
 
             <!-- Correct Answer Analytics -->
-            <div class="correct-answer-btn-container">
-                <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
-                <button id="viewCorrectPieChart">View Pie Chart</button>
-                <button id="viewCorrectBarGraph">View Bar Graph</button>
+            <div class="correct-answer-btn-container text-center mb-3">
+                <button id="viewCorrectPieChart" class="custom-btn">View Pie Chart</button>
+                <button id="viewCorrectBarGraph" class="custom-btn">View Bar Graph</button>
             </div>
 
             <!-- Response Count Analytics -->
-            <div class="button-container">
-                <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
-                <button id="viewPieChart">View Pie Chart</button>
-                <button id="viewBarGraph">View Bar Graph</button>
-                <button id="viewLineGraph">View Line Graph</button>
+            <div class="button-container text-center mb-3">
+                
+                <button id="viewPieChart" class="custom-btn">View Pie Chart</button>
+                <button id="viewBarGraph" class="custom-btn">View Bar Graph</button>
+                <button id="viewLineGraph" class="custom-btn">View Line Graph</button>
             </div>
 
-            <div id="no-data-message" style="display: none; text-align: center; padding: 1rem; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
-                No responses yet.
+            <div class="chart-inner">
+                <canvas id="chart"></canvas>
             </div>
 
-            <canvas id="chart"></canvas>
+            <div class="csv-download text-center mt-3">
+                <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink" class="custom-btn">
+                Download Results as CSV
+                </a>
+            </div>
         </div>
+
+        <div id="no-data-message" style="display: none; text-align: center; padding: 1rem; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
+            No responses yet.
+        </div>
+  
+        <script src="{% static 'js/poll_detail.js' %}"></script>     
     </div>
 
-    <script src="{% static 'js/poll_detail.js' %}"></script>
-
 </body>
-</html>
+{% endblock %}

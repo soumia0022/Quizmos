@@ -1,4 +1,4 @@
-{% extends 'base_content.html' %}
+{% extends 'student_base.html' %}
 {% load system_extras %}
 {% block content %}
 {% load static %}
@@ -6,8 +6,11 @@
 <head>
     <title>{{ poll.title }}</title>
     <link rel="stylesheet" href="{% static 'poll_management/css/poll_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/question_detail.css' %}">
 
-        <!-- CodeMirror Styles -->
+
+    <!-- CodeMirror Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 
     <!-- CodeMirror Scripts -->
@@ -21,35 +24,36 @@
 </head>
 <body>
 
-    <div class="container" id="poll-container" data-poll-code="{{ poll.number_code }}">
-        <div class="row">
+    <div class="container" id="poll-container" data-poll-code="{{ poll.number_code }}" style="text-align: center;">
+        <div class="row justify-content-center">
             <div class="col-12">
                 <h1>Welcome to {{ poll.title }}!</h1>
 
+                <div class="progress rounded-pill" style="height: 30px;">
+                    <div id="question-progress-bar" class="progress-bar bg-success rounded-pill" role="progressbar" 
+                        style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        <span id="question-progress-text">0 / 0</span>
+                    </div>
+                </div>
+                <br/>
 
-                <!-- progress bar  -->           
-        <div class="progress rounded-pill" style="height: 30px;">
-            <div id="question-progress-bar" class="progress-bar bg-success rounded-pill" role="progressbar" 
-                style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                <span id="question-progress-text">0 / 0</span>
-            </div>
-        </div>
-              <br/>
-
-                <div id="question">
-                    Waiting for a question...
+                <div id="question" style="text-align: center;">
+                    <p>Waiting for a question...</p>
                     <div class="question-timer"></div>
                 </div>
 
                 <input type="text" id="answer" style="display: none;" placeholder="Your answer" />
-                <div id="question_options">Waiting for options...</div>
+                <div id="question_options" style="text-align: center;">
+                    <p>Waiting for options...</p>
+                </div>
+
                 <div id="feedback" class="feedback"></div>
                 <div id="correct-answers" class="correct-answers" style="display: none;"></div>
                 <button id="submitResponse" style="display: none;">Submit Response</button>
             </div>
         </div>
-
     </div>
+    
     {% load static%}
     <script type="module" src="{% static 'js/student_lock.js' %}"></script>
     <script type="module" src="{% static 'js/timer.js' %}"></script>

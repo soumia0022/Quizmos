@@ -7,6 +7,7 @@ user_fixtures = [
     {'username': 'johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe', 'role': 'Student'},
     {'username': 'janedoe', 'email': 'jane.doe@example.org', 'first_name': 'Jane', 'last_name': 'Doe', 'role': 'Student'},
     {'username': 'charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson', 'role': 'Lecturer'},
+    {'username': 'oliviabrown', 'email': 'olivia.brown@example.org', 'first_name': 'Olivia', 'last_name': 'Brown', 'role': 'Lecturer'},
 ]
 class Command(BaseCommand):
     """Build automation command to seed the database."""
