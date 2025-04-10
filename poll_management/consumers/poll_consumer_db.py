@@ -168,6 +168,10 @@ class DatabaseHandler:
                 'is_correct': is_correct
             }
 
+            # Remove is_correct for specific response types
+            if response_type in ['wordcloud', 'code_question']:
+                response_data_dict.pop('is_correct', None)
+
             # Add is_partially_correct for supported response types
             if response_type in ['multiple_choice', 'match_question']:
                 response_data_dict['is_partially_correct'] = is_partially_correct
