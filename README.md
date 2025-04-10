@@ -2,9 +2,7 @@
 Polling website for the SEG Major Group Project.
 
 ## Team members
-
 The members of the team are:
-
 - Amina Ali
 - Rashida Begum
 - Soumia Bekhli
@@ -14,9 +12,7 @@ The members of the team are:
 - Marium Rukiya
 
 ## Project structure
-
 The project is called `Quizmos`. Our system has the following apps:
-
 - user_management: manages student and lecturer user types
 - poll_management: manages all poll functionality e.g., creating, updating and deleting polls
 - question_management: manages all question functionality e.g., creating, updating and deleting questions
@@ -25,56 +21,17 @@ The project is called `Quizmos`. Our system has the following apps:
 - system_components: for the shared features of the website
 
 ## Deployed version of the application
+The deployed version of the application can be found at http://quizmos.me
 
-The deployed version of the application can be found at http://ec2-13-48-203-183.eu-north-1.compute.amazonaws.com/
+## Login credentials
+Lecturers: 
+- username: charlie password: Password123
+- username: oliviabrown password: Password123
 
-## Installation instructions
+Students:
+- username: johndoe password: Password123
+- username: janedoe password: Password123
 
-Our application has been developed using the latest versions of Python and Django.
-
-To begin, set up and activate a local (virtual) development environment. From the root of the project:
-
-```
-$ python3.10 -m venv venv
-$ source venv/bin/activate
-```
-
-Install all required packages:
-
-```
-$ pip3 install -r requirements.txt
-```
-
-Then, migrate the database:
-
-```
-$ python3 manage.py migrate
-```
-
-Seed the development database with:
-
-```
-$ python3 manage.py seed
-```
-
-Run all tests with:
-
-```
-$ python3 manage.py test
-```
-
-All tests should pass. Check the coverage with:
-
-```
-$ coverage run manage.py test
-$ coverage html
-```
-You can open this file in your web browser.
-
-
-Run the server with:
-```
-$ python3 manage.py runserver
-```
-
-To use the real-time functionality, you will need to run redis.
+## References
+The following tutorial was used for real time consumer set up: 
+- https://channels.readthedocs.io/en/stable/tutorial/part_1.html
