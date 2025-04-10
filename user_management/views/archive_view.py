@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
@@ -6,6 +7,9 @@ from django.views import View
 from django.views.generic import ListView
 from django.contrib import messages
 from poll_management.models.poll_model import Poll
+from user_management.helpers import role_required
+
+
 class PollArchiveBaseView(LoginRequiredMixin, View):
     """Base class for poll archive operations"""
 
@@ -14,6 +18,11 @@ class PollArchiveBaseView(LoginRequiredMixin, View):
 
     def handle_invalid_method(self):
         return JsonResponse({"status": "error", "message": "Invalid request method"})
+
+    def dispatch(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'role') or request.user.role != "Lecturer":
+            return redirect('user_management:dashboard')
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ArchivePollView(PollArchiveBaseView):
@@ -68,6 +77,11 @@ class ArchivedPollsListView(LoginRequiredMixin, ListView):
     template_name = 'archived_polls.html'
     context_object_name = 'polls'
     paginate_by = 9
+
+    def dispatch(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'role') or request.user.role != "Lecturer":
+            return redirect('user_management:dashboard')
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         search_query = self.request.GET.get('search', '')

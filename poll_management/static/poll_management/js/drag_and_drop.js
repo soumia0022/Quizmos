@@ -19,6 +19,7 @@ function initializeDragAndDrop() {
                     const oldItem = dropzone.children[0];
                     rightContainer.appendChild(oldItem);
                 }
+                evt.item.classList.add("matched-item"); 
             },
         });
     });

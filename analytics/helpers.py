@@ -1,5 +1,3 @@
-from django.db.models.functions import Lower
-
 def apply_search_and_sort(queryset, search_query=None, sort_by=None, sort_options=None, default_sort='id'):
     """
     Apply search and sorting logic to a queryset.

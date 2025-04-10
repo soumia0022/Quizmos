@@ -36,7 +36,9 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   overflow: visible;
   z-index: 10;
 }
-
+.CodeMirror {
+    text-align: left !important;
+}
 .left-links {
   display: flex;
   flex-direction: row;
@@ -222,9 +224,10 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   background-color: transparent !important;
   outline: none !important;
   box-shadow: none !important;
+  color: #e0e0ff;
 }
 
-.go-back-btn, .custom-back-button{
+.go-back-btn, .custom-back-button, .join-poll-btn{
   background-color: rgba(255, 255, 255, 0.1); 
   color: white; 
   border: 2px solid #fff;
@@ -238,7 +241,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, div, li {
   margin-bottom: 15px;
 }
 
-.go-back-btn:hover, .custom-back-button:hover {
+.go-back-btn:hover, .custom-back-button:hover, .join-poll-btn:hover {
   background-color: rgba(255, 255, 255, 0.2);
   color: #02192f; 
   border-color: #ddd;

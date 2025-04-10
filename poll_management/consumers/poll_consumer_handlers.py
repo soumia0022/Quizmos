@@ -18,7 +18,9 @@ class MessageHandler:
             'get_poll_status': self._handle_get_poll_status,
             'show_answers': self._handle_show_answers,
             'question': self._handle_question_request,
-            'response': self._handle_response_submission
+            'response': self._handle_response_submission,
+            'lecturer_status': self._handle_lecturer_status,
+            'check_lecturer_status': self._handle_check_lecturer_status
         }
 
         handler = handlers.get(message_type)
@@ -59,6 +61,43 @@ class MessageHandler:
     async def _handle_get_poll_status(self, data):
         """Handle request for current poll status."""
         await self.consumer._send_poll_status()
+
+    async def _handle_lecturer_status(self, data):
+        """Handle lecturer connection/disconnection status."""
+        if not self._is_lecturer():
+            return
+
+        action = data.get('action')
+        if action not in ['connected', 'disconnected']:
+            return
+
+
+        if not hasattr(self.consumer, 'lecturer_connected_status'):
+            self.consumer.lecturer_connected_status = {}
+
+        self.consumer.lecturer_connected_status[self.consumer.poll_code] = (action == 'connected')
+
+        await self.consumer.channel_layer.group_send(
+            self.consumer.poll_group_name,
+            {
+                'type': 'lecturer_status_update',
+                'action': action
+            }
+        )
+
+    async def _handle_check_lecturer_status(self, data):
+        """Handle student request to check if lecturer is connected."""
+        if not self._is_student():
+            return
+
+        is_connected = False
+        if hasattr(self.consumer, 'lecturer_connected_status'):
+            is_connected = self.consumer.lecturer_connected_status.get(self.consumer.poll_code, False)
+
+        await self.consumer.send(text_data=json.dumps({
+            'type': 'lecturer_status',
+            'action': 'connected' if is_connected else 'disconnected'
+        }))
 
     async def _handle_show_answers(self, data):
         """Handle show/hide answers requests."""
@@ -135,6 +174,19 @@ class MessageHandler:
                 'type': 'response_status',
                 'success': False,
                 'message': 'Poll is currently locked'
+            }))
+            return
+
+        # Check if lecturer is connected before accepting responses
+        lecturer_connected = False
+        if hasattr(self.consumer, 'lecturer_connected_status'):
+            lecturer_connected = self.consumer.lecturer_connected_status.get(self.consumer.poll_code, False)
+
+        if self._is_student() and not lecturer_connected:
+            await self.consumer.send(text_data=json.dumps({
+                'type': 'response_status',
+                'success': False,
+                'message': 'Lecturer is disconnected, cannot submit responses'
             }))
             return
 

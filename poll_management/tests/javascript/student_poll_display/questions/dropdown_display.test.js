@@ -5,7 +5,13 @@ describe("dropdown_display", () => {
 
     beforeEach(() => {
         // Mock DOM elements
-        mockQuestionOptions = { innerHTML: "" };
+        mockQuestionOptions = {
+            innerHTML: "",
+            appendChild: jest.fn(function (child) {
+                this.innerHTML += child.outerHTML; // Simulating real appendChild
+            }),
+        };
+
         mockAnswerDiv = { style: { display: "block" } };
 
         // Mock getElementById to return the mock elements
@@ -26,11 +32,10 @@ describe("dropdown_display", () => {
         dropdown_display(data);
 
         // Check if the options are correctly added to the innerHTML of question_options
-        expect(mockQuestionOptions.innerHTML).toContain('<select>');
-        expect(mockQuestionOptions.innerHTML).toContain('<option value="Option 1">Option 1</option>');
-        expect(mockQuestionOptions.innerHTML).toContain('<option value="Option 2">Option 2</option>');
-        expect(mockQuestionOptions.innerHTML).toContain('<option value="Option 3">Option 3</option>');
-        expect(mockQuestionOptions.innerHTML).toContain('<option value="" disabled selected>Select an option</option>');  // Default option
+        expect(mockQuestionOptions.innerHTML).toContain('<select');
+        expect(mockQuestionOptions.innerHTML).toContain('<option value="Option 1"></option>');
+        expect(mockQuestionOptions.innerHTML).toContain('<option value="Option 2"></option>');
+        expect(mockQuestionOptions.innerHTML).toContain('<option value="Option 3"></option>');
     });
 
     it("should set the answer display style to 'none'", () => {

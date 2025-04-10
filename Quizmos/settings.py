@@ -25,6 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'REMOVED_SECRET_KEY'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
 ALLOWED_HOSTS = [
@@ -98,6 +99,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'poll_management.middleware.ProfanityFilterMiddleware',
+    'user_management.middleware.CustomErrorMiddleware',
+    'user_management.middleware.Custom404Middleware',
 ]
 
 ROOT_URLCONF = 'Quizmos.urls'
@@ -175,10 +178,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = 'assets/'
+
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "static",  
+    BASE_DIR / "user_management" / "static", 
 ]
 
 STATICFILES_FINDERS = [

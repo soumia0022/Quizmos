@@ -174,4 +174,46 @@ class TestMessageHandler(TransactionTestCase):
             pass  # Expected no message
 
         await channel_layer.group_discard(mock_consumer.poll_group_name, "test_channel")
+    async def test_handle_lecturer_status_connected_disconnected(self):
+        """Test handling lecturer connection/disconnection status"""
+        channel_layer = await self.setup_test_channel_layer()
+        mock_consumer = MockConsumer(self.lecturer, self.poll, "123456")
+        mock_consumer.channel_layer = channel_layer
+        message_handler = MessageHandler(mock_consumer)
 
+        await channel_layer.group_add(mock_consumer.poll_group_name, "test_channel")
+
+        # Send 'connected' action
+        await message_handler.handle_message('lecturer_status', {'action': 'connected'})
+        self.assertTrue(mock_consumer.lecturer_connected_status["123456"])
+
+        message = await asyncio.wait_for(channel_layer.receive("test_channel"), timeout=0.5)
+        self.assertEqual(message['type'], 'lecturer_status_update')
+        self.assertEqual(message['action'], 'connected')
+
+        # Send 'disconnected' action
+        await message_handler.handle_message('lecturer_status', {'action': 'disconnected'})
+        self.assertFalse(mock_consumer.lecturer_connected_status["123456"])
+
+        message = await asyncio.wait_for(channel_layer.receive("test_channel"), timeout=0.5)
+        self.assertEqual(message['type'], 'lecturer_status_update')
+        self.assertEqual(message['action'], 'disconnected')
+
+        await channel_layer.group_discard(mock_consumer.poll_group_name, "test_channel")
+
+
+    async def test_check_lecturer_status_connected(self):
+        """Student receives 'connected' lecturer status if lecturer is connected."""
+        channel_layer = await self.setup_test_channel_layer()
+
+        mock_consumer = MockConsumer(self.student, self.poll, "123456")
+        mock_consumer.channel_layer = channel_layer
+        mock_consumer.lecturer_connected_status = {"123456": True}  # Lecturer is connected
+
+        handler = MessageHandler(mock_consumer)
+
+        await handler.handle_message("check_lecturer_status", {})
+
+        self.assertEqual(len(mock_consumer.sent_messages), 1)
+        self.assertEqual(mock_consumer.sent_messages[0]['type'], 'lecturer_status')
+        self.assertEqual(mock_consumer.sent_messages[0]['action'], 'connected')
