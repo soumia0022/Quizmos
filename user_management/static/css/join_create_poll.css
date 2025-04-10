@@ -80,8 +80,7 @@
 }
 
 .star,
-.planet,
-.astronaut {
+.planet {
   position: absolute;
   object-fit: contain;
   transform: translateY(-200vh);
@@ -118,8 +117,7 @@
 }
 
 .star,
-.planet,
-.astronaut {
+.planet {
   animation: drop-and-bounce 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards, float 6s ease-in-out infinite 2s;
 }
 
@@ -146,4 +144,11 @@
   .centered-background-container {
     transform: translate(-50%, -50%) scale(0.6);
   }
+}
+
+.joinpoll-astronaut {
+  position: fixed !important;
+  right: 50px;
+  bottom: 60px;
+  z-index: 4;
 }
