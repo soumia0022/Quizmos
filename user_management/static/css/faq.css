@@ -1,4 +1,5 @@
 /* Fix Global HTML and Body Styles */
+
 html, body {
   margin: 0;
   padding: 0;
@@ -119,147 +120,61 @@ html, body {
   pointer-events: none; 
 }
 
-/* Drop-and-Bounce Animation */
-@keyframes drop-and-bounce {
-  0% {
-      transform: translateY(-200vh); 
-  }
-  50% {
-      transform: translateY(20px); 
-  }
-  70% {
-      transform: translateY(-10px); 
-  }
-  90% {
-      transform: translateY(5px);
-  }
-  100% {
-      transform: translateY(0);
-  }
-}
-
-/* Floating Animation */
-@keyframes float {
-  0%, 100% {
-      transform: translateY(0);
-  }
-  50% {
-      transform: translateY(-20px);
-  }
-}
-
-/* Shared Styling for Stars */
-.star {
+/* Shared styles applied to all elements */
+.star,
+.planet,
+.astronaut {
   position: absolute;
   object-fit: contain;
-  animation: 
-      drop-and-bounce 3s ease-out forwards, 
-      float 8s ease-in-out infinite; 
-  opacity: 0.8;
+  transform: translateY(-200vh);
+  animation: drop-and-bounce 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards, float 6s ease-in-out infinite 2s;
+  opacity: 1;
 }
 
-/* Staggered Delays for Stars */
-.star:nth-child(odd) {
-  animation-delay: 0.2s, 3.2s;
+/* Drop and bounce effect */
+@keyframes drop-and-bounce {
+  0% {
+    transform: translateY(-200vh);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+  70% {
+    transform: translateY(-10px);
+  }
+  90% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
-.star:nth-child(even) {
-  animation-delay: 0.4s, 3.4s;
+/* Floating animation */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
-/* Specific Planets, Rocket, Astronaut, and Sun Styling */
-.planet1-icon {
-  position: absolute;
-  top: 158px; 
-  left: 714px;
-  width: 150px;
-  height: 150px;
-  animation: 
-      drop-and-bounce 3s ease-out forwards, 
-      float 12s infinite ease-in-out;
-  animation-delay: 0.3s, 3.3s;
+/* Staggered animation delays */
+.star:nth-child(odd),
+.planet:nth-child(odd),
+.astronaut:nth-child(odd) {
+  animation-delay: 0.3s, 2.3s;
 }
 
-.planet2-icon {
-  position: absolute;
-  top: 367px; 
-  left: 270px;
-  width: 204px;
-  height: 184px;
-  animation: 
-      drop-and-bounce 3s ease-out forwards, 
-      float 14s infinite ease-in-out;
-  animation-delay: 0.5s, 3.5s;
+.star:nth-child(even),
+.planet:nth-child(even),
+.astronaut:nth-child(even) {
+  animation-delay: 0.5s, 2.5s;
 }
 
-.planet3-icon {
-  position: absolute;
-  top: 761px; 
-  left: 46px;
-  width: 145px;
-  height: 145px;
-  animation: 
-      drop-and-bounce 3s ease-out forwards, 
-      float 10s infinite ease-in-out;
-  animation-delay: 0.3s, 3.3s;
-}
 
-.planet4-icon {
-  position: absolute;
-  top: 547px;
-  left: 1276px;
-  width: 138px;
-  height: 137px;
-  animation: 
-      drop-and-bounce 3s ease-out forwards, 
-      float 11s infinite ease-in-out;
-  animation-delay: 0.5s, 3.5s;
-}
-
-.planet5-icon {
-  position: absolute;
-  top: 1600px; 
-  left: 200px;
-  width: 185px;
-  height: 185px;
-  animation: 
-      drop-and-bounce 3s ease-out forwards, 
-      float 16s infinite ease-in-out;
-  animation-delay: 0.3s, 3.3s;
-}
-
-.sun-icon {
-  position: absolute;
-  top: 1201px; 
-  left: 1237px;
-  width: 304px;
-  height: 304px;
-  animation: 
-      drop-and-bounce 3s ease-out forwards, 
-      float 18s infinite ease-in-out;
-  animation-delay: 0.3s, 3.3s;
-}
-
-.rocket-icon {
-  position: absolute;
-  top: 1223px; 
-  left: 89px;
-  width: 266px;
-  height: 278px;
-  animation: float 15s infinite ease-in-out; 
-}
-
-.astronaut4-icon {
-  position: absolute;
-  top: 786px; 
-  left: 1500px;
-  width: 167px;
-  height: 196px;
-  animation: 
-      drop-and-bounce 3s ease-out forwards, 
-      float 13s infinite ease-in-out; 
-  animation-delay: 0s, 3s; 
-}
 
 /* Media Queries */
 @media (max-width: 768px) {
