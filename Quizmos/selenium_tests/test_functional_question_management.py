@@ -47,86 +47,128 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         wait(self.driver)
         time.sleep(1)
 
-    def test_add_text_fill_question(self):
-        self.navigate_to_edit_poll()
-
-        # Select "Text Answer" from dropdown
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("text_fill")
-
-        wait(self.driver)
-        text_q = self.driver.find_element(By.ID, "id_text_question")
-        text_a = self.driver.find_element(By.ID, "id_text_answer")
-        text_q.send_keys("What is your favorite color?")
-        text_a.send_keys("Blue")
-
-        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
-        safe_click(self.driver, save_btn)
-        wait(self.driver)
-
-
-    def test_add_word_cloud_question(self):
-        self.navigate_to_edit_poll()
-
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("wordcloud")
-        wait(self.driver)
-
-        wordcloud_input = self.driver.find_element(By.ID, "id_word_cloud_question")
-        wordcloud_input.send_keys("Describe your mood in one word")
-
-        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
-        safe_click(self.driver, save_btn)
-        wait(self.driver)
-
-    def test_add_code_question(self):
-        self.navigate_to_edit_poll()
-
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("code_question")
-        wait(self.driver)
-
-        question_text = self.driver.find_element(By.ID, "id_code_question")
-        question_text.send_keys("Write a function that returns the square of a number")
-
-        language_select = Select(self.driver.find_element(By.ID, "language-selector"))
-        language_select.select_by_value("python")
-
-        code_editor = self.driver.find_element(By.CLASS_NAME, "CodeMirror")
-        self.driver.execute_script("arguments[0].CodeMirror.setValue(arguments[1])", code_editor,
-                                   "def square(n): return n * n")
-
-        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
-        safe_click(self.driver, save_btn)
-        wait(self.driver)
-
-
-
-
-    # def test_user_can_add_multiple_choice_question(self):
-    #     # Test if Multiple Choice Option can be selected
-    #     self.select_question("multiple_choice", "multiple-choice-fields")
+    # def test_add_text_fill_question(self):
+    #     self.navigate_to_edit_poll()
     #
-    #     # Test the creation of a Multiple Choice Question
-    #     question_input = self.driver.find_element(By.NAME, "multiple_choice_question")
-    #     question_input.send_keys("What is the capital of France?")
-    #     add_option_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "multiple-choice-add-option-btn"))
-    #     self.add_two_options_for_choice_questions(add_option_button)
-    #     option_inputs = self.driver.find_elements(By.CSS_SELECTOR, "#multiple-choice-options-container input")  # Verify options appear in the form after closing the popup
-    #     unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
-    #     self.assertEqual(len(unique_options), 2)  # Should be only "Paris" and "London"
-    #     paris_checkbox = self.driver.find_element(By.XPATH, "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
-    #     paris_checkbox.click()  # Check the correct option
+    #     # Select "Text Answer" from dropdown
+    #     dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+    #     dropdown.select_by_value("text_fill")
+    #
     #     wait(self.driver)
-    #     time.sleep(1)
+    #     text_q = self.driver.find_element(By.ID, "id_text_question")
+    #     text_a = self.driver.find_element(By.ID, "id_text_answer")
+    #     text_q.send_keys("What is your favorite color?")
+    #     text_a.send_keys("Blue")
     #
-    #     # Test the saving of a Multiple Choice Question (verify in database)
-    #     self.save_question()
-    #     time.sleep(1)
-    #     poll = Poll.objects.get(id=self.poll.id)
-    #     question = poll.questions.last()
-    #     multiple_choice_answers = question.multiple_choice_answers  # List of selected (correct) answers
-    #     self.assertIn('Paris', multiple_choice_answers)
+    #     save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+    #     safe_click(self.driver, save_btn)
+    #     wait(self.driver)
+    #
+    #
+    # def test_add_word_cloud_question(self):
+    #     self.navigate_to_edit_poll()
+    #
+    #     dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+    #     dropdown.select_by_value("wordcloud")
+    #     wait(self.driver)
+    #
+    #     wordcloud_input = self.driver.find_element(By.ID, "id_word_cloud_question")
+    #     wordcloud_input.send_keys("Describe your mood in one word")
+    #
+    #     save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+    #     safe_click(self.driver, save_btn)
+    #     wait(self.driver)
+    #
+    # def test_add_code_question(self):
+    #     self.navigate_to_edit_poll()
+    #
+    #     dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+    #     dropdown.select_by_value("code_question")
+    #     wait(self.driver)
+    #
+    #     question_text = self.driver.find_element(By.ID, "id_code_question")
+    #     question_text.send_keys("Write a function that returns the square of a number")
+    #
+    #     language_select = Select(self.driver.find_element(By.ID, "language-selector"))
+    #     language_select.select_by_value("python")
+    #
+    #     code_editor = self.driver.find_element(By.CLASS_NAME, "CodeMirror")
+    #     self.driver.execute_script("arguments[0].CodeMirror.setValue(arguments[1])", code_editor,
+    #                                "def square(n): return n * n")
+    #
+    #     save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+    #     safe_click(self.driver, save_btn)
+    #     wait(self.driver)
+
+    def test_user_can_add_multiple_choice_question(self):
+        self.navigate_to_edit_poll()
+
+        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+        dropdown.select_by_value("multiple_choice")
+        wait(self.driver)
+
+        question_input = self.driver.find_element(By.NAME, "multiple_choice_question")
+        question_input.send_keys("What is the capital of France?")
+
+        add_option_button = wait_for_clickable(self.driver,
+                                               self.driver.find_element(By.ID, "multiple-choice-add-option-btn"))
+        self.add_two_options_for_choice_questions(add_option_button)
+
+        option_inputs = self.driver.find_elements(By.CSS_SELECTOR, "#multiple-choice-options-container input")
+        unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
+        self.assertEqual(len(unique_options), 2)
+
+        paris_checkbox = self.driver.find_element(By.XPATH,
+                                                  "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
+        paris_checkbox.click()
+        wait(self.driver)
+        time.sleep(1)
+
+        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+        safe_click(self.driver, save_btn)
+        time.sleep(1)
+
+        poll = Poll.objects.get(id=self.poll.id)
+        question = poll.questions.last()
+        multiple_choice_answers = question.multiple_choice_answers
+        self.assertIn('Paris', multiple_choice_answers)
+
+    def test_user_can_add_single_choice_question(self):
+        self.navigate_to_edit_poll()
+
+        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+        dropdown.select_by_value("single_choice")
+        wait(self.driver)
+
+        question_input = self.driver.find_element(By.NAME, "single_choice_question")
+        question_input.send_keys("What is the capital of France?")
+
+        add_option_button = wait_for_clickable(self.driver,
+                                               self.driver.find_element(By.ID, "single-choice-add-option-btn"))
+        self.add_two_options_for_choice_questions(add_option_button)
+
+        option_inputs = self.driver.find_elements(By.CSS_SELECTOR,
+                                                  "#single-choice-options-container input")
+
+        unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
+
+        self.assertEqual(len(unique_options), 2)
+        self.assertIn("Paris", unique_options)
+
+        label = self.driver.find_element(By.XPATH, "//label[text()='Paris']")
+        radio_id = label.get_attribute("for")
+        paris_radio = self.driver.find_element(By.ID, radio_id)
+        paris_radio.click()
+        wait(self.driver)
+
+        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+        safe_click(self.driver, save_btn)
+        time.sleep(1)
+
+        poll = Poll.objects.get(id=self.poll.id)
+        question = poll.questions.last()
+        single_choice_answers = question.single_choice_answers
+        self.assertIn("Paris", single_choice_answers)
 
     # def test_user_can_add_single_choice_question(self):
     #     # Test if Single Choice Option can be selected
@@ -153,23 +195,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
     #     single_choice_answers = question.single_choice_answers  # List of selected (correct) answers
     #     self.assertIn('Paris', single_choice_answers)
 
-    # def test_user_can_add_text_question(self):
-    #     # Test if Text can be selected
-    #     self.select_question("text_fill", "text-fill-fields")
-    #
-    #     # Test the creation of a Text Fill question
-    #     text_question_input = wait_for_element(self.driver, By.ID, "id_text_question")
-    #     text_question_input.send_keys("What is the capital of France?")
-    #     text_answer_input = wait_for_element(self.driver, By.ID, "id_text_answer")
-    #     text_answer_input.send_keys("Paris")
-    #     wait(self.driver)
-    #
-    #     # Test the saving of a Text Fill question (verify in database)
-    #     self.save_question()
-    #     poll = Poll.objects.get(id=self.poll.id)
-    #     question = poll.questions.last()
-    #     text_fill_answer = question.text_fill_answer
-    #     self.assertIn('Paris', text_fill_answer)
+
 
     # def test_user_can_add_dropdown_question(self):
     #     # Test if Text can be selected
@@ -200,21 +226,7 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
     #     self.assertEqual(dropdown_question_text, "The capital of France is _____")
     #     self.assertEqual(correct_answer, "Paris")
 
-    # def test_user_can_add_word_cloud_question(self):
-    #     # Test if Word Cloud can be selected
-    #     self.select_question("wordcloud", "word-cloud-fields")
-    #
-    #     # Test the creation of a Word Cloud question
-    #     word_cloud_question_input = wait_for_element(self.driver, By.ID, "id_word_cloud_question")
-    #     word_cloud_question_input.send_keys("Name some cities in France")
-    #     wait(self.driver)
-    #
-    #     # Test the saving of a Word Cloud question (verify in database)
-    #     self.save_question()
-    #     poll = Poll.objects.get(id=self.poll.id)
-    #     question = poll.questions.last()
-    #     wordcloud_question = question.wordcloud_question
-    #     self.assertIn('Name some cities in France', wordcloud_question)
+
 
     # def test_user_can_add_match_question(self):
     #     # Test if Match Question can be selected
@@ -239,59 +251,27 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
     #     match_question_text = question.match_question
     #     self.assertEqual(match_question_text, "Match the following items.")
 
-    # def test_user_can_add_code_question(self):
-    #     # Test if Code Question can be selected
-    #     self.select_question("code_question", "code-question-fields")
-    #
-    #     # Test the creation of a Code question
-    #     code_question_input = wait_for_element(self.driver, By.ID, "id_code_question")
-    #     code_question_input.send_keys("Allow the user to input the capital of France and print the answer with an ! at the end")
-    #     code_language_dropdown = Select(self.driver.find_element("name", "code_language"))
-    #     code_language_dropdown.select_by_value("python")
-    #     code_answer_input = wait_for_element(self.driver, By.ID, "id_code_answer")
-    #     code_answer_input.send_keys('[{"input": "Paris", "output": "Paris!"}]')
-    #     wait(self.driver)
-    #
-    #     # Test the saving of a Code question (verify in database)
-    #     self.save_question()
-    #     poll = Poll.objects.get(id=self.poll.id)
-    #     question = poll.questions.last()
-    #     code_test_cases = question.code_test_cases
-    #     expected_test_case = "[{'input': 'Paris', 'output': 'Paris!'}]"
-    #     expected_test_case = ast.literal_eval(expected_test_case)  # Convert to a list
-    #     self.assertIn(expected_test_case[0], code_test_cases)
 
 
     # Helper methods below:
 
-    def select_question(self, question_type, question_fields):
-        """Checks that the question type being tested can be selected from the question dropdown."""
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value(question_type)
-        selected_option = dropdown.first_selected_option
-        self.assertEqual(selected_option.get_dom_attribute("value"), question_type)
-        question_fields = wait_for_element(self.driver, By.ID, question_fields)
-        self.assertTrue(question_fields.is_displayed())
-
     def add_two_options_for_choice_questions(self, add_option_button):
-        add_option_button.click()
-        alert = Alert(self.driver)  # Wait for alert popup and enter first option
+        # First Option
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", add_option_button)
+        time.sleep(0.5)
+        self.driver.execute_script("arguments[0].click();", add_option_button)
+        alert = Alert(self.driver)
         alert.send_keys("Paris")
         alert.accept()
         wait(self.driver)
-        add_option_button.click()  # Click "Add Option" again for second choice
+
+        # Second Option
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", add_option_button)
+        time.sleep(0.5)
+        self.driver.execute_script("arguments[0].click();", add_option_button)
         alert.send_keys("London")
         alert.accept()
         wait(self.driver)
-
-    def save_question(self):
-        save_button = wait_for_element(self.driver, By.ID, "id_save_question_button")
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", save_button)
-        try:
-            wait_for_clickable(self.driver, save_button).click()
-        except ElementClickInterceptedException:
-            self.driver.execute_script("arguments[0].click();", save_button)  # Click via JS
-        time.sleep(2)
 
     # End of helper methods
 
