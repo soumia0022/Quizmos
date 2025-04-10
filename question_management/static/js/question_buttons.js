@@ -28,6 +28,7 @@ function canAddMoreOptions(question_type, maxOptions = 4) {
 function addSingleChoiceOption(ScOptionCount, singleChoiceOptionsSection) {
     if (!canAddMoreOptions("single-choice")){
         displayErrorMessage("You can only add 4 options");
+        return ScOptionCount;
     }
     const optionElement = addChoiceOptionComponents("single-choice", ScOptionCount);
     if (optionElement) { 

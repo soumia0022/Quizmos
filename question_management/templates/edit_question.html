@@ -15,7 +15,7 @@
 
 {% block content %}
     {% noscript_warning %}
-    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> <!-- Bootstrap -->
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
@@ -63,6 +63,7 @@
     {% if question.question_type == "multiple_choice" %}
       <div>
         <label><strong>Multiple Choice Options:</strong></label>
+      <div id="multiple-choice-options-container">
         {% for option in question.multiple_choice_options %}
           <div class="multiple-choice-option" id="option-container-{{ forloop.counter }}">
             <input type="checkbox" name="multiple_choice_answers[]" value="{{ option }}"
@@ -72,12 +73,13 @@
             <button type="button" class="btn btn-danger btn-sm delete-option-btn">X</button>
           </div>
         {% endfor %}
-        <div id="multiple-choice-options-container"></div>
+        </div>
         <button type="button" id="multiple-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
       </div>
 
     {% elif question.question_type == "single_choice" %}
       <div>
+      <div id="single-choice-options-container">
         {% for option in question.single_choice_option %}
           <div class="single-choice-option" id="option-container-{{ forloop.counter }}">
             <input type="checkbox" name="single_choice_answers[]" value="{{ option }}"
@@ -87,10 +89,10 @@
             <button type="button" class="btn btn-danger btn-sm delete-option-btn">X</button>
           </div>
         {% endfor %}
-        <div id="single-choice-options-container"></div>
+        </div>
         <button type="button" id="single-choice-add-option-btn" class="btn btn-secondary mb-2">Add Option</button>
       </div>
-      
+
     {% elif question.question_type == "text_fill" %}
       <div id="text-fill-fields">
         <label><strong>Question Answer:</strong></label>
@@ -107,7 +109,7 @@
         <label><strong>Correct Answer:</strong></label>
         <input type="text" id="dropdown-correct-answer" name="dropdown_correct_answer" value="{{ question.dropdown_correct_answer }}" readonly>
       </div>
-          <label for="dropdown-correct-answer" class="form-label">Additional Options:</label>
+          <label for="dropdown-correct-answer" class="form-label"> Options:</label>
         {% for option in dropdown_options %}
             {% if option == question.dropdown_correct_answer %}
                 <input type="text" name="dropdown_options[]" value="{{ option }}" readonly>
@@ -160,7 +162,7 @@
 </div>
 
 <script type="module" src="{% static 'js/edit_question.js' %}"></script>
-<script src="{% static 'js/question_buttons.js' %}"></script>
-<script src="{% static 'js/question_constraints.js' %}"></script>
+<script type="module" src="{% static 'js/question_buttons.js' %}"></script>
+<script type="module" src="{% static 'js/question_constraints.js' %}"></script>
 
 {% endblock %}
