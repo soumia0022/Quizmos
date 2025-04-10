@@ -94,33 +94,6 @@ class TestStudentPollResponses(TestCase, BaseSeleniumTest):
 
 
 
-# def test_student_can_see_correct_incorrect_status(self):
-#     """Ensure the student can see if their answer is correct or incorrect."""
-#
-#     # Look for the "Your Polls" section header
-#     header = wait_for_element(self.driver, By.XPATH, "//h1[contains(text(), 'Your Polls')]")
-#     self.assertIsNotNone(header, "Could not find 'Your Polls' header.")
-#
-#     # Check if at least one poll card or "View Responses" button appears
-#     view_buttons = self.driver.find_elements(By.XPATH, "//a[contains(text(), 'View Responses')]")
-#     self.assertGreater(len(view_buttons), 0, "No 'View Responses' buttons found — expected at least one.")
-#
-#     # Click the first "View Responses" button to go to the poll's slideshow
-#     view_buttons[0].click()
-#     wait(self.driver)
-#     time.sleep(1)
-#
-#     # Look for the question text
-#     question_title = wait_for_element(self.driver, By.XPATH, "//h1[contains(text(), 'Question')]")
-#     self.assertIsNotNone(question_title, "Did not navigate to the response slideshow view.")
-#
-#     # Check if the word 'Correct' or 'Incorrect' is displayed
-#     result_status = wait_for_element(self.driver, By.XPATH,
-#                                      "//span[contains(text(), 'Correct') or contains(text(), 'Incorrect')]")
-#
-#     self.assertIsNotNone(result_status, "Correct/Incorrect status is not visible.")
-
-
 
 
 
