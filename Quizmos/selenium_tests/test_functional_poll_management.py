@@ -3,16 +3,13 @@ from selenium.webdriver.common.by import By
 from django.shortcuts import reverse
 import time
 
-from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element  # From __init__.py
+from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element, safe_click  # From __init__.py
 from poll_management.tests.fixtures.create_test_polls import create_default_test_polls
 from user_management.tests.fixtures.create_test_users import create_default_test_user
 from user_management.models.user_model import User
 from poll_management.models.poll_model import Poll
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
-# Write tests for create poll once functionality has been changed/fixed
-# Can add test to view the questions list of all questions in the poll tha comes up on the side once it is confirmed
-# that the code for it will not change
 
 class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
     """This class tests all poll functionality (excluding question specific functionality)."""
@@ -32,27 +29,38 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
     def tearDown(self):
         super().tearDown()
 
+    def test_user_can_edit_poll(self):
+        edit_button = wait_for_element(self.driver, By.ID, "id_poll_edit_button")
+        safe_click(self.driver, edit_button)
+        wait(self.driver)
+        time.sleep(1)
 
+        title_input = wait_for_element(self.driver, By.ID, "id_poll_title")
+        self.assertEqual(title_input.get_attribute("value"), "Sample Poll")
 
+        title_input.clear()
+        title_input.send_keys("Edited Title")
 
-    # def test_user_can_edit_poll(self):
-    #     edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
-    #     edit_button.click()
-    #     wait(self.driver)
-    #
-    #     edit_poll_title_element = wait_for_element(self.driver, By.ID, "id_edit_poll_title")  # From edit_poll.html
-    #     expected_title = "Edit Poll: Sample Poll"
-    #     self.assertEqual(expected_title, edit_poll_title_element.text)
+        save_button = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+        safe_click(self.driver, save_button)
+        wait(self.driver)
+        time.sleep(1)
+
+        updated_title_input = wait_for_element(self.driver, By.ID, "id_poll_title")
+        self.assertEqual(updated_title_input.get_attribute("value"), "Edited Title")
 
     def test_user_can_delete_poll(self):
-        delete_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_delete_button"))
-        delete_button.click()
+        delete_button = self.driver.find_element(By.ID, "id_poll_delete_button")
+        self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", delete_button)
+        safe_click(self.driver, delete_button)
 
-        wait_for_element(self.driver, By.ID, "custom-popup")  # In lecturer_dashboard.html
+        wait_for_element(self.driver, By.ID, "custom-popup")
 
-        # Wait for the "Yes" button and click to confirm deletion
-        confirm_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "confirm-delete"))  # Already given ID by another group member
-        confirm_button.click()
+        confirm_button = self.driver.find_element(By.ID, "confirm-delete")
+        self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});",
+                                   confirm_button)
+        wait_for_clickable(self.driver, confirm_button).click()
+
         wait(self.driver)
         time.sleep(1)
 
