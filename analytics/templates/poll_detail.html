@@ -13,6 +13,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poll Results</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      console.log("jQuery loaded!", jQuery ? jQuery.fn.jquery : "Not loaded");
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <div class="buttons-container">
         <div class="left-section">
           {% return_button %}
@@ -25,10 +31,11 @@
           </div>
         </div>
         <div class="right-section"></div>
-      </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </div>
 </head>
 <body>
+    <div id="hover-popup-box"></div>
+
     <!-- Hidden element to store poll ID for JS -->
     <div id="poll-data" data-poll-id="{{ poll.id }}"></div>
 
@@ -36,12 +43,12 @@
         <!-- Sidebar for Questions -->
         <div id="questions-sidebar" class="custom-sidebar p-3">
             <h3 class="form-title text-center">Questions</h3>
-
             {% include 'partials/search_sort_form.html' %}
-
             <div id="questions-list">
                 {% for question in questions %}
-                    <div class="question-item mb-2" data-question-id="{{ question.id }}" data-question-type="{{ question.question_type }}">
+                    <div class="question-item mb-2"
+                         data-question-id="{{ question.id }}"
+                         data-question-type="{{ question.question_type }}">
                         <div class="question-text">
                             <strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}
                         </div>
@@ -69,7 +76,9 @@
 
             <!-- Correct Answer Analytics -->
             <div class="correct-answer-btn-container">
-                <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">Download Results as CSV</a>
+                <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink">
+                    Download Results as CSV
+                </a>
                 <button id="viewCorrectPieChart">View Pie Chart</button>
                 <button id="viewCorrectBarGraph">View Bar Graph</button>
             </div>
@@ -92,15 +101,13 @@
 
             <div class="csv-download text-center mt-3">
                 <a href="{% url 'download_csv' poll.id %}" id="downloadCsvLink" class="custom-btn">
-                Download Results as CSV
+                    Download Results as CSV
                 </a>
             </div>
         </div>
 
-
-
         <script src="{% static 'js/poll_detail.js' %}"></script>
+        <script src="{% static 'js/question_hover.js' %}"></script>
     </div>
-
 </body>
 {% endblock %}
