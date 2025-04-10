@@ -1,4 +1,5 @@
 import logging
+import time
 from django.shortcuts import reverse
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -35,19 +36,35 @@ def logout(driver: WebDriver, live_server_url: str):
 def wait(driver_client):
     """Ensures page is fully loaded before continuing."""
 
-    WebDriverWait(driver_client, 60).until(
+    WebDriverWait(driver_client, 10).until(
 
         lambda driver: driver.execute_script("return document.readyState") == "complete"
     )
 
-def wait_for_element(driver_client, by, value, timeout=100):
+def wait_for_element(driver_client, by, value, timeout=10):
     """Waits for element to be fully present in the DOM."""
     return WebDriverWait(driver_client, timeout).until(
         EC.presence_of_element_located((by, value))  # Element found
     )
 
-def wait_for_clickable(driver_client, elem: WebElement, timeout=100):
+def wait_for_clickable(driver_client, elem: WebElement, timeout=10):
     """Waits for an element to become clickable."""
     return WebDriverWait(driver_client, timeout).until(
         EC.element_to_be_clickable(elem)
     )
+
+def safe_click(driver: WebDriver, element: WebElement, timeout=10, log_blocker=True):
+    """Scrolls to and safely clicks an element, with debugging if intercepted."""
+    driver.execute_script("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", element)
+    time.sleep(0.5)  # Let scroll/animation finish
+
+    try:
+        wait_for_clickable(driver, element, timeout).click()
+    except Exception as e:
+        if log_blocker:
+            blocker = driver.execute_script("""
+                const rect = arguments[0].getBoundingClientRect();
+                return document.elementFromPoint(rect.left + rect.width/2, rect.top + rect.height/2)?.outerHTML;
+            """, element)
+            print("\n⚠️ Click intercepted! Possible blocker element:\n", blocker)
+        raise e

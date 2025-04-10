@@ -1,18 +1,20 @@
 from django.test import TestCase
+from selenium.common import ElementClickInterceptedException
+from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from django.shortcuts import reverse
 import time
 
-from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element  # From __init__.py
+from selenium.webdriver.support.select import Select
+
+from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element, safe_click  # From __init__.py
 from poll_management.tests.fixtures.create_test_polls import create_default_test_polls
 from user_management.tests.fixtures.create_test_users import create_default_test_user
+from question_management.tests.fixtures.load_fixtures import load_default_questions
 from user_management.models.user_model import User
 from poll_management.models.poll_model import Poll
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
-# Write tests for create poll once functionality has been changed/fixed
-# Can add test to view the questions list of all questions in the poll tha comes up on the side once it is confirmed
-# that the code for it will not change
 
 class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
     """This class tests all poll functionality (excluding question specific functionality)."""
@@ -22,6 +24,7 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
         # From fixtures folders in relative apps
         create_default_test_user()
         create_default_test_polls()
+        load_default_questions()
         self.lecturer = User.objects.get(role='Lecturer')
         self.poll = Poll.objects.get(pk=1)
 
@@ -32,46 +35,80 @@ class TestFunctionalPollManagement(TestCase, BaseSeleniumTest):
     def tearDown(self):
         super().tearDown()
 
-
-
-
     def test_user_can_edit_poll(self):
-        edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
-        edit_button.click()
+        edit_button = wait_for_element(self.driver, By.ID, "id_poll_edit_button")
+        safe_click(self.driver, edit_button)
         wait(self.driver)
+        time.sleep(1)
 
-        edit_poll_title_element = wait_for_element(self.driver, By.ID, "id_edit_poll_title")  # From edit_poll.html
-        expected_title = "Edit Poll: Sample Poll"
-        self.assertEqual(expected_title, edit_poll_title_element.text)
+        title_input = wait_for_element(self.driver, By.ID, "id_poll_title")
+        self.assertEqual(title_input.get_attribute("value"), "Sample Poll")
+
+        title_input.clear()
+        title_input.send_keys("Edited Title")
+
+        save_button = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+        safe_click(self.driver, save_button)
+        wait(self.driver)
+        time.sleep(1)
+
+        updated_title_input = wait_for_element(self.driver, By.ID, "id_poll_title")
+        self.assertEqual(updated_title_input.get_attribute("value"), "Edited Title")
 
     def test_user_can_delete_poll(self):
-        delete_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_delete_button"))
-        delete_button.click()
+        delete_button = self.driver.find_element(By.ID, "id_poll_delete_button")
+        self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", delete_button)
+        safe_click(self.driver, delete_button)
 
-        wait_for_element(self.driver, By.ID, "custom-popup")  # In lecturer_dashboard.html
+        wait_for_element(self.driver, By.ID, "custom-popup")
 
-        # Wait for the "Yes" button and click to confirm deletion
-        confirm_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "confirm-delete"))  # Already given ID by another group member
-        confirm_button.click()
+        confirm_button = self.driver.find_element(By.ID, "confirm-delete")
+        self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});",
+                                   confirm_button)
+        wait_for_clickable(self.driver, confirm_button).click()
+
         wait(self.driver)
         time.sleep(1)
 
         self.assertFalse(Poll.objects.filter(pk=self.poll.id).exists(), "Poll was not deleted!")
 
-    def test_user_can_see_poll_start_page_and_start_poll(self):
-        start_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "id_poll_start_button"))
-        start_button.click()
+    def test_lecturer_can_start_a_poll_and_present_all_questions(self):
+        start_button = wait_for_element(self.driver, By.ID, "id_poll_start_button")
+
+        # Check it's enabled and click
+        self.assertFalse("disabled" in start_button.get_attribute("class"))
+        safe_click(self.driver, start_button)
         wait(self.driver)
 
-        start_poll_title_element = wait_for_element(self.driver, By.ID, "id_start_poll_title")  # From display_code.html
-        expected_title = "Sample Poll"
-        self.assertEqual(expected_title, start_poll_title_element.text)
+        title_element = wait_for_element(self.driver, By.ID, "id_start_poll_title")
+        self.assertEqual(title_element.text.strip(), "Sample Poll")
 
-        start_poll_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "start-poll-btn"))  # Already given ID by another group member
-        start_poll_button.click()
+        start_poll_button = wait_for_element(self.driver, By.ID, "start-poll-btn")
+        safe_click(self.driver, start_poll_button)
         wait(self.driver)
 
-        prev_button = wait_for_element(self.driver, By.ID, "prev-btn")  # ID already given
-        next_button = wait_for_element(self.driver, By.ID, "next-btn")  # ID already given
-        self.assertTrue(prev_button.is_displayed(), "'Prev' button is not visible!")
-        self.assertTrue(next_button.is_displayed(), "'Next' button is not visible!")
+        # Define expected questions in order (taken from fixtures)
+        expected_questions = [
+            "Which of these are programming languages?",
+            "What is the capital of France?",
+            "Name a primary color.",
+            "A banana is usually the colour",
+            "Match the country to its capital.",
+            "What word comes to mind when you think of 'ocean'?",
+            "Write a function that returns the square of a number.",
+        ]
+
+        # Loop through all questions
+        for index, expected_text in enumerate(expected_questions):
+            question_container = wait_for_element(self.driver, By.ID, "question-container")
+            self.assertIn(expected_text, question_container.text)
+
+            # Only click "Next" if not on the last question
+            if index < len(expected_questions) - 1:
+                next_btn = wait_for_element(self.driver, By.ID, "next-btn")
+                self.assertFalse(next_btn.get_attribute("disabled"))
+                safe_click(self.driver, next_btn)
+                wait(self.driver)
+
+
+

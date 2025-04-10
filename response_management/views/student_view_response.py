@@ -76,6 +76,7 @@ def student_view_poll(request, poll_id):
                 value_field: student_answer,
                 'session_code': response.session_code,
             }
+
             if response_type not in [WordCloudResponse, CodeQuestionResponse]:
                 response_data['is_correct'] = getattr(response, 'is_correct', False)
 

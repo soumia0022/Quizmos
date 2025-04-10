@@ -10,9 +10,6 @@ from user_management.tests.fixtures.create_test_users import create_default_test
 from user_management.models.user_model import User
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
-# Add tests for password reset (when forgotten) once functionality has been completed
-# Add tests for pathways that certain users cannot take (e.g., a student cannot access a lecturer dashboard)
-
 
 class TestFunctionalRegistration(BaseSeleniumTest):
     """This class tests user registration functionality."""
@@ -164,11 +161,13 @@ class TestFunctionalUserSystem(BaseSeleniumTest):
             self.driver.execute_script("arguments[0].click();", submit_button)
 
     def get_profile_change_fields(self) -> tuple:
-        first_name_input = wait_for_element(self.driver, By.ID, "id_first_name")
+        first_name_input = wait_for_element(self.driver, By.ID, "id_first_name")  # Auto-generated from forms
         last_name_input = wait_for_element(self.driver, By.ID, "id_last_name")
         username_input = wait_for_element(self.driver, By.ID, "id_username")
         email_input = wait_for_element(self.driver, By.ID, "id_email")
-        submit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_update_profile"))
+
+        submit_button = wait_for_element(self.driver, By.CSS_SELECTOR, "button.update-btn[type='submit']")
+
         return first_name_input, last_name_input, username_input, email_input, submit_button
 
     def populate_edit_profile_fields(self, fields: tuple):
