@@ -5,7 +5,7 @@ import time
 from selenium.webdriver.common.action_chains import ActionChains
 
 from Quizmos.selenium_tests import log_in, wait, wait_for_element, wait_for_clickable
-from user_management.tests.fixtures.create_test_users import create_default_test_user
+from user_management.tests.fixtures.create_test_users import create_default_test_user, create_default_test_student
 from poll_management.tests.fixtures.create_test_polls import create_default_test_polls
 from question_management.tests.fixtures.load_fixtures import load_default_questions
 from response_management.tests.fixtures.load_fixtures import load_default_responses
@@ -22,6 +22,7 @@ class TestStudentPollResponses(TestCase, BaseSeleniumTest):
 
         # Set up all relevant fixtures
         create_default_test_user()
+        create_default_test_student()
         create_default_test_polls()
         load_default_questions()
         load_default_responses()
