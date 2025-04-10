@@ -7,18 +7,13 @@ from selenium.webdriver.support.ui import Select
 from django.shortcuts import reverse
 import ast  # To safely convert string to list
 
-from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element  # From __init__.py
+from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element, safe_click  # From __init__.py
 from poll_management.tests.fixtures.create_test_polls import create_default_test_polls
 from user_management.tests.fixtures.create_test_users import create_default_test_user
 from user_management.models.user_model import User
 from poll_management.models.poll_model import Poll
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
 
-# Need to test constraints i.e. what happens if a user does not select a multiple choice option
-# Discuss with team about testing add audio and add video, I think this will be better to test on the lecturer side
-# where the audio/video has actually been embedded, rather than just checking the upload which has already been covered
-# by other non-selenium testing.
-# Can test deletion (deletion of choice and match options & reset dropdown) but this has been covered by non-selenium tests
 
 class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
     """This class tests all question functionality to check that users can create questions of varying types."""
@@ -31,19 +26,82 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
         self.lecturer = User.objects.get(role='Lecturer')
         self.poll = Poll.objects.get(pk=1)
 
-        # Navigate to add question page once logging in
         log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
         self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
-        edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
-        edit_button.click()
-        edit_questions_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button"))
-        edit_questions_button.click()
-        add_question_button = wait_for_element(self.driver, By.ID, "add-question-btn")  # ID already given
-        add_question_button.click()
-        wait(self.driver)
+
 
     def tearDown(self):
         super().tearDown()
+
+    def navigate_to_edit_poll(self):
+        """Helper method to navigate to the edit poll page."""
+        # Go to edit poll page
+        edit_button = wait_for_element(self.driver, By.ID, "id_poll_edit_button")
+        safe_click(self.driver, edit_button)
+        wait(self.driver)
+        time.sleep(1)
+
+        # Click Add Question to reveal form
+        add_question_btn = wait_for_element(self.driver, By.ID, "add-question-btn")
+        safe_click(self.driver, add_question_btn)
+        wait(self.driver)
+        time.sleep(1)
+
+    def test_add_text_fill_question(self):
+        self.navigate_to_edit_poll()
+
+        # Select "Text Answer" from dropdown
+        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+        dropdown.select_by_value("text_fill")
+
+        wait(self.driver)
+        text_q = self.driver.find_element(By.ID, "id_text_question")
+        text_a = self.driver.find_element(By.ID, "id_text_answer")
+        text_q.send_keys("What is your favorite color?")
+        text_a.send_keys("Blue")
+
+        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+        safe_click(self.driver, save_btn)
+        wait(self.driver)
+
+
+    def test_add_word_cloud_question(self):
+        self.navigate_to_edit_poll()
+
+        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+        dropdown.select_by_value("wordcloud")
+        wait(self.driver)
+
+        wordcloud_input = self.driver.find_element(By.ID, "id_word_cloud_question")
+        wordcloud_input.send_keys("Describe your mood in one word")
+
+        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+        safe_click(self.driver, save_btn)
+        wait(self.driver)
+
+    def test_add_code_question(self):
+        self.navigate_to_edit_poll()
+
+        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+        dropdown.select_by_value("code_question")
+        wait(self.driver)
+
+        question_text = self.driver.find_element(By.ID, "id_code_question")
+        question_text.send_keys("Write a function that returns the square of a number")
+
+        language_select = Select(self.driver.find_element(By.ID, "language-selector"))
+        language_select.select_by_value("python")
+
+        code_editor = self.driver.find_element(By.CLASS_NAME, "CodeMirror")
+        self.driver.execute_script("arguments[0].CodeMirror.setValue(arguments[1])", code_editor,
+                                   "def square(n): return n * n")
+
+        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+        safe_click(self.driver, save_btn)
+        wait(self.driver)
+
+
+
 
     # def test_user_can_add_multiple_choice_question(self):
     #     # Test if Multiple Choice Option can be selected
