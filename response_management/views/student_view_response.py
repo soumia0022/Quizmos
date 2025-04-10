@@ -65,9 +65,6 @@ def student_view_poll(request, poll_id):
                 question.youtube_link = format_youtube_link(question.youtube_link)
 
             config = response_type_config.get(type(response), {})
-
-            # Get correctness
-            is_correct = response.is_correct
             value_field = config['value_field']
             student_answer = getattr(response, value_field)
 
@@ -75,11 +72,12 @@ def student_view_poll(request, poll_id):
                 'type': response_type.__name__.lower().replace('response', ''),
                 'question': question,
                 'submitted_on': response.submitted_on,
-                'is_correct': is_correct,
                 value_field: student_answer,
                 'session_code': response.session_code,
             }
 
+            if response_type not in [WordCloudResponse, CodeQuestionResponse]:
+                response_data['is_correct'] = getattr(response, 'is_correct', False)
 
             if response_type in [MultipleChoiceResponse, MatchQuestionResponse]:
                 response_data['is_partially_correct'] = getattr(response, 'is_partially_correct', False)
