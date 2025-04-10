@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const codingLanguageSelector = document.getElementById('language-selector');
     const codeEditorArea = document.getElementById('code-editor');
     const runCodeButton = document.getElementById('run-code-button')
+    let editor;
 
     // Language Mode Mapping
     const languageModes = {
@@ -52,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
         if(codeEditorArea){
-    let editor = initializeCodeEditor(codeEditorArea, languageModes[codingLanguageSelector.value]);}
+        editor = initializeCodeEditor(codeEditorArea, languageModes[codingLanguageSelector.value]);}
 
 
     /* Event listeners*/
