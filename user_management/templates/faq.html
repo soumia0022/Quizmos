@@ -6,55 +6,63 @@
 <link rel="stylesheet" href="{% static 'css/faq.css' %}">
 
 {% include 'partials/home_navbuttons.html' %}
-{% include 'partials/faq_background.html' %}
 
-<div class="container faq-container"> <!-- Center the FAQ container -->
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8">
-            <div class="card faq-card shadow-lg">
-                <h1 class="faq-heading">Frequently Asked Questions</h1>
-
-                <!-- FAQ Navigation -->
-                <div class="faq-nav mb-4">
-                    <button class="faq-nav-btn active" data-target="general-faqs">General</button>
-                    <button class="faq-nav-btn" data-target="student-faqs">Students</button>
-                    <button class="faq-nav-btn" data-target="lecturer-faqs">Lecturers</button>
-                </div>
-
-                <!-- FAQ Sections -->
-                <div id="general-faqs" class="faq-section active">
-                    <h2 class="faq-section-heading">General Questions</h2>
-                    {% for faq in faqs.general %}
-                    <div class="faq-item">
-                        <p class="faq-question">{{ faq.question }}</p>
-                        <p class="faq-answer">{{ faq.answer }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <div id="student-faqs" class="faq-section">
-                    <h2 class="faq-section-heading">Student Questions</h2>
-                    {% for faq in faqs.students %}
-                    <div class="faq-item">
-                        <p class="faq-question">{{ faq.question }}</p>
-                        <p class="faq-answer">{{ faq.answer }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <div id="lecturer-faqs" class="faq-section">
-                    <h2 class="faq-section-heading">Lecturer Questions</h2>
-                    {% for faq in faqs.lecturers %}
-                    <div class="faq-item">
-                        <p class="faq-question">{{ faq.question }}</p>
-                        <p class="faq-answer">{{ faq.answer }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+<div class="faq-page">
+  <div class="background-wrapper">
+    <div class="background-elements">
+      {% include 'partials/faq_background.html' %}
     </div>
+  </div>
+  
+  <div class="faq-content">
+    <div class="container faq-container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
+          <div class="card faq-card shadow-lg">
+            <h1 class="faq-heading">Frequently Asked Questions</h1>
+            
+            <div class="faq-nav mb-4">
+              <button class="faq-nav-btn active" data-target="general-faqs">General</button>
+              <button class="faq-nav-btn" data-target="student-faqs">Students</button>
+              <button class="faq-nav-btn" data-target="lecturer-faqs">Lecturers</button>
+            </div>
+
+            <div id="general-faqs" class="faq-section active">
+              <h2 class="faq-section-heading">General Questions</h2>
+              {% for faq in faqs.general %}
+              <div class="faq-item">
+                <p class="faq-question">{{ faq.question }}</p>
+                <p class="faq-answer">{{ faq.answer }}</p>
+              </div>
+              {% endfor %}
+            </div>
+
+            <div id="student-faqs" class="faq-section">
+              <h2 class="faq-section-heading">Student Questions</h2>
+              {% for faq in faqs.students %}
+              <div class="faq-item">
+                <p class="faq-question">{{ faq.question }}</p>
+                <p class="faq-answer">{{ faq.answer }}</p>
+              </div>
+              {% endfor %}
+            </div>
+
+            <div id="lecturer-faqs" class="faq-section">
+              <h2 class="faq-section-heading">Lecturer Questions</h2>
+              {% for faq in faqs.lecturers %}
+              <div class="faq-item">
+                <p class="faq-question">{{ faq.question }}</p>
+                <p class="faq-answer">{{ faq.answer }}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
 {% include 'partials/footer.html' %}
 
 <script src="{% static 'js/faq_navigation.js' %}"></script>
