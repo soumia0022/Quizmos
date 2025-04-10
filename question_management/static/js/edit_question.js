@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const form = document.querySelectorAll('form')[1];
+    const form = document.querySelectorAll('form')[0];
     form.addEventListener('submit', function (event) {
         if (questionType === 'multiple_choice'){
             const options = document.querySelectorAll('[name="multiple_choice_options[]"]');
