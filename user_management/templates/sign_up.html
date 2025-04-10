@@ -6,21 +6,25 @@
 <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 <link rel="stylesheet" href="{% static 'css/sign_up.css' %}">
 
-{% include 'partials/sign_up_background.html' %}
-
-<div class="container">
-  <div class="row">
-      <form action="{% url 'user_management:sign_up' %}" method="post">
-        <h1>Sign up</h1>
-        {% csrf_token %}
-        {% include 'partials/bootstrap_form.html' with form=form %}
-        <input id="id_sign_up_button" type="submit" value="Sign up" class="btn btn-primary">
-        
-        <div class="prompt">
-          Already have an account? <a href="{% url 'user_management:log_in' %}">Log in</a>
-        </div>
-      </form>
-
+<div class="sign-up-page">
+  <div class="background-wrapper">
+    {% include 'partials/sign_up_background.html' %}
+  </div>
+  
+  <div class="form-container">
+    <div class="container">
+      <div class="row">
+        <form action="{% url 'user_management:sign_up' %}" method="post">
+          <h1>Sign Up</h1>
+          {% csrf_token %}
+          {% include 'partials/bootstrap_form.html' with form=form %}
+          <input id="id_sign_up_button" type="submit" value="Sign up" class="btn btn-primary">
+          <div class="prompt">
+            Already have an account? <a href="{% url 'user_management:log_in' %}">Log in</a>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
