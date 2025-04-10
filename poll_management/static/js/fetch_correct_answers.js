@@ -64,7 +64,7 @@
                 });
                 if (!correctAnswerContainer.querySelector('.correct-match-tbody')) {
                     const table = document.createElement('table');
-                    table.classList.add('table', 'table-bordered');
+                    table.classList.add('table', 'table-bordered', 'correct-match-table');
                     table.innerHTML = `
                         <thead class="bg-success text-white">
                             <tr><th>Question Item</th><th>Correct Match</th></tr>
