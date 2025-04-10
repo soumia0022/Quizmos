@@ -1,0 +1,12 @@
+services:
+  - name: my-service
+    repo: https://github.com/Marium54/Quizmos.git
+    branch: deployment # Render will pull ONLY from this branch
+    buildCommand: pip install -r requirements.txt # Installs dependencies
+    startCommand: gunicorn myproject.wsgi:application # Starts Django using Gunicorn
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: my-database
+      - key: DJANGO_SECRET_KEY
+        sync: false
