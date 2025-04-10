@@ -1,6 +1,6 @@
 import time
 from django.test import TestCase
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -13,6 +13,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element, safe_click  # From __init__.py
 from poll_management.tests.fixtures.create_test_polls import create_default_test_polls
 from user_management.tests.fixtures.create_test_users import create_default_test_user
+from question_management.tests.fixtures.load_fixtures import load_default_questions
 from user_management.models.user_model import User
 from poll_management.models.poll_model import Poll
 from Quizmos.selenium_tests.selenium_test_base import BaseSeleniumTest
@@ -305,26 +306,53 @@ class TestFunctionalEditQuestionManagement(TestCase, BaseSeleniumTest):
         # From fixtures folders in relative apps
         create_default_test_user()
         create_default_test_polls()
+        load_default_questions()
+
         self.lecturer = User.objects.get(role='Lecturer')
         self.poll = Poll.objects.get(pk=1)
 
         log_in(self.driver, self.live_server_url, self.lecturer.username, 'Password123')
         self.driver.get(f"{self.live_server_url}{reverse('user_management:dashboard')}")
         wait(self.driver)
-        edit_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_poll_edit_button"))
-        edit_button.click()
+
+        # Go to edit poll page
+        edit_button = wait_for_element(self.driver, By.ID, "id_poll_edit_button")
+        safe_click(self.driver, edit_button)
         wait(self.driver)
+        time.sleep(1)
 
     def tearDown(self):
         super().tearDown()
 
-    # def test_user_can_attempt_to_edit_questions(self):
-    #     edit_questions_button = wait_for_clickable(self.driver, wait_for_element(self.driver, By.ID, "id_edit_questions_button"))
-    #     edit_questions_button.click()
-    #     wait(self.driver)
-    #
-    #     add_question_title_element = wait_for_element(self.driver, By.ID, "id_add_question_title")  # From add_question.html
-    #     expected_title = "Sample Poll"
-    #     self.assertEqual(expected_title, add_question_title_element.text)
-    #     add_question_button = wait_for_element(self.driver, By.ID, "add-question-btn")  # ID already given
-    #     self.assertTrue(add_question_button.is_displayed(), "'Add Question' button is not visible!")
+    def test_edit_question(self):
+        """Test editing an existing question."""
+        question = self.poll.questions.all()[2]  # Select the third question (text fill)
+
+        edit_button = wait_for_element(self.driver, By.XPATH,
+                                       f"//div[@data-id='{question.id}']//a[contains(@class, 'btn-warning')]")
+        safe_click(self.driver, edit_button)
+        wait(self.driver)
+
+        try:
+            if question.question_type == "text_fill":
+                question_input = wait_for_element(self.driver, By.NAME, "text_fill_answer")
+                self.driver.execute_script("arguments[0].scrollIntoView();", question_input)
+                question_input.clear()
+                question_input.send_keys("Updated Answer")
+
+            save_button = wait_for_element(self.driver, By.XPATH, "//button[contains(text(), 'Save Changes')]")
+            safe_click(self.driver, save_button)
+            wait(self.driver)
+
+            # Revisit the edit page to verify the change (Navigate back to the edit page)
+            self.driver.get(self.driver.current_url)  # This will refresh the page or re-navigate
+            edit_button = wait_for_element(self.driver, By.XPATH,
+                                           f"//div[@data-id='{question.id}']//a[contains(@class, 'btn-warning')]")
+            safe_click(self.driver, edit_button)
+            wait(self.driver)
+
+            question_input = wait_for_element(self.driver, By.NAME, "text_fill_answer")
+            self.assertEqual(question_input.get_attribute("value"), "Updated Answer")
+
+        except TimeoutException:
+            self.fail("Edit question input field not found")
