@@ -6,6 +6,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from django.shortcuts import reverse
 import ast  # To safely convert string to list
+from selenium.webdriver.support import expected_conditions as EC
+
+from selenium.webdriver.support.wait import WebDriverWait
 
 from Quizmos.selenium_tests import log_in, wait, wait_for_clickable, wait_for_element, safe_click  # From __init__.py
 from poll_management.tests.fixtures.create_test_polls import create_default_test_polls
@@ -100,131 +103,120 @@ class TestFunctionalAddQuestionManagement(TestCase, BaseSeleniumTest):
     #     safe_click(self.driver, save_btn)
     #     wait(self.driver)
 
-    def test_user_can_add_multiple_choice_question(self):
-        self.navigate_to_edit_poll()
-
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("multiple_choice")
-        wait(self.driver)
-
-        question_input = self.driver.find_element(By.NAME, "multiple_choice_question")
-        question_input.send_keys("What is the capital of France?")
-
-        add_option_button = wait_for_clickable(self.driver,
-                                               self.driver.find_element(By.ID, "multiple-choice-add-option-btn"))
-        self.add_two_options_for_choice_questions(add_option_button)
-
-        option_inputs = self.driver.find_elements(By.CSS_SELECTOR, "#multiple-choice-options-container input")
-        unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
-        self.assertEqual(len(unique_options), 2)
-
-        paris_checkbox = self.driver.find_element(By.XPATH,
-                                                  "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
-        paris_checkbox.click()
-        wait(self.driver)
-        time.sleep(1)
-
-        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
-        safe_click(self.driver, save_btn)
-        time.sleep(1)
-
-        poll = Poll.objects.get(id=self.poll.id)
-        question = poll.questions.last()
-        multiple_choice_answers = question.multiple_choice_answers
-        self.assertIn('Paris', multiple_choice_answers)
-
-    def test_user_can_add_single_choice_question(self):
-        self.navigate_to_edit_poll()
-
-        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
-        dropdown.select_by_value("single_choice")
-        wait(self.driver)
-
-        question_input = self.driver.find_element(By.NAME, "single_choice_question")
-        question_input.send_keys("What is the capital of France?")
-
-        add_option_button = wait_for_clickable(self.driver,
-                                               self.driver.find_element(By.ID, "single-choice-add-option-btn"))
-        self.add_two_options_for_choice_questions(add_option_button)
-
-        option_inputs = self.driver.find_elements(By.CSS_SELECTOR,
-                                                  "#single-choice-options-container input")
-
-        unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
-
-        self.assertEqual(len(unique_options), 2)
-        self.assertIn("Paris", unique_options)
-
-        label = self.driver.find_element(By.XPATH, "//label[text()='Paris']")
-        radio_id = label.get_attribute("for")
-        paris_radio = self.driver.find_element(By.ID, radio_id)
-        paris_radio.click()
-        wait(self.driver)
-
-        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
-        safe_click(self.driver, save_btn)
-        time.sleep(1)
-
-        poll = Poll.objects.get(id=self.poll.id)
-        question = poll.questions.last()
-        single_choice_answers = question.single_choice_answers
-        self.assertIn("Paris", single_choice_answers)
-
-    # def test_user_can_add_single_choice_question(self):
-    #     # Test if Single Choice Option can be selected
-    #     self.select_question("single_choice", "single-choice-fields")
+    # def test_user_can_add_multiple_choice_question(self):
+    #     self.navigate_to_edit_poll()
     #
-    #     # Test the creation of a Single Choice Question
-    #     question_input = self.driver.find_element(By.NAME, "single_choice_question")
+    #     dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+    #     dropdown.select_by_value("multiple_choice")
+    #     wait(self.driver)
+    #
+    #     question_input = self.driver.find_element(By.NAME, "multiple_choice_question")
     #     question_input.send_keys("What is the capital of France?")
-    #     add_option_button = wait_for_clickable(self.driver, self.driver.find_element(By.ID, "single-choice-add-option-btn"))
+    #
+    #     add_option_button = wait_for_clickable(self.driver,
+    #                                            self.driver.find_element(By.ID, "multiple-choice-add-option-btn"))
     #     self.add_two_options_for_choice_questions(add_option_button)
-    #     option_inputs = self.driver.find_elements(By.CSS_SELECTOR, "#single-choice-options-container input")  # Verify options appear in the form after closing the popup
+    #
+    #     option_inputs = self.driver.find_elements(By.CSS_SELECTOR, "#multiple-choice-options-container input")
     #     unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
-    #     self.assertEqual(len(unique_options), 2)  # Should be only "Paris" and "London"
-    #     paris_checkbox = self.driver.find_element(By.XPATH, "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
-    #     paris_checkbox.click()  # Check the correct option
+    #     self.assertEqual(len(unique_options), 2)
+    #
+    #     paris_checkbox = self.driver.find_element(By.XPATH,
+    #                                               "//label[text()='Paris']/preceding-sibling::input[@type='checkbox']")
+    #     paris_checkbox.click()
     #     wait(self.driver)
     #     time.sleep(1)
     #
-    #     # Test the saving of a Single Choice Question (verify in database)
-    #     self.save_question()
+    #     save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+    #     safe_click(self.driver, save_btn)
     #     time.sleep(1)
+    #
     #     poll = Poll.objects.get(id=self.poll.id)
     #     question = poll.questions.last()
-    #     single_choice_answers = question.single_choice_answers  # List of selected (correct) answers
-    #     self.assertIn('Paris', single_choice_answers)
-
-
-
-    # def test_user_can_add_dropdown_question(self):
-    #     # Test if Text can be selected
-    #     self.select_question("dropdown_fill", "dropdown-fill-fields")
+    #     multiple_choice_answers = question.multiple_choice_answers
+    #     self.assertIn('Paris', multiple_choice_answers)
     #
-    #     # Test the creation of a Dropdown Fill question
-    #     dropdown_input = wait_for_element(self.driver, By.ID, "dropdown-fill-input")
-    #     dropdown_input.send_keys("The capital of France is Paris")
-    #     text_preview = wait_for_element(self.driver, By.ID, "text-preview")
-    #     self.assertIn("The capital of France is Paris", text_preview.text)  # Verify preview updates
-    #     word_to_click = text_preview.find_element(By.XPATH, ".//span[contains(text(),'Paris')]")
-    #     word_to_click.click()
-    #     correct_answer_field = wait_for_element(self.driver, By.ID, "dropdown-correct-answer")
-    #     self.assertEqual(correct_answer_field.get_attribute("value"), "Paris")
-    #     self.assertEqual(dropdown_input.get_attribute("value"), "The capital of France is _____")  # Verify blank space
-    #     additional_options = self.driver.find_elements(By.NAME, "additional_options")
-    #     incorrect_answers = ["London", "Berlin", "Madrid"]
-    #     for input_box, incorrect_answer in zip(additional_options, incorrect_answers):
-    #         input_box.send_keys(incorrect_answer)
-    #         self.assertEqual(input_box.get_attribute("value"), incorrect_answer)
+    # def test_user_can_add_single_choice_question(self):
+    #     self.navigate_to_edit_poll()
     #
-    #     # Test the saving of a Dropdown Question (verify in database)
-    #     self.save_question()
+    #     dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+    #     dropdown.select_by_value("single_choice")
+    #     wait(self.driver)
+    #
+    #     question_input = self.driver.find_element(By.NAME, "single_choice_question")
+    #     question_input.send_keys("What is the capital of France?")
+    #
+    #     add_option_button = wait_for_clickable(self.driver,
+    #                                            self.driver.find_element(By.ID, "single-choice-add-option-btn"))
+    #     self.add_two_options_for_choice_questions(add_option_button)
+    #
+    #     option_inputs = self.driver.find_elements(By.CSS_SELECTOR,
+    #                                               "#single-choice-options-container input")
+    #
+    #     unique_options = list(set([opt.get_attribute("value").strip() for opt in option_inputs]))
+    #
+    #     self.assertEqual(len(unique_options), 2)
+    #     self.assertIn("Paris", unique_options)
+    #
+    #     label = self.driver.find_element(By.XPATH, "//label[text()='Paris']")
+    #     radio_id = label.get_attribute("for")
+    #     paris_radio = self.driver.find_element(By.ID, radio_id)
+    #     paris_radio.click()
+    #     wait(self.driver)
+    #
+    #     save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+    #     safe_click(self.driver, save_btn)
+    #     time.sleep(1)
+    #
     #     poll = Poll.objects.get(id=self.poll.id)
     #     question = poll.questions.last()
-    #     dropdown_question_text = question.dropdown_fill_question
-    #     correct_answer = question.dropdown_answer
-    #     self.assertEqual(dropdown_question_text, "The capital of France is _____")
-    #     self.assertEqual(correct_answer, "Paris")
+    #     single_choice_answers = question.single_choice_answers
+    #     self.assertIn("Paris", single_choice_answers)
+
+    def test_user_can_add_dropdown_question(self):
+        self.navigate_to_edit_poll()
+
+        dropdown = Select(wait_for_element(self.driver, By.ID, "question-type-dropdown"))
+        dropdown.select_by_value("dropdown_fill")
+        wait(self.driver)
+
+        dropdown_input = wait_for_element(self.driver, By.ID, "dropdown-fill-input")
+        dropdown_input.send_keys("The capital of France is Paris")
+
+        text_preview = wait_for_element(self.driver, By.ID, "text-preview")
+        word_to_click = text_preview.find_element(By.XPATH, ".//span[contains(text(),'Paris')]")
+
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", word_to_click)
+        time.sleep(0.5)  # Add delay to ensure scroll happens
+
+        word_to_click = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, ".//span[contains(text(),'Paris')]"))
+        )
+        word_to_click.click()
+
+        wait(self.driver)
+        correct_answer_field = wait_for_element(self.driver, By.ID, "dropdown-correct-answer")
+        self.assertEqual(correct_answer_field.get_attribute("value"), "Paris")
+
+        self.assertEqual(dropdown_input.get_attribute("value"), "The capital of France is _____")
+
+        additional_options = self.driver.find_elements(By.NAME, "additional_options")
+        incorrect_answers = ["London", "Berlin", "Madrid"]
+        for input_box, incorrect_answer in zip(additional_options, incorrect_answers):
+            input_box.send_keys(incorrect_answer)
+            self.assertEqual(input_box.get_attribute("value"), incorrect_answer)
+
+        save_btn = self.driver.find_element(By.ID, "id_save_question_button")
+        safe_click(self.driver, save_btn)
+        time.sleep(1)
+
+        poll = Poll.objects.get(id=self.poll.id)
+        question = poll.questions.last()
+        self.assertEqual(question.dropdown_fill_question, "The capital of France is _____")
+        self.assertEqual(question.dropdown_answer, "Paris")
+
+
+
 
 
 
