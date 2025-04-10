@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+
+{% include 'partials/home_navbuttons.html' %}
+
+<div class="wrapper">
+  <div class="dynamic-landing-container">
+    <div class="block" id="block-quizmos">
+      <div class="block-text">
+        <h2>QUIZMOS</h2>
+        <p>The only cosmos you need to be in for your grades to rise and reach the skies!</p>
+      </div>
+      <div class="block-image">
+        <img src="{% static 'images/quizmos.svg' %}" alt="Quizmos">
+      </div>
+    </div>
+
+    <div class="block" id="block-students">
+      <div class="block-text">
+        <h2>STUDENTS</h2>
+        <p>Get ready to sky-rocket your learning with our easy to use, science-backed learning platform!</p>
+      </div>
+      <div class="block-image">
+        <img src="{% static 'images/students.svg' %}" alt="Students">
+      </div>
+    </div>
+
+    <div class="block" id="block-lecturers">
+      <div class="block-text">
+        <h2>LECTURERS</h2>
+        <p>Let Quizmos streamline your teaching to let you find that much needed peace!</p>
+      </div>
+      <div class="block-image">
+        <img src="{% static 'images/lecturers.svg' %}" alt="Lecturers">
+      </div>
+    </div>
+
+    <div class="block" id="block-institutions">
+      <div class="block-text">
+        <h2>INSTITUTIONS</h2>
+        <p>Take your learning institution to the top of the leaderboards</p>
+      </div>
+      <div class="block-image">
+        <img src="{% static 'images/institutions.svg' %}" alt="Institutions">
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}
+{% endblock %}

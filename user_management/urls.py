@@ -13,7 +13,8 @@ from user_management.views import (
     profile_update_views,
     signup_views,
     forgot_password_views,
-    archive_view, dashboard_view
+    archive_view, dashboard_view,
+    landing_page_view
 )
 
 app_name = 'user_management'
@@ -48,7 +49,7 @@ urlpatterns = [
     path('polls/', login_views.student_polls_page, name='student_polls_page'),
     path('join-poll/', login_views.join_poll_page, name='join_poll_page'),
 
-
+    path('landing/', landing_page_view.landing_page, name='landing_page'),
 
 ]
 
