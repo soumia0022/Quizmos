@@ -1,75 +1,93 @@
-/* Fix Global HTML and Body Styles */
-
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: auto;
   min-height: 100%;
   overflow-x: hidden;
-  overflow-y: auto; 
-  background: #02192F;
+  overflow-y: auto;
+  background: #02192f;
   color: #fff;
-  font-family: 'Palanquin', sans-serif;
+  font-family: "Palanquin", sans-serif;
 }
 
-/* FAQ Container */
+.faq-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.background-wrapper {
+  position: absolute;
+  top: -300px;
+  left: 50%;
+  width: 1720px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.background-elements {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.faq-content {
+  position: relative;
+  z-index: 2;
+}
+
 .faq-container {
-  margin: 300px auto 200px; 
+  margin: 300px auto 200px;
   padding: 30px;
   max-width: 1200px;
 }
 
-/* Centering the Card */
 .faq-card {
-  margin: 0 auto; 
+  margin: 0 auto;
   border-radius: 15px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
   padding: 40px;
-  max-width: 800px; 
+  max-width: 800px;
 }
 
-/* Heading Style for FAQ Page */
 .faq-heading {
-  font-family: 'Palanquin Dark', sans-serif; 
-  font-size: 50px; 
-  font-weight: bold; 
-  color: #fff; 
-  text-decoration: none; 
-  text-align: center; 
+  font-family: "Palanquin Dark", sans-serif;
+  font-size: 50px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
 }
 
 .faq-section-heading {
-  font-family: 'Palanquin', sans-serif; 
-  font-size: 35px; 
-  font-weight: bold; 
-  color: #fff; 
-  text-decoration: none; 
-  text-align: center; 
+  font-family: "Palanquin", sans-serif;
+  font-size: 35px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
 }
 
-.faq-question{
-  font-family: 'Palanquin', sans-serif; 
-  font-size: 20px; 
-  font-weight: bold; 
-  color: #fff; 
-  text-decoration: none; 
-  text-align: center; 
+.faq-question {
+  font-family: "Palanquin", sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
 }
 
-
-/* FAQ Items */
 .faq-item {
   border: 2px solid #ffffff;
   border-radius: 30px;
   padding: 20px;
   margin-bottom: 15px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.15); 
-  transition: all 0.3s ease; 
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
-
-/* FAQ Navigation Buttons */
 .faq-nav {
   display: flex;
   justify-content: center;
@@ -78,26 +96,23 @@ html, body {
 }
 
 .faq-nav-btn {
-  background-color: #02192f; 
-  border-radius: 25px; 
+  background-color: #02192f;
+  border-radius: 25px;
   border: 2px solid #fff;
-  font-size: 24px; 
-  color: white; 
-  transition: all 0.3s ease; 
-  max-width: 90%; 
-  height: 60px; 
-  max-height: 90%; 
+  font-size: 24px;
+  color: white;
+  transition: all 0.3s ease;
+  max-width: 90%;
+  height: 60px;
   text-align: center;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
-
 .faq-nav-btn.active {
-  background-color: rgba(255, 255, 255, 0.15); 
+  background-color: rgba(255, 255, 255, 0.15);
   transition: all 0.3s ease;
 }
 
-/* FAQ Sections */
 .faq-section {
   display: none;
   opacity: 0;
@@ -109,18 +124,6 @@ html, body {
   opacity: 1;
 }
 
-/* Background Elements Styling */
-.background-elements {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none; 
-}
-
-/* Shared styles applied to all elements */
 .star,
 .planet,
 .astronaut {
@@ -131,7 +134,6 @@ html, body {
   opacity: 1;
 }
 
-/* Drop and bounce effect */
 @keyframes drop-and-bounce {
   0% {
     transform: translateY(-200vh);
@@ -150,7 +152,6 @@ html, body {
   }
 }
 
-/* Floating animation */
 @keyframes float {
   0%,
   100% {
@@ -161,7 +162,6 @@ html, body {
   }
 }
 
-/* Staggered animation delays */
 .star:nth-child(odd),
 .planet:nth-child(odd),
 .astronaut:nth-child(odd) {
@@ -174,31 +174,29 @@ html, body {
   animation-delay: 0.5s, 2.5s;
 }
 
-
-
 /* Media Queries */
 @media (max-width: 768px) {
   .faq-nav {
-      flex-direction: column;
-      align-items: center;
+    flex-direction: column;
+    align-items: center;
   }
 
   .faq-nav-btn {
-      width: 200px;
+    width: 200px;
   }
 
   .faq-card {
-      padding: 20px;
+    padding: 20px;
   }
 
   .faq-heading {
-    font-size: 1.8rem; 
+    font-size: 1.8rem;
   }
 
   .faq-nav-btn {
-    font-size: 18px; 
+    font-size: 18px;
     width: 220px;
-    max-width: 270px; 
-    height: 50px; 
-}
+    max-width: 270px;
+    height: 50px;
+  }
 }
