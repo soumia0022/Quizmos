@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const codingLanguageSelector = document.getElementById('language-selector');
     const codeEditorArea = document.getElementById('code-editor');
     const runCodeButton = document.getElementById('run-code-button')
+    let editor;
 
     // Language Mode Mapping
     const languageModes = {
@@ -51,7 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
         cpp: "text/x-c++src"
     };
 
-    let editor = initializeCodeEditor(codeEditorArea, languageModes[codingLanguageSelector.value]);
+        if(codeEditorArea){
+        editor = initializeCodeEditor(codeEditorArea, languageModes[codingLanguageSelector.value]);}
+
 
     /* Event listeners*/
     if (codingLanguageSelector) {
@@ -119,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const form = document.querySelectorAll('form')[1];
+    const form = document.querySelectorAll('form')[0];
     form.addEventListener('submit', function (event) {
         if (questionType === 'multiple_choice'){
             const options = document.querySelectorAll('[name="multiple_choice_options[]"]');

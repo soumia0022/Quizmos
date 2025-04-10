@@ -65,6 +65,7 @@ def student_view_poll(request, poll_id):
                 question.youtube_link = format_youtube_link(question.youtube_link)
 
             config = response_type_config.get(type(response), {})
+
             value_field = config['value_field']
             student_answer = getattr(response, value_field)
 
