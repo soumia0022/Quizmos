@@ -4,6 +4,8 @@ A real-time classroom polling web app. Lecturers create polls and run them live,
 
 Built as a 7-person group project for the Software Engineering Group (SEG) module at King's College London (Jan–Apr 2025). The project received 100% in the assessment.
 
+
+### 🔗 [Live demo](https://quizmos.onrender.com/)
 ---
 
 ## Features
