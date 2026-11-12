@@ -21,22 +21,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+# Secrets and environment-specific settings are read from environment variables
+# or a local .env file (never committed). See .env.example for the full list.
+env = environ.Env(
+    DEBUG=(bool, False),
+)
+environ.Env.read_env(BASE_DIR / '.env')
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'REMOVED_SECRET_KEY'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env('DEBUG')
 
-DEBUG = True
-
-ALLOWED_HOSTS = [
-    'ec2-51-21-202-49.eu-north-1.compute.amazonaws.com',
-    '51.21.202.49',
-    'localhost',
-    '127.0.0.1',
-    'quizmos.me', 
-    'www.quizmos.me',
-    '[::1]'
-]
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '[::1]'])
 
 
 # Application definition
@@ -65,18 +63,16 @@ INSTALLED_APPS = [
 ]
 
 
-env = environ.Env()
-environ.Env.read_env()  
-
 SITE_ID = 1
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'quizmos.help@gmail.com'  
-EMAIL_HOST_PASSWORD = 'REMOVED_EMAIL_PASSWORD' 
-DEFAULT_FROM_EMAIL = 'quizmos.help@gmail.com'
+# Email: prints emails to the console unless SMTP settings are provided
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@localhost')
 
 ACCOUNT_EMAIL_VERIFICATION = 'none' 
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email' 
@@ -134,15 +130,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
-    'production': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'quizmos-database',
-        'USER': 'postgres',
-        'PASSWORD': 'REMOVED_DB_PASSWORD',
-        'HOST': 'quizmos-database.c5gg288eojvr.eu-north-1.rds.amazonaws.com',
-        'PORT': '5432',
-    }
 }
+
+# Production database: set DATABASE_URL, e.g. postgres://user:password@host:5432/dbname
+if env('DATABASE_URL', default=None):
+    DATABASES['production'] = env.db('DATABASE_URL')
 
 
 # Password validation
@@ -218,7 +210,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [(env('REDIS_HOST', default='127.0.0.1'), env.int('REDIS_PORT', default=6379))],
         },
     },
 }
