@@ -181,7 +181,8 @@ function hideLecturerDisconnectedMessage() {
 
 // Initialization
 function initializeWebSocket(pollCode) {
-    const ws = new WebSocket(`ws://${window.location.host}/ws/poll/${pollCode}/`);
+    const wsScheme = window.location.protocol === "https:" ? "wss://" : "ws://";
+    const ws = new WebSocket(`${wsScheme}${window.location.host}/ws/poll/${pollCode}/`);
     ws.onmessage = handleWebSocketMessage;
     return ws;
 }
