@@ -7,7 +7,8 @@ from django.views import View
 from poll_management.models.poll_model import Poll
 from django.db.models import  Q, F
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, IntegerField, OuterRef, Subquery, Value
+from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from user_management.helpers import generate_suggested_title, delete_guest_user
 from response_management.models.response_model import (
@@ -15,6 +16,34 @@ from response_management.models.response_model import (
             DropdownFillResponse, MatchQuestionResponse, WordCloudResponse,
             CodeQuestionResponse
         )
+
+
+def _response_count(model):
+    """Count one response type per poll with a subquery.
+
+    Annotating several Count()s across different reverse relations makes the
+    database join every response table at once, multiplying the rows (a
+    cartesian product). With realistic data that made the dashboard time out,
+    so each count is calculated separately instead.
+    """
+    counts = (
+        model.objects.filter(poll=OuterRef('pk'))
+        .order_by()
+        .values('poll')
+        .annotate(c=Count('pk'))
+        .values('c')
+    )
+    return Coalesce(Subquery(counts, output_field=IntegerField()), Value(0))
+
+
+def response_count_annotations():
+    return {
+        'multiple_choice_responses_count': _response_count(MultipleChoiceResponse),
+        'single_choice_responses_count': _response_count(SingleChoiceResponse),
+        'dropdown_fill_responses_count': _response_count(DropdownFillResponse),
+        'text_fill_responses_count': _response_count(TextFillResponse),
+        'match_question_responses_count': _response_count(MatchQuestionResponse),
+    }
 
 
 class DashboardView(LoginRequiredMixin, View):
@@ -75,20 +104,8 @@ class DashboardView(LoginRequiredMixin, View):
         else:
             view_value = request.GET.get('view', 'active')
 
-        active_polls_qs = Poll.objects.filter(user=request.user, archived=False).annotate(
-            multiple_choice_responses_count=Count('multiplechoiceresponse'),
-            single_choice_responses_count=Count('singlechoiceresponse'),
-            dropdown_fill_responses_count=Count('dropdownfillresponse'),
-            text_fill_responses_count=Count('textfillresponse'),
-            match_question_responses_count=Count('matchquestionresponse')
-        )
-        archived_polls_qs = Poll.objects.filter(user=request.user, archived=True).annotate(
-            multiple_choice_responses_count=Count('multiplechoiceresponse'),
-            single_choice_responses_count=Count('singlechoiceresponse'),
-            dropdown_fill_responses_count=Count('dropdownfillresponse'),
-            text_fill_responses_count=Count('textfillresponse'),
-            match_question_responses_count=Count('matchquestionresponse')
-        )
+        active_polls_qs = Poll.objects.filter(user=request.user, archived=False).annotate(**response_count_annotations())
+        archived_polls_qs = Poll.objects.filter(user=request.user, archived=True).annotate(**response_count_annotations())
 
         if search_query:
             active_polls_qs = active_polls_qs.filter(title__icontains=search_query)
@@ -142,13 +159,7 @@ class DashboardView(LoginRequiredMixin, View):
         })
 
     def get_lecturer_polls(self, user, search_query, sort_by):
-        polls = Poll.objects.filter(user=user, archived=False).annotate(
-            multiple_choice_responses_count=Count('multiplechoiceresponse'),
-            single_choice_responses_count=Count('singlechoiceresponse'),
-            dropdown_fill_responses_count=Count('dropdownfillresponse'),
-            text_fill_responses_count=Count('textfillresponse'),
-            match_question_responses_count=Count('matchquestionresponse')
-        )
+        polls = Poll.objects.filter(user=user, archived=False).annotate(**response_count_annotations())
 
         if search_query:
             polls = polls.filter(Q(title__icontains=search_query))
