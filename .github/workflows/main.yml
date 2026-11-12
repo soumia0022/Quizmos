@@ -7,6 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: ci-only-not-a-real-secret
+      DEBUG: "True"
     strategy:
       matrix:
         python-version: [3.12]
