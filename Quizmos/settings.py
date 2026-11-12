@@ -36,6 +36,16 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '[::1]'])
 
+# Needed for logins and forms over HTTPS on a hosting platform,
+# e.g. CSRF_TRUSTED_ORIGINS=https://quizmos.onrender.com
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
+
+# The host (e.g. Render) handles HTTPS and forwards requests to Django
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 
 # Application definition
 
@@ -87,6 +97,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL = 'user_management:log_in'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -132,9 +143,10 @@ DATABASES = {
     },
 }
 
-# Production database: set DATABASE_URL, e.g. postgres://user:password@host:5432/dbname
+# Optional: use PostgreSQL instead of SQLite by setting DATABASE_URL,
+# e.g. postgres://user:password@host:5432/dbname
 if env('DATABASE_URL', default=None):
-    DATABASES['production'] = env.db('DATABASE_URL')
+    DATABASES['default'] = env.db('DATABASE_URL')
 
 
 # Password validation
@@ -171,7 +183,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = 'assets/'
+STATIC_ROOT = BASE_DIR / 'assets'
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+}
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",  
@@ -210,7 +226,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(env('REDIS_HOST', default='127.0.0.1'), env.int('REDIS_PORT', default=6379))],
+            "hosts": [env('REDIS_URL', default='redis://127.0.0.1:6379')],
         },
     },
 }
